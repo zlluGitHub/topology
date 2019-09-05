@@ -50,6 +50,7 @@ export class Topology {
   options: Options;
   private subcribe: Observer;
 
+  touchedNode: any;
   lastHoverNode: Node;
   input = document.createElement('textarea');
   inputNode: Node;
@@ -164,6 +165,10 @@ export class Topology {
     this.hoverLayer.canvas.tabIndex = 0;
     this.hoverLayer.canvas.onkeydown = this.onkeydown;
 
+    this.hoverLayer.canvas.ontouchend = event => {
+      this.ontouched(event);
+    };
+
     this.input.style.position = 'absolute';
     this.input.style.zIndex = '-1';
     this.input.style.left = '-1000px';
@@ -215,9 +220,34 @@ export class Topology {
   private ondrop(event: DragEvent) {
     event.preventDefault();
     const node = JSON.parse(event.dataTransfer.getData('Text'));
-    node.rect.x = event.offsetX - ((node.width / 2) << 0);
-    node.rect.y = event.offsetY - ((node.height / 2) << 0);
+    node.rect.x = event.offsetX - ((node.rect.width / 2) << 0);
+    node.rect.y = event.offsetY - ((node.rect.height / 2) << 0);
     this.addNode(new Node(node));
+  }
+
+  getTouchOffset(touch: Touch) {
+    let currentTarget: any = this.parentElem;
+    let x = 0;
+    let y = 0;
+    while (currentTarget) {
+      x += currentTarget.offsetLeft;
+      y += currentTarget.offsetTop;
+      currentTarget = currentTarget.offsetParent;
+    }
+    return { offsetX: touch.pageX - x, offsetY: touch.pageY - y };
+  }
+
+  private ontouched(event: TouchEvent) {
+    if (!this.touchedNode) {
+      return;
+    }
+
+    const pos = this.getTouchOffset(event.changedTouches[0]);
+    this.touchedNode.rect.x = (pos.offsetX - this.touchedNode.rect.width / 2) << 0;
+    this.touchedNode.rect.y = (pos.offsetY - this.touchedNode.rect.height / 2) << 0;
+
+    this.addNode(new Node(this.touchedNode));
+    this.touchedNode = undefined;
   }
 
   addNode(node: Node): boolean {

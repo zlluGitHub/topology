@@ -51,6 +51,7 @@ import { HomeService, Tools } from './home.service';
 import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
+import { Node } from 'libs/topology/models/node';
 
 @Component({
   selector: 'app-home',
@@ -210,6 +211,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onDrag(event: DragEvent, node: any) {
     event.dataTransfer.setData('Text', JSON.stringify(node.data));
+  }
+
+  onTouchstart(item: any) {
+    this.canvas.touchedNode = item.data;
   }
 
   onkeyDocument(key: KeyboardEvent) {

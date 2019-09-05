@@ -8,6 +8,7 @@
           [title]="button.name"
           [draggable]="button.data"
           (dragstart)="onDrag($event, button)"
+          (touchstart)="onTouchstart(button)"
         >
           <i class="iconfont {{ button.icon }}"></i>
         </a>
