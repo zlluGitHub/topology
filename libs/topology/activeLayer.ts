@@ -9,7 +9,8 @@ export class ActiveLayer {
 
   rotateCPs: Point[] = [];
   sizeCPs: Point[] = [];
-  center: Point = new Point(0, 0);
+  rect: Rect;
+  // center: Point = new Point(0, 0);
 
   nodes: Node[] = [];
   lines: Line[] = [];
@@ -19,8 +20,10 @@ export class ActiveLayer {
   // 备份初始位置，方便移动事件处理
   initialSizeCPs: Point[] = [];
   nodeRects: Rect[] = [];
+
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[] = [];
+
   constructor(parent: HTMLElement, public options: any) {
     if (!this.options.activeColor) {
       this.options.activeColor = '#d4380d';
@@ -34,8 +37,7 @@ export class ActiveLayer {
 
   calcControlPoints() {
     if (this.nodes.length === 1) {
-      this.center.x = this.nodes[0].rect.center.x;
-      this.center.y = this.nodes[0].rect.center.y;
+      this.rect = this.nodes[0].rect;
       this.sizeCPs = this.nodes[0].rect.toPoints();
       this.rotateCPs = [
         new Point(this.nodes[0].rect.x + this.nodes[0].rect.width / 2, this.nodes[0].rect.y - 35),
@@ -48,7 +50,7 @@ export class ActiveLayer {
             pt.rotate(this.nodes[0].rotate, this.nodes[0].rect.center);
           }
           if (this.rotate) {
-            pt.rotate(this.rotate, this.center);
+            pt.rotate(this.rotate, this.rect.center);
           }
         }
         for (const pt of this.rotateCPs) {
@@ -56,13 +58,10 @@ export class ActiveLayer {
             pt.rotate(this.nodes[0].rotate, this.nodes[0].rect.center);
           }
           if (this.rotate) {
-            pt.rotate(this.rotate, this.center);
+            pt.rotate(this.rotate, this.rect.center);
           }
         }
       }
-
-      this.nodes[0].getDockWatchers();
-      this.dockWatchers = this.nodes[0].dockWatchers;
 
       return;
     }
@@ -86,15 +85,9 @@ export class ActiveLayer {
         y2 = item.y;
       }
     }
-    this.center.x = (x1 + (x2 - x1) / 2) << 0;
-    this.center.y = (y1 + (y2 - y1) / 2) << 0;
+    this.rect = new Rect(x1, y1, x2 - x1, y2 - y1);
     this.sizeCPs = [new Point(x1, y1), new Point(x2, y1), new Point(x2, y2), new Point(x1, y2)];
     this.rotateCPs = [new Point(x1 + (x2 - x1) / 2, y1 - 35), new Point(x1 + (x2 - x1) / 2, y1)];
-
-    // 获取停靠关注点
-    const rect = new Rect(x1, y1, x2 - x1, y2 - y1);
-    this.dockWatchers = rect.toPoints();
-    this.dockWatchers.push(rect.center);
   }
 
   getPoints() {
@@ -131,9 +124,9 @@ export class ActiveLayer {
 
     // This is diffence between single node and more.
     if (this.rotate && this.nodes.length > 1) {
-      ctx.translate(this.center.x, this.center.y);
+      ctx.translate(this.rect.center.x, this.rect.center.y);
       ctx.rotate((this.rotate * Math.PI) / 180);
-      ctx.translate(-this.center.x, -this.center.y);
+      ctx.translate(-this.rect.center.x, -this.rect.center.y);
     }
 
     // Occupied territory.
@@ -195,6 +188,8 @@ export class ActiveLayer {
       }
       this.initialSizeCPs.push(pt);
     }
+
+    this.getDockWatchers();
   }
 
   resizeNodes(type: number, pt: Point) {
@@ -319,7 +314,7 @@ export class ActiveLayer {
     let i = 0;
     for (const item of this.nodes) {
       const center = this.nodeRects[i].center.clone();
-      center.rotate(angle, this.center);
+      center.rotate(angle, this.rect.center);
       item.rect.x = (center.x - item.rect.width / 2) << 0;
       item.rect.y = (center.y - item.rect.height / 2) << 0;
       item.rect.ex = item.rect.x + item.rect.width;
@@ -416,5 +411,16 @@ export class ActiveLayer {
       item.strokeStyle = props.strokeStyle;
       item.fillStyle = props.fillStyle;
     }
+  }
+
+  getDockWatchers() {
+    if (this.nodes.length === 1) {
+      this.dockWatchers = this.nodeRects[0].toPoints();
+      this.dockWatchers.unshift(this.nodeRects[0].center);
+      return;
+    }
+
+    this.dockWatchers = this.rect.toPoints();
+    this.dockWatchers.unshift(this.rect.center);
   }
 }

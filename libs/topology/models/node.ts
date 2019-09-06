@@ -229,6 +229,6 @@ export class Node extends Pen {
 
   getDockWatchers() {
     this.dockWatchers = this.rect.toPoints();
-    this.dockWatchers.push(this.rect.center);
+    this.dockWatchers.unshift(this.rect.center);
   }
 }

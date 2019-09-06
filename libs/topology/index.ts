@@ -38,6 +38,8 @@ interface ICanvasCache {
   list: ICanvasData[];
 }
 
+const dockerLineOffset = 20;
+
 export class Topology {
   parentElem: HTMLElement;
   canvas = document.createElement('canvas');
@@ -86,6 +88,8 @@ export class Topology {
     index: 0,
     list: []
   };
+
+  private moving = false;
 
   constructor(parent: string | HTMLElement, options?: Options) {
     this.options = options || {};
@@ -405,8 +409,11 @@ export class Topology {
           break;
         case MoveInType.Nodes:
           this.nodesMoved = true;
-          this.getDockPos(pos);
-          this.activeLayer.moveNodes(pos.x - this.mouseDown.x, pos.y - this.mouseDown.y);
+          const offset = this.getDockPos(pos.x - this.mouseDown.x, pos.y - this.mouseDown.y);
+          this.activeLayer.moveNodes(
+            offset.x ? offset.x : pos.x - this.mouseDown.x,
+            offset.y ? offset.y : pos.y - this.mouseDown.y
+          );
           break;
         case MoveInType.ResizeCP:
           this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, pos);
@@ -945,16 +952,16 @@ export class Topology {
   }
 
   private getAngle(pt: Point) {
-    if (pt.x === this.activeLayer.center.x) {
-      return pt.y <= this.activeLayer.center.y ? 0 : 180;
+    if (pt.x === this.activeLayer.rect.center.x) {
+      return pt.y <= this.activeLayer.rect.center.y ? 0 : 180;
     }
 
-    if (pt.y === this.activeLayer.center.y) {
-      return pt.x < this.activeLayer.center.x ? 270 : 90;
+    if (pt.y === this.activeLayer.rect.center.y) {
+      return pt.x < this.activeLayer.rect.center.x ? 270 : 90;
     }
 
-    const x = pt.x - this.activeLayer.center.x;
-    const y = pt.y - this.activeLayer.center.y;
+    const x = pt.x - this.activeLayer.rect.center.x;
+    const y = pt.y - this.activeLayer.rect.center.y;
     let angle = (Math.atan(Math.abs(x / y)) / (2 * Math.PI)) * 360;
     if (x > 0 && y > 0) {
       angle = 180 - angle;
@@ -1029,19 +1036,21 @@ export class Topology {
   }
 
   // Get a dock rect for moving nodes.
-  getDockPos(point: Point) {
-    const pos = {
+  getDockPos(offsetX: number, offsetY: number) {
+    this.hoverLayer.dockLineX = 0;
+    this.hoverLayer.dockLineY = 0;
+
+    const offset = {
       x: 0,
-      absX: 0,
-      y: 0,
-      absY: 0,
-      dockLineX: 0,
-      dockLineY: 0
+      y: 0
     };
 
     let x = 0;
     let y = 0;
-    for (const pt of this.activeLayer.dockWatchers) {
+    let disX = dockerLineOffset;
+    let disY = dockerLineOffset;
+
+    for (const activePt of this.activeLayer.dockWatchers) {
       for (const item of this.nodes) {
         if (this.activeLayer.hasNode(item) || item.name === 'text') {
           continue;
@@ -1051,33 +1060,24 @@ export class Topology {
           item.getDockWatchers();
         }
         for (const p of item.dockWatchers) {
-          x = Math.abs(p.x - pt.x);
-          if (x < 2) {
-            pos.absX = x;
-            pos.x = p.x - pt.x;
-            pos.dockLineX = p.x;
+          x = Math.abs(p.x - activePt.x - offsetX);
+          if (x < disX) {
+            disX = -99999;
+            offset.x = p.x - activePt.x;
+            this.hoverLayer.dockLineX = p.x;
           }
 
-          y = Math.abs(p.y - pt.y);
-          if (y < 2) {
-            pos.absY = y;
-            pos.y = p.y - pt.y;
-            pos.dockLineY = p.y;
+          y = Math.abs(p.y - activePt.y - offsetY);
+          if (y < disY) {
+            disY = -99999;
+            offset.y = p.y - activePt.y;
+            this.hoverLayer.dockLineY = p.y;
           }
         }
       }
     }
 
-    if (pos.dockLineX > 0) {
-      point.x += pos.x;
-    }
-
-    if (pos.dockLineY > 0) {
-      point.y += pos.y;
-    }
-
-    this.hoverLayer.dockLineX = pos.dockLineX;
-    this.hoverLayer.dockLineY = pos.dockLineY;
+    return offset;
   }
 
   private cache() {
