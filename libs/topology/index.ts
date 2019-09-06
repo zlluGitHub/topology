@@ -38,7 +38,7 @@ interface ICanvasCache {
   list: ICanvasData[];
 }
 
-const dockerLineOffset = 20;
+const dockOffset = 10;
 
 export class Topology {
   parentElem: HTMLElement;
@@ -1047,8 +1047,8 @@ export class Topology {
 
     let x = 0;
     let y = 0;
-    let disX = dockerLineOffset;
-    let disY = dockerLineOffset;
+    let disX = dockOffset;
+    let disY = dockOffset;
 
     for (const activePt of this.activeLayer.dockWatchers) {
       for (const item of this.nodes) {
