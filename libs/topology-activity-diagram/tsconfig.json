@@ -6,5 +6,9 @@
     "sourceMap": true,
     "lib": ["es2018", "dom"]
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "paths": {
+    "topology-core": ["../../dist/topology-core"],
+    "topology-core/*": ["../../dist/topology-core/*"]
+  }
 }

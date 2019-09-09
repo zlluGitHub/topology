@@ -43,6 +43,15 @@ import {
   flowCommentAnchors
 } from 'libs/topology-flow-diagram';
 
+import {
+  activityFinal,
+  activityFinalIconRect,
+  activityFinalTextRect,
+  swimlaneV,
+  swimlaneVIconRect,
+  swimlaneVTextRect
+} from 'libs/topology-activity-diagram';
+
 import * as FileSaver from 'file-saver';
 import { StoreService } from 'le5le-store';
 import { NoticeService } from 'le5le-components/notice';
@@ -51,7 +60,8 @@ import { HomeService, Tools } from './home.service';
 import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
-import { Node } from 'libs/topology/models/node';
+import { swimlaneH, swimlaneHIconRect, swimlaneHTextRect } from 'libs/topology-activity-diagram/swimlaneH';
+import { fork, forkHAnchors, forkIconRect, forkTextRect, forkVAnchors } from 'libs/topology-activity-diagram/fork';
 
 @Component({
   selector: 'app-home',
@@ -207,6 +217,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     registerNode('flowDisplay', flowDisplay, flowDisplayAnchors, flowDisplayIconRect, flowDisplayTextRect);
     registerNode('flowParallel', flowParallel, flowParallelAnchors, null, null);
     registerNode('flowComment', flowComment, flowCommentAnchors, null, null);
+
+    // activity
+    registerNode('activityFinal', activityFinal, null, activityFinalIconRect, activityFinalTextRect);
+    registerNode('swimlaneV', swimlaneV, null, swimlaneVIconRect, swimlaneVTextRect);
+    registerNode('swimlaneH', swimlaneH, null, swimlaneHIconRect, swimlaneHTextRect);
+    registerNode('forkH', fork, forkHAnchors, forkIconRect, forkTextRect);
+    registerNode('forkV', fork, forkVAnchors, forkIconRect, forkTextRect);
   }
 
   onDrag(event: DragEvent, node: any) {

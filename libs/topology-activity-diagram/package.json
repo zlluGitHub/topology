@@ -8,7 +8,8 @@
   },
   "keywords": [
     "topology",
-    "class diagram",
+    "activity",
+    "diagram",
     "canvas"
   ],
   "author": "alsmile123@qq.com",
@@ -20,8 +21,11 @@
   "bugs": {
     "url": "https://github.com/Alsmile/topology/issues"
   },
-  "homepage": "https://github.com/Alsmile/topology#readme",
+  "dependencies": {
+    "topology-core": "^0.0.2"
+  },
   "devDependencies": {
+    "copyfiles": "^2.1.1",
     "typescript": "~3.4.3"
   }
 }

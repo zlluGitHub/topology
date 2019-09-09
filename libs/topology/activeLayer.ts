@@ -207,8 +207,8 @@ export class ActiveLayer {
           y = pt.y;
           w = this.initialSizeCPs[2].x - pt.x;
           h = this.initialSizeCPs[2].y - pt.y;
-          pos.x = w > 30 ? x : this.initialSizeCPs[2].x - 30;
-          pos.y = h > 30 ? y : this.initialSizeCPs[2].y - 30;
+          pos.x = w > 5 ? x : this.initialSizeCPs[2].x - 5;
+          pos.y = h > 5 ? y : this.initialSizeCPs[2].y - 5;
           break;
         // ne-resize
         case 1:
@@ -216,7 +216,7 @@ export class ActiveLayer {
           w = pt.x - this.initialSizeCPs[0].x;
           h = this.initialSizeCPs[2].y - pt.y;
           pos.x = this.initialSizeCPs[0].x;
-          pos.y = h > 30 ? y : this.initialSizeCPs[2].y - 30;
+          pos.y = h > 5 ? y : this.initialSizeCPs[2].y - 5;
           break;
         // se-resize
         case 2:
@@ -230,13 +230,13 @@ export class ActiveLayer {
           x = pt.x;
           w = this.initialSizeCPs[2].x - pt.x;
           h = pt.y - this.initialSizeCPs[0].y;
-          pos.x = w > 30 ? x : this.initialSizeCPs[2].x - 30;
+          pos.x = w > 5 ? x : this.initialSizeCPs[2].x - 5;
           pos.y = this.initialSizeCPs[0].y;
           break;
       }
 
-      w = w > 30 ? w : 30;
-      h = h > 30 ? h : 30;
+      w = w > 5 ? w : 5;
+      h = h > 5 ? h : 5;
       this.calcRelPos(
         item.rect,
         this.nodeRects[i],
@@ -366,12 +366,14 @@ export class ActiveLayer {
       tmp.icon = '';
       tmp.image = '';
       tmp.text = '';
-      tmp.strokeStyle = '#ffffff';
-      tmp.lineWidth += 2;
-      tmp.render(ctx);
+      if (tmp.strokeStyle !== 'transparent') {
+        tmp.strokeStyle = '#ffffff';
+        tmp.lineWidth += 2;
+        tmp.render(ctx);
 
-      tmp.strokeStyle = '#d4380d';
-      tmp.lineWidth -= 2;
+        tmp.strokeStyle = '#d4380d';
+        tmp.lineWidth -= 2;
+      }
       tmp.render(ctx);
     }
     for (const item of this.lines) {
