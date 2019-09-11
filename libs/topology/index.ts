@@ -294,7 +294,9 @@ export class Topology {
       this.cache();
 
       const rect = this.getRect();
-      this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
+      if (rect.width > this.canvas.width || rect.height > this.canvas.height) {
+        this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
+      }
     } else {
       this.nodes.push.apply(this.nodes, data.nodes);
       this.lines.push.apply(this.lines, data.lines);
