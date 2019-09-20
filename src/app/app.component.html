@@ -144,7 +144,7 @@
       <div class="dropdown">
         <div class="item">
           <a (click)="blank = true">
-            欢迎推荐图文
+            推荐图文（对话框）
           </a>
         </div>
         <div class="item line"></div>
@@ -160,7 +160,7 @@
       <div class="dropdown">
         <div class="item">
           <a routerLink="/hot">
-            热门图文
+            大家分享的图文
           </a>
         </div>
         <div class="item line"></div>
@@ -188,7 +188,7 @@
       <div class="dropdown">
         <div class="item">
           <a href="http://le5le.com/app/topology" target="_blank">
-            欢迎使用
+            产品介绍
           </a>
         </div>
         <div class="item">
@@ -264,9 +264,9 @@
         </a>
       </div>
     </div>
-    <div class="item ml20" title="热门图文">
+    <div class="item ml20" title="大家分享的图文">
       <a routerLink="/hot">
-        <i class="iconfont icon-fly"></i>
+        <i class="iconfont icon-share2"></i>
       </a>
     </div>
     <div class="flex ph20" *ngIf="!user">
@@ -440,6 +440,11 @@
       <p>欢迎有任何问题或建议请联系：</p>
       <p>邮箱：alsmile123@qq.com</p>
       <p>微信：alsmile123</p>
+      <div class="text-center">
+        <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg" target="_blank">
+          <img src="http://topology.le5le.com/assets/img/topology_wechat.jpg" style="height: 3rem" />
+        </a>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="button" (click)="showAbout = null">确定</button>

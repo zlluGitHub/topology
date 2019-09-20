@@ -128,6 +128,15 @@ force?: boolean
 [在线画图官网](https://topology.le5le.com) 前端源码
 
 ```
+$ cd topology
+$ yarn or npm install
+$ cd topology/libs/topology-activity-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-class-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-flow-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-sequence-diagram
 $ yarn or npm install
 
 # build watching file changes and run angular project

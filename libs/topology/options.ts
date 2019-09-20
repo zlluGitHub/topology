@@ -10,9 +10,12 @@ export interface Options {
     fontFamily: string;
     fontSize: number;
     lineHeight: number;
-    textAlign: CanvasTextAlign;
-    textBaseline: CanvasTextBaseline;
+    textAlign: string;
+    textBaseline: string;
   };
   rotateCursor?: string;
+  hideInput?: boolean;
+  hideRotateCP?: boolean;
+  disableEmptyLine?: boolean;
   on?: (event: string, data: any) => void;
 }

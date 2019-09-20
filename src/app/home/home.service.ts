@@ -311,6 +311,17 @@ export const Tools = [
           iconColor: '#777',
           iconSize: 30
         }
+      },
+      {
+        name: 'people',
+        icon: 'icon-people',
+        data: {
+          rect: {
+            width: 70,
+            height: 100
+          },
+          name: 'people'
+        }
       }
     ]
   },
@@ -513,7 +524,7 @@ export const Tools = [
             height: 30
           },
           name: 'circle',
-          fillStyle: '#333',
+          fillStyle: '#555',
           strokeStyle: 'transparent'
         }
       },
@@ -584,11 +595,11 @@ export const Tools = [
         data: {
           text: '',
           rect: {
-            width: 8,
+            width: 10,
             height: 150
           },
           name: 'forkV',
-          fillStyle: '#333',
+          fillStyle: '#555',
           strokeStyle: 'transparent'
         }
       },
@@ -599,17 +610,147 @@ export const Tools = [
           text: '',
           rect: {
             width: 150,
-            height: 8
+            height: 10
           },
           name: 'forkH',
-          fillStyle: '#333',
+          fillStyle: '#555',
           strokeStyle: 'transparent'
         }
       }
     ]
   },
   {
-    group: 'UML类图 [Todo]',
-    children: []
+    group: '时序图和类图',
+    children: [
+      {
+        name: '生命线',
+        icon: 'icon-lifeline',
+        data: {
+          text: '生命线',
+          rect: {
+            width: 150,
+            height: 400
+          },
+          name: 'lifeline'
+        }
+      },
+      {
+        name: '激活',
+        icon: 'icon-focus',
+        data: {
+          text: '',
+          rect: {
+            width: 12,
+            height: 200
+          },
+          name: 'sequenceFocus'
+        }
+      },
+      {
+        name: '简单类',
+        icon: 'icon-simple-class',
+        data: {
+          text: 'Topolgoy',
+          rect: {
+            width: 270,
+            height: 200
+          },
+          font: {
+            fontFamily: 'Arial',
+            color: '#000',
+            fontWeight: 'bold'
+          },
+          fillStyle: '#ffffba',
+          strokeStyle: '#7e1212',
+          name: 'simpleClass',
+          children: [
+            {
+              text: '- name: string\n+ setName(name: string): void',
+              name: 'text',
+              parentRect: {
+                offsetX: 0,
+                offsetY: 40,
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 1,
+                marginX: 10,
+                marginY: 5,
+                rotate: 0
+              },
+              font: {
+                fontFamily: 'Arial',
+                color: '#000',
+                textAlign: 'left',
+                textBaseline: 'top'
+              }
+            }
+          ]
+        }
+      },
+      {
+        name: '类',
+        icon: 'icon-class',
+        data: {
+          text: 'Topolgoy',
+          rect: {
+            width: 270,
+            height: 200
+          },
+          font: {
+            fontFamily: 'Arial',
+            color: '#000',
+            fontWeight: 'bold'
+          },
+          fillStyle: '#ffffba',
+          strokeStyle: '#7e1212',
+          name: 'interfaceClass',
+          children: [
+            {
+              text: '- name: string',
+              name: 'text',
+              parentRect: {
+                offsetX: 0,
+                offsetY: 40,
+                x: 0,
+                y: 0,
+                width: 1,
+                height: 0.5,
+                marginX: 10,
+                marginY: 5,
+                rotate: 0
+              },
+              font: {
+                fontFamily: 'Arial',
+                color: '#000',
+                textAlign: 'left',
+                textBaseline: 'top'
+              }
+            },
+            {
+              text: '+ setName(name: string): void',
+              name: 'text',
+              parentRect: {
+                offsetX: 0,
+                offsetY: 40,
+                x: 0,
+                y: 0.5,
+                width: 1,
+                height: 0.5,
+                marginX: 10,
+                marginY: 5,
+                rotate: 0
+              },
+              font: {
+                fontFamily: 'Arial',
+                color: '#000',
+                textAlign: 'left',
+                textBaseline: 'top'
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 ];

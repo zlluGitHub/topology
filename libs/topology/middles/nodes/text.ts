@@ -90,15 +90,20 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
     ctx.fillStyle = '#333';
   }
   if (node.font.textAlign) {
-    ctx.textAlign = node.font.textAlign;
+    ctx.textAlign = node.font.textAlign as any;
   }
   if (node.font.textBaseline) {
-    ctx.textBaseline = node.font.textBaseline;
+    ctx.textBaseline = node.font.textBaseline as any;
   }
 
   const textRect = node.getTextRect();
+  const lines = [];
+  const paragraphs = node.text.split(/[\n,]/g);
+  for (let i = 0; i < paragraphs.length; ++i) {
+    const l = getLines(ctx, getWords(paragraphs[i]), textRect.width);
+    lines.push.apply(lines, l);
+  }
 
-  const lines = getLines(ctx, getWords(node.text), textRect.width);
   const lineHeight = node.font.fontSize * node.font.lineHeight;
   let maxLineLen = node.textMaxLine;
   const rectLines = (textRect.height / lineHeight) << 0;

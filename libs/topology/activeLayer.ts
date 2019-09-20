@@ -3,6 +3,7 @@ import { Line } from './models/line';
 import { Rect } from './models/rect';
 import { Point } from './models/point';
 import { Store } from './store/store';
+import { Options } from './options';
 
 export class ActiveLayer {
   canvas = document.createElement('canvas');
@@ -20,11 +21,14 @@ export class ActiveLayer {
   // 备份初始位置，方便移动事件处理
   initialSizeCPs: Point[] = [];
   nodeRects: Rect[] = [];
+  childrenRects: { [key: string]: Rect } = {};
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[] = [];
 
-  constructor(parent: HTMLElement, public options: any) {
+  rotating = false;
+
+  constructor(parent: HTMLElement, public options: Options) {
     if (!this.options.activeColor) {
       this.options.activeColor = '#d4380d';
     }
@@ -63,6 +67,10 @@ export class ActiveLayer {
         }
       }
 
+      if (this.options.hideRotateCP) {
+        this.rotateCPs = [new Point(-1000, -1000), new Point(-1000, -1000)];
+      }
+
       return;
     }
 
@@ -88,6 +96,10 @@ export class ActiveLayer {
     this.rect = new Rect(x1, y1, x2 - x1, y2 - y1);
     this.sizeCPs = [new Point(x1, y1), new Point(x2, y1), new Point(x2, y2), new Point(x1, y2)];
     this.rotateCPs = [new Point(x1 + (x2 - x1) / 2, y1 - 35), new Point(x1 + (x2 - x1) / 2, y1)];
+
+    if (this.options.hideRotateCP) {
+      this.rotateCPs = [new Point(-1000, -1000), new Point(-1000, -1000)];
+    }
   }
 
   getPoints() {
@@ -113,7 +125,9 @@ export class ActiveLayer {
       return;
     }
 
-    this.calcControlPoints();
+    if (this.nodes.length === 1 || !this.rotating) {
+      this.calcControlPoints();
+    }
 
     const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.activeColor;
@@ -175,8 +189,10 @@ export class ActiveLayer {
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
   saveNodeRects() {
     this.nodeRects = [];
+    this.childrenRects = {};
     for (const item of this.nodes) {
       this.nodeRects.push(new Rect(item.rect.x, item.rect.y, item.rect.width, item.rect.height));
+      this.saveChildrenRects(item);
     }
 
     this.initialSizeCPs = [];
@@ -190,6 +206,17 @@ export class ActiveLayer {
     }
 
     this.getDockWatchers();
+  }
+
+  private saveChildrenRects(node: Node) {
+    if (!node.children) {
+      return;
+    }
+
+    for (const item of node.children) {
+      this.childrenRects[item.id] = new Rect(item.rect.x, item.rect.y, item.rect.width, item.rect.height);
+      this.saveChildrenRects(item);
+    }
   }
 
   resizeNodes(type: number, pt: Point) {
@@ -237,7 +264,7 @@ export class ActiveLayer {
 
       w = w > 5 ? w : 5;
       h = h > 5 ? h : 5;
-      this.calcRelPos(
+      this.calcResizedPos(
         item.rect,
         this.nodeRects[i],
         pos,
@@ -246,6 +273,7 @@ export class ActiveLayer {
       );
       item.rect.calceCenter();
       item.init();
+      this.updateChildren(item);
       ++i;
     }
 
@@ -256,7 +284,7 @@ export class ActiveLayer {
   // initRect - node的原始位置
   // xScale - x坐标缩放比例
   // yScale - y坐标缩放比例
-  calcRelPos(rect: Rect, initRect: Rect, pos: Point, xScale: number, yScale: number) {
+  calcResizedPos(rect: Rect, initRect: Rect, pos: Point, xScale: number, yScale: number) {
     rect.x = pos.x + (initRect.x - this.initialSizeCPs[0].x) * xScale;
     rect.y = pos.y + (initRect.y - this.initialSizeCPs[0].y) * yScale;
     rect.width = initRect.width * xScale;
@@ -277,16 +305,31 @@ export class ActiveLayer {
       item.rect.ey = item.rect.y + item.rect.height;
       item.rect.calceCenter();
       item.init();
+      this.updateChildren(item);
       ++i;
     }
     this.updateLines();
   }
 
-  updateLines() {
+  private updateChildren(node: Node) {
+    if (!node.children) {
+      return;
+    }
+    for (const item of node.children) {
+      item.calcChildRect(node);
+      item.init();
+      this.updateChildren(item);
+    }
+  }
+
+  updateLines(nodes?: Node[]) {
+    if (!nodes) {
+      nodes = this.nodes;
+    }
     const lines = Store.get('lines');
     for (const line of lines) {
       let found = false;
-      for (const item of this.nodes) {
+      for (const item of nodes) {
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
           line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
@@ -296,6 +339,9 @@ export class ActiveLayer {
           line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
           found = true;
+        }
+        if (item.children) {
+          this.updateLines(item.children);
         }
       }
       if (found) {
@@ -311,6 +357,7 @@ export class ActiveLayer {
   }
 
   offsetRotate(angle: number) {
+    this.rotating = true;
     let i = 0;
     for (const item of this.nodes) {
       const center = this.nodeRects[i].center.clone();
@@ -323,6 +370,7 @@ export class ActiveLayer {
       item.init();
       item.offsetRotate = angle;
       item.calcRotateAnchors(item.rotate + item.offsetRotate);
+      this.updateChildren(item);
       ++i;
     }
     this.rotate = angle;
@@ -334,6 +382,7 @@ export class ActiveLayer {
       item.offsetRotate = 0;
     }
     this.rotate = 0;
+    this.rotating = false;
   }
 
   addNode(node: Node) {
@@ -366,6 +415,7 @@ export class ActiveLayer {
       tmp.icon = '';
       tmp.image = '';
       tmp.text = '';
+      tmp.children = null;
       if (tmp.strokeStyle !== 'transparent') {
         tmp.strokeStyle = '#ffffff';
         tmp.lineWidth += 2;
@@ -398,20 +448,43 @@ export class ActiveLayer {
   }
 
   // Only public prop is requied, for mulit object selected.
-  updateProps(props: { dash: number; lineWidth: number; strokeStyle: string; fillStyle: string; globalAlpha: number }) {
-    for (const item of this.nodes) {
-      item.init();
-      item.dash = props.dash;
-      item.lineWidth = props.lineWidth;
-      item.strokeStyle = props.strokeStyle;
-      item.fillStyle = props.fillStyle;
+  updateProps(
+    nodes: Node[],
+    lines: Line[],
+    props: {
+      dash: number;
+      lineWidth: number;
+      strokeStyle: string;
+      fillStyle: string;
+      globalAlpha: number;
+      rotate: number;
+    }
+  ) {
+    console.log(1111, nodes, lines);
+    if (nodes) {
+      for (const item of nodes) {
+        item.init();
+        item.dash = props.dash;
+        item.lineWidth = props.lineWidth;
+        item.strokeStyle = props.strokeStyle;
+        item.fillStyle = props.fillStyle;
+        item.globalAlpha = props.globalAlpha;
+        if (item.children) {
+          this.updateProps(item.children, null, props);
+          this.updateChildren(item);
+        }
+      }
+      this.updateLines(nodes);
     }
 
-    for (const item of this.lines) {
-      item.dash = props.dash;
-      item.lineWidth = props.lineWidth;
-      item.strokeStyle = props.strokeStyle;
-      item.fillStyle = props.fillStyle;
+    if (lines) {
+      for (const item of lines) {
+        item.dash = props.dash;
+        item.lineWidth = props.lineWidth;
+        item.strokeStyle = props.strokeStyle;
+        item.fillStyle = props.fillStyle;
+        item.globalAlpha = props.globalAlpha;
+      }
     }
   }
 

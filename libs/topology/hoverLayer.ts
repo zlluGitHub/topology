@@ -18,6 +18,8 @@ export class HoverLayer {
   // The dock of to point of line.
   dockAnchor: Point;
 
+  hoverAnchorIndex = -1;
+
   dockLineX = 0;
   dockLineY = 0;
 
@@ -73,9 +75,12 @@ export class HoverLayer {
     ctx.fillStyle = '#fff';
     // anchors
     if (this.node) {
-      for (const pt of this.node.rotatedAnchors) {
+      for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
+        if (this.node.rotatedAnchors[i].data === 'hidden' && this.hoverAnchorIndex !== i) {
+          continue;
+        }
         ctx.beginPath();
-        ctx.arc(pt.x, pt.y, this.anchorRadius, 0, Math.PI * 2);
+        ctx.arc(this.node.rotatedAnchors[i].x, this.node.rotatedAnchors[i].y, this.anchorRadius, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
       }
@@ -88,13 +93,9 @@ export class HoverLayer {
 
     ctx.fillStyle = this.options.hoverColor;
     if (this.dockAnchor) {
-      ctx.save();
-      ctx.globalAlpha = 0.7;
       ctx.beginPath();
-      ctx.arc(this.dockAnchor.x, this.dockAnchor.y, 10, 0, Math.PI * 2);
+      ctx.arc(this.dockAnchor.x, this.dockAnchor.y, 4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
-      ctx.restore();
     }
 
     if (this.hoverLineCP) {
@@ -140,9 +141,8 @@ export class HoverLayer {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute(
       'd',
-      `M${line.from.x} ${line.from.y} C${line.controlPoints[0].x} ${line.controlPoints[0].y} ${
-        line.controlPoints[1].x
-      } ${line.controlPoints[1].y} ${line.to.x} ${line.to.y}`
+      // tslint:disable-next-line:max-line-length
+      `M${line.from.x} ${line.from.y} C${line.controlPoints[0].x} ${line.controlPoints[0].y} ${line.controlPoints[1].x} ${line.controlPoints[1].y} ${line.to.x} ${line.to.y}`
     );
     return path.getTotalLength();
   }

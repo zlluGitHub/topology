@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "outDir": "../../dist/togology-activity-diagram",
+    "outDir": "../../dist/topology-activity-diagram",
     "sourceMap": true,
     "lib": ["es2018", "dom"]
   },

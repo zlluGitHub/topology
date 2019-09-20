@@ -6,6 +6,7 @@ export class Point {
   direction: Direction;
   // The index of docker anchor on node.
   anchorIndex: number;
+  data: any;
   constructor(public x: number, public y: number, direction?: Direction, anchorIndex?: number, id?: number | string) {
     this.x = this.x << 0;
     this.y = this.y << 0;
@@ -15,7 +16,11 @@ export class Point {
   }
 
   clone(): Point {
-    return new Point(this.x, this.y, this.direction, this.anchorIndex, this.id);
+    const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id);
+    if (this.data) {
+      pt.data = this.data;
+    }
+    return pt;
   }
 
   hit(pt: Point, radius = 5) {

@@ -21,8 +21,8 @@ export abstract class Pen {
     lineHeight: 1.5,
     fontStyle: 'normal',
     fontWeight: 'normal',
-    textAlign: 'center' as CanvasTextAlign,
-    textBaseline: 'middle' as CanvasTextBaseline
+    textAlign: 'center',
+    textBaseline: 'middle'
   };
   animateColor = '';
   animateSpeed = 1;
@@ -45,7 +45,7 @@ export abstract class Pen {
       this.rotate = json.rotate || 0;
       this.offsetRotate = json.offsetRotate || 0;
       if (json.font) {
-        this.font = json.font;
+        Object.assign(this.font, json.font);
       }
       this.animateColor = json.animateColor;
       this.animateSpeed = json.animateSpeed;
@@ -98,6 +98,12 @@ export abstract class Pen {
     this.draw(ctx);
 
     ctx.restore();
+
+    if ((this as any).children) {
+      for (const item of (this as any).children) {
+        item.render(ctx);
+      }
+    }
   }
 
   hit(point: Point, padding = 0) {

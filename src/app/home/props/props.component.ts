@@ -227,30 +227,18 @@ export class PropsComponent implements OnInit, OnChanges {
   constructor() {}
 
   ngOnInit() {
-    if (!this.props.data) {
-      this.props.data = {
-        name: 'curve',
-        dash: 0,
-        lineWidth: 1,
-        strokeStyle: '',
-        fillStyle: '',
-        globalAlpha: 1,
-        rotate: 0,
-        font: {
-          color: '#333',
-          fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
-          fontSize: 12,
-          lineHeight: 1.5,
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-          textAlign: 'center',
-          textBaseline: 'middle'
-        },
-        animateColor: '#52c41a',
-        animateSpeed: 1
+    if (!this.props.data.font) {
+      this.props.data.font = {
+        color: '#333',
+        fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
+        fontSize: 12,
+        lineHeight: 1.5,
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        textAlign: 'center',
+        textBaseline: 'middle'
       };
     }
-
     if (!this.props.data.font.fontStyle) {
       this.props.data.font.fontStyle = 'normal';
     }
@@ -286,15 +274,9 @@ export class PropsComponent implements OnInit, OnChanges {
     };
   }
 
-  onSubmitProps(invalid?: boolean) {
+  onChangeProp(invalid?: boolean) {
     if (invalid) {
       return;
-    }
-
-    if (this.props.data.rect) {
-      this.props.data.rect.calceCenter();
-      this.props.data.rect.ex = this.props.data.rect.x + this.props.data.rect.width;
-      this.props.data.rect.ey = this.props.data.rect.y + this.props.data.rect.height;
     }
 
     this.ok.emit(this.props);
@@ -303,38 +285,25 @@ export class PropsComponent implements OnInit, OnChanges {
   onClickName(name: string) {
     this.props.data.name = name;
     this.drowdown = 0;
-    this.onSubmitProps();
+    this.onChangeProp();
   }
 
   onClickDash(dash: number) {
     this.props.data.dash = dash;
     this.drowdown = 0;
-    this.onSubmitProps();
+    this.onChangeProp();
   }
 
   onClickFromArrow(arrow: string) {
     this.props.data.fromArrow = arrow;
     this.drowdown = 0;
-    this.onSubmitProps();
+    this.onChangeProp();
   }
 
   onClickToArrow(arrow: string) {
     this.props.data.toArrow = arrow;
     this.drowdown = 0;
-    this.onSubmitProps();
-  }
-
-  onKeyText(key: KeyboardEvent, invalid: boolean) {
-    switch (key.keyCode) {
-      case 13:
-        if (key.ctrlKey) {
-          this.props.data.text += '\n';
-        } else {
-          key.preventDefault();
-          this.onSubmitProps(invalid);
-        }
-        break;
-    }
+    this.onChangeProp();
   }
 
   onclickDocument() {
@@ -365,7 +334,7 @@ export class PropsComponent implements OnInit, OnChanges {
         (this.props.data.imgNaturalHeight / this.props.data.imgNaturalWidth) * this.props.data.imageWidth;
     }
 
-    this.onSubmitProps(invalid);
+    this.onChangeProp(invalid);
   }
 
   onChangeImgHeight(invalid: boolean) {
@@ -374,7 +343,7 @@ export class PropsComponent implements OnInit, OnChanges {
         (this.props.data.imgNaturalWidth / this.props.data.imgNaturalHeight) * this.props.data.imageHeight;
     }
 
-    this.onSubmitProps(invalid);
+    this.onChangeProp(invalid);
   }
 
   onChangeImgRatio(invalid: boolean) {
@@ -388,6 +357,6 @@ export class PropsComponent implements OnInit, OnChanges {
       }
     }
 
-    this.onSubmitProps(invalid);
+    this.onChangeProp(invalid);
   }
 }

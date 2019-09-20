@@ -39,6 +39,18 @@ export class Node extends Pen {
 
   anchors: Point[] = [];
   rotatedAnchors: Point[] = [];
+  parentId: string;
+  parentRect: {
+    offsetX: number;
+    offsetY: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    marginX: number;
+    marginY: number;
+    rotate: number;
+  };
   children: Node[];
 
   // nodes移动时，停靠点的参考位置
@@ -79,14 +91,12 @@ export class Node extends Pen {
     if (json.textMaxLine) {
       this.textMaxLine = +json.textMaxLine || 0;
     }
-
-    if (json.children) {
-      this.children = [];
-      for (const item of json.children) {
-        item.children.push(new Node(item));
-      }
+    if (json.parentRect) {
+      this.parentRect = json.parentRect;
     }
     this.init();
+
+    this.setChild(json);
   }
 
   init() {
@@ -105,6 +115,54 @@ export class Node extends Pen {
     }
 
     this.calcAnchors();
+  }
+
+  setChild(json: any) {
+    if (!json.children) {
+      return;
+    }
+
+    this.children = [];
+    for (let i = 0; i < json.children.length; ++i) {
+      const child = new Node(json.children[i]);
+      child.parentId = this.id;
+      child.calcChildRect(this);
+      child.init();
+      child.setChild(json.children[i]);
+      this.children.push(child);
+    }
+  }
+
+  // 根据父节点rect计算自己（子节点）的rect.
+  // parent - 父节点.
+  // this.parentRect.offsetX - 固定偏移像素。
+  // this.parentRect.x - 除去固定偏移像素后，偏移百分比。
+  calcChildRect(parent: Node) {
+    this.rect = new Rect(
+      parent.rect.x +
+        this.parentRect.offsetX +
+        this.parentRect.marginX +
+        (parent.rect.width - this.parentRect.offsetX) * this.parentRect.x,
+      parent.rect.y +
+        this.parentRect.offsetY +
+        this.parentRect.marginY +
+        (parent.rect.height - this.parentRect.offsetY) * this.parentRect.y,
+      (parent.rect.width - this.parentRect.offsetX) * this.parentRect.width - 2 * this.parentRect.marginX,
+      (parent.rect.height - this.parentRect.offsetY) * this.parentRect.height - 2 * this.parentRect.marginY
+    );
+
+    if (!this.parentRect.rotate) {
+      this.parentRect.rotate = 0;
+    }
+
+    const nodeCenter = this.rect.center.clone();
+    nodeCenter.rotate(parent.rotate + parent.offsetRotate, parent.rect.center);
+    this.rect.x = (nodeCenter.x - this.rect.width / 2) << 0;
+    this.rect.y = (nodeCenter.y - this.rect.height / 2) << 0;
+    this.rect.ex = this.rect.x + this.rect.width;
+    this.rect.ey = this.rect.y + this.rect.height;
+    this.rect.calceCenter();
+    this.rotate = this.parentRect.rotate + parent.rotate + parent.offsetRotate;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

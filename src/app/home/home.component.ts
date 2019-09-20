@@ -49,8 +49,34 @@ import {
   activityFinalTextRect,
   swimlaneV,
   swimlaneVIconRect,
-  swimlaneVTextRect
+  swimlaneVTextRect,
+  swimlaneH,
+  swimlaneHIconRect,
+  swimlaneHTextRect,
+  fork,
+  forkHAnchors,
+  forkIconRect,
+  forkTextRect,
+  forkVAnchors
 } from 'libs/topology-activity-diagram';
+import {
+  simpleClass,
+  simpleClassIconRect,
+  simpleClassTextRect,
+  interfaceClass,
+  interfaceClassIconRect,
+  interfaceClassTextRect
+} from 'libs/topology-class-diagram';
+import {
+  lifeline,
+  lifelineAnchors,
+  lifelineIconRect,
+  lifelineTextRect,
+  sequenceFocus,
+  sequenceFocusAnchors,
+  sequenceFocusIconRect,
+  sequenceFocusTextRect
+} from 'libs/topology-sequence-diagram';
 
 import * as FileSaver from 'file-saver';
 import { StoreService } from 'le5le-store';
@@ -60,8 +86,6 @@ import { HomeService, Tools } from './home.service';
 import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
-import { swimlaneH, swimlaneHIconRect, swimlaneHTextRect } from 'libs/topology-activity-diagram/swimlaneH';
-import { fork, forkHAnchors, forkIconRect, forkTextRect, forkVAnchors } from 'libs/topology-activity-diagram/fork';
 
 @Component({
   selector: 'app-home',
@@ -125,7 +149,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.onNew();
           break;
         case 'open':
-          this.selected = null;
+          setTimeout(() => {
+            this.selected = null;
+          });
           this.onOpenLocal();
           break;
         case 'save':
@@ -224,6 +250,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     registerNode('swimlaneH', swimlaneH, null, swimlaneHIconRect, swimlaneHTextRect);
     registerNode('forkH', fork, forkHAnchors, forkIconRect, forkTextRect);
     registerNode('forkV', fork, forkVAnchors, forkIconRect, forkTextRect);
+
+    // class
+    registerNode('simpleClass', simpleClass, null, simpleClassIconRect, simpleClassTextRect);
+    registerNode('interfaceClass', interfaceClass, null, interfaceClassIconRect, interfaceClassTextRect);
+
+    // sequence
+    registerNode('lifeline', lifeline, lifelineAnchors, lifelineIconRect, lifelineTextRect);
+    registerNode('sequenceFocus', sequenceFocus, sequenceFocusAnchors, sequenceFocusIconRect, sequenceFocusTextRect);
   }
 
   onDrag(event: DragEvent, node: any) {
@@ -284,7 +318,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       shared: false
     };
     this.storeService.set('file', this.data);
-    this.canvas.render(this.data.data, true);
+    this.canvas.open(this.data.data);
   }
 
   async onOpen(data: { id: string; fileId?: string }) {
@@ -316,7 +350,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.data.data.lines[i].animatePlay = true;
       }
     }
-    this.canvas.render(ret.data, true);
+    this.canvas.open(ret.data);
 
     this.storeService.set('file', this.data);
 
@@ -354,7 +388,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 userId: '',
                 shared: false
               };
-              this.canvas.render(data, true);
+              this.canvas.open(data);
             }
           } catch (e) {
             return false;
@@ -481,7 +515,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         };
         break;
       case 'space':
-        this.selected = null;
+        setTimeout(() => {
+          this.selected = null;
+        });
         break;
       case 'moveOut':
         this.workspace.nativeElement.scrollLeft += 10;
@@ -506,13 +542,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.canvas.locked) {
       return;
     }
-
-    if (props.type === 'line') {
-      this.canvas.lineName = props.data.name;
-      this.canvas.activeLayer.changeLineType();
+    switch (props.type) {
+      case 'node':
+        this.canvas.updateProps([props.data], null, props.data);
+        break;
+      case 'line':
+        this.canvas.lineName = props.data.name;
+        this.canvas.updateProps(null, [props.data], props.data);
+        break;
+      case 'multi':
+        this.canvas.updateProps(props.data.nodes, props.data.lines, props.data);
+        break;
     }
-
-    this.canvas.updateActive(props.data);
   }
 
   onSignup() {

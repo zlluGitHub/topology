@@ -1,7 +1,7 @@
 {
-  "name": "togology-activity-diagram",
-  "version": "0.0.3",
-  "description": "A activity diagram tool using le5le-topology.",
+  "name": "togology-sequence-diagram",
+  "version": "0.0.1",
+  "description": "A sequence diagram tool using le5le-topology.",
   "main": "index.js",
   "scripts": {
     "copy": "copyfiles  package.json ../../dist/topology-activity-diagram/",
@@ -9,7 +9,7 @@
   },
   "keywords": [
     "topology",
-    "activity",
+    "sequence",
     "diagram",
     "canvas"
   ],
@@ -22,6 +22,7 @@
   "bugs": {
     "url": "https://github.com/Alsmile/topology/issues"
   },
+  "homepage": "https://github.com/Alsmile/topology#readme",
   "dependencies": {
     "topology-core": "^0.0.3"
   },

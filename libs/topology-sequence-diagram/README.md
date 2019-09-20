@@ -1,14 +1,14 @@
-# topology-class-diagram
+# topology-sequence-diagram
 
-Topology-class-diagram is a class diagram tool using le5le-topology.
+Topology-sequence-diagram is a sequence diagram tool using le5le-topology.
 
 # Development
 
 ```
-[libs/topology-class-diagram#] yarn or npm install
+[libs/topology-sequence-diagram#] yarn or npm install
 
 # build
-[libs/topology-class-diagram#] npm run build
+[libs/topology-sequence-diagram#] npm run build
 
 ```
 

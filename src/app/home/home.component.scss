@@ -19,6 +19,8 @@ $color-border: #ddd;
   width: 1.65rem;
   background-color: #f8f8f8;
   border-right: 1px solid $color-border;
+  overflow-y: auto;
+
   .title {
     padding: 0.05rem 0.1rem;
     border-top: 1px solid #ccc;

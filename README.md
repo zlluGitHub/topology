@@ -129,7 +129,17 @@ force?: boolean
 ## Angular project
 
 ```
+$ cd topology
 $ yarn or npm install
+$ cd topology/libs/topology-activity-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-class-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-flow-diagram
+$ yarn or npm install
+$ cd topology/libs/topology-sequence-diagram
+$ yarn or npm install
+
 
 # build watching file changes and run angular project
 $ npm start
