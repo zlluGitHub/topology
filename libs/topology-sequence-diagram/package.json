@@ -1,10 +1,10 @@
 {
   "name": "togology-sequence-diagram",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A sequence diagram tool using le5le-topology.",
   "main": "index.js",
   "scripts": {
-    "copy": "copyfiles  package.json ../../dist/topology-activity-diagram/",
+    "copy": "copyfiles  package.json ../../dist/topology-sequence-diagram/",
     "build": "tsc && npm run copy"
   },
   "keywords": [

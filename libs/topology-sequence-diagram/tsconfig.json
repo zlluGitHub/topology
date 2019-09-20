@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "outDir": "../../dist/togology-sequence-diagram",
+    "outDir": "../../dist/topology-sequence-diagram",
     "sourceMap": true,
     "lib": ["es2018", "dom"]
   },
