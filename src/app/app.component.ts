@@ -31,6 +31,8 @@ export class AppComponent implements OnInit, OnDestroy {
     recently: [],
     created: []
   };
+  lineName = 'curve';
+
   menuClicked = false;
   showFigure = false;
   editFilename = false;
@@ -211,6 +213,19 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onHome() {
     this.router.navigateByUrl('/');
+  }
+
+  onSelLine(line: string) {
+    this.lineName = line;
+    this.menuClicked = true;
+    setTimeout(() => {
+      this.menuClicked = false;
+    }, 500);
+
+    this.storeService.set('clickMenu', {
+      event: 'lineName',
+      data: this.lineName
+    });
   }
 
   onSignup() {

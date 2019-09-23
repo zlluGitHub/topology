@@ -79,6 +79,9 @@ function init() {
   console.log('Init middles.');
 
   // ********Default nodes.*******
+  // Combine
+  drawNodeFns.combine = rectangle;
+
   // Rectangle
   drawNodeFns.rectangle = rectangle;
 

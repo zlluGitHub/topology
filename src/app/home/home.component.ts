@@ -94,7 +94,8 @@ import { CoreService } from '../core/core.service';
   providers: [HomeService],
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    '(document:keydown)': 'onkeyDocument($event)'
+    '(document:keydown)': 'onkeyDocument($event)',
+    '(document:click)': 'onClickDocument($event)'
   }
 })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -122,6 +123,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   subUser: any;
 
   mouseMoving = false;
+
+  contextmenu: any;
+  selNodes: any;
 
   subRoute: any;
   constructor(
@@ -191,6 +195,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         case 'lock':
           this.readonly = menu.data;
           this.canvas.lock(menu.data);
+          break;
+        case 'lineName':
+          this.canvas.lineName = menu.data;
           break;
       }
     });
@@ -507,8 +514,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   onMessage = (event: string, data: any) => {
     switch (event) {
       case 'node':
+        this.selNodes = [data];
+        this.selected = {
+          type: event,
+          data
+        };
+        break;
       case 'line':
+        this.selected = {
+          type: event,
+          data
+        };
+        break;
       case 'multi':
+        if (data.nodes && data.nodes.length) {
+          this.selNodes = data.nodes;
+        }
         this.selected = {
           type: event,
           data
@@ -517,6 +538,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       case 'space':
         setTimeout(() => {
           this.selected = null;
+          this.selNodes = null;
         });
         break;
       case 'moveOut':
@@ -547,7 +569,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.canvas.updateProps([props.data], null, props.data);
         break;
       case 'line':
-        this.canvas.lineName = props.data.name;
         this.canvas.updateProps(null, [props.data], props.data);
         break;
       case 'multi':
@@ -562,6 +583,57 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onLogin() {
     location.href = environment.urls.account;
+  }
+
+  onContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.contextmenu = {
+      left: event.clientX + 'px',
+      top: event.clientY + 'px'
+    };
+  }
+
+  onClickDocument(event: MouseEvent) {
+    this.contextmenu = null;
+  }
+
+  onTop() {
+    if (!this.selNodes) {
+      return;
+    }
+    for (const item of this.selNodes) {
+      this.canvas.top(item);
+    }
+    this.canvas.render();
+  }
+
+  onBottom() {
+    if (!this.selNodes) {
+      return;
+    }
+    for (const item of this.selNodes) {
+      this.canvas.bottom(item);
+    }
+    this.canvas.render();
+  }
+
+  onCombine() {
+    if (!this.selNodes || this.selNodes.length < 2) {
+      return;
+    }
+
+    this.canvas.combine(this.selNodes);
+    this.canvas.render();
+  }
+
+  onUncombine() {
+    if (!this.selNodes || this.selNodes.length > 1) {
+      return;
+    }
+    this.canvas.uncombine(this.selNodes[0]);
+    this.canvas.render();
   }
 
   ngOnDestroy() {

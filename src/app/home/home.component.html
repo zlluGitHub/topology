@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="full" #workspace></div>
+  <div class="full" #workspace (contextmenu)="onContextMenu($event)"></div>
   <div class="props">
     <div class="pv5">
       <div *ngIf="!selected">
@@ -57,5 +57,28 @@
         <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"></app-props>
       </div>
     </div>
+  </div>
+</div>
+<div class="context-menus" id="canvas-menus" [ngStyle]="contextmenu">
+  <div>
+    <a [class.disabled]="!selNodes" (click)="onTop()">
+      置顶
+    </a>
+  </div>
+  <div>
+    <a [class.disabled]="!selNodes" (click)="onBottom()">
+      置底
+    </a>
+  </div>
+  <div class="line"></div>
+  <div>
+    <a [class.disabled]="!selNodes || selNodes.length < 2" (click)="onCombine()">
+      组合
+    </a>
+  </div>
+  <div>
+    <a [class.disabled]="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'" (click)="onUncombine()">
+      取消组合
+    </a>
   </div>
 </div>

@@ -264,10 +264,27 @@
         </a>
       </div>
     </div>
-    <div class="item ml20" title="大家分享的图文">
-      <a routerLink="/hot">
-        <i class="iconfont icon-share2"></i>
+    <div class="item ml20 lines" title="默认线条类型">
+      <a class="ph20">
+        <i class="iconfont icon-{{ lineName }}" style="position: relative;top: .06rem;"></i>
       </a>
+      <div class="dropdown">
+        <div class="item">
+          <a (click)="onSelLine('curve')">
+            <i class="iconfont icon-curve"></i>
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onSelLine('polyline')">
+            <i class="iconfont icon-polyline"></i>
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onSelLine('line')">
+            <i class="iconfont icon-line"></i>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="flex ph20" *ngIf="!user">
       <div class="item">

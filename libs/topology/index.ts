@@ -1044,6 +1044,41 @@ export class Topology {
     return new Rect(x1, y1, x2 - x1, y2 - y1);
   }
 
+  getNodesRect(nodes: Node[]) {
+    let x1 = 99999;
+    let y1 = 99999;
+    let x2 = -99999;
+    let y2 = -99999;
+
+    const points: Point[] = [];
+    for (const item of nodes) {
+      const pts = item.rect.toPoints();
+      if (item.rotate) {
+        for (const pt of pts) {
+          pt.rotate(item.rotate, item.rect.center);
+        }
+      }
+      points.push.apply(points, pts);
+    }
+
+    for (const item of points) {
+      if (x1 > item.x) {
+        x1 = item.x;
+      }
+      if (y1 > item.y) {
+        y1 = item.y;
+      }
+      if (x2 < item.x) {
+        x2 = item.x;
+      }
+      if (y2 < item.y) {
+        y2 = item.y;
+      }
+    }
+
+    return new Rect(x1, y1, x2 - x1, y2 - y1);
+  }
+
   // Get a dock rect for moving nodes.
   getDockPos(offsetX: number, offsetY: number) {
     this.hoverLayer.dockLineX = 0;
@@ -1345,7 +1380,7 @@ export class Topology {
 
   top(node: Node) {
     const i = this.findNode(node);
-    if (i > 0) {
+    if (i > -1) {
       this.nodes.push(this.nodes[i]);
       this.nodes.splice(i, 1);
     }
@@ -1353,15 +1388,74 @@ export class Topology {
 
   bottom(node: Node) {
     const i = this.findNode(node);
-    if (i > 0) {
+    if (i > -1) {
       this.nodes.unshift(this.nodes[i]);
       this.nodes.splice(i + 1, 1);
     }
   }
 
+  combine(nodes: Node[]) {
+    const rect = this.getNodesRect(nodes);
+    for (const item of nodes) {
+      const i = this.findNode(item);
+      if (i > -1) {
+        this.nodes.splice(i, 1);
+      }
+    }
+
+    const node = new Node({
+      name: 'combine',
+      rect: {
+        x: rect.x - 10,
+        y: rect.y - 10,
+        width: rect.width + 20,
+        height: rect.height + 20
+      },
+      text: '',
+      strokeStyle: '#aaa'
+    });
+    node.children = [];
+    for (const item of nodes) {
+      item.parentId = node.id;
+      item.parentRect = {
+        offsetX: 10,
+        offsetY: 10,
+        x: (item.rect.x - node.rect.x - 10) / (node.rect.width - 10),
+        y: (item.rect.y - node.rect.y - 10) / (node.rect.height - 10),
+        width: item.rect.width / (node.rect.width - 10),
+        height: item.rect.height / (node.rect.height - 10),
+        marginX: 0,
+        marginY: 0,
+        rotate: 0
+      };
+      node.children.push(item);
+    }
+    this.nodes.push(node);
+    this.cache();
+  }
+
+  uncombine(node: Node) {
+    if (node.name !== 'combine') {
+      return;
+    }
+
+    const i = this.findNode(node);
+    if (i > -1) {
+      this.nodes.splice(i, 1);
+    }
+
+    for (const item of node.children) {
+      item.parentId = undefined;
+      item.parentRect = undefined;
+      this.nodes.push(item);
+    }
+
+    this.cache();
+  }
+
   private findNode(node: Node) {
     for (let i = 0; i < this.nodes.length; ++i) {
-      if (node.id === node.id) {
+      if (node.id === this.nodes[i].id) {
         return i;
       }
     }
