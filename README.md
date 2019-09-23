@@ -28,7 +28,7 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 # Getting Started
 
 ```
-import { Topology } from 'togology-core';
+import { Topology } from 'topology-core';
 
 
 var canvas = new Topology('topo-dom', options);

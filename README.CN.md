@@ -28,7 +28,7 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 # 快速上手
 
 ```
-import { Topology } from 'togology-core';
+import { Topology } from 'topology-core';
 
 
 var canvas = new Topology('topo-dom', options);

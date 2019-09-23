@@ -694,13 +694,9 @@ export class Topology {
         }
 
         for (const node of this.activeLayer.nodes) {
-          i = 0;
-          for (const n of this.nodes) {
-            if (node.id === n.id) {
-              this.nodes.splice(i, 1);
-              break;
-            }
-            ++i;
+          i = this.findNode(node);
+          if (i > -1) {
+            this.nodes.splice(i, 1);
           }
         }
         this.activeLayer.nodes = [];
@@ -1196,12 +1192,9 @@ export class Topology {
     for (const item of this.activeLayer.nodes) {
       this.clipboard.nodes.push(new Node(item));
 
-      let i = 0;
-      for (const node of this.nodes) {
-        if (item.id === node.id) {
-          this.nodes.splice(i, 1);
-        }
-        ++i;
+      const i = this.findNode(item);
+      if (i > -1) {
+        this.nodes.splice(i, 1);
       }
     }
     for (const item of this.activeLayer.lines) {
@@ -1348,6 +1341,32 @@ export class Topology {
   lock(lock: boolean) {
     this.locked = lock;
     Store.set('locked', lock);
+  }
+
+  top(node: Node) {
+    const i = this.findNode(node);
+    if (i > 0) {
+      this.nodes.push(this.nodes[i]);
+      this.nodes.splice(i, 1);
+    }
+  }
+
+  bottom(node: Node) {
+    const i = this.findNode(node);
+    if (i > 0) {
+      this.nodes.unshift(this.nodes[i]);
+      this.nodes.splice(i + 1, 1);
+    }
+  }
+
+  private findNode(node: Node) {
+    for (let i = 0; i < this.nodes.length; ++i) {
+      if (node.id === node.id) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
   destory() {

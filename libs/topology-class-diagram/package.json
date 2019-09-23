@@ -1,5 +1,5 @@
 {
-  "name": "togology-class-diagram",
+  "name": "topology-class-diagram",
   "version": "0.0.1",
   "description": "A class diagram tool using le5le-topology.",
   "main": "index.js",

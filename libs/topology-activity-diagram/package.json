@@ -1,5 +1,5 @@
 {
-  "name": "togology-activity-diagram",
+  "name": "topology-activity-diagram",
   "version": "0.0.3",
   "description": "A activity diagram tool using le5le-topology.",
   "main": "index.js",

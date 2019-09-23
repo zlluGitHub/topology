@@ -1,5 +1,5 @@
 {
-  "name": "togology-sequence-diagram",
+  "name": "topology-sequence-diagram",
   "version": "0.0.3",
   "description": "A sequence diagram tool using le5le-topology.",
   "main": "index.js",
