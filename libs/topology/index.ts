@@ -1173,7 +1173,8 @@ export class Topology {
   data() {
     return {
       nodes: this.nodes,
-      lines: this.lines
+      lines: this.lines,
+      lineName: this.lineName
     };
   }
 

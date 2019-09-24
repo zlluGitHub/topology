@@ -87,10 +87,14 @@ $color-border: #ddd;
       color: $color;
       display: block;
       padding: 0 0.2rem;
+      text-decoration: none;
+
+      &.flex {
+        display: flex;
+      }
 
       &.disabled {
         color: $color-gray !important;
-        text-decoration: none;
         cursor: default;
       }
     }

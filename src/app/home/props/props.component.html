@@ -109,12 +109,27 @@
           <i class="iconfont icon-help-circle" style="color:#c4c9cd"></i>
         </div>
       </div>    
-      <div class="flex input-line">
-        <label>图片URL</label>
-        <div>
-          <input name="image" class="input" [(ngModel)]="props.data.image" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
-        </div>        
+      <div class="flex middle input-line">
+        <label>图片选择</label>
+        <div class="pointer icon" (click)="showImages=true">
+          <div *ngIf="!props.data.image" class="image-upload">
+            <i class="iconfont icon-add inline"></i>
+          </div>          
+          <img *ngIf="props.data.image" [src]="props.data.image" style="height: .3rem" />      
+        </div>  
       </div>
+      <div [class.hidden]="!showImages" class="tools">
+        <div class="title flex middle">
+          <label class="full">选择图片：</label>
+          <i class="iconfont icon-close hover" (click)="showIcons=false"></i>
+        </div>
+        <div class="body">
+          <div>
+            <button class="button primary mr20" (click)="onImageUpload()">+ 上传本地图片</button>
+            <button class="button primary" (click)="onImageUrl()">在线URL图片</button>
+          </div>
+        </div>
+      </div>  
       <div class="flex grid mt5">
         <div>宽（px）</div>
         <div>高（px）</div>
@@ -150,15 +165,7 @@
           <input name="imageRatio" type="checkbox" [(ngModel)]="props.data.imageRatio" (change)="onChangeImgRatio(propForm.invalid)" />
           <span>保存图片比例</span>
         </label>
-      </div>
-
-      <div class="flex middle mt5">
-        <div class="mr5">为什么不支持图片上传</div>   
-        <div class="gray tooltip-bottom-right multi" 
-          data-tooltip="目前仅支持整个图文上传到云服务器；个人服务器资源有限（1核cpu，1G内存，20G磁盘），欢迎资助">
-          <i class="iconfont icon-help-circle" style="color:#c4c9cd"></i>
-        </div>  
-      </div>
+      </div>      
     </div>
     <div class="group">      
       <div class="title mb5">字体图标</div>    

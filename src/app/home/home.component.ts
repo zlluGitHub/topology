@@ -385,6 +385,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           try {
             const data = JSON.parse(text);
             if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
+              this.storeService.set('lineName', data.lineName);
               this.data = {
                 id: '',
                 fileId: '',

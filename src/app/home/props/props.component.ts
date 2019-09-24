@@ -1,10 +1,15 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChange } from '@angular/core';
+
+import { NoticeService } from 'le5le-components/notice';
+
 import { Props } from './props.model';
+import { PropsService } from './props.service';
 
 @Component({
   selector: 'app-props',
   templateUrl: './props.component.html',
   styleUrls: ['./props.component.scss'],
+  providers: [PropsService],
   host: {
     '(document:click)': 'onclickDocument()'
   }
@@ -14,7 +19,7 @@ export class PropsComponent implements OnInit, OnChanges {
   @Output() ok = new EventEmitter<any>();
   @Input() readonly = false;
 
-  icon;
+  icon: any;
   drowdown = 0;
 
   fontStyleOptions = {
@@ -88,6 +93,8 @@ export class PropsComponent implements OnInit, OnChanges {
     ],
     noDefaultOption: true
   };
+
+  showImages = false;
 
   cpPresetColors = [
     '#1890ff',
@@ -224,7 +231,7 @@ export class PropsComponent implements OnInit, OnChanges {
   ];
   showIcons = false;
 
-  constructor() {}
+  constructor(private service: PropsService) {}
 
   ngOnInit() {
     if (!this.props.data.font) {
@@ -358,5 +365,42 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.onChangeProp(invalid);
+  }
+
+  onImageUpload() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = async event => {
+      const elem: any = event.srcElement || event.target;
+      if (elem.files && elem.files[0]) {
+        const file = await this.service.Upload(elem.files[0], elem.files[0].name);
+        if (!file) {
+          return;
+        }
+        this.props.data.image = file.url;
+        this.onChangeProp();
+      }
+    };
+    input.click();
+  }
+
+  onImageUrl() {
+    const _noticeService: NoticeService = new NoticeService();
+    _noticeService.input({
+      title: '图片URL',
+      theme: 'default',
+      text: '',
+      label: '图片URL',
+      required: true,
+      type: 'text',
+      callback: async (ret: string) => {
+        if (!ret) {
+          return;
+        }
+
+        this.props.data.image = ret;
+        this.onChangeProp();
+      }
+    });
   }
 }

@@ -30,8 +30,7 @@
           <br />
           <li>软件架构设计</li>
           <li>微服务拓扑图/微服务流量动画</li>
-          <li>UML图（流程图）</li>
-          <li>[Todo]（活动图、时序图、类图等）</li>
+          <li>流程图、活动图、时序图、类图等</li>
 
           <br />
           <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a
@@ -42,11 +41,9 @@
         </ul>
         <div class="title mt20">[Todo] 未来规划</div>
         <ul class="ml30 mb20 mt10">
-          <li>组合/取消组合</li>
-          <li>置顶/置底</li>
           <li>上传图标（库）</li>
-          <li>右键菜单</li>
-          <li>线段锚点增删</li>
+          <li>连线算法优化</li>
+          <li>导入SVG为一个节点</li>
           <li>导出SVG</li>
           <li>使用文档</li>
           <li>API开发文档</li>
@@ -79,6 +76,38 @@
   <div>
     <a [class.disabled]="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'" (click)="onUncombine()">
       取消组合
+    </a>
+  </div>
+  <div class="line"></div>
+  <div>
+    <a (click)="canvas.undo()" class="flex">
+      <span class="full">撤消</span>
+      <span class="ml50">Ctrl + Z</span>
+    </a>
+  </div>
+  <div>
+    <a (click)="canvas.redo()">
+      恢复
+      <span class="ml50">Ctrl + Shift+ Z</span>
+    </a>
+  </div>
+  <div class="line"></div>
+  <div>
+    <a (click)="canvas.cut()" class="flex">
+      <span class="full">剪切</span>
+      <span class="ml50">Ctrl + X</span>
+    </a>
+  </div>
+  <div>
+    <a (click)="canvas.copy()" class="flex">
+      <span class="full">复制</span>
+      <span class="ml50">Ctrl + C</span>
+    </a>
+  </div>
+  <div>
+    <a (click)="canvas.parse()" class="flex">
+      <span class="full">粘贴</span>
+      <span class="ml50">Ctrl + V</span>
     </a>
   </div>
 </div>

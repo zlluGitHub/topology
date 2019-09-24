@@ -460,7 +460,6 @@ export class ActiveLayer {
       rotate: number;
     }
   ) {
-    console.log(1111, nodes, lines);
     if (nodes) {
       for (const item of nodes) {
         item.init();
