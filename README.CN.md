@@ -25,6 +25,11 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 - demo // demo
 ```
 
+# 分支说明
+
+- master: 核心库引擎 + 在线绘图官网 完整源码
+- local: 去掉了后端部分的纯前端源码
+
 # 快速上手
 
 ```
