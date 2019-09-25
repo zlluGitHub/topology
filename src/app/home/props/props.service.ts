@@ -6,14 +6,7 @@ import { HttpService } from 'src/app/http/http.service';
 export class PropsService {
   constructor(protected http: HttpService) {}
 
-  async Get(data: any) {
-    const ret = await this.http.QueryString({ fileId: data.fileId }).Get('/api/topology/' + data.id);
-    if (ret.error) {
-      return null;
-    }
-
-    return ret;
-  }
+  static images: { id: string; image: string }[];
 
   async Upload(blob: Blob, filename: string) {
     const form = new FormData();
@@ -29,8 +22,37 @@ export class PropsService {
     return ret;
   }
 
-  async DelImage(image: string) {
-    const ret = await this.http.Delete('/api' + image);
+  async GetImages() {
+    if (PropsService.images) {
+      return PropsService.images;
+    }
+    const ret = await this.http
+      .QueryString({
+        pageIndex: 1,
+        pageCount: 100,
+        count: 0
+      })
+      .Get('/api/user/images');
+    if (ret.error) {
+      return [];
+    }
+
+    PropsService.images = ret.list;
+
+    return ret.list || [];
+  }
+
+  async AddImage(image: string) {
+    const ret = await this.http.Post('/api/user/image', { image: image });
+    if (ret.error) {
+      return '';
+    }
+
+    return ret.id;
+  }
+
+  async RemoveImage(id: string) {
+    const ret = await this.http.Delete('/api/user/image/' + id);
     if (ret.error) {
       return false;
     }

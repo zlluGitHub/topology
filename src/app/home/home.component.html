@@ -41,9 +41,8 @@
         </ul>
         <div class="title mt20">[Todo] 未来规划</div>
         <ul class="ml30 mb20 mt10">
-          <li>上传图标（库）</li>
           <li>连线算法优化</li>
-          <li>导入SVG为一个节点</li>
+          <li>节点动画</li>
           <li>导出SVG</li>
           <li>使用文档</li>
           <li>API开发文档</li>
@@ -108,6 +107,12 @@
     <a (click)="canvas.parse()" class="flex">
       <span class="full">粘贴</span>
       <span class="ml50">Ctrl + V</span>
+    </a>
+  </div>
+  <div class="line"></div>
+  <div>
+    <a [class.disabled]="!selNodes || selNodes.length > 1 || !selNodes[0].image" (click)="onCopyImage()" class="flex">
+      <span class="full">复制节点图片地址</span>
     </a>
   </div>
 </div>

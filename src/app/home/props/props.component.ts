@@ -94,7 +94,8 @@ export class PropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
-  showImages = false;
+  showDialog = 0;
+  images: { id: string; image: string }[];
 
   cpPresetColors = [
     '#1890ff',
@@ -229,9 +230,10 @@ export class PropsComponent implements OnInit, OnChanges {
     { class: 'topology-camera', unicode: '59274' },
     { class: 'topology-clock', unicode: '59228' }
   ];
-  showIcons = false;
 
-  constructor(private service: PropsService) {}
+  constructor(private service: PropsService) {
+    this.getImages();
+  }
 
   ngOnInit() {
     if (!this.props.data.font) {
@@ -267,6 +269,10 @@ export class PropsComponent implements OnInit, OnChanges {
     } else {
       this.icon = null;
     }
+  }
+
+  async getImages() {
+    this.images = await this.service.GetImages();
   }
 
   ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -317,6 +323,12 @@ export class PropsComponent implements OnInit, OnChanges {
     this.drowdown = 0;
   }
 
+  onClickImage(item: any) {
+    this.props.data.image = item.image;
+    this.onChangeProp();
+    this.showDialog = 0;
+  }
+
   onClickIcon(item?: any) {
     if (this.icon) {
       this.icon.checked = false;
@@ -331,8 +343,8 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.icon = item;
-    this.ok.emit(this.props);
-    this.showIcons = false;
+    this.onChangeProp();
+    this.showDialog = 0;
   }
 
   onChangeImgWidth(invalid: boolean) {
@@ -379,6 +391,8 @@ export class PropsComponent implements OnInit, OnChanges {
         }
         this.props.data.image = file.url;
         this.onChangeProp();
+        const id = await this.service.AddImage(file.url);
+        this.images.unshift({ id, image: file.url });
       }
     };
     input.click();
@@ -391,7 +405,6 @@ export class PropsComponent implements OnInit, OnChanges {
       theme: 'default',
       text: '',
       label: '图片URL',
-      required: true,
       type: 'text',
       callback: async (ret: string) => {
         if (!ret) {
@@ -400,7 +413,16 @@ export class PropsComponent implements OnInit, OnChanges {
 
         this.props.data.image = ret;
         this.onChangeProp();
+        const id = await this.service.AddImage(ret);
+        this.images.unshift({ id, image: ret });
       }
     });
+  }
+
+  async onRemoveImage(event: MouseEvent, item: any, i: number) {
+    event.stopPropagation();
+    if (await this.service.RemoveImage(item.id)) {
+      this.images.splice(i, 1);
+    }
   }
 }

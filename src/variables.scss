@@ -44,10 +44,12 @@ $color-button-border-hover: #8c8c8c !default;
 $color-td: #f3f3f3 !default;
 $color-th: #8c8c8c !default;
 
-$header-color: #000 !default;
-$header-background-color: #fff !default;
-$modal-header-lineheight: 0.42rem !default;
-$modal-footer-padding: 0.1rem 0.2rem !default;
 $tooltip-background-color: #333 !default;
+$header-color: #000 !default;
+$header-background-color: #f8f8f8 !default;
+$modal-header-lineheight: 0.42rem !default;
+$modal-footer-padding: 0 0.2rem 0.2rem 0.2rem !default;
+$header-footer-color: #fff !default;
+$header-footer-border: none !default;
 
 $notice-input-color: #314659 !default;

@@ -111,22 +111,27 @@
       </div>    
       <div class="flex middle input-line">
         <label>图片选择</label>
-        <div class="pointer icon" (click)="showImages=true">
+        <div class="pointer icon" (click)="showDialog=1">
           <div *ngIf="!props.data.image" class="image-upload">
             <i class="iconfont icon-add inline"></i>
           </div>          
           <img *ngIf="props.data.image" [src]="props.data.image" style="height: .3rem" />      
         </div>  
       </div>
-      <div [class.hidden]="!showImages" class="tools">
+      <div *ngIf="showDialog===1" class="tools">
         <div class="title flex middle">
           <label class="full">选择图片：</label>
-          <i class="iconfont icon-close hover" (click)="showIcons=false"></i>
+          <i class="iconfont icon-close hover" (click)="showDialog=0"></i>
+        </div>
+        <div class="ph20 mt20">
+          <button class="button primary mr20" (click)="onImageUpload()">+ 上传本地图片</button>
+          <button class="button primary" (click)="onImageUrl()">在线URL图片</button>
         </div>
         <div class="body">
-          <div>
-            <button class="button primary mr20" (click)="onImageUpload()">+ 上传本地图片</button>
-            <button class="button primary" (click)="onImageUrl()">在线URL图片</button>
+          <div class="image blank"  [class.active]="!props.data.image"  (click)="onClickImage({})" title="空白"></div>
+          <div class="image" *ngFor="let item of images;let i=index"  [class.active]="item.image === props.data.image"  (click)="onClickImage(item)">
+            <img [uiImageLazyLoad]="item.image" />  
+            <i class="iconfont icon-close" title="从图片库中移除，但不删除图片" (click)="onRemoveImage($event, item, i)" ></i>  
           </div>
         </div>
       </div>  
@@ -171,15 +176,15 @@
       <div class="title mb5">字体图标</div>    
       <div class="flex input-line middle mb10">
         <label>字体图标</label>
-        <div class="pointer icon" (click)="showIcons=true">
+        <div class="pointer icon" (click)="showDialog=2">
           <i *ngIf="icon" class="topology {{icon.class}}"></i>
           <div *ngIf="!icon" class="blank" title="空白"></div>      
         </div>        
       </div>  
-      <div [class.hidden]="!showIcons" class="tools">
+      <div [class.hidden]="showDialog!==2" class="tools">
         <div class="title flex middle">
           <label class="full">选择字体图标：</label>
-          <i class="iconfont icon-close hover" (click)="showIcons=false"></i>
+          <i class="iconfont icon-close hover" (click)="showDialog=0"></i>
         </div>
         <div class="body">
           <div class="icon"  [class.active]="!icon"  (click)="onClickIcon()">

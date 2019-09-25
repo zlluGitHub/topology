@@ -22,6 +22,7 @@ export class Node extends Pen {
   iconColor: string;
 
   image: string;
+  lastImage: string;
   imgNaturalWidth: number;
   imgNaturalHeight: number;
   imageWidth: number;
@@ -184,6 +185,11 @@ export class Node extends Pen {
 
     // Draw image.
     if (this.image) {
+      if (this.lastImage !== this.image) {
+        this.img = null;
+      }
+      this.lastImage = this.image;
+
       // There is the cache of image.
       if (this.img) {
         this.drawImg(ctx);
@@ -288,5 +294,9 @@ export class Node extends Pen {
   getDockWatchers() {
     this.dockWatchers = this.rect.toPoints();
     this.dockWatchers.unshift(this.rect.center);
+  }
+
+  clearImg() {
+    this.img = null;
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Clipboard } from 'ts-clipboard';
+
 import { Topology } from 'libs/topology';
 import { Options } from 'libs/topology/options';
 import { registerNode } from 'libs/topology/middles';
@@ -590,10 +592,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
 
-    this.contextmenu = {
-      left: event.clientX + 'px',
-      top: event.clientY + 'px'
-    };
+    if (event.clientY + 300 < document.body.clientHeight) {
+      this.contextmenu = {
+        left: event.clientX + 'px',
+        top: event.clientY + 'px'
+      };
+    } else {
+      this.contextmenu = {
+        left: event.clientX + 'px',
+        bottom: document.body.clientHeight - event.clientY + 'px'
+      };
+    }
   }
 
   onClickDocument(event: MouseEvent) {
@@ -635,6 +644,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     this.canvas.uncombine(this.selNodes[0]);
     this.canvas.render();
+  }
+
+  onCopyImage() {
+    if (!this.selNodes || this.selNodes.length > 1 || !this.selNodes[0].image) {
+      return;
+    }
+
+    Clipboard.copy(this.selNodes[0].image);
+    const _noticeService: NoticeService = new NoticeService();
+    _noticeService.notice({
+      body: `图片地址已复制：
+${this.selNodes[0].image}`,
+      theme: 'success'
+    });
   }
 
   ngOnDestroy() {
