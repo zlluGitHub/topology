@@ -152,7 +152,7 @@ $ yarn or npm install
 $ cd topology/libs/topology-sequence-diagram
 $ yarn or npm install
 
-
+# set your host: 127.0.0.1 local.dev.le5le.com
 # build watching file changes and run angular project
 $ npm start
 

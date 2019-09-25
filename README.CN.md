@@ -155,6 +155,7 @@ $ yarn or npm install
 $ cd topology/libs/topology-sequence-diagram
 $ yarn or npm install
 
+// 修改host文件，把local.dev.le5le.com代理到127.0.0.1
 // 本地启动
 # build watching file changes and run angular project
 $ npm start
