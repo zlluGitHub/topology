@@ -135,6 +135,10 @@ $ cd topology
 // 安装 在线绘图官网根目录依赖包
 $ yarn or npm install
 
+// 安装核心库的依赖包
+$ cd topology/libs/topology
+$ yarn or npm install
+
 // 安装活动图库的依赖包
 $ cd topology/libs/topology-activity-diagram
 $ yarn or npm install
