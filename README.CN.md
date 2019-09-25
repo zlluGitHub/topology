@@ -123,22 +123,30 @@ force?: boolean
 
 ```
 
-## Angular project
-
-[在线画图官网](https://topology.le5le.com) 前端源码
+## 编译[在线绘图官网](https://topology.le5le.com) 前端源码
 
 ```
 $ cd topology
+// 安装 在线绘图官网根目录依赖包
 $ yarn or npm install
+
+// 安装活动图库的依赖包
 $ cd topology/libs/topology-activity-diagram
 $ yarn or npm install
+
+// 安装类图库的依赖包
 $ cd topology/libs/topology-class-diagram
 $ yarn or npm install
+
+// 安装流程图库的依赖包
 $ cd topology/libs/topology-flow-diagram
 $ yarn or npm install
+
+// 安装时许图库的依赖包
 $ cd topology/libs/topology-sequence-diagram
 $ yarn or npm install
 
+// 本地启动
 # build watching file changes and run angular project
 $ npm start
 
@@ -148,9 +156,7 @@ $ npm run build
 
 ```
 
-## Topology-core lib
-
-核心库源码
+## 编译核心库源码 Topology-core lib
 
 ```
 [libs/topology#] yarn or npm install
@@ -160,9 +166,7 @@ $ npm run build
 
 ```
 
-## Topology-flow-diagram lib
-
-流程图源码
+## 编译流程图源码 Topology-flow-diagram lib
 
 ```
 [libs/topology#] yarn or npm install
