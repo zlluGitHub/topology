@@ -184,15 +184,6 @@ export class ActiveLayer {
       ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
       ctx.restore();
     }
-
-    if (this.nodeRects[0]) {
-      ctx.save();
-      ctx.fillStyle = 'red';
-      ctx.beginPath();
-      ctx.arc(this.nodeRects[0].center.x, this.nodeRects[0].center.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
   }
 
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
