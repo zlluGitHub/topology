@@ -982,6 +982,7 @@ export class Topology {
     if (this.activeLayer.nodes.length === 1) {
       return angle - this.activeLayer.nodes[0].rotate;
     }
+
     return angle;
   }
 
