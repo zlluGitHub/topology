@@ -36,6 +36,7 @@ import { curve, curveControlPoints, pointInCurve, calcCurveControlPoints } from 
 import { triangleSolid, triangle as arrowTriangle } from './arrows/triangle';
 import { diamondSolid, diamond as arrowDiamond } from './arrows/diamond';
 import { circleSolid, circle as arrowCircle } from './arrows/circle';
+import { circleAnchors } from './nodes/circle.anchor';
 import { lineUp, lineDown, line as arrowLine } from './arrows/line';
 import { pentagon } from './nodes/pentagon';
 import { pentagonIconRect, pentagonTextRect } from './nodes/pentagon.rect';
@@ -89,6 +90,7 @@ function init() {
   drawNodeFns.circle = circle;
   iconRectFns.circle = circleIconRect;
   textRectFns.circle = circleTextRect;
+  anchorsFns.circle = circleAnchors;
 
   // Triangle
   drawNodeFns.triangle = triangle;
