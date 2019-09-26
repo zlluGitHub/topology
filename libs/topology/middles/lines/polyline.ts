@@ -28,11 +28,11 @@ export function polylineControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
 
 export function calcPolylineControlPoints(l: Line) {
   l.controlPoints = [];
-  const from = getDirectionPoint(l.from);
+  const from = getDirectionPoint(l.from, l.to);
   if (l.from.direction) {
     l.controlPoints.push(from);
   }
-  const to = getDirectionPoint(l.to);
+  const to = getDirectionPoint(l.to, l.from);
   let pts: Point[];
   switch (from.direction) {
     case Direction.Up:
@@ -89,20 +89,36 @@ export function dockPolylineControlPoint(point: Point, l: Line) {
   }
 }
 
-function getDirectionPoint(p: Point) {
-  const point = p.clone();
-  switch (p.direction) {
+function getDirectionPoint(pt: Point, to: Point) {
+  const point = pt.clone();
+  switch (pt.direction) {
     case Direction.Up:
-      point.y -= minDistance;
+      if (to.y < pt.y) {
+        point.y -= Math.floor((pt.y - to.y) / 2);
+      } else {
+        point.y -= minDistance;
+      }
       break;
     case Direction.Right:
-      point.x += minDistance;
+      if (to.x > pt.x) {
+        point.x += Math.floor((to.x - pt.x) / 2);
+      } else {
+        point.x += minDistance;
+      }
       break;
     case Direction.Bottom:
-      point.y += minDistance;
+      if (to.y > pt.y) {
+        point.y += Math.floor((to.y - pt.y) / 2);
+      } else {
+        point.y += minDistance;
+      }
       break;
     case Direction.Left:
-      point.x -= minDistance;
+      if (to.x < pt.x) {
+        point.x -= Math.floor((pt.x - to.x) / 2);
+      } else {
+        point.x -= minDistance;
+      }
       break;
   }
   return point;

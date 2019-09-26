@@ -350,6 +350,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       ret.id = '';
     }
     this.data = ret;
+    this.storeService.set('lineName', ret.data.lineName);
+
     // for demo
     if (this.data.name === 'cube-demo') {
       const colors = ['#ff6600', '#1890ff', '#52c41a', '#1890ff', '#ff6600'];

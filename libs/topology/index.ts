@@ -31,6 +31,7 @@ enum MoveInType {
 interface ICanvasData {
   nodes: Node[];
   lines: Line[];
+  lineName?: string;
 }
 
 interface ICanvasCache {
@@ -278,6 +279,9 @@ export class Topology {
   // true: load a new file
   // false: redraw
   open(data: ICanvasData) {
+    if (data.lineName) {
+      this.lineName = data.lineName;
+    }
     this.nodes.splice(0, this.nodes.length);
     this.lines.splice(0, this.lines.length);
     for (const item of data.nodes) {
