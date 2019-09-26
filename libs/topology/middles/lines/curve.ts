@@ -44,7 +44,7 @@ export function curveControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
 }
 
 export function calcCurveControlPoints(l: Line) {
-  l.controlPoints = [getControlPt(l.from), getControlPt(l.to)];
+  l.controlPoints = [getControlPt(l.from, l.to), getControlPt(l.to, l.from)];
   Store.set('pts-' + l.id, null);
 }
 
@@ -87,20 +87,44 @@ export function getBezierPoint(pos: number, from: Point, cp1: Point, cp2: Point,
   return new Point(x, y);
 }
 
-function getControlPt(pt: Point) {
+function getControlPt(pt: Point, to: Point) {
   const point: Point = new Point(pt.x, pt.y, pt.direction, pt.anchorIndex, pt.id);
+
+  let dis = distance;
+  if ((pt.direction === Direction.Up || pt.direction === Direction.Bottom) && Math.abs(pt.x - to.x) < 3) {
+    if (to.y > pt.y) {
+      dis = Math.floor((to.y - pt.y) / 3);
+      point.y += dis;
+    } else {
+      dis = Math.floor((pt.y - to.y) / 3);
+      point.y -= dis;
+    }
+    return point;
+  }
+
+  if ((pt.direction === Direction.Left || pt.direction === Direction.Right) && Math.abs(pt.y - to.y) < 3) {
+    if (to.x > pt.x) {
+      dis = Math.floor((to.x - pt.x) / 3);
+      point.x += dis;
+    } else {
+      dis = Math.floor((pt.x - to.x) / 3);
+      point.x -= dis;
+    }
+    return point;
+  }
+
   switch (pt.direction) {
     case Direction.Up:
-      point.y -= distance;
+      point.y -= dis;
       break;
     case Direction.Right:
-      point.x += distance;
+      point.x += dis;
       break;
     case Direction.Bottom:
-      point.y += distance;
+      point.y += dis;
       break;
     case Direction.Left:
-      point.x -= distance;
+      point.x -= dis;
       break;
   }
 
