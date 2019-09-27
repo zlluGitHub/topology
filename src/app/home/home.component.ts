@@ -89,6 +89,8 @@ import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
 
+declare var C2S: any;
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.component.html',
@@ -172,6 +174,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           break;
         case 'downPng':
           this.onSavePng(menu.data);
+          break;
+        case 'downSvg':
+          this.toSVG();
           break;
         case 'undo':
           this.canvas.undo();
@@ -660,6 +665,41 @@ export class HomeComponent implements OnInit, OnDestroy {
 ${this.selNodes[0].image}`,
       theme: 'success'
     });
+  }
+
+  toSVG() {
+    const ctx = new C2S(this.canvas.canvas.width + 200, this.canvas.canvas.height + 200);
+    for (const item of this.canvas.nodes) {
+      item.render(ctx);
+    }
+
+    for (const item of this.canvas.lines) {
+      item.render(ctx);
+    }
+
+    let mySerializedSVG = ctx.getSerializedSvg();
+    mySerializedSVG = mySerializedSVG.replace(
+      '<defs/>',
+      `<defs>
+    <style type="text/css">
+      @font-face {
+        font-family: 'topology';
+        src: url('http://at.alicdn.com/t/font_1331132_h688rvffmbc.ttf?t=1569311680797') format('truetype');
+      }
+    </style>
+  </defs>`
+    );
+
+    mySerializedSVG = mySerializedSVG.replace(/--le5le--/g, '&#x');
+
+    const urlObject: any = window.URL || window;
+    const export_blob = new Blob([mySerializedSVG]);
+    const url = urlObject.createObjectURL(export_blob);
+
+    const a = document.createElement('a');
+    a.setAttribute('download', this.data.name + '.svg');
+    a.setAttribute('href', url);
+    a.click();
   }
 
   ngOnDestroy() {
