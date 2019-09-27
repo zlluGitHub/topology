@@ -32,6 +32,8 @@ interface ICanvasData {
   nodes: Node[];
   lines: Line[];
   lineName?: string;
+  fromArrowType?: string;
+  toArrowType?: string;
 }
 
 interface ICanvasCache {
@@ -412,7 +414,11 @@ export class Topology {
           break;
         case MoveInType.LineTo:
         case MoveInType.HoverAnchors:
-          this.hoverLayer.lineTo(this.getLineDock(pos), this.toArrowType);
+          let arrow = this.toArrowType;
+          if (this.moveIn.hoverLine) {
+            arrow = this.moveIn.hoverLine.toArrow;
+          }
+          this.hoverLayer.lineTo(this.getLineDock(pos), arrow);
           break;
         case MoveInType.LineFrom:
           this.hoverLayer.lineFrom(this.getLineDock(pos));
@@ -1179,7 +1185,9 @@ export class Topology {
     return {
       nodes: this.nodes,
       lines: this.lines,
-      lineName: this.lineName
+      lineName: this.lineName,
+      fromArrowType: this.fromArrowType,
+      toArrowType: this.toArrowType
     };
   }
 

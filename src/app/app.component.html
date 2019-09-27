@@ -269,24 +269,47 @@
         </a>
       </div>
     </div>
-    <div class="item ml20 lines" title="默认线条类型">
-      <a class="ph20">
+    <div class="item ml20 lines">
+      <a>
         <i class="iconfont icon-{{ lineName }}" style="position: relative;top: .06rem;"></i>
       </a>
       <div class="dropdown">
         <div class="item">
-          <a (click)="onSelLine('curve')">
-            <i class="iconfont icon-curve"></i>
+          默认连线类型：
+        </div>
+        <div class="item" *ngFor="let item of lineNames">
+          <a (click)="onSelLine(item)">
+            <i class="iconfont icon-{{ item }}"></i>
           </a>
         </div>
+      </div>
+    </div>
+    <div class="item lines">
+      <a>
+        <i class="iconfont icon-from-{{ fromArrowType }}" style="position: relative;top: .06rem;"></i>
+      </a>
+      <div class="dropdown">
         <div class="item">
-          <a (click)="onSelLine('polyline')">
-            <i class="iconfont icon-polyline"></i>
+          默认起点箭头：
+        </div>
+        <div class="item" *ngFor="let item of arrowTypes">
+          <a (click)="onSelFromArrow(item)">
+            <i class="iconfont icon-from-{{ item }}"></i>
           </a>
         </div>
+      </div>
+    </div>
+    <div class="item lines">
+      <a>
+        <i class="iconfont icon-to-{{ toArrowType }}" style="position: relative;top: .06rem;"></i>
+      </a>
+      <div class="dropdown">
         <div class="item">
-          <a (click)="onSelLine('line')">
-            <i class="iconfont icon-line"></i>
+          默认终点箭头：
+        </div>
+        <div class="item" *ngFor="let item of arrowTypes">
+          <a (click)="onSelToArrow(item)">
+            <i class="iconfont icon-to-{{ item }}"></i>
           </a>
         </div>
       </div>

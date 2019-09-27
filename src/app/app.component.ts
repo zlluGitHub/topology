@@ -32,6 +32,21 @@ export class AppComponent implements OnInit, OnDestroy {
     created: []
   };
   lineName = 'curve';
+  fromArrowType = '';
+  toArrowType = 'triangleSolid';
+
+  lineNames = ['curve', 'polyline', 'line'];
+  arrowTypes = [
+    '',
+    'triangleSolid',
+    'triangle',
+    'diamondSolid',
+    'diamond',
+    'circleSolid',
+    'circle',
+    'lineUp',
+    'lineDown'
+  ];
 
   menuClicked = false;
   showFigure = false;
@@ -68,6 +83,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.storeService.get$('lineName').subscribe((lineName: string) => {
       if (lineName) {
         this.lineName = lineName;
+      }
+    });
+
+    this.storeService.get$('fromArrowType').subscribe((fromArrowType: string) => {
+      this.fromArrowType = fromArrowType || '';
+    });
+
+    this.storeService.get$('toArrowType').subscribe((toArrowType: string) => {
+      if (toArrowType !== undefined) {
+        this.toArrowType = toArrowType || '';
       }
     });
 
@@ -231,6 +256,32 @@ export class AppComponent implements OnInit, OnDestroy {
     this.storeService.set('clickMenu', {
       event: 'lineName',
       data: this.lineName
+    });
+  }
+
+  onSelFromArrow(arrow: string) {
+    this.fromArrowType = arrow;
+    this.menuClicked = true;
+    setTimeout(() => {
+      this.menuClicked = false;
+    }, 500);
+
+    this.storeService.set('clickMenu', {
+      event: 'fromArrowType',
+      data: this.fromArrowType
+    });
+  }
+
+  onSelToArrow(arrow: string) {
+    this.toArrowType = arrow;
+    this.menuClicked = true;
+    setTimeout(() => {
+      this.menuClicked = false;
+    }, 500);
+
+    this.storeService.set('clickMenu', {
+      event: 'toArrowType',
+      data: this.toArrowType
     });
   }
 

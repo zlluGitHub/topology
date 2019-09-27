@@ -206,6 +206,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         case 'lineName':
           this.canvas.lineName = menu.data;
           break;
+        case 'fromArrowType':
+          this.canvas.fromArrowType = menu.data;
+          break;
+        case 'toArrowType':
+          this.canvas.toArrowType = menu.data;
+          break;
       }
     });
 
@@ -356,6 +362,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     this.data = ret;
     this.storeService.set('lineName', ret.data.lineName);
+    this.storeService.set('fromArrowType', ret.data.fromArrowType);
+    this.storeService.set('toArrowType', ret.data.toArrowType);
 
     // for demo
     if (this.data.name === 'cube-demo') {
@@ -395,6 +403,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             const data = JSON.parse(text);
             if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
               this.storeService.set('lineName', data.lineName);
+              this.storeService.set('fromArrowType', data.fromArrowType);
+              this.storeService.set('toArrowType', data.toArrowType);
               this.data = {
                 id: '',
                 fileId: '',
