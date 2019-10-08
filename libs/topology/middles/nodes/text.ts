@@ -30,9 +30,9 @@ export function getWords(txt: string) {
 // maxWidth - the max width of the rect.
 export function getLines(ctx: CanvasRenderingContext2D, words: string[], maxWidth: number) {
   const lines = [];
-  let currentLine = words[0];
+  let currentLine = words[0] || '';
   for (let i = 1; i < words.length; ++i) {
-    const word = words[i];
+    const word = words[i] || '';
     if (ctx.measureText(currentLine + word).width < maxWidth) {
       currentLine += word;
     } else {

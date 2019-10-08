@@ -403,11 +403,12 @@ export class Topology {
           break;
         case MoveInType.Nodes:
           this.nodesMoved = true;
-          const offset = this.getDockPos(pos.x - this.mouseDown.x, pos.y - this.mouseDown.y);
-          this.activeLayer.moveNodes(
-            offset.x ? offset.x : pos.x - this.mouseDown.x,
-            offset.y ? offset.y : pos.y - this.mouseDown.y
-          );
+          const x = pos.x - this.mouseDown.x;
+          const y = pos.y - this.mouseDown.y;
+          if (x || y) {
+            const offset = this.getDockPos(x, y);
+            this.activeLayer.moveNodes(offset.x ? offset.x : x, offset.y ? offset.y : y);
+          }
           break;
         case MoveInType.ResizeCP:
           this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, pos);
@@ -686,6 +687,7 @@ export class Topology {
     let moveY = 0;
     switch (key.keyCode) {
       // Delete
+      case 8:
       case 46:
         if (!this.activeLayer.nodes.length && !this.activeLayer.lines.length) {
           return;
@@ -1419,14 +1421,9 @@ export class Topology {
 
     const node = new Node({
       name: 'combine',
-      rect: {
-        x: rect.x - 10,
-        y: rect.y - 10,
-        width: rect.width + 20,
-        height: rect.height + 20
-      },
+      rect,
       text: '',
-      strokeStyle: '#aaa'
+      strokeStyle: 'transparent'
     });
     node.children = [];
     for (const item of nodes) {
@@ -1440,7 +1437,7 @@ export class Topology {
         height: item.rect.height / (node.rect.height - 10),
         marginX: 0,
         marginY: 0,
-        rotate: 0
+        rotate: item.rotate
       };
       node.children.push(item);
     }

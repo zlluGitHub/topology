@@ -470,10 +470,10 @@ export class ActiveLayer {
         item.strokeStyle = props.strokeStyle;
         item.fillStyle = props.fillStyle;
         item.globalAlpha = props.globalAlpha;
-        if (item.children) {
-          this.updateProps(item.children, null, props);
-          this.updateChildren(item);
-        }
+        // if (item.children) {
+        //   this.updateProps(item.children, null, props);
+        //   this.updateChildren(item);
+        // }
       }
       this.updateLines(nodes);
     }
