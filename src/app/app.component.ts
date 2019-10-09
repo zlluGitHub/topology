@@ -53,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
   editFilename = false;
   blank = false;
   editMode = false;
-  locked = false;
+  locked = 0;
 
   disableStartDlg = false;
 
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.storeService.get$('file').subscribe((file: any) => {
-      this.locked = false;
+      this.locked = 0;
       this.file = file;
       this.filename = file.name;
       this.editFilename = false;

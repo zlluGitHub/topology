@@ -83,7 +83,7 @@ export class Topology {
 
   clipboard: ICanvasData;
 
-  locked = false;
+  locked = 0;
 
   private scheduledAnimationFrame = false;
 
@@ -310,7 +310,7 @@ export class Topology {
   }
 
   private onMouseMove = (e: MouseEvent) => {
-    if (this.scheduledAnimationFrame) {
+    if (this.scheduledAnimationFrame || this.locked < 0) {
       return;
     }
     this.scheduledAnimationFrame = true;
@@ -1389,7 +1389,7 @@ export class Topology {
     this.offscreen.render();
   }
 
-  lock(lock: boolean) {
+  lock(lock: number) {
     this.locked = lock;
     Store.set('locked', lock);
   }

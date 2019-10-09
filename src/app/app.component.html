@@ -238,12 +238,12 @@
     </div>
     <div class="full text-center" *ngIf="!editMode"></div>
     <div class="flex" [class.disabled]="!editMode">
-      <div *ngIf="!locked" class="item" (click)="locked = !locked; onMenu('lock', true)" title="锁定">
+      <div *ngIf="!locked" class="item" (click)="locked = !locked; onMenu('lock', -1)" title="锁定">
         <a>
           <i class="iconfont icon-unlock"></i>
         </a>
       </div>
-      <div *ngIf="locked" class="item" (click)="locked = !locked; onMenu('lock', false)" title="解锁">
+      <div *ngIf="locked" class="item" (click)="locked = !locked; onMenu('lock', 0)" title="解锁">
         <a>
           <i class="iconfont icon-lock"></i>
         </a>
