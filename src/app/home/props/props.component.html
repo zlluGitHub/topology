@@ -762,7 +762,7 @@
   <div class="group" *ngIf="props.type === 'line'">
     <div class="title">
       <label class="checkbox">
-        <input name="remember" type="checkbox" [(ngModel)]="props.data.animatePlay" (change)="onChangeProp()" [readonly]="readonly"/>
+        <input name="remember" type="checkbox" [(ngModel)]="props.data.animate" (change)="onChangeProp()" [readonly]="readonly"/>
         <span>动画</span>
       </label>
     </div>
@@ -779,7 +779,7 @@
         </div>
       </div>
       <div *ngIf="!readonly">
-        <ui-slider class="block" [(min)]="props.data.animateSpeed" [options]="{min: 1, max: 5}" (change)="onChangeProp()"></ui-slider>
+        <ui-slider class="block" [(min)]="props.data.animateSpan" [options]="{min: 1, max: 5}" (change)="onChangeProp()"></ui-slider>
       </div>
     </div>
   </div>

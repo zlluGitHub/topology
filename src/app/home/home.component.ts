@@ -370,8 +370,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       const colors = ['#ff6600', '#1890ff', '#52c41a', '#1890ff', '#ff6600'];
       for (let i = 0; i < 5; ++i) {
         this.data.data.lines[i].animateColor = colors[i];
-        this.data.data.lines[i].animateSpeed = 2;
-        this.data.data.lines[i].animatePlay = true;
+        this.data.data.lines[i].animateSpan = 1;
+        this.data.data.lines[i].animate = Date.now();
       }
     }
     this.canvas.open(ret.data);

@@ -67,4 +67,4 @@ registerNode('flowComment', flowComment, flowCommentAnchors, null, null);
 // end.
 
 var canvas = new Topology('topo-canvas', {});
-canvas.render(Data, true);
+canvas.open(Data);

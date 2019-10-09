@@ -1,11 +1,14 @@
+import { Node } from './models/node';
 import { Line } from './models/line';
 import { Store } from './store/store';
 import { lineLen, curveLen } from './middles/utils';
 
 export class AnimateLayer {
   canvas = document.createElement('canvas');
+  private nodes: Node[] = [];
   private lines: Line[] = [];
   private animateId: any;
+  private last = Date.now();
   constructor(parent: HTMLElement, public options: any) {
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
@@ -18,13 +21,25 @@ export class AnimateLayer {
   }
 
   render() {
+    this.nodes = [];
     this.lines = [];
+
     if (this.animateId) {
       cancelAnimationFrame(this.animateId);
     }
+
+    const nodes = Store.get('nodes');
+    for (const node of nodes) {
+      if (!node.animate) {
+        continue;
+      }
+      const n = new Node(node);
+      this.nodes.push(n);
+    }
+
     const lines = Store.get('lines');
     for (const line of lines) {
-      if (!line.animatePlay || !line.to) {
+      if (!line.animate || !line.to) {
         continue;
       }
       const l = new Line(line);
@@ -40,7 +55,7 @@ export class AnimateLayer {
   }
 
   animate() {
-    if (!this.lines.length) {
+    if (!this.lines.length && !this.nodes.length) {
       // clear
       this.canvas.height = this.canvas.height;
       return;
@@ -50,21 +65,35 @@ export class AnimateLayer {
       // clear
       this.canvas.height = this.canvas.height;
 
-      const ctx = this.canvas.getContext('2d');
-      ctx.lineCap = 'round';
-      for (const item of this.lines) {
-        item.animatePos += item.animateSpeed;
-        if (item.animatePos > item.data + item.animateSpeed) {
-          item.animatePos = item.animateSpeed;
-        }
-        ctx.save();
-        ctx.setLineDash([item.animatePos, item.data - item.animatePos + 1]);
-        item.render(ctx);
-        ctx.restore();
+      const now = Date.now();
+      this.renderLines(now);
+      for (const item of this.nodes) {
+        item.renderFrame(now);
       }
 
       this.animate();
     });
+  }
+
+  renderLines(now: number) {
+    const interval = now - this.last;
+    // Not need too fast.
+    if (interval < 15) {
+      return;
+    }
+    this.last = now;
+    const ctx = this.canvas.getContext('2d');
+    ctx.lineCap = 'round';
+    for (const item of this.lines) {
+      item.animatePos += item.animateSpan;
+      if (item.animatePos > item.data + item.animateSpan) {
+        item.animatePos = item.animateSpan;
+      }
+      ctx.save();
+      ctx.setLineDash([item.animatePos, item.data - item.animatePos + 1]);
+      item.render(ctx);
+      ctx.restore();
+    }
   }
 
   resize(width: number, height: number) {

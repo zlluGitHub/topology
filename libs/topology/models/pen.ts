@@ -24,10 +24,9 @@ export abstract class Pen {
     textAlign: 'center',
     textBaseline: 'middle'
   };
-  animateColor = '';
-  animateSpeed = 1;
-  animatePlay = false;
-  animatePos = 0;
+
+  animate = 0;
+
   // For users.
   data: any;
   constructor(json?: any) {
@@ -47,8 +46,6 @@ export abstract class Pen {
       if (json.font) {
         Object.assign(this.font, json.font);
       }
-      this.animateColor = json.animateColor;
-      this.animateSpeed = json.animateSpeed;
       this.data = json.data || '';
     } else {
       this.id = s8();

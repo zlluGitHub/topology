@@ -1359,7 +1359,7 @@ export class Topology {
   playAnimate(line: Line) {
     for (const item of this.lines) {
       if (item.id === line.id) {
-        item.animatePlay = line.animatePlay;
+        item.animate = line.animate;
         break;
       }
     }

@@ -56,6 +56,15 @@ export class Node extends Pen {
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
+
+  timeline = 0;
+  animateFrames: {
+    start: number;
+    end: number;
+    linear: boolean;
+    state: Pen;
+  }[] = [];
+
   constructor(json: any) {
     super(json);
 
@@ -94,6 +103,9 @@ export class Node extends Pen {
     }
     if (json.parentRect) {
       this.parentRect = json.parentRect;
+    }
+    if (json.animateFrames) {
+      this.animateFrames = json.animateFrames;
     }
     this.init();
 
@@ -299,4 +311,6 @@ export class Node extends Pen {
   clearImg() {
     this.img = null;
   }
+
+  renderFrame(now: number) {}
 }

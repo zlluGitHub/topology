@@ -9,6 +9,10 @@ export class Line extends Pen {
   controlPoints: Point[] = [];
   fromArrow: string;
   toArrow: string;
+
+  animateColor = '';
+  animateSpan = 1;
+  animatePos = 0;
   constructor(json?: any) {
     super(json);
 
@@ -24,6 +28,12 @@ export class Line extends Pen {
       }
       this.fromArrow = json.fromArrow || '';
       this.toArrow = json.toArrow || '';
+      if (json.animateColor) {
+        this.animateColor = json.animateColor;
+      }
+      if (json.animateSpan) {
+        this.animateSpan = json.animateSpan;
+      }
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
