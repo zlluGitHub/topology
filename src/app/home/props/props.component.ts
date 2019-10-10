@@ -19,6 +19,8 @@ export class PropsComponent implements OnInit, OnChanges {
   @Output() ok = new EventEmitter<any>();
   @Input() readonly = false;
 
+  animate = false;
+
   icon: any;
   drowdown = 0;
 
@@ -424,5 +426,10 @@ export class PropsComponent implements OnInit, OnChanges {
     if (await this.service.RemoveImage(item.id)) {
       this.images.splice(i, 1);
     }
+  }
+
+  onAnimate() {
+    this.props.data.animateStart = this.props.data.animateStart ? Date.now() : 0;
+    this.onChangeProp();
   }
 }

@@ -57,7 +57,6 @@ export class Node extends Pen {
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
 
-  timeline = 0;
   animateFrames: {
     start: number;
     end: number;
@@ -312,5 +311,9 @@ export class Node extends Pen {
     this.img = null;
   }
 
-  renderFrame(now: number) {}
+  renderFrame(now: number) {
+    const timeline = now - this.animateStart;
+    for (const item of this.animateFrames) {
+    }
+  }
 }

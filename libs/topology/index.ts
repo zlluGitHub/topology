@@ -184,6 +184,12 @@ export class Topology {
     this.input.style.resize = 'none';
     this.parentElem.appendChild(this.input);
 
+    this.canvas.style.outline = 'none';
+    this.offscreen.canvas.style.outline = 'none';
+    this.activeLayer.canvas.style.outline = 'none';
+    this.animateLayer.canvas.style.outline = 'none';
+    this.hoverLayer.canvas.style.outline = 'none';
+
     this.cache();
   }
 
@@ -281,6 +287,9 @@ export class Topology {
   // true: load a new file
   // false: redraw
   open(data: ICanvasData) {
+    this.animateLayer.nodes = [];
+    this.animateLayer.lines = [];
+
     if (data.lineName) {
       this.lineName = data.lineName;
     }
@@ -358,7 +367,7 @@ export class Topology {
         pos.y + 50 > this.parentElem.clientHeight + this.parentElem.scrollTop;
       if (moveOut) {
         if (this.options.on) {
-          this.options.on('moveOut', null);
+          this.options.on('moveOutParent', pos);
         }
       }
 
@@ -408,10 +417,17 @@ export class Topology {
           if (x || y) {
             const offset = this.getDockPos(x, y);
             this.activeLayer.moveNodes(offset.x ? offset.x : x, offset.y ? offset.y : y);
+            if (this.options.on) {
+              this.options.on('moveNodes', this.activeLayer.nodes);
+            }
           }
           break;
         case MoveInType.ResizeCP:
           this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, pos);
+
+          if (this.options.on) {
+            this.options.on('resizeNodes', this.activeLayer.nodes);
+          }
           break;
         case MoveInType.LineTo:
         case MoveInType.HoverAnchors:
@@ -441,6 +457,10 @@ export class Topology {
           if (this.activeLayer.nodes.length) {
             this.activeLayer.offsetRotate(this.getAngle(pos));
             this.activeLayer.updateLines();
+          }
+
+          if (this.options.on) {
+            this.options.on('rotateNodes', this.activeLayer.nodes);
           }
           break;
       }
@@ -1356,11 +1376,39 @@ export class Topology {
     }
   }
 
-  playAnimate(line: Line) {
+  animate() {
+    for (const item of this.nodes) {
+      let found = false;
+      for (let i = 0; i < this.animateLayer.nodes.length; ++i) {
+        if (this.animateLayer.nodes[i].id === item.id) {
+          found = true;
+          if (item.animateStart) {
+            this.animateLayer.nodes[i].animateStart = item.animateStart;
+          } else {
+            this.animateLayer.nodes.splice(i, 1);
+          }
+        }
+      }
+
+      if (!found) {
+        this.animateLayer.nodes.push(new Node(item));
+      }
+    }
     for (const item of this.lines) {
-      if (item.id === line.id) {
-        item.animate = line.animate;
-        break;
+      let found = false;
+      for (let i = 0; i < this.animateLayer.lines.length; ++i) {
+        if (this.animateLayer.lines[i].id === item.id) {
+          found = true;
+          if (item.animateStart) {
+            this.animateLayer.lines[i].animateStart = item.animateStart;
+          } else {
+            this.animateLayer.lines.splice(i, 1);
+          }
+        }
+      }
+
+      if (!found) {
+        this.animateLayer.addLine(item);
       }
     }
     this.animateLayer.render();

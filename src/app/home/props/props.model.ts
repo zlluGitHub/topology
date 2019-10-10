@@ -22,7 +22,7 @@ export interface Props {
       textAlign: CanvasTextAlign;
       textBaseline: CanvasTextBaseline;
     };
-    animate?: boolean;
+    animateStart?: number;
     animateColor: string;
     animateSpan: number;
     data?: any;

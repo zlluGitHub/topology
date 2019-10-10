@@ -2,6 +2,7 @@ import { Pen } from './pen';
 import { Point } from './point';
 import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
+import { Store } from '../store/store';
 
 export class Line extends Pen {
   from: Point;
@@ -108,5 +109,24 @@ export class Line extends Pen {
 
   pointIn(pt: Point) {
     return drawLineFns[this.name].pointIn(pt, this);
+  }
+
+  animate(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.lineCap = 'round';
+    this.animatePos += this.animateSpan;
+    ctx.setLineDash([this.animatePos, this.data - this.animatePos + 1]);
+    this.render(ctx);
+    ctx.restore();
+    if (this.animatePos > this.data + this.animateSpan) {
+      if (this.animateCycle > 0 && ++this.animateCycleIndex > this.animateCycle) {
+        this.animateStart = 0;
+        this.animateCycleIndex = 0;
+        Store.set('line-animate-end', this);
+        return;
+      }
+
+      this.animatePos = this.animateSpan;
+    }
   }
 }

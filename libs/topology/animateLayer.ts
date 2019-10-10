@@ -5,10 +5,11 @@ import { lineLen, curveLen } from './middles/utils';
 
 export class AnimateLayer {
   canvas = document.createElement('canvas');
-  private nodes: Node[] = [];
-  private lines: Line[] = [];
-  private animateId: any;
+  nodes: Node[] = [];
+  lines: Line[] = [];
+
   private last = Date.now();
+  private timer: any;
   constructor(parent: HTMLElement, public options: any) {
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
@@ -21,16 +22,16 @@ export class AnimateLayer {
   }
 
   render() {
+    if (this.timer) {
+      return;
+    }
+
     this.nodes = [];
     this.lines = [];
 
-    if (this.animateId) {
-      cancelAnimationFrame(this.animateId);
-    }
-
     const nodes = Store.get('nodes');
     for (const node of nodes) {
-      if (!node.animate) {
+      if (!node.animateStart) {
         continue;
       }
       const n = new Node(node);
@@ -39,61 +40,57 @@ export class AnimateLayer {
 
     const lines = Store.get('lines');
     for (const line of lines) {
-      if (!line.animate || !line.to) {
+      if (!line.animateStart || !line.to) {
         continue;
       }
-      const l = new Line(line);
-      l.fromArrow = '';
-      l.toArrow = '';
-      l.lineWidth += 1;
-      l.strokeStyle = l.animateColor || this.options.animateColor;
-      l.data = this.getLen(l);
-      this.lines.push(l);
+      this.addLine(line);
     }
 
     this.animate();
+  }
+
+  addLine(line: Line) {
+    const l = new Line(line);
+    l.fromArrow = '';
+    l.toArrow = '';
+    l.lineWidth += 1;
+    l.strokeStyle = l.animateColor || this.options.animateColor;
+    l.data = this.getLen(l);
+    l.animateStart = line.animateStart;
+    this.lines.push(l);
   }
 
   animate() {
     if (!this.lines.length && !this.nodes.length) {
       // clear
       this.canvas.height = this.canvas.height;
+      this.timer = null;
       return;
     }
 
-    this.animateId = requestAnimationFrame(() => {
-      // clear
-      this.canvas.height = this.canvas.height;
-
+    this.timer = requestAnimationFrame(() => {
       const now = Date.now();
-      this.renderLines(now);
-      for (const item of this.nodes) {
-        item.renderFrame(now);
-      }
+      const interval = now - this.last;
+      this.last = now;
 
+      // Not need too fast.
+      if (interval > 15) {
+        // clear
+        this.canvas.height = this.canvas.height;
+
+        const ctx = this.canvas.getContext('2d');
+        for (let i = 0; i < this.lines.length; ++i) {
+          this.lines[i].animate(ctx);
+          if (!this.lines[i].animateStart) {
+            this.lines.splice(i, 1);
+          }
+        }
+        for (const item of this.nodes) {
+          item.renderFrame(now);
+        }
+      }
       this.animate();
     });
-  }
-
-  renderLines(now: number) {
-    const interval = now - this.last;
-    // Not need too fast.
-    if (interval < 15) {
-      return;
-    }
-    this.last = now;
-    const ctx = this.canvas.getContext('2d');
-    ctx.lineCap = 'round';
-    for (const item of this.lines) {
-      item.animatePos += item.animateSpan;
-      if (item.animatePos > item.data + item.animateSpan) {
-        item.animatePos = item.animateSpan;
-      }
-      ctx.save();
-      ctx.setLineDash([item.animatePos, item.data - item.animatePos + 1]);
-      item.render(ctx);
-      ctx.restore();
-    }
   }
 
   resize(width: number, height: number) {

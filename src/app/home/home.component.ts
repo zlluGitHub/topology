@@ -380,8 +380,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // for demo
     if (this.data.name === 'cube-demo') {
+      const d = this.canvas.data();
+      const n = Date.now();
       for (let i = 0; i < 5; ++i) {
-        this.canvas.playAnimate(this.data.data.lines[i]);
+        d.lines[i].animateStart = n;
+        this.canvas.animate();
       }
     }
     // end

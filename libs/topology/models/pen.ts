@@ -25,7 +25,11 @@ export abstract class Pen {
     textBaseline: 'middle'
   };
 
-  animate = 0;
+  // Date.getTime
+  animateStart = 0;
+  // Cycle count. Infinite if <= 0.
+  animateCycle = 0;
+  animateCycleIndex = 0;
 
   // For users.
   data: any;
@@ -46,6 +50,7 @@ export abstract class Pen {
       if (json.font) {
         Object.assign(this.font, json.font);
       }
+      this.animateCycle = json.animateCycle || 0;
       this.data = json.data || '';
     } else {
       this.id = s8();
