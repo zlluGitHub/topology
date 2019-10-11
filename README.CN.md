@@ -133,29 +133,9 @@ force?: boolean
 ```
 $ cd topology
 // 安装 在线绘图官网根目录依赖包
-$ yarn or npm install
+$ yarn
 
-// 安装核心库的依赖包
-$ cd topology/libs/topology
-$ yarn or npm install
-
-// 安装活动图库的依赖包
-$ cd topology/libs/topology-activity-diagram
-$ yarn or npm install
-
-// 安装类图库的依赖包
-$ cd topology/libs/topology-class-diagram
-$ yarn or npm install
-
-// 安装流程图库的依赖包
-$ cd topology/libs/topology-flow-diagram
-$ yarn or npm install
-
-// 安装时许图库的依赖包
-$ cd topology/libs/topology-sequence-diagram
-$ yarn or npm install
-
-// 修改host文件，把local.dev.le5le.com代理到127.0.0.1
+//【注意】 修改host文件，把local.dev.le5le.com代理到127.0.0.1
 // 本地启动
 # build watching file changes and run angular project
 $ npm start
@@ -169,7 +149,7 @@ $ npm run build
 ## 编译核心库源码 Topology-core lib
 
 ```
-[libs/topology#] yarn or npm install
+[libs/topology#] yarn
 
 # build
 [libs/topology#] npm run build
@@ -179,7 +159,7 @@ $ npm run build
 ## 编译流程图源码 Topology-flow-diagram lib
 
 ```
-[libs/topology#] yarn or npm install
+[libs/topology#] yarn
 
 # build
 [libs/topology-flow-diagram#] npm run build

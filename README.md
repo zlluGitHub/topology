@@ -135,25 +135,10 @@ force?: boolean
 
 ```
 $ cd topology
-$ yarn or npm install
+$ yarn
 
-$ cd topology/libs/topology-activity-diagram
-$ yarn or npm install
-
-$ cd topology/libs/topology
-$ yarn or npm install
-
-$ cd topology/libs/topology-class-diagram
-$ yarn or npm install
-
-$ cd topology/libs/topology-flow-diagram
-$ yarn or npm install
-
-$ cd topology/libs/topology-sequence-diagram
-$ yarn or npm install
-
-# set your host: 127.0.0.1 local.dev.le5le.com
-# build watching file changes and run angular project
+### set your host: 127.0.0.1 local.dev.le5le.com
+### build watching file changes and run angular project
 $ npm start
 
 
@@ -165,7 +150,7 @@ $ npm run build
 ## Topology-core lib
 
 ```
-[libs/topology#] yarn or npm install
+[libs/topology#] yarn
 
 # build
 [libs/topology#] npm run build
@@ -175,7 +160,7 @@ $ npm run build
 ## Topology-flow-diagram lib
 
 ```
-[libs/topology#] yarn or npm install
+[libs/topology#] yarn
 
 # build
 [libs/topology-flow-diagram#] npm run build
@@ -185,7 +170,7 @@ $ npm run build
 ## Demo
 
 ```
-[demo#] yarn or npm install
+[demo#] yarn
 
 # build
 [demo#] npm run build
