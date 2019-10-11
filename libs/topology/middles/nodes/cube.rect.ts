@@ -12,7 +12,7 @@ export function cubeIconRect(node: Node) {
 }
 
 export function cubeTextRect(node: Node) {
-  const offset = (node.z * Math.sin((45 * Math.PI) / 180)) << 0;
+  const offset = node.z * Math.sin((45 * Math.PI) / 180);
   node.fullTextRect = new Rect(node.rect.x, node.rect.y + offset, node.rect.width - offset, node.rect.height - offset);
 
   node.textRect = new Rect(

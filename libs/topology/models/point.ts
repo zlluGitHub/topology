@@ -8,8 +8,8 @@ export class Point {
   anchorIndex: number;
   data: any;
   constructor(public x: number, public y: number, direction?: Direction, anchorIndex?: number, id?: number | string) {
-    this.x = this.x << 0;
-    this.y = this.y << 0;
+    this.x = this.x;
+    this.y = this.y;
     this.direction = direction;
     this.anchorIndex = anchorIndex;
     this.id = id;

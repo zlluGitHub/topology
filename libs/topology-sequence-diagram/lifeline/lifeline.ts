@@ -25,7 +25,7 @@ export function lifeline(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.beginPath();
   ctx.lineWidth = 1;
   ctx.setLineDash([7, 7]);
-  const middle = (node.rect.x + node.rect.width / 2) << 0;
+  const middle = node.rect.x + node.rect.width / 2;
   ctx.moveTo(middle, node.rect.y + height + 1);
   ctx.lineTo(middle, node.rect.ey);
   ctx.stroke();

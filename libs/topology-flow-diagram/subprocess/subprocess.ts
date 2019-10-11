@@ -2,7 +2,7 @@ import { Node } from 'topology-core/models/node';
 
 export function flowSubprocess(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.beginPath();
-  const offsetX = (node.rect.width / 7) << 0;
+  const offsetX = node.rect.width / 7;
   ctx.moveTo(node.rect.x, node.rect.y);
   ctx.lineTo(node.rect.ex, node.rect.y);
   ctx.lineTo(node.rect.ex, node.rect.ey);

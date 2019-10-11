@@ -69,7 +69,7 @@ export function interfaceClass(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.x, node.rect.y + 40);
   ctx.lineTo(node.rect.ex, node.rect.y + 40);
 
-  const height = (node.rect.y + 20 + node.rect.height / 2) << 0;
+  const height = node.rect.y + 20 + node.rect.height / 2;
   ctx.moveTo(node.rect.x, height);
   ctx.lineTo(node.rect.ex, height);
 

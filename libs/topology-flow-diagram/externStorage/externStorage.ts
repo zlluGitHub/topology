@@ -2,12 +2,12 @@ import { Node } from 'topology-core/models/node';
 
 export function flowExternStorage(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.beginPath();
-  const offsetX = (node.rect.width / 10) << 0;
+  const offsetX = node.rect.width / 10;
   ctx.moveTo(node.rect.x + offsetX * 2, node.rect.y);
   ctx.bezierCurveTo(
-    (node.rect.x - (offsetX * 2) / 3) << 0,
+    node.rect.x - (offsetX * 2) / 3,
     node.rect.y,
-    (node.rect.x - (offsetX * 2) / 3) << 0,
+    node.rect.x - (offsetX * 2) / 3,
     node.rect.ey,
     node.rect.x + offsetX * 2,
     node.rect.ey

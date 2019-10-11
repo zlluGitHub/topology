@@ -6,10 +6,10 @@ export function diamondSolid(ctx: CanvasRenderingContext2D, from: Point, to: Poi
   ctx.translate(to.x, to.y);
   ctx.rotate(Math.atan2(to.y - from.y, to.x - from.x));
   ctx.translate(-to.x, -to.y);
-  ctx.moveTo((rect.x + rect.width / 2) << 0, rect.y);
-  ctx.lineTo(rect.x + rect.width, (rect.y + rect.height / 2) << 0);
-  ctx.lineTo((rect.x + rect.width / 2) << 0, rect.y + rect.height);
-  ctx.lineTo(rect.x, (rect.y + rect.height / 2) << 0);
+  ctx.moveTo(rect.x + rect.width / 2, rect.y);
+  ctx.lineTo(rect.x + rect.width, rect.y + rect.height / 2);
+  ctx.lineTo(rect.x + rect.width / 2, rect.y + rect.height);
+  ctx.lineTo(rect.x, rect.y + rect.height / 2);
   ctx.closePath();
   ctx.lineWidth = 2;
   ctx.stroke();

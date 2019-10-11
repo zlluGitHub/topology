@@ -60,8 +60,10 @@ export class Node extends Pen {
   animateDuration = 0;
   animateFrames: {
     duration: number;
-    linear: boolean;
+    start?: number;
+    end?: number;
     initState?: Node;
+    linear: boolean;
     state: Node;
   }[] = [];
 
@@ -179,8 +181,8 @@ export class Node extends Pen {
 
     const nodeCenter = this.rect.center.clone();
     nodeCenter.rotate(parent.rotate + parent.offsetRotate, parent.rect.center);
-    this.rect.x = (nodeCenter.x - this.rect.width / 2) << 0;
-    this.rect.y = (nodeCenter.y - this.rect.height / 2) << 0;
+    this.rect.x = nodeCenter.x - this.rect.width / 2;
+    this.rect.y = nodeCenter.y - this.rect.height / 2;
     this.rect.ex = this.rect.x + this.rect.width;
     this.rect.ey = this.rect.y + this.rect.height;
     this.rect.calceCenter();
@@ -245,7 +247,9 @@ export class Node extends Pen {
     ctx.save();
     ctx.shadowColor = '';
     ctx.shadowBlur = 0;
+
     const rect = this.getIconRect().clone();
+    const w = rect.width;
     const h = rect.height;
     if (this.imageWidth) {
       rect.width = this.imageWidth;
@@ -261,9 +265,10 @@ export class Node extends Pen {
       }
     }
     if (this.name !== 'image') {
-      rect.x += ((this.rect.width - rect.width) / 2) << 0;
-      rect.y += ((h - rect.height) / 2) << 0;
+      rect.x += (w - rect.width) / 2;
+      rect.y += (h - rect.height) / 2;
     }
+
     ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height);
     ctx.restore();
   }
@@ -339,22 +344,20 @@ export class Node extends Pen {
       }
       this.animateStart = now;
       timeline = 0;
+      this.animateFrames[0].initState = Node.cloneState(this);
     }
 
-    let animatePassed = 0;
     let rectChanged = false;
-    for (const item of this.animateFrames) {
-      if (timeline < animatePassed + item.duration) {
-        if (!item.initState) {
-          item.initState = Node.cloneState(this);
-        }
-
+    for (let i = 0; i < this.animateFrames.length; ++i) {
+      const item = this.animateFrames[i];
+      if (timeline >= item.start && timeline < item.end) {
         this.dash = item.state.dash;
         this.strokeStyle = item.state.strokeStyle;
         this.fillStyle = item.state.fillStyle;
         this.font = item.state.font;
 
-        const rate = timeline / item.duration;
+        const rate = (timeline - item.start) / item.duration;
+
         if (item.linear) {
           if (item.state.rect.x !== item.initState.rect.x) {
             this.rect.x = item.initState.rect.x + (item.state.rect.x - item.initState.rect.x) * rate;
@@ -377,26 +380,26 @@ export class Node extends Pen {
           this.rect.ey = this.rect.y + this.rect.height;
 
           if (item.initState.z !== undefined && item.state.z !== item.initState.z) {
-            this.z = (item.initState.z + (item.state.z - item.initState.z) * rate) << 0;
+            this.z = item.initState.z + (item.state.z - item.initState.z) * rate;
             rectChanged = true;
           }
 
           if (item.state.borderRadius !== item.initState.borderRadius) {
             this.borderRadius =
-              (item.initState.borderRadius + (item.state.borderRadius - item.initState.borderRadius) * rate) << 0;
+              item.initState.borderRadius + (item.state.borderRadius - item.initState.borderRadius) * rate;
           }
 
           if (item.state.lineWidth !== item.initState.lineWidth) {
-            this.lineWidth = (item.initState.lineWidth + (item.state.lineWidth - item.initState.lineWidth) * rate) << 0;
+            this.lineWidth = item.initState.lineWidth + (item.state.lineWidth - item.initState.lineWidth) * rate;
           }
 
           if (item.state.rotate !== item.initState.rotate) {
-            this.rotate = (item.initState.rotate + (item.state.rotate - item.initState.rotate) * rate) << 0;
+            this.rotate = item.initState.rotate + (item.state.rotate - item.initState.rotate) * rate;
           }
 
           if (item.state.globalAlpha !== item.initState.globalAlpha) {
             this.globalAlpha =
-              (item.initState.globalAlpha + (item.state.globalAlpha - item.initState.globalAlpha) * rate) << 0;
+              item.initState.globalAlpha + (item.state.globalAlpha - item.initState.globalAlpha) * rate;
           }
         } else {
           this.rect = item.state.rect;
@@ -404,12 +407,9 @@ export class Node extends Pen {
           this.rotate = item.state.rotate;
           this.globalAlpha = item.state.globalAlpha;
         }
-        break;
       }
-
-      animatePassed += item.duration;
     }
-    if (rectChanged || 1) {
+    if (rectChanged) {
       this.init();
     }
 

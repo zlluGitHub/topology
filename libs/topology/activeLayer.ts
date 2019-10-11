@@ -365,8 +365,8 @@ export class ActiveLayer {
       if (this.nodes.length > 1) {
         center.rotate(angle, this.rect.center);
       }
-      item.rect.x = (center.x - item.rect.width / 2) << 0;
-      item.rect.y = (center.y - item.rect.height / 2) << 0;
+      item.rect.x = center.x - item.rect.width / 2;
+      item.rect.y = center.y - item.rect.height / 2;
       item.rect.ex = item.rect.x + item.rect.width;
       item.rect.ey = item.rect.y + item.rect.height;
       item.rect.calceCenter();

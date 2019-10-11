@@ -56,12 +56,13 @@ export function fillText(
 ) {
   if (!maxLineLen || maxLineLen > lines.length) {
     maxLineLen = lines.length;
+  } else {
+    maxLineLen = Math.ceil(maxLineLen);
   }
 
   for (let i = 0; i < maxLineLen - 1; ++i) {
     ctx.fillText(lines[i], x, y + i * lineHeight);
   }
-
   if (maxLineLen < lines.length) {
     let str = lines[maxLineLen - 1] + '...';
     if (ctx.measureText(str).width > width) {
@@ -106,14 +107,14 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
 
   const lineHeight = node.font.fontSize * node.font.lineHeight;
   let maxLineLen = node.textMaxLine;
-  const rectLines = (textRect.height / lineHeight) << 0;
+  const rectLines = textRect.height / lineHeight;
   if (!maxLineLen) {
     maxLineLen = lines.length > rectLines ? rectLines : lines.length;
   }
 
   // By default, the text is center aligned.
-  let x = (textRect.x + textRect.width / 2) << 0;
-  let y = (textRect.y + (textRect.height - lineHeight * maxLineLen) / 2 + (lineHeight * 4) / 7) << 0;
+  let x = textRect.x + textRect.width / 2;
+  let y = textRect.y + (textRect.height - lineHeight * maxLineLen) / 2 + (lineHeight * 4) / 7;
   switch (ctx.textAlign) {
     case 'left':
       x = textRect.x;
@@ -124,7 +125,7 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
   }
   switch (ctx.textBaseline) {
     case 'top':
-      y = (textRect.y + (lineHeight - node.font.fontSize) / 2) << 0;
+      y = textRect.y + (lineHeight - node.font.fontSize) / 2;
       break;
     case 'bottom':
       y = textRect.ey - lineHeight * lines.length + lineHeight;
@@ -151,6 +152,6 @@ export function iconfont(ctx: CanvasRenderingContext2D, node: Node) {
   }
   ctx.fillStyle = node.iconColor;
   ctx.beginPath();
-  ctx.fillText(node.icon, (iconRect.x + iconRect.width / 2) << 0, (iconRect.y + iconRect.height / 2) << 0);
+  ctx.fillText(node.icon, iconRect.x + iconRect.width / 2, iconRect.y + iconRect.height / 2);
   ctx.restore();
 }

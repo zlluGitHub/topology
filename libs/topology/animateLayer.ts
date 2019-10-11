@@ -29,6 +29,17 @@ export class AnimateLayer {
     this.animate();
   }
 
+  addNode(node: Node) {
+    let passed = 0;
+    for (let i = 0; i < node.animateFrames.length; ++i) {
+      node.animateFrames[i].start = passed;
+      passed += node.animateFrames[i].duration;
+      node.animateFrames[i].end = passed;
+      node.animateFrames[i].initState = Node.cloneState(i ? node.animateFrames[i - 1].state : node);
+    }
+    this.nodes.push(node);
+  }
+
   addLine(line: Line) {
     const l = new Line(line);
     l.fromArrow = '';

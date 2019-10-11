@@ -235,8 +235,8 @@ export class Topology {
   private ondrop(event: DragEvent) {
     event.preventDefault();
     const node = JSON.parse(event.dataTransfer.getData('Text'));
-    node.rect.x = event.offsetX - ((node.rect.width / 2) << 0);
-    node.rect.y = event.offsetY - ((node.rect.height / 2) << 0);
+    node.rect.x = event.offsetX - node.rect.width / 2;
+    node.rect.y = event.offsetY - node.rect.height / 2;
     this.addNode(new Node(node));
   }
 
@@ -258,8 +258,8 @@ export class Topology {
     }
 
     const pos = this.getTouchOffset(event.changedTouches[0]);
-    this.touchedNode.rect.x = (pos.offsetX - this.touchedNode.rect.width / 2) << 0;
-    this.touchedNode.rect.y = (pos.offsetY - this.touchedNode.rect.height / 2) << 0;
+    this.touchedNode.rect.x = pos.offsetX - this.touchedNode.rect.width / 2;
+    this.touchedNode.rect.y = pos.offsetY - this.touchedNode.rect.height / 2;
 
     this.addNode(new Node(this.touchedNode));
     this.touchedNode = undefined;
@@ -1407,7 +1407,7 @@ export class Topology {
       }
 
       if (!found && item.animateStart) {
-        this.animateLayer.nodes.push(item);
+        this.animateLayer.addNode(item);
       }
     }
     for (const item of this.lines) {

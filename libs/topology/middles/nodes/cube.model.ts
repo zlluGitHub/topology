@@ -37,7 +37,7 @@ export class Surface {
 export class Cube {
   surfaces: Surface[] = [];
   constructor(rect: Rect, z: number, zRotate: number, fillStyle = '#ddd', strokeStyle = '#ccc') {
-    const offset = (z * Math.sin((45 * Math.PI) / 180)) << 0;
+    const offset = z * Math.sin((45 * Math.PI) / 180);
 
     const p1 = new Point(rect.x, rect.y + offset);
     const p2 = new Point(rect.ex - offset, rect.y + offset);

@@ -1,3 +1,20 @@
+# v0.0.7 (2019.10.15)
+
+[产品]指 topology.le5le.com，而非绘图引擎。
+
+## Features
+
+- 节点动画
+
+## Bug Fixes
+
+- 文字特定大小下显示 undefined
+- people 图表填充阴影 bug
+- 节点图片位置计算特定场景计算错误
+
+<br>
+<br>
+
 # v0.0.6 (2019.10.8)
 
 [产品]指 topology.le5le.com，而非绘图引擎。

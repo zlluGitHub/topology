@@ -2,7 +2,7 @@ import { Node } from 'topology-core/models/node';
 
 export function flowDb(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.beginPath();
-  const offsetY = (node.rect.height / 7) << 0;
+  const offsetY = node.rect.height / 7;
   ctx.moveTo(node.rect.x, node.rect.y + offsetY);
   ctx.bezierCurveTo(
     node.rect.x,

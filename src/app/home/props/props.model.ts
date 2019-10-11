@@ -31,7 +31,6 @@ export interface Props {
     animateFrames?: {
       duration: number;
       linear: boolean;
-      initState?: Node;
       state: Node;
     }[];
     data?: any;
