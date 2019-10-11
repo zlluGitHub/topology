@@ -57,11 +57,12 @@ export class Node extends Pen {
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
 
+  animateDuration = 0;
   animateFrames: {
-    start: number;
-    end: number;
+    duration: number;
     linear: boolean;
-    state: Pen;
+    initState?: Node;
+    state: Node;
   }[] = [];
 
   constructor(json: any) {
@@ -106,9 +107,18 @@ export class Node extends Pen {
     if (json.animateFrames) {
       this.animateFrames = json.animateFrames;
     }
+    if (json.animateDuration) {
+      this.animateDuration = json.animateDuration;
+    }
     this.init();
 
     this.setChild(json);
+  }
+
+  static cloneState(json: any) {
+    const n = new Node(json);
+    delete n.animateFrames;
+    return n;
   }
 
   init() {
@@ -311,9 +321,98 @@ export class Node extends Pen {
     this.img = null;
   }
 
-  renderFrame(now: number) {
-    const timeline = now - this.animateStart;
-    for (const item of this.animateFrames) {
+  animate(ctx: CanvasRenderingContext2D, now: number) {
+    if (!this.animateDuration) {
+      this.animateStart = 0;
+      return;
     }
+
+    let timeline = now - this.animateStart;
+    if (timeline > this.animateDuration) {
+      if (++this.animateCycleIndex > this.animateCycle && this.animateCycle > 0) {
+        this.animateStart = 0;
+        Store.set('animateEnd', {
+          type: 'node',
+          data: this
+        });
+        return;
+      }
+      this.animateStart = now;
+      timeline = 0;
+    }
+
+    let animatePassed = 0;
+    let rectChanged = false;
+    for (const item of this.animateFrames) {
+      if (timeline < animatePassed + item.duration) {
+        if (!item.initState) {
+          item.initState = Node.cloneState(this);
+        }
+
+        this.dash = item.state.dash;
+        this.strokeStyle = item.state.strokeStyle;
+        this.fillStyle = item.state.fillStyle;
+        this.font = item.state.font;
+
+        const rate = timeline / item.duration;
+        if (item.linear) {
+          if (item.state.rect.x !== item.initState.rect.x) {
+            this.rect.x = item.initState.rect.x + (item.state.rect.x - item.initState.rect.x) * rate;
+            rectChanged = true;
+          }
+          if (item.state.rect.y !== item.initState.rect.y) {
+            this.rect.y = item.initState.rect.y + (item.state.rect.y - item.initState.rect.y) * rate;
+            rectChanged = true;
+          }
+          if (item.state.rect.width !== item.initState.rect.width) {
+            this.rect.width = item.initState.rect.width + (item.state.rect.width - item.initState.rect.width) * rate;
+            rectChanged = true;
+          }
+          if (item.state.rect.height !== item.initState.rect.height) {
+            this.rect.height =
+              item.initState.rect.height + (item.state.rect.height - item.initState.rect.height) * rate;
+            rectChanged = true;
+          }
+          this.rect.ex = this.rect.x + this.rect.width;
+          this.rect.ey = this.rect.y + this.rect.height;
+
+          if (item.initState.z !== undefined && item.state.z !== item.initState.z) {
+            this.z = (item.initState.z + (item.state.z - item.initState.z) * rate) << 0;
+            rectChanged = true;
+          }
+
+          if (item.state.borderRadius !== item.initState.borderRadius) {
+            this.borderRadius =
+              (item.initState.borderRadius + (item.state.borderRadius - item.initState.borderRadius) * rate) << 0;
+          }
+
+          if (item.state.lineWidth !== item.initState.lineWidth) {
+            this.lineWidth = (item.initState.lineWidth + (item.state.lineWidth - item.initState.lineWidth) * rate) << 0;
+          }
+
+          if (item.state.rotate !== item.initState.rotate) {
+            this.rotate = (item.initState.rotate + (item.state.rotate - item.initState.rotate) * rate) << 0;
+          }
+
+          if (item.state.globalAlpha !== item.initState.globalAlpha) {
+            this.globalAlpha =
+              (item.initState.globalAlpha + (item.state.globalAlpha - item.initState.globalAlpha) * rate) << 0;
+          }
+        } else {
+          this.rect = item.state.rect;
+          this.lineWidth = item.state.lineWidth;
+          this.rotate = item.state.rotate;
+          this.globalAlpha = item.state.globalAlpha;
+        }
+        break;
+      }
+
+      animatePassed += item.duration;
+    }
+    if (rectChanged || 1) {
+      this.init();
+    }
+
+    this.render(ctx);
   }
 }

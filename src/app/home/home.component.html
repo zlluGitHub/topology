@@ -57,7 +57,12 @@
         </ul>
       </div>
       <div *ngIf="selected">
-        <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"></app-props>
+        <app-props
+          [props]="selected"
+          [readonly]="readonly"
+          (ok)="onChangeProps($event)"
+          (animateChange)="onAnimateChange()"
+        ></app-props>
       </div>
     </div>
   </div>

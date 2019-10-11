@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChange
 
 import { NoticeService } from 'le5le-components/notice';
 
+import { Node } from 'libs/topology/models/node';
 import { Props } from './props.model';
 import { PropsService } from './props.service';
 
@@ -17,9 +18,8 @@ import { PropsService } from './props.service';
 export class PropsComponent implements OnInit, OnChanges {
   @Input() props: Props = { type: '' };
   @Output() ok = new EventEmitter<any>();
+  @Output() animateChange = new EventEmitter<any>();
   @Input() readonly = false;
-
-  animate = false;
 
   icon: any;
   drowdown = 0;
@@ -430,6 +430,40 @@ export class PropsComponent implements OnInit, OnChanges {
 
   onAnimate() {
     this.props.data.animateStart = this.props.data.animateStart ? Date.now() : 0;
-    this.onChangeProp();
+    this.animateChange.emit(this.props);
+  }
+
+  onAddFrame() {
+    if (!this.props.data.animateFrames) {
+      this.props.data.animateFrames = [];
+    }
+
+    this.props.data.animateFrames.push({
+      duration: 2000,
+      linear: true,
+      state: Node.cloneState(this.props.data)
+    });
+
+    this.props.data.animateDuration += 2000;
+  }
+
+  onRemoveFrame(i: number) {
+    this.props.data.animateFrames.splice(i, 1);
+    this.props.data.animateDuration = 0;
+    for (const item of this.props.data.animateFrames) {
+      this.props.data.animateDuration += item.duration;
+    }
+  }
+
+  onClickAnimateDash(node: Node, dash: number) {
+    node.dash = dash;
+    this.drowdown = 0;
+    this.onAnimate();
+  }
+
+  onAnimateDuration() {
+    for (const item of this.props.data.animateFrames) {
+      this.props.data.animateDuration += item.duration;
+    }
   }
 }

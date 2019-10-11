@@ -1,5 +1,6 @@
 import { Rect } from 'libs/topology/models/rect';
 import { Point } from 'libs/topology/models/point';
+import { Node } from 'libs/topology/models/node';
 
 export interface Props {
   type: string;
@@ -23,8 +24,16 @@ export interface Props {
       textBaseline: CanvasTextBaseline;
     };
     animateStart?: number;
+    animateCycle: number;
     animateColor: string;
     animateSpan: number;
+    animateDuration?: number;
+    animateFrames?: {
+      duration: number;
+      linear: boolean;
+      initState?: Node;
+      state: Node;
+    }[];
     data?: any;
 
     // Node

@@ -438,6 +438,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           return;
         }
       }
+
       const file = await this.service.Upload(blob, this.data.shared);
       if (!file) {
         return;
@@ -598,6 +599,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.canvas.updateProps(props.data.nodes, props.data.lines, props.data);
         break;
     }
+  }
+
+  onAnimateChange() {
+    this.canvas.animate();
   }
 
   onSignup() {

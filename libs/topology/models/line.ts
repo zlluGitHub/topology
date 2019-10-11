@@ -119,10 +119,12 @@ export class Line extends Pen {
     this.render(ctx);
     ctx.restore();
     if (this.animatePos > this.data + this.animateSpan) {
-      if (this.animateCycle > 0 && ++this.animateCycleIndex > this.animateCycle) {
+      if (++this.animateCycleIndex > this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
-        this.animateCycleIndex = 0;
-        Store.set('line-animate-end', this);
+        Store.set('animateEnd', {
+          type: 'line',
+          data: this
+        });
         return;
       }
 

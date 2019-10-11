@@ -36,6 +36,7 @@ export class ActiveLayer {
     this.canvas.style.position = 'absolute';
     this.canvas.style.left = '0';
     this.canvas.style.top = '0';
+    this.canvas.style.outline = 'none';
     parent.appendChild(this.canvas);
   }
 

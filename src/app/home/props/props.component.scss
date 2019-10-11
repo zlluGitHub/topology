@@ -193,6 +193,16 @@
       color: #fff;
     }
   }
+
+  .group {
+    padding: 0;
+    border-bottom: none;
+
+    .title {
+      padding: 0;
+      border-bottom: none;
+    }
+  }
 }
 
 .icon-help-circle {

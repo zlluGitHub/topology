@@ -54,6 +54,7 @@ export class Topology {
   lines: Line[] = [];
   options: Options;
   private subcribe: Observer;
+  private subcribeAnimate: Observer;
 
   touchedNode: any;
   lastHoverNode: Node;
@@ -162,6 +163,25 @@ export class Topology {
     this.subcribe = Store.subcribe('render', () => {
       this.renderOffscreen();
     });
+    this.subcribeAnimate = Store.subcribe('animateEnd', (e: any) => {
+      if (!e) {
+        return;
+      }
+      switch (e.type) {
+        case 'line':
+          for (const item of this.lines) {
+            if (item.id === e.data.id) {
+              item.animateStart = 0;
+              break;
+            }
+          }
+          break;
+      }
+
+      if (this.options.on) {
+        this.options.on('animateEnd', e);
+      }
+    });
 
     this.hoverLayer.canvas.onmousemove = this.onMouseMove;
     this.hoverLayer.canvas.onmousedown = this.onmousedown;
@@ -185,10 +205,6 @@ export class Topology {
     this.parentElem.appendChild(this.input);
 
     this.canvas.style.outline = 'none';
-    this.offscreen.canvas.style.outline = 'none';
-    this.activeLayer.canvas.style.outline = 'none';
-    this.animateLayer.canvas.style.outline = 'none';
-    this.hoverLayer.canvas.style.outline = 'none';
 
     this.cache();
   }
@@ -289,6 +305,7 @@ export class Topology {
   open(data: ICanvasData) {
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
+    this.locked = 0;
 
     if (data.lineName) {
       this.lineName = data.lineName;
@@ -1381,23 +1398,27 @@ export class Topology {
       let found = false;
       for (let i = 0; i < this.animateLayer.nodes.length; ++i) {
         if (this.animateLayer.nodes[i].id === item.id) {
+          item.animateCycleIndex = 1;
           found = true;
-          if (item.animateStart) {
-            this.animateLayer.nodes[i].animateStart = item.animateStart;
-          } else {
+          if (!item.animateStart) {
             this.animateLayer.nodes.splice(i, 1);
           }
         }
       }
 
-      if (!found) {
-        this.animateLayer.nodes.push(new Node(item));
+      if (!found && item.animateStart) {
+        this.animateLayer.nodes.push(item);
       }
     }
     for (const item of this.lines) {
       let found = false;
       for (let i = 0; i < this.animateLayer.lines.length; ++i) {
         if (this.animateLayer.lines[i].id === item.id) {
+          this.animateLayer.lines[i].animateCycle = item.animateCycle;
+          this.animateLayer.lines[i].animateCycleIndex = 1;
+          this.animateLayer.lines[i].animateColor = item.animateColor || this.animateLayer.options.animateColor;
+          this.animateLayer.lines[i].strokeStyle = item.animateColor || this.animateLayer.options.animateColor;
+          this.animateLayer.lines[i].animateSpan = item.animateSpan;
           found = true;
           if (item.animateStart) {
             this.animateLayer.lines[i].animateStart = item.animateStart;
@@ -1411,6 +1432,10 @@ export class Topology {
         this.animateLayer.addLine(item);
       }
     }
+    this.activeLayer.nodes = [];
+    this.activeLayer.lines = [];
+    this.activeLayer.render();
+    this.offscreen.render();
     this.animateLayer.render();
   }
 
@@ -1524,5 +1549,6 @@ export class Topology {
 
   destory() {
     this.subcribe.unsubcribe();
+    this.subcribeAnimate.unsubcribe();
   }
 }

@@ -7,13 +7,14 @@ export abstract class Pen {
   id = '';
   name = '';
   rect: Rect = new Rect(0, 0, 0, 0);
-  dash = 0;
   lineWidth = 1;
-  strokeStyle = '';
-  fillStyle = '';
-  globalAlpha = 1;
   rotate = 0;
   offsetRotate = 0;
+  globalAlpha = 1;
+
+  dash = 0;
+  strokeStyle = '';
+  fillStyle = '';
   font = {
     color: '',
     fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
@@ -28,7 +29,7 @@ export abstract class Pen {
   // Date.getTime
   animateStart = 0;
   // Cycle count. Infinite if <= 0.
-  animateCycle = 0;
+  animateCycle: number;
   animateCycleIndex = 0;
 
   // For users.
@@ -50,7 +51,7 @@ export abstract class Pen {
       if (json.font) {
         Object.assign(this.font, json.font);
       }
-      this.animateCycle = json.animateCycle || 0;
+      this.animateCycle = json.animateCycle;
       this.data = json.data || '';
     } else {
       this.id = s8();

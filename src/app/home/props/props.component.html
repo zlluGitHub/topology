@@ -120,7 +120,7 @@
       </div>
       <div *ngIf="showDialog===1" class="tools">
         <div class="title flex middle">
-          <label class="full">选择图片：</label>
+          <label class="full">选择图片</label>
           <i class="iconfont icon-close hover" (click)="showDialog=0"></i>
         </div>
         <div class="ph20 mt20">
@@ -183,7 +183,7 @@
       </div>  
       <div [class.hidden]="showDialog!==2" class="tools">
         <div class="title flex middle">
-          <label class="full">选择字体图标：</label>
+          <label class="full">选择字体图标</label>
           <i class="iconfont icon-close hover" (click)="showDialog=0"></i>
         </div>
         <div class="body">
@@ -759,7 +759,7 @@
       </div>
     </div>    
   </div>
-  <div class="group" *ngIf="props.type === 'line'">
+  <div class="group">
     <div class="title">
       <label class="checkbox">
         <input name="remember" type="checkbox" [(ngModel)]="props.data.animateStart" (change)="onAnimate()" [readonly]="readonly"/>
@@ -767,20 +767,286 @@
       </label>
     </div>
     <div class="flex grid">
-      <div>颜色</div>
-      <div *ngIf="!readonly">快慢</div>
+      <div>循环次数</div>
     </div>
     <div class="flex grid mt5">
       <div class="mr5">
-        <div class="input color" [class.readonly]="readonly">
-          <i [(colorPicker)]="props.data.animateColor" [style.background]="props.data.animateColor" 
-              cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-          <input name="animateColor" [(ngModel)]="props.data.animateColor" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+        <input
+          type="number"
+          name="cycle"
+          class="input"
+          [(ngModel)]="props.data.animateCycle"
+          [readonly]="readonly"
+          (change)="onAnimate()"
+          placeholder="<1无限循环"
+        />
+      </div>
+    </div>
+    <div *ngIf="props.type === 'line'">
+      <div class="flex grid mt5">
+        <div>颜色</div>
+        <div *ngIf="!readonly">快慢</div>
+      </div>
+      <div class="flex grid mt5">
+        <div class="mr5">
+          <div class="input color" [class.readonly]="readonly">
+            <i [(colorPicker)]="props.data.animateColor" [style.background]="props.data.animateColor" 
+                cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onAnimate()"></i>
+            <input name="animateColor" [(ngModel)]="props.data.animateColor" [readonly]="readonly" (change)="onAnimate()"/>
+          </div>
+        </div>
+        <div *ngIf="!readonly">
+          <ui-slider class="block" [(min)]="props.data.animateSpan" [options]="{min: 1, max: 5}" (change)="onAnimate()"></ui-slider>
         </div>
       </div>
-      <div *ngIf="!readonly">
-        <ui-slider class="block" [(min)]="props.data.animateSpan" [options]="{min: 1, max: 5}" (change)="onChangeProp()"></ui-slider>
-      </div>
+    </div>
+    <div class="flex mt10" *ngIf="props.type === 'node'">
+      <div class="mr15">动画时长：{{props.data.animateDuration / 1000 | number:'.0-3'}}秒</div>
+      <a (click)="showDialog===3?showDialog=0: showDialog=3">设置</a>
+      <div *ngIf="showDialog===3" class="tools" style="width: 2.4rem;overflow: auto;">
+        <div class="title flex middle">
+          <label class="full">设置节点动画</label>
+          <i class="iconfont icon-close hover" (click)="showDialog=0"></i>
+        </div>
+        <div class="ph20 pv10 border-bottom" *ngFor="let item of props.data.animateFrames;let i=index">
+          <div class="flex">            
+            <label class="full bold">帧{{i+1}}</label>
+            <i class="iconfont icon-delete hover" (click)="onRemoveFrame(i)"></i>
+          </div>
+          <div class="mr15">时长（毫秒）</div>
+          <div class="mr5">
+            <input
+              type="number"
+              name="duration{{i}}"
+              class="input"
+              [(ngModel)]="item.duration"
+              [readonly]="readonly"
+              (change)="onAnimateDuration()"
+            />
+          </div>
+          <div class="group" >
+            <div class="title">位置和大小</div>
+            <div class="flex grid">
+              <div>X（px）</div>
+              <div>Y（px）</div>
+            </div>
+            <div class="flex grid mt5">
+              <div class="mr5">
+                <input
+                  type="number"
+                  name="x{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.rect.x"
+                  [uiMin]="0"
+                  [uiMax]="5000"
+                  [readonly]="readonly"            
+                  required
+                  (change)="onAnimate()"
+                />
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="y{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.rect.y"
+                  [uiMin]="0"
+                  [uiMax]="5000"
+                  [readonly]="readonly"
+                  required
+                  (change)="onAnimate()"
+                />
+              </div>
+            </div>
+            <div class="flex grid mt5">
+              <div>宽（px）</div>
+              <div>高（px）</div>
+            </div>
+            <div class="flex grid">
+              <div class="mr5">
+                <input
+                  type="number"
+                  name="width{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.rect.width"
+                  [uiMin]="0"
+                  [uiMax]="5000"
+                  [readonly]="readonly"
+                  required
+                  (change)="onAnimate()"
+                />
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="height{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.rect.height"
+                  [uiMin]="0"
+                  [uiMax]="5000"
+                  [readonly]="readonly"
+                  required
+                  (change)="onAnimate()"
+                />
+              </div>
+            </div>
+            <div *ngIf="props.data.is3D">
+              <div class="flex grid mt5">
+                <div>Z（px）</div>
+                <div></div>
+              </div>
+              <div class="flex grid">
+                <div class="mr5">
+                  <input
+                    type="number"
+                    name="z{{i}}"
+                    class="input"
+                    [(ngModel)]="item.state.z"
+                    [uiMin]="0"
+                    [uiMax]="5000"
+                    [readonly]="readonly"
+                    (change)="onAnimate()"
+                  />
+                </div>
+                <div>
+                 
+                </div>
+              </div>
+            </div>
+            <div class="flex grid mt5">
+              <div title="百分比%对应的小数值">圆角（0 - 1）</div>
+              <div>旋转（°）</div>
+            </div>
+            <div class="flex grid">
+              <div class="mr5">
+                <input type="number" name="borderRadius{{i}}" class="input" [(ngModel)]="item.state.borderRadius" [uiMin]="0" [uiMax]="1" [readonly]="readonly" (change)="onAnimate()"/>
+              </div>
+              <div>
+                <input type="number" name="rotate{{i}}" class="input" [(ngModel)]="item.state.rotate" [uiMin]="0" [uiMax]="360" [readonly]="readonly" (change)="onAnimate()"/>
+              </div>
+            </div>     
+          </div>
+          <div class="group mt10">
+            <div class="title">外观</div>
+            <div>连线样式</div>
+            <div class="mr5 rel">
+              <div class="input" [class.readonly]="readonly" (click)="$event.stopPropagation(); drowdown = 11">
+                <div class="icon-item" [class.hidden]="item.state.dash">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item" [class.hidden]="item.state.dash !== 1">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="5,5" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item" [class.hidden]="item.state.dash !== 2">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="10,10" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item" [class.hidden]="item.state.dash !== 3">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="10,10,2,10" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <div class="dropdown" *ngIf="!readonly" [class.block]="drowdown === 11">
+                <div class="icon-item ph10 pv5" (click)="onClickAnimateDash(item.state, 0)">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item ph10 pv5" (click)="onClickAnimateDash(item.state, 1)">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="5,5" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item ph10 pv5" (click)="onClickAnimateDash(item.state, 2)">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="10,10" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="icon-item ph10 pv5" (click)="onClickAnimateDash(item.state, 3)">
+                  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                    <g fill="none" stroke="black" stroke-width="1">
+                      <path stroke-dasharray="10,10,2,10" d="M0 9 l85 0" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="flex grid mt5">
+              <div>连线颜色</div>
+              <div>线宽（px）</div>
+            </div>
+            <div class="flex grid">
+              <div class="mr5">
+                <div class="input color" [class.readonly]="readonly">
+                  <i [(colorPicker)]="item.state.strokeStyle" [style.background]="item.state.strokeStyle" 
+                      cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onAnimate()"></i>
+                  <input name="strokeStyle{{i}}" [(ngModel)]="item.state.strokeStyle" [readonly]="readonly" (change)="onAnimate()"/>
+                </div>
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="lineWidth{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.lineWidth"
+                  [uiMin]="0"
+                  [uiMax]="100"
+                  [readonly]="readonly"
+                  (change)="onAnimate()"
+                />
+              </div>
+            </div>
+            <div class="flex grid mt5">
+              <div>背景颜色</div>
+              <div>透明度（0 - 1）</div>
+            </div>
+            <div class="flex grid">
+              <div class="mr5">
+                <div class="input color" [class.readonly]="readonly">
+                  <i [(colorPicker)]="item.state.fillStyle" [style.background]="item.state.fillStyle" 
+                      cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onAnimate()"></i>
+                  <input name="fillStyle{{i}}" [(ngModel)]="item.state.fillStyle" [readonly]="readonly" (change)="onAnimate()"/>
+                </div>
+              </div>
+              <div>
+                <input
+                  type="number"
+                  name="globalAlpha{{i}}"
+                  class="input"
+                  [(ngModel)]="item.state.globalAlpha"
+                  [uiMin]="0"
+                  [uiMax]="1"
+                  [readonly]="readonly"
+                  (change)="onAnimate()"
+                />
+              </div>
+            </div>  
+          </div>
+        </div>
+        <div class="ph20 mv20">
+          <button class="button primary" (click)="onAddFrame()">+ 添加帧</button>
+        </div>        
+      </div>  
     </div>
   </div>
   <div class="group" *ngIf="props.type === 'node'">

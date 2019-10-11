@@ -1,6 +1,5 @@
 import { Node } from './models/node';
 import { Line } from './models/line';
-import { Store } from './store/store';
 import { lineLen, curveLen } from './middles/utils';
 
 export class AnimateLayer {
@@ -18,32 +17,13 @@ export class AnimateLayer {
     this.canvas.style.position = 'absolute';
     this.canvas.style.left = '0';
     this.canvas.style.top = '0';
+    this.canvas.style.outline = 'none';
     parent.appendChild(this.canvas);
   }
 
   render() {
     if (this.timer) {
       return;
-    }
-
-    this.nodes = [];
-    this.lines = [];
-
-    const nodes = Store.get('nodes');
-    for (const node of nodes) {
-      if (!node.animateStart) {
-        continue;
-      }
-      const n = new Node(node);
-      this.nodes.push(n);
-    }
-
-    const lines = Store.get('lines');
-    for (const line of lines) {
-      if (!line.animateStart || !line.to) {
-        continue;
-      }
-      this.addLine(line);
     }
 
     this.animate();
@@ -85,8 +65,11 @@ export class AnimateLayer {
             this.lines.splice(i, 1);
           }
         }
-        for (const item of this.nodes) {
-          item.renderFrame(now);
+        for (let i = 0; i < this.nodes.length; ++i) {
+          this.nodes[i].animate(ctx, now);
+          if (!this.nodes[i].animateStart) {
+            this.nodes.splice(i, 1);
+          }
         }
       }
       this.animate();

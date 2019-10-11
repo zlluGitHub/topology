@@ -12,6 +12,7 @@ export class Canvas {
   rendering = false;
   constructor(public options: Options = {}, name = '') {
     this.name = name;
+    this.canvas.style.outline = 'none';
   }
 
   resize(width: number, height: number) {
@@ -67,6 +68,9 @@ export class Canvas {
 
     const ctx = this.canvas.getContext('2d');
     for (const item of this.nodes) {
+      if (item.animateStart) {
+        continue;
+      }
       item.render(ctx);
     }
   }
