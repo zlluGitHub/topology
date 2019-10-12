@@ -46,7 +46,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "with": "src/environments/environment.production.ts"
                 }
               ],
               "optimization": true,
@@ -65,6 +65,22 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "prod": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
             }
           }
         },
@@ -81,6 +97,9 @@
             },
             "dev": {
               "browserTarget": "topology:build:dev"
+            },
+            "prod": {
+              "browserTarget": "topology:build:prod"
             }
           }
         },

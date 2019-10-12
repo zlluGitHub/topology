@@ -274,8 +274,7 @@ export class Node extends Pen {
   }
 
   emitRender() {
-    let r = Store.get('render') || 0;
-    Store.set('render', ++r);
+    Store.set('render', 1);
   }
 
   calcAnchors() {
@@ -378,6 +377,7 @@ export class Node extends Pen {
           }
           this.rect.ex = this.rect.x + this.rect.width;
           this.rect.ey = this.rect.y + this.rect.height;
+          this.rect.calceCenter();
 
           if (item.initState.z !== undefined && item.state.z !== item.initState.z) {
             this.z = item.initState.z + (item.state.z - item.initState.z) * rate;
@@ -411,6 +411,7 @@ export class Node extends Pen {
     }
     if (rectChanged) {
       this.init();
+      Store.set('animateMoved', this);
     }
 
     this.render(ctx);

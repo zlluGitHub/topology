@@ -49,6 +49,59 @@ canvas.render(data, true);
 
 # Development
 
+```
+$ yarn
+$ npm start
+
+# build
+$ npm run build
+
+```
+
+## http proxy on localhost
+
+```
+# First, set your host: 127.0.0.1 local.dev.le5le.com
+$ npm run dev
+```
+
+## http proxy on topology.le5le.com
+
+```
+# First, set your host: 127.0.0.1 local.le5le.com
+$ npm run prod
+```
+
+## Topology-core lib
+
+```
+[libs/topology#] yarn
+
+# build
+[libs/topology#] npm run build
+
+```
+
+## Topology-flow-diagram lib
+
+```
+[libs/topology#] yarn
+
+# build
+[libs/topology-flow-diagram#] npm run build
+
+```
+
+## Demo
+
+```
+[demo#] yarn
+
+# build
+[demo#] npm run build
+
+```
+
 ## Make your diagrams
 
 - Step 1:
@@ -128,52 +181,6 @@ iconRectFn?: (node: Node) => void,
 textRectFn?: (node: Node) => void,
 force?: boolean
 );
-
-```
-
-## Angular project
-
-```
-$ cd topology
-$ yarn
-
-### set your host: 127.0.0.1 local.dev.le5le.com
-### build watching file changes and run angular project
-$ npm start
-
-
-# build
-$ npm run build
-
-```
-
-## Topology-core lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology#] npm run build
-
-```
-
-## Topology-flow-diagram lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology-flow-diagram#] npm run build
-
-```
-
-## Demo
-
-```
-[demo#] yarn
-
-# build
-[demo#] npm run build
 
 ```
 

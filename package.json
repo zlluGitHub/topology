@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open --host=local.dev.le5le.com --port=2200",
+    "start": "ng serve --open --port=3000",
+    "dev": "ng serve --open --host=local.dev.le5le.com --port=3200 --configuration=dev --proxy-config=proxy.conf.dev.json",
+    "prod": "ng serve --open --host=local.le5le.com --port=3200 --configuration=prod --proxy-config=proxy.conf.prod.json",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

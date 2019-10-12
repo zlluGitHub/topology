@@ -56,8 +56,7 @@ export class Canvas {
 
     this.renderNodes();
     this.renderLines();
-    let r = Store.get('render') || 0;
-    Store.set('render', ++r);
+    Store.set('render', 1);
     this.rendering = false;
   }
 

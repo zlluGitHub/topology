@@ -54,7 +54,8 @@ export class Topology {
   lines: Line[] = [];
   options: Options;
   private subcribe: Observer;
-  private subcribeAnimate: Observer;
+  private subcribeAnimateEnd: Observer;
+  private subcribeAnimateMoved: Observer;
 
   touchedNode: any;
   lastHoverNode: Node;
@@ -149,8 +150,8 @@ export class Topology {
     this.offscreen = new Canvas(this.options, 'offscreen');
     Store.set('offscreen', this.offscreen.canvas);
     this.parentElem.appendChild(this.canvas);
-    this.activeLayer = new ActiveLayer(this.parentElem, this.options);
     this.animateLayer = new AnimateLayer(this.parentElem, this.options);
+    this.activeLayer = new ActiveLayer(this.parentElem, this.options);
     this.hoverLayer = new HoverLayer(this.parentElem, this.options);
 
     this.resize();
@@ -163,7 +164,16 @@ export class Topology {
     this.subcribe = Store.subcribe('render', () => {
       this.renderOffscreen();
     });
-    this.subcribeAnimate = Store.subcribe('animateEnd', (e: any) => {
+    this.subcribeAnimateMoved = Store.subcribe('animateMoved', (e: any) => {
+      this.activeLayer.updateLines();
+      this.activeLayer.render();
+      this.offscreen.render();
+
+      if (this.options.on) {
+        this.options.on('animateMoved', e);
+      }
+    });
+    this.subcribeAnimateEnd = Store.subcribe('animateEnd', (e: any) => {
       if (!e) {
         return;
       }
@@ -1432,9 +1442,6 @@ export class Topology {
         this.animateLayer.addLine(item);
       }
     }
-    this.activeLayer.nodes = [];
-    this.activeLayer.lines = [];
-    this.activeLayer.render();
     this.offscreen.render();
     this.animateLayer.render();
   }
@@ -1549,6 +1556,7 @@ export class Topology {
 
   destory() {
     this.subcribe.unsubcribe();
-    this.subcribeAnimate.unsubcribe();
+    this.subcribeAnimateEnd.unsubcribe();
+    this.subcribeAnimateMoved.unsubcribe();
   }
 }

@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   token: 'token',
   urls: {
     account: 'http://account.le5le.com'

@@ -49,6 +49,67 @@ canvas.render(data, true);
 
 # 开发
 
+## 编译[在线绘图官网](https://topology.le5le.com) 前端源码
+
+```
+$ yarn
+$ npm start
+
+# build
+$ npm run build
+
+```
+
+## 调试本地开发环境
+
+```
+$ yarn
+
+//【注意】 修改host文件，把local.dev.le5le.com代理到127.0.0.1
+$ npm run dev
+```
+
+## 调试生产环境
+
+```
+$ yarn
+
+//【注意】 修改host文件，把local.le5le.com代理到127.0.0.1
+$ npm run prod
+```
+
+## 编译核心库源码 Topology-core lib
+
+```
+[libs/topology#] yarn
+
+# build
+[libs/topology#] npm run build
+
+```
+
+## 编译流程图源码 Topology-flow-diagram lib
+
+```
+[libs/topology#] yarn
+
+# build
+[libs/topology-flow-diagram#] npm run build
+
+```
+
+## Demo
+
+demo 源码
+
+```
+[demo#] yarn or npm install
+
+# build
+[demo#] npm run build
+
+```
+
 ## 扩展定制自己的图
 
 - 第 1 步: 绘制节点 node 的样式
@@ -125,56 +186,6 @@ iconRectFn?: (node: Node) => void,
 textRectFn?: (node: Node) => void,
 force?: boolean
 );
-
-```
-
-## 编译[在线绘图官网](https://topology.le5le.com) 前端源码
-
-```
-$ cd topology
-// 安装 在线绘图官网根目录依赖包
-$ yarn
-
-//【注意】 修改host文件，把local.dev.le5le.com代理到127.0.0.1
-// 本地启动
-# build watching file changes and run angular project
-$ npm start
-
-
-# build
-$ npm run build
-
-```
-
-## 编译核心库源码 Topology-core lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology#] npm run build
-
-```
-
-## 编译流程图源码 Topology-flow-diagram lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology-flow-diagram#] npm run build
-
-```
-
-## Demo
-
-demo 源码
-
-```
-[demo#] yarn or npm install
-
-# build
-[demo#] npm run build
 
 ```
 

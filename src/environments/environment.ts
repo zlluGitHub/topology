@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  token: 'token_dev',
+  token: 'token',
+  localhost: true,
   urls: {
     account: 'http://account.le5le.com'
   }
