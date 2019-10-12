@@ -165,7 +165,7 @@ export class Topology {
       this.renderOffscreen();
     });
     this.subcribeAnimateMoved = Store.subcribe('animateMoved', (e: any) => {
-      this.activeLayer.updateLines();
+      this.activeLayer.updateLines(this.nodes);
       this.activeLayer.render();
       this.offscreen.render();
 
