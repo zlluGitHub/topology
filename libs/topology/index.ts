@@ -842,9 +842,11 @@ export class Topology {
     this.hoverLayer.hoverAnchorIndex = -1;
 
     // In active line.
-    for (const item of this.activeLayer.lines) {
-      if (this.isInLine(pt, item)) {
-        return;
+    if (this.locked !== 1) {
+      for (const item of this.activeLayer.lines) {
+        if (this.isInLine(pt, item)) {
+          return;
+        }
       }
     }
 
@@ -897,6 +899,9 @@ export class Topology {
     }
 
     // In line
+    if (this.locked === 1) {
+      return;
+    }
     let index = 0;
     for (const item of this.lines) {
       ++index;
@@ -1404,46 +1409,8 @@ export class Topology {
   }
 
   animate() {
-    for (const item of this.nodes) {
-      let found = false;
-      for (let i = 0; i < this.animateLayer.nodes.length; ++i) {
-        if (this.animateLayer.nodes[i].id === item.id) {
-          item.animateCycleIndex = 1;
-          found = true;
-          if (!item.animateStart) {
-            this.animateLayer.nodes.splice(i, 1);
-          }
-        }
-      }
-
-      if (!found && item.animateStart) {
-        this.animateLayer.addNode(item);
-      }
-    }
-    for (const item of this.lines) {
-      let found = false;
-      for (let i = 0; i < this.animateLayer.lines.length; ++i) {
-        if (this.animateLayer.lines[i].id === item.id) {
-          this.animateLayer.lines[i].animateCycle = item.animateCycle;
-          this.animateLayer.lines[i].animateCycleIndex = 1;
-          this.animateLayer.lines[i].animateColor = item.animateColor || this.animateLayer.options.animateColor;
-          this.animateLayer.lines[i].strokeStyle = item.animateColor || this.animateLayer.options.animateColor;
-          this.animateLayer.lines[i].animateSpan = item.animateSpan;
-          found = true;
-          if (item.animateStart) {
-            this.animateLayer.lines[i].animateStart = item.animateStart;
-          } else {
-            this.animateLayer.lines.splice(i, 1);
-          }
-        }
-      }
-
-      if (!found) {
-        this.animateLayer.addLine(item);
-      }
-    }
     this.offscreen.render();
-    this.animateLayer.render();
+    this.animateLayer.render(false);
   }
 
   updateProps(

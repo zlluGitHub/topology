@@ -1,6 +1,7 @@
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { lineLen, curveLen } from './middles/utils';
+import { Store } from './store/store';
 
 export class AnimateLayer {
   canvas = document.createElement('canvas');
@@ -21,9 +22,55 @@ export class AnimateLayer {
     parent.appendChild(this.canvas);
   }
 
-  render() {
+  render(force = true) {
     if (this.timer) {
-      return;
+      cancelAnimationFrame(this.timer);
+    }
+
+    if (force) {
+      this.nodes = [];
+      this.lines = [];
+    }
+
+    const nodes = Store.get('nodes');
+    const lines = Store.get('lines');
+    for (const item of nodes) {
+      let found = false;
+      for (let i = 0; i < this.nodes.length; ++i) {
+        if (this.nodes[i].id === item.id) {
+          item.animateCycleIndex = 1;
+          found = true;
+          if (!item.animateStart) {
+            this.nodes.splice(i, 1);
+          }
+        }
+      }
+
+      if (!found && item.animateStart) {
+        this.addNode(item);
+      }
+    }
+    for (const item of lines) {
+      let found = false;
+      for (let i = 0; i < this.lines.length; ++i) {
+        if (this.lines[i].id === item.id) {
+          this.lines[i].animateCycle = item.animateCycle;
+          this.lines[i].animateCycleIndex = 1;
+          this.lines[i].animateColor = item.animateColor || this.options.animateColor;
+          this.lines[i].strokeStyle = item.animateColor || this.options.animateColor;
+          this.lines[i].animateSpan = item.animateSpan;
+          found = true;
+          if (item.animateStart) {
+            this.lines[i].animateStart = item.animateStart;
+          } else {
+            this.lines.splice(i, 1);
+          }
+        }
+      }
+
+      if (!found) {
+        this.addLine(item);
+      }
     }
 
     this.animate();
