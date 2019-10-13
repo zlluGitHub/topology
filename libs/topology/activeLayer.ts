@@ -312,7 +312,7 @@ export class ActiveLayer {
     this.updateLines();
   }
 
-  private updateChildren(node: Node) {
+  updateChildren(node: Node) {
     if (!node.children) {
       return;
     }

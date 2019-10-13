@@ -62,6 +62,7 @@ export class Topology {
   input = document.createElement('textarea');
   inputNode: Node;
   mouseDown: { x: number; y: number };
+  lastTranlated = { x: 0, y: 0 };
   moveIn: {
     type: MoveInType;
     activeAnchorIndex: number;
@@ -199,6 +200,19 @@ export class Topology {
     this.hoverLayer.canvas.ondblclick = this.ondblclick;
     this.hoverLayer.canvas.tabIndex = 0;
     this.hoverLayer.canvas.onkeydown = this.onkeydown;
+    this.hoverLayer.canvas.onwheel = event => {
+      if (!event.altKey) {
+        return;
+      }
+
+      if (event.deltaY < 0) {
+        this.scale(1.1);
+      } else {
+        this.scale(0.9);
+      }
+
+      this.hoverLayer.canvas.focus();
+    };
 
     this.hoverLayer.canvas.ontouchend = event => {
       this.ontouched(event);
@@ -245,8 +259,8 @@ export class Topology {
   private ondrop(event: DragEvent) {
     event.preventDefault();
     const node = JSON.parse(event.dataTransfer.getData('Text'));
-    node.rect.x = event.offsetX - node.rect.width / 2;
-    node.rect.y = event.offsetY - node.rect.height / 2;
+    node.rect.x = (event.offsetX - node.rect.width / 2) << 0;
+    node.rect.y = (event.offsetY - node.rect.height / 2) << 0;
     this.addNode(new Node(node));
   }
 
@@ -346,7 +360,16 @@ export class Topology {
   }
 
   private onMouseMove = (e: MouseEvent) => {
-    if (this.scheduledAnimationFrame || this.locked < 0) {
+    if (this.scheduledAnimationFrame) {
+      return;
+    }
+
+    if (e.altKey && this.mouseDown) {
+      this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y);
+      return;
+    }
+
+    if (this.locked < 0) {
       return;
     }
     this.scheduledAnimationFrame = true;
@@ -513,6 +536,10 @@ export class Topology {
     this.mouseDown = { x: e.offsetX, y: e.offsetY };
     Store.set('activeLine', null);
 
+    if (e.altKey) {
+      this.hoverLayer.canvas.style.cursor = 'move';
+    }
+
     if (this.inputNode) {
       this.setNodeText();
     }
@@ -628,9 +655,15 @@ export class Topology {
 
   private onmouseup = (e: MouseEvent) => {
     this.mouseDown = null;
+    if (this.lastTranlated.x) {
+      this.cache();
+    }
+    this.lastTranlated.x = 0;
+    this.lastTranlated.y = 0;
     this.hoverLayer.dockAnchor = null;
     this.hoverLayer.dockLineX = 0;
     this.hoverLayer.dockLineY = 0;
+    this.hoverLayer.canvas.style.cursor = 'default';
 
     if (this.hoverLayer.dragRect) {
       this.getRectNodes(this.nodes, this.hoverLayer.dragRect);
@@ -1519,6 +1552,75 @@ export class Topology {
     }
 
     return -1;
+  }
+
+  translate(x: number, y: number) {
+    const offsetX = x - this.lastTranlated.x;
+    const offsetY = y - this.lastTranlated.y;
+
+    for (const item of this.nodes) {
+      item.rect.x += offsetX;
+      item.rect.y += offsetY;
+      item.rect.ex = item.rect.x + item.rect.width;
+      item.rect.ey = item.rect.y + item.rect.height;
+      item.rect.calceCenter();
+      item.init();
+      this.activeLayer.updateChildren(item);
+    }
+
+    for (const item of this.lines) {
+      item.from.x += offsetX;
+      item.from.y += offsetY;
+      item.to.x += offsetX;
+      item.to.y += offsetY;
+
+      for (const pt of item.controlPoints) {
+        pt.x += offsetX;
+        pt.y += offsetY;
+      }
+
+      Store.set('pts-' + item.id, null);
+    }
+
+    this.lastTranlated.x = x;
+    this.lastTranlated.y = y;
+    this.render();
+  }
+
+  scale(scale: number) {
+    const center = this.getRect().center;
+
+    for (const item of this.nodes) {
+      item.rect.x = center.x - (center.x - item.rect.x) * scale;
+      item.rect.y = center.y - (center.y - item.rect.y) * scale;
+      item.rect.width *= scale;
+      item.rect.height *= scale;
+      item.font.fontSize *= scale;
+      item.iconSize *= scale;
+      item.rect.ex = item.rect.x + item.rect.width;
+      item.rect.ey = item.rect.y + item.rect.height;
+      item.rect.calceCenter();
+      item.init();
+      this.activeLayer.updateChildren(item);
+    }
+
+    for (const item of this.lines) {
+      item.from.x = center.x - (center.x - item.from.x) * scale;
+      item.from.y = center.y - (center.y - item.from.y) * scale;
+      item.to.x = center.x - (center.x - item.to.x) * scale;
+      item.to.y = center.y - (center.y - item.to.y) * scale;
+
+      for (const pt of item.controlPoints) {
+        pt.x = center.x - (center.x - pt.x) * scale;
+        pt.y = center.y - (center.y - pt.y) * scale;
+      }
+
+      Store.set('pts-' + item.id, null);
+    }
+
+    this.render();
+
+    this.cache();
   }
 
   destory() {
