@@ -53,6 +53,11 @@ $color-border: #ddd;
       }
     }
 
+    .separator {
+      border-left: 1px solid #e8e8e8;
+      margin: 0 0.1rem;
+    }
+
     .item {
       position: relative;
 

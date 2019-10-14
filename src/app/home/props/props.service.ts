@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 
+import { StoreService } from 'le5le-store';
+
 import { HttpService } from 'src/app/http/http.service';
 
 @Injectable()
 export class PropsService {
-  constructor(protected http: HttpService) {}
+  constructor(protected http: HttpService, private storeService: StoreService) {}
 
   static images: { id: string; image: string }[];
 
@@ -26,6 +28,11 @@ export class PropsService {
     if (PropsService.images) {
       return PropsService.images;
     }
+
+    if (!this.storeService.get('user')) {
+      return [];
+    }
+
     const ret = await this.http
       .QueryString({
         pageIndex: 1,

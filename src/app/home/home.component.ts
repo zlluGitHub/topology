@@ -212,6 +212,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         case 'toArrowType':
           this.canvas.toArrowType = menu.data;
           break;
+        case 'scale':
+          this.canvas.scaleTo(menu.data);
+          break;
       }
     });
 
@@ -579,6 +582,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           }, 2000);
         }
 
+        break;
+      case 'scale':
+        this.storeService.set('scale', data);
         break;
     }
     // console.log('onMessage:', event, data, this.selected);

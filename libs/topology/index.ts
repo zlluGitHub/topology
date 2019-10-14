@@ -34,6 +34,7 @@ interface ICanvasData {
   lineName?: string;
   fromArrowType?: string;
   toArrowType?: string;
+  scaleState?: number;
 }
 
 interface ICanvasCache {
@@ -52,6 +53,7 @@ export class Topology {
   animateLayer: AnimateLayer;
   nodes: Node[] = [];
   lines: Line[] = [];
+  scaleState = 1;
   options: Options;
   private subcribe: Observer;
   private subcribeAnimateEnd: Observer;
@@ -294,6 +296,10 @@ export class Topology {
       return false;
     }
 
+    if (this.scaleState !== 1) {
+      node.scale(this.scaleState);
+    }
+
     // New active.
     this.activeLayer.setNodes([node]);
     this.activeLayer.render();
@@ -334,6 +340,8 @@ export class Topology {
     if (data.lineName) {
       this.lineName = data.lineName;
     }
+    this.scaleState = data.scaleState || 1;
+
     this.nodes.splice(0, this.nodes.length);
     this.lines.splice(0, this.lines.length);
     for (const item of data.nodes) {
@@ -1274,7 +1282,8 @@ export class Topology {
       lines: this.lines,
       lineName: this.lineName,
       fromArrowType: this.fromArrowType,
-      toArrowType: this.toArrowType
+      toArrowType: this.toArrowType,
+      scaleState: this.scaleState
     };
   }
 
@@ -1585,22 +1594,22 @@ export class Topology {
     this.lastTranlated.x = x;
     this.lastTranlated.y = y;
     this.render();
+    this.cache();
+
+    if (this.options.on) {
+      this.options.on('translate', { x, y });
+    }
   }
 
+  // scale for scaled canvas:
+  //   > 1, expand
+  //   < 1, reduce
   scale(scale: number) {
+    this.scaleState *= scale;
     const center = this.getRect().center;
 
     for (const item of this.nodes) {
-      item.rect.x = center.x - (center.x - item.rect.x) * scale;
-      item.rect.y = center.y - (center.y - item.rect.y) * scale;
-      item.rect.width *= scale;
-      item.rect.height *= scale;
-      item.font.fontSize *= scale;
-      item.iconSize *= scale;
-      item.rect.ex = item.rect.x + item.rect.width;
-      item.rect.ey = item.rect.y + item.rect.height;
-      item.rect.calceCenter();
-      item.init();
+      item.scale(scale, center);
       this.activeLayer.updateChildren(item);
     }
 
@@ -1619,8 +1628,16 @@ export class Topology {
     }
 
     this.render();
-
     this.cache();
+
+    if (this.options.on) {
+      this.options.on('scale', this.scaleState);
+    }
+  }
+
+  // scale for origin canvas:
+  scaleTo(scale: number) {
+    this.scale(scale / this.scaleState);
   }
 
   destory() {

@@ -416,4 +416,20 @@ export class Node extends Pen {
 
     this.render(ctx);
   }
+
+  scale(scale: number, center?: Point) {
+    if (!center) {
+      center = this.rect.center;
+    }
+    this.rect.x = center.x - (center.x - this.rect.x) * scale;
+    this.rect.y = center.y - (center.y - this.rect.y) * scale;
+    this.rect.width *= scale;
+    this.rect.height *= scale;
+    this.font.fontSize *= scale;
+    this.iconSize *= scale;
+    this.rect.ex = this.rect.x + this.rect.width;
+    this.rect.ey = this.rect.y + this.rect.height;
+    this.rect.calceCenter();
+    this.init();
+  }
 }

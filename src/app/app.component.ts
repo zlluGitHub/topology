@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
   blank = false;
   editMode = false;
   locked = 0;
+  scale = 100;
 
   disableStartDlg = false;
 
@@ -94,6 +95,10 @@ export class AppComponent implements OnInit, OnDestroy {
       if (toArrowType !== undefined) {
         this.toArrowType = toArrowType || '';
       }
+    });
+
+    this.storeService.get$('scale').subscribe((scale: number) => {
+      this.scale = scale * 100;
     });
 
     this.storeService.get$('recently').subscribe((item: any) => {

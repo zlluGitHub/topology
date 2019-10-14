@@ -444,15 +444,12 @@ export class PropsComponent implements OnInit, OnChanges {
       state: Node.cloneState(this.props.data)
     });
 
-    this.props.data.animateDuration += 2000;
+    this.onAnimateDuration();
   }
 
   onRemoveFrame(i: number) {
     this.props.data.animateFrames.splice(i, 1);
-    this.props.data.animateDuration = 0;
-    for (const item of this.props.data.animateFrames) {
-      this.props.data.animateDuration += item.duration;
-    }
+    this.onAnimateDuration();
   }
 
   onClickAnimateDash(node: Node, dash: number) {
@@ -462,6 +459,7 @@ export class PropsComponent implements OnInit, OnChanges {
   }
 
   onAnimateDuration() {
+    this.props.data.animateDuration = 0;
     for (const item of this.props.data.animateFrames) {
       this.props.data.animateDuration += item.duration;
     }

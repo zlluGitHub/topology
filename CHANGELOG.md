@@ -5,6 +5,8 @@
 ## Features
 
 - 节点动画
+- 支持 alt 键加鼠标滚轮缩放
+- 支持 alt 键加鼠标按下整体移动
 
 ## Bug Fixes
 
