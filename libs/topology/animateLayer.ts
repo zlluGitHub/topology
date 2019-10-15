@@ -68,7 +68,7 @@ export class AnimateLayer {
         }
       }
 
-      if (!found) {
+      if (!found && item.animateStart) {
         this.addLine(item);
       }
     }

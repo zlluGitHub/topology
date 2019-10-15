@@ -50,4 +50,17 @@ export class Rect {
       new Point(this.x, this.ey)
     ];
   }
+
+  scale(scale: number, center?: Point) {
+    if (!center) {
+      center = this.center;
+    }
+    this.x = center.x - (center.x - this.x) * scale;
+    this.y = center.y - (center.y - this.y) * scale;
+    this.width *= scale;
+    this.height *= scale;
+    this.ex = this.x + this.width;
+    this.ey = this.y + this.height;
+    this.calceCenter();
+  }
 }

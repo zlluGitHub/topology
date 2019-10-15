@@ -64,11 +64,7 @@ export class Line extends Pen {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
-    // For debug
-    // this.fromArrow = 'triangle';
-    // this.toArrow = 'triangle';
-    // end.
-
+    const scale = Store.get('scale');
     if (this.fromArrow && drawArrowFns[this.fromArrow]) {
       ctx.save();
       ctx.beginPath();
@@ -83,7 +79,7 @@ export class Line extends Pen {
       } else if (this.name !== 'line' && this.controlPoints.length) {
         f = this.controlPoints[0];
       }
-      drawArrowFns[this.fromArrow](ctx, f, this.from);
+      drawArrowFns[this.fromArrow](ctx, f, this.from, scale);
       ctx.restore();
     }
     if (this.toArrow && drawArrowFns[this.toArrow]) {
@@ -100,7 +96,7 @@ export class Line extends Pen {
       } else if (this.name !== 'line' && this.controlPoints.length) {
         f = this.controlPoints[this.controlPoints.length - 1];
       }
-      drawArrowFns[this.toArrow](ctx, f, this.to);
+      drawArrowFns[this.toArrow](ctx, f, this.to, scale);
       ctx.restore();
     }
   }

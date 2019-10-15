@@ -206,6 +206,7 @@ export class Topology {
       if (!event.altKey) {
         return;
       }
+      event.preventDefault();
 
       if (event.deltaY < 0) {
         this.scale(1.1);
@@ -332,7 +333,7 @@ export class Topology {
   // open - Is load a new File
   // true: load a new file
   // false: redraw
-  open(data: ICanvasData) {
+  open(data: any) {
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
     this.locked = 0;
@@ -340,7 +341,12 @@ export class Topology {
     if (data.lineName) {
       this.lineName = data.lineName;
     }
+
     this.scaleState = data.scaleState || 1;
+    Store.set('scale', this.scaleState);
+    if (this.options.on) {
+      this.options.on('scale', this.scaleState);
+    }
 
     this.nodes.splice(0, this.nodes.length);
     this.lines.splice(0, this.lines.length);
@@ -353,12 +359,15 @@ export class Topology {
     this.caches.list = [];
     this.cache();
 
+    this.overflow();
+    this.render();
+  }
+
+  private overflow() {
     const rect = this.getRect();
     if (rect.width > this.canvas.width || rect.height > this.canvas.height) {
       this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
     }
-
-    this.render();
   }
 
   private renderOffscreen() {
@@ -1593,6 +1602,7 @@ export class Topology {
 
     this.lastTranlated.x = x;
     this.lastTranlated.y = y;
+    this.overflow();
     this.render();
     this.cache();
 
@@ -1626,7 +1636,9 @@ export class Topology {
 
       Store.set('pts-' + item.id, null);
     }
+    Store.set('scale', this.scaleState);
 
+    this.overflow();
     this.render();
     this.cache();
 

@@ -425,6 +425,12 @@ export class Node extends Pen {
     this.rect.y = center.y - (center.y - this.rect.y) * scale;
     this.rect.width *= scale;
     this.rect.height *= scale;
+    if (this.imageWidth) {
+      this.imageWidth *= scale;
+    }
+    if (this.imageHeight) {
+      this.imageHeight *= scale;
+    }
     this.font.fontSize *= scale;
     this.iconSize *= scale;
     this.rect.ex = this.rect.x + this.rect.width;

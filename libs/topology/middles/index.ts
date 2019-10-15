@@ -286,7 +286,7 @@ export function registerLine(
 // force - Overwirte the node if exists.
 export function registerArrow(
   name: string,
-  drawFn: (ctx: CanvasRenderingContext2D, from: Point, to: Point) => void,
+  drawFn: (ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) => void,
   force?: boolean
 ) {
   // Exist

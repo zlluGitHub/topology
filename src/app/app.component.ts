@@ -44,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
     'diamond',
     'circleSolid',
     'circle',
+    'line',
     'lineUp',
     'lineDown'
   ];

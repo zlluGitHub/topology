@@ -345,6 +345,15 @@
                 </g>
               </svg>
             </div>
+            <div class="icon-item" [class.hidden]="props.data.fromArrow !== 'line'">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 9 l85 0" />
+                  <path d="M0 9 l12 6" />
+                  <path d="M0 9 l12 -6" />
+                </g>
+              </svg>
+            </div>
             <div class="icon-item" [class.hidden]="props.data.fromArrow !== 'lineUp'">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
@@ -415,6 +424,15 @@
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M1 9 l85 0" />
                   <circle cx="6" cy="9" r="5" fill="#ffffff" stroke="#000000" stroke-width="1" />
+                </g>
+              </svg>
+            </div>
+            <div class="icon-item ph10 pv5" (click)="onClickFromArrow('line')">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 9 l85 0" />
+                  <path d="M0 9 l12 6" />
+                  <path d="M0 9 l12 -6" />
                 </g>
               </svg>
             </div>
@@ -495,6 +513,15 @@
                 </g>
               </svg>
             </div>
+            <div class="icon-item" [class.hidden]="props.data.toArrow !== 'line'">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 9 l78 0" />
+                  <path d="M78 9 l-12 6" />
+                  <path d="M78 9 l-12 -6" />
+                </g>
+              </svg>
+            </div>
             <div class="icon-item" [class.hidden]="props.data.toArrow !== 'lineUp'">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
@@ -565,6 +592,15 @@
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M1 9 l78 0" />
                   <circle cx="74" cy="9" r="5" fill="#ffffff" stroke="#000000" stroke-width="1" />
+                </g>
+              </svg>
+            </div>
+            <div class="icon-item ph10 pv5" (click)="onClickToArrow('line')">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 9 l78 0" />
+                  <path d="M78 9 l-12 6" />
+                  <path d="M78 9 l-12 -6" />
                 </g>
               </svg>
             </div>

@@ -1,8 +1,11 @@
 import { Point } from '../../models/point';
 import { Rect } from '../../models/rect';
 
-export function line(ctx: CanvasRenderingContext2D, from: Point, to: Point) {
+export function line(ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) {
   const rect = new Rect(to.x - 12, to.y - 6, 12, 12);
+  if (scale && scale !== 1) {
+    rect.scale(scale, new Point(rect.x + 12, rect.y + 6));
+  }
   ctx.translate(to.x, to.y);
   ctx.rotate(Math.atan2(to.y - from.y, to.x - from.x));
   ctx.translate(-to.x, -to.y);
@@ -12,8 +15,11 @@ export function line(ctx: CanvasRenderingContext2D, from: Point, to: Point) {
   ctx.stroke();
 }
 
-export function lineUp(ctx: CanvasRenderingContext2D, from: Point, to: Point) {
+export function lineUp(ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) {
   const rect = new Rect(to.x - 12, to.y - 6, 12, 12);
+  if (scale && scale !== 1) {
+    rect.scale(scale, new Point(rect.x + 12, rect.y + 6));
+  }
   ctx.translate(to.x, to.y);
   ctx.rotate(Math.atan2(to.y - from.y, to.x - from.x));
   ctx.translate(-to.x, -to.y);
@@ -27,8 +33,11 @@ export function lineUp(ctx: CanvasRenderingContext2D, from: Point, to: Point) {
   ctx.stroke();
 }
 
-export function lineDown(ctx: CanvasRenderingContext2D, from: Point, to: Point) {
+export function lineDown(ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) {
   const rect = new Rect(to.x - 12, to.y - 6, 12, 12);
+  if (scale && scale !== 1) {
+    rect.scale(scale, new Point(rect.x + 12, rect.y + 6));
+  }
   ctx.translate(to.x, to.y);
   ctx.rotate(Math.atan2(to.y - from.y, to.x - from.x));
   ctx.translate(-to.x, -to.y);
