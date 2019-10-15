@@ -9,9 +9,18 @@
     .input {
       width: 100%;
     }
-
     ui-select {
       width: 0.95rem;
+    }
+  }
+
+  .animate {
+    .nowrap {
+      width: 0.6rem;
+    }
+    ui-select,
+    .input {
+      width: 1.4rem;
     }
   }
 

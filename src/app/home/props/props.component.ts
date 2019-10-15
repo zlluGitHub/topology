@@ -118,6 +118,46 @@ export class PropsComponent implements OnInit, OnChanges {
     '#777777'
   ];
 
+  animateType = '';
+  animateOptions = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: '1',
+        name: '上下跳动'
+      },
+      {
+        id: '2',
+        name: '左右跳动'
+      },
+      {
+        id: '3',
+        name: '心跳'
+      },
+      {
+        id: '4',
+        name: '成功'
+      },
+      {
+        id: '5',
+        name: '警告'
+      },
+      {
+        id: '6',
+        name: '错误'
+      },
+      {
+        id: '7',
+        name: '炫耀'
+      },
+      {
+        id: '8',
+        name: '自定义'
+      }
+    ]
+  };
+
   icons: any[] = [
     { class: 'topology-upload', unicode: '59295' },
     { class: 'topology-download', unicode: '59292' },
@@ -439,7 +479,7 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.props.data.animateFrames.push({
-      duration: 2000,
+      duration: 200,
       linear: true,
       state: Node.cloneState(this.props.data)
     });
@@ -450,6 +490,22 @@ export class PropsComponent implements OnInit, OnChanges {
   onRemoveFrame(i: number) {
     this.props.data.animateFrames.splice(i, 1);
     this.onAnimateDuration();
+  }
+
+  onFrameUp(i: number) {
+    if (i < 1) {
+      return;
+    }
+    const item = this.props.data.animateFrames.splice(i, 1);
+    this.props.data.animateFrames.splice(i - 1, 0, item[0]);
+  }
+
+  onFrameDown(i: number) {
+    if (i > this.props.data.animateFrames.length - 2) {
+      return;
+    }
+    const item = this.props.data.animateFrames.splice(i, 1);
+    this.props.data.animateFrames.splice(i + 1, 0, item[0]);
   }
 
   onClickAnimateDash(node: Node, dash: number) {
@@ -463,5 +519,173 @@ export class PropsComponent implements OnInit, OnChanges {
     for (const item of this.props.data.animateFrames) {
       this.props.data.animateDuration += item.duration;
     }
+  }
+
+  onChangeAnimate() {
+    if (this.animateType === '8') {
+      return;
+    }
+
+    const state = Node.cloneState(this.props.data);
+    switch (this.animateType) {
+      case '1':
+        state.rect.y -= 10;
+        state.rect.ey -= 10;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state
+        });
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(this.props.data)
+        });
+        this.props.data.animateFrames.push({
+          duration: 200,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        break;
+      case '2':
+        state.rect.x -= 10;
+        state.rect.ex -= 10;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.rect.x += 20;
+        state.rect.ex += 20;
+        this.props.data.animateFrames.push({
+          duration: 80,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.rect.x -= 20;
+        state.rect.ex -= 20;
+        this.props.data.animateFrames.push({
+          duration: 50,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.rect.x += 20;
+        state.rect.ex += 20;
+        this.props.data.animateFrames.push({
+          duration: 30,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        this.props.data.animateFrames.push({
+          duration: 300,
+          linear: true,
+          state: Node.cloneState(this.props.data)
+        });
+        break;
+      case '3':
+        state.rect.x -= 5;
+        state.rect.ex += 5;
+        state.rect.y -= 5;
+        state.rect.ey += 5;
+        state.rect.width += 5;
+        state.rect.height += 10;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state
+        });
+        this.props.data.animateFrames.push({
+          duration: 400,
+          linear: true,
+          state: Node.cloneState(this.props.data)
+        });
+        break;
+      case '4':
+        state.strokeStyle = '#237804';
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state
+        });
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(this.props.data)
+        });
+        state.strokeStyle = '#237804';
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state
+        });
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(this.props.data)
+        });
+        state.strokeStyle = '#237804';
+        state.fillStyle = '#389e0d22';
+        this.props.data.animateFrames.push({
+          duration: 3000,
+          linear: true,
+          state
+        });
+        break;
+      case '5':
+        state.strokeStyle = '#fa8c16';
+        state.dash = 2;
+        this.props.data.animateFrames.push({
+          duration: 300,
+          linear: true,
+          state
+        });
+        state.strokeStyle = '#fa8c16';
+        state.dash = 0;
+        this.props.data.animateFrames.push({
+          duration: 500,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.strokeStyle = '#fa8c16';
+        state.dash = 2;
+        this.props.data.animateFrames.push({
+          duration: 300,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        break;
+      case '6':
+        state.strokeStyle = '#cf1322';
+        state.fillStyle = '#cf132222';
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state
+        });
+        break;
+      case '7':
+        state.strokeStyle = '#fa541c';
+        state.rotate = -10;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.rotate = 10;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        state.rotate = 0;
+        this.props.data.animateFrames.push({
+          duration: 100,
+          linear: true,
+          state: Node.cloneState(state)
+        });
+        break;
+    }
+
+    this.onAnimateDuration();
   }
 }
