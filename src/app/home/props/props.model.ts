@@ -27,6 +27,7 @@ export interface Props {
     animateCycle: number;
     animateColor: string;
     animateSpan: number;
+    animateType?: string;
     animateDuration?: number;
     animateFrames?: {
       duration: number;

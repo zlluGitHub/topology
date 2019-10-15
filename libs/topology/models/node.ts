@@ -57,6 +57,8 @@ export class Node extends Pen {
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
 
+  // animateType仅仅是辅助标识
+  animateType = 0;
   animateDuration = 0;
   animateFrames: {
     duration: number;
@@ -112,6 +114,7 @@ export class Node extends Pen {
     if (json.animateDuration) {
       this.animateDuration = json.animateDuration;
     }
+    this.animateType = json.animateType ? json.animateType : json.animateDuration ? '8' : '';
     this.init();
 
     this.setChild(json);

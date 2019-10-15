@@ -118,7 +118,6 @@ export class PropsComponent implements OnInit, OnChanges {
     '#777777'
   ];
 
-  animateType = '';
   animateOptions = {
     id: 'id',
     name: 'name',
@@ -522,12 +521,12 @@ export class PropsComponent implements OnInit, OnChanges {
   }
 
   onChangeAnimate() {
-    if (this.animateType === '8') {
+    if (this.props.data.animateType === '8') {
       return;
     }
 
     const state = Node.cloneState(this.props.data);
-    switch (this.animateType) {
+    switch (this.props.data.animateType) {
       case '1':
         state.rect.y -= 10;
         state.rect.ey -= 10;

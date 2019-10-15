@@ -842,14 +842,14 @@
       <div class="flex animate">
         <div class="nowrap">特效：</div>
         <div>
-          <ui-select name="node-animate" [(ngModel)]="animateType" [options]="animateOptions" [multi]="false"
+          <ui-select name="node-animate" [(ngModel)]="props.data.animateType" [options]="animateOptions" [multi]="false"
             (change)="onChangeAnimate()" placeholder="无" [readonly]="readonly"></ui-select>
         </div>
       </div>
       <div class="flex animate">
         <div class="nowrap"></div>
         <div>
-            <a *ngIf="animateType === '8'" (click)="showDialog===3?showDialog=0: showDialog=3">设置</a> 
+            <a *ngIf="props.data.animateType === '8'" (click)="showDialog===3?showDialog=0: showDialog=3">设置</a> 
         </div>
       </div>      
       <div class="flex animate mt5">
