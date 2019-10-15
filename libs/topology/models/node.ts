@@ -326,15 +326,24 @@ export class Node extends Pen {
   }
 
   animate(ctx: CanvasRenderingContext2D, now: number) {
-    if (!this.animateDuration) {
-      this.animateStart = 0;
-      return;
-    }
-
     let timeline = now - this.animateStart;
     if (timeline > this.animateDuration) {
-      if (++this.animateCycleIndex > this.animateCycle && this.animateCycle > 0) {
+      if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
+        this.animateCycleIndex = 0;
+        const item = this.animateFrames[this.animateFrames.length - 1];
+        this.dash = item.state.dash;
+        this.strokeStyle = item.state.strokeStyle;
+        this.fillStyle = item.state.fillStyle;
+        this.font = item.state.font;
+
+        this.lineWidth = item.state.lineWidth;
+        this.rotate = item.state.rotate;
+        this.globalAlpha = item.state.globalAlpha;
+        if (item.state.rect && item.state.rect.width) {
+          this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
+          this.init();
+        }
         Store.set('animateEnd', {
           type: 'node',
           data: this
@@ -395,6 +404,7 @@ export class Node extends Pen {
 
           if (item.state.rotate !== item.initState.rotate) {
             this.rotate = item.initState.rotate + (item.state.rotate - item.initState.rotate) * rate;
+            rectChanged = true;
           }
 
           if (item.state.globalAlpha !== item.initState.globalAlpha) {

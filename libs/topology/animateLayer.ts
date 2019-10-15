@@ -111,7 +111,7 @@ export class AnimateLayer {
       const interval = now - this.last;
       this.last = now;
 
-      // Not need too fast.
+      // Not too fast.
       if (interval > 15) {
         // clear
         this.canvas.height = this.canvas.height;
@@ -124,8 +124,9 @@ export class AnimateLayer {
           }
         }
         for (let i = 0; i < this.nodes.length; ++i) {
-          this.nodes[i].animate(ctx, now);
-          if (!this.nodes[i].animateStart) {
+          if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
+            this.nodes[i].animate(ctx, now);
+          } else {
             this.nodes.splice(i, 1);
           }
         }

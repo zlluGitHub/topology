@@ -67,7 +67,7 @@ export class Canvas {
 
     const ctx = this.canvas.getContext('2d');
     for (const item of this.nodes) {
-      if (item.animateStart) {
+      if (item.animateStart && item.animateDuration) {
         continue;
       }
       item.render(ctx);

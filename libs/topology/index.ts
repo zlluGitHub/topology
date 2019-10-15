@@ -189,6 +189,10 @@ export class Topology {
             }
           }
           break;
+        case 'node':
+          // this.activeLayer.render();
+          this.offscreen.render();
+          break;
       }
 
       if (this.options.on) {
