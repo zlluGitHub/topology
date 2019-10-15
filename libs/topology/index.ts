@@ -1331,7 +1331,9 @@ export class Topology {
     const a = document.createElement('a');
     a.setAttribute('download', name || 'le5le.topology.png');
     a.setAttribute('href', this.toImage(type, quality));
-    a.click();
+    const evt = document.createEvent('MouseEvents');
+    evt.initEvent('click', true, true);
+    a.dispatchEvent(evt);
   }
 
   cut() {

@@ -723,7 +723,9 @@ ${this.selNodes[0].image}`,
     const a = document.createElement('a');
     a.setAttribute('download', this.data.name + '.svg');
     a.setAttribute('href', url);
-    a.click();
+    const evt = document.createEvent('MouseEvents');
+    evt.initEvent('click', true, true);
+    a.dispatchEvent(evt);
   }
 
   ngOnDestroy() {
