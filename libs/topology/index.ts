@@ -1479,12 +1479,13 @@ export class Topology {
     this.activeLayer.updateProps(nodes, lines, props);
     this.activeLayer.saveNodeRects();
     this.activeLayer.changeLineType();
-    this.cache();
 
     this.activeLayer.render();
     this.animateLayer.render();
     this.hoverLayer.render();
     this.offscreen.render();
+
+    this.cache();
   }
 
   lock(lock: number) {

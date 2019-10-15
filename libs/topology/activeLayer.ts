@@ -465,6 +465,9 @@ export class ActiveLayer {
   ) {
     if (nodes) {
       for (const item of nodes) {
+        item.rect.ex = item.rect.x + item.rect.width;
+        item.rect.ey = item.rect.y + item.rect.height;
+        item.rect.calceCenter();
         item.init();
         item.dash = props.dash;
         item.lineWidth = props.lineWidth;
@@ -488,6 +491,8 @@ export class ActiveLayer {
         item.globalAlpha = props.globalAlpha;
       }
     }
+
+    this.calcControlPoints();
   }
 
   getDockWatchers() {
