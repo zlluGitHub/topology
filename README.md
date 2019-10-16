@@ -22,6 +22,7 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 - libs
   |- topology  // The topogoly-core lib source.
 - src  // The topology.le5le.com source that uses angular.
+- bundle
 - demo // The demo uses js.
 ```
 
@@ -32,12 +33,23 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 
 # Getting Started
 
+## typescrypt/es6
+
 ```
 import { Topology } from 'topology-core';
 
-
 var canvas = new Topology('topo-dom', options);
-canvas.render(data, true);
+canvas.open(data);
+
+```
+
+# es5
+
+```
+<script src="/bundle/topology.bundle.js"></script>
+
+var canvas = new Le5leTopology.Topology('topo-canvas', {});
+canvas.open(data);
 
 ```
 

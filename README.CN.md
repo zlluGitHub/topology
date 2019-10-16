@@ -22,6 +22,7 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 - libs
   |- topology  // topogoly-core库源码
 - src  // 官网源码.
+- bundle // es5的压缩包和demo
 - demo // demo
 ```
 
@@ -32,12 +33,23 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 
 # 快速上手
 
+## typescrypt/es6
+
 ```
 import { Topology } from 'topology-core';
 
-
 var canvas = new Topology('topo-dom', options);
-canvas.render(data, true);
+canvas.open(data);
+
+```
+
+# es5
+
+```
+<script src="/bundle/topology.bundle.js"></script>
+
+var canvas = new Le5leTopology.Topology('topo-canvas', {});
+canvas.open(data);
 
 ```
 
