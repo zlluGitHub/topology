@@ -525,6 +525,7 @@ export class PropsComponent implements OnInit, OnChanges {
       return;
     }
 
+    this.props.data.animateFrames = [];
     const state = Node.cloneState(this.props.data);
     switch (this.props.data.animateType) {
       case '1':

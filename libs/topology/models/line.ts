@@ -11,6 +11,8 @@ export class Line extends Pen {
   fromArrow: string;
   toArrow: string;
 
+  length: number;
+
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
@@ -34,6 +36,9 @@ export class Line extends Pen {
       }
       if (json.animateSpan) {
         this.animateSpan = json.animateSpan;
+      }
+      if (json.length) {
+        this.length = json.length;
       }
     } else {
       this.name = 'curve';
@@ -109,11 +114,11 @@ export class Line extends Pen {
     ctx.save();
     ctx.lineCap = 'round';
     this.animatePos += this.animateSpan;
-    ctx.setLineDash([this.animatePos, this.data - this.animatePos + 1]);
+    ctx.setLineDash([this.animatePos, this.length - this.animatePos + 1]);
     this.render(ctx);
     ctx.restore();
-    if (this.animatePos > this.data + this.animateSpan) {
-      if (++this.animateCycleIndex > this.animateCycle && this.animateCycle > 0) {
+    if (this.animatePos > this.length + this.animateSpan) {
+      if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
         Store.set('animateEnd', {
           type: 'line',

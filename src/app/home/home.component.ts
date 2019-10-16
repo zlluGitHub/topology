@@ -367,30 +367,29 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.storeService.set('lineName', ret.data.lineName);
     this.storeService.set('fromArrowType', ret.data.fromArrowType);
     this.storeService.set('toArrowType', ret.data.toArrowType);
-
-    // for demo
-    if (this.data.name === 'cube-demo') {
-      const colors = ['#ff6600', '#1890ff', '#52c41a', '#1890ff', '#ff6600'];
-      for (let i = 0; i < 5; ++i) {
-        this.data.data.lines[i].animateColor = colors[i];
-        this.data.data.lines[i].animateSpan = 1;
-        this.data.data.lines[i].animate = Date.now();
-      }
-    }
     this.canvas.open(ret.data);
 
     this.storeService.set('file', this.data);
 
-    // for demo
+    this.animateDemo();
+  }
+
+  animateDemo(index = 1) {
     if (this.data.name === 'cube-demo') {
       const d = this.canvas.data();
       const n = Date.now();
-      for (let i = 0; i < 5; ++i) {
-        d.lines[i].animateStart = n;
-        this.canvas.animate();
+      for (const item of d.nodes) {
+        if (+item.data === index) {
+          item.animateStart = n;
+        }
       }
+      for (const item of d.lines) {
+        if (+item.data === index) {
+          item.animateStart = n;
+        }
+      }
+      this.canvas.animate();
     }
-    // end
   }
 
   onOpenLocal() {
@@ -585,6 +584,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
       case 'scale':
         this.storeService.set('scale', data);
+        break;
+      case 'animateEnd':
+        if (data.data.data === '9') {
+          this.animateDemo(1);
+        } else {
+          this.animateDemo(+data.data.data + 1);
+        }
         break;
     }
     // console.log('onMessage:', event, data, this.selected);

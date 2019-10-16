@@ -873,7 +873,7 @@
         </div>
         <div class="ph20 pv10 border-bottom" *ngFor="let item of props.data.animateFrames;let i=index">
           <div class="flex">            
-            <label class="full bold">帧{{i+1}}</label>            
+            <label class="full bold">帧{{i+1}} （总数：{{props.data.animateFrames.length}}） </label>            
             <i class="iconfont icon-arrow-up hover mr10" (click)="onFrameUp(i)"></i>
             <i class="iconfont icon-arrow-down hover mr10" (click)="onFrameDown(i)"></i>
             <i class="iconfont icon-delete hover" (click)="onRemoveFrame(i)"></i>

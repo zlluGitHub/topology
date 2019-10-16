@@ -153,8 +153,8 @@ export class Topology {
     this.offscreen = new Canvas(this.options, 'offscreen');
     Store.set('offscreen', this.offscreen.canvas);
     this.parentElem.appendChild(this.canvas);
-    this.animateLayer = new AnimateLayer(this.parentElem, this.options);
     this.activeLayer = new ActiveLayer(this.parentElem, this.options);
+    this.animateLayer = new AnimateLayer(this.parentElem, this.options);
     this.hoverLayer = new HoverLayer(this.parentElem, this.options);
 
     this.resize();

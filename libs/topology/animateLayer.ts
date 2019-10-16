@@ -93,7 +93,7 @@ export class AnimateLayer {
     l.toArrow = '';
     l.lineWidth += 1;
     l.strokeStyle = l.animateColor || this.options.animateColor;
-    l.data = this.getLen(l);
+    l.length = this.getLen(l);
     l.animateStart = line.animateStart;
     this.lines.push(l);
   }
@@ -119,7 +119,7 @@ export class AnimateLayer {
         const ctx = this.canvas.getContext('2d');
         for (let i = 0; i < this.lines.length; ++i) {
           this.lines[i].animate(ctx);
-          if (!this.lines[i].animateStart) {
+          if (this.lines[i] && !this.lines[i].animateStart) {
             this.lines.splice(i, 1);
           }
         }
