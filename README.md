@@ -26,11 +26,6 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 - demo // The demo uses js.
 ```
 
-# About branch
-
-- master: full source
-- local: only front-end source, remove the functons of server .
-
 # Getting Started
 
 ## typescrypt/es6

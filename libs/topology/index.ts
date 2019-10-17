@@ -261,6 +261,7 @@ export class Topology {
     this.hoverLayer.resize(this.canvas.width, this.canvas.height);
     this.activeLayer.resize(this.canvas.width, this.canvas.height);
     this.animateLayer.resize(this.canvas.width, this.canvas.height);
+    this.render();
   }
 
   private ondrop(event: DragEvent) {
