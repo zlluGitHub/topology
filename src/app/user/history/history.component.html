@@ -2,7 +2,7 @@
   <div class="nav">
     <a routerLink="/">首页</a>
     <a routerLink="/user/home">我的文件</a>
-    <label>{{ search.fileId | slice: 0:8 }}的历史记录</label>
+    <label>{{ name }}的历史记录</label>
   </div>
   <div *ngIf="!loading">
     <table>
@@ -15,7 +15,7 @@
       </tr>
       <tr *ngFor="let item of data.list">
         <td class="text-center">
-          <a routerLink="/" [queryParams]="{ id: item.id, fileId: item.fileId }">
+          <a routerLink="/workspace" [queryParams]="{ id: item.id, fileId: item.fileId }">
             <img [appImgAuthSrc]="item.image" />
           </a>
         </td>
@@ -37,7 +37,7 @@
         </td>
         <td>{{ item.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
         <td width="140">
-          <a class="mr15" routerLink="/" [queryParams]="{ id: item.id, fileId: item.fileId }">
+          <a class="mr15" routerLink="/workspace" [queryParams]="{ id: item.id, fileId: item.fileId }">
             进入编辑
           </a>
           <a class="mr15" (click)="onDel(item)">
@@ -48,7 +48,7 @@
       <tr *ngIf="!data.count">
         <td class="gray text-center" colspan="10">
           暂无历史记录，VIP会员保存文件将保存历史记录。
-          <a routerLink="/" [queryParams]="{ id: search.fileId }">去编辑</a>
+          <a routerLink="/workspace" [queryParams]="{ id: search.fileId }">去编辑</a>
         </td>
       </tr>
     </table>

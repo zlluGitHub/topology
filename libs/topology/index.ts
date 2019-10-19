@@ -329,6 +329,9 @@ export class Topology {
     this.activeLayer.nodes = [];
     this.activeLayer.lines = [];
     this.hoverLayer.node = null;
+    this.hoverLayer.line = null;
+    Store.set('activeLine', null);
+
     this.hoverLayer.render();
     this.activeLayer.render();
     this.animateLayer.render();
@@ -336,8 +339,6 @@ export class Topology {
   }
 
   // open - Is load a new File
-  // true: load a new file
-  // false: redraw
   open(data: any) {
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
@@ -794,31 +795,7 @@ export class Topology {
         if (!this.activeLayer.nodes.length && !this.activeLayer.lines.length) {
           return;
         }
-
-        let i = 0;
-        for (const line of this.activeLayer.lines) {
-          i = 0;
-          for (const l of this.lines) {
-            if (line.id === l.id) {
-              this.lines.splice(i, 1);
-              break;
-            }
-            ++i;
-          }
-        }
-
-        for (const node of this.activeLayer.nodes) {
-          i = this.findNode(node);
-          if (i > -1) {
-            this.nodes.splice(i, 1);
-          }
-        }
-        this.activeLayer.nodes = [];
-        this.activeLayer.lines = [];
-        this.hoverLayer.node = null;
-        this.hoverLayer.line = null;
-        Store.set('activeLine', null);
-        done = true;
+        this.delete();
         break;
       // Left
       case 37:
@@ -1339,6 +1316,31 @@ export class Topology {
     const evt = document.createEvent('MouseEvents');
     evt.initEvent('click', true, true);
     a.dispatchEvent(evt);
+  }
+
+  delete() {
+    let i = 0;
+    for (const line of this.activeLayer.lines) {
+      i = 0;
+      for (const l of this.lines) {
+        if (line.id === l.id) {
+          this.lines.splice(i, 1);
+          break;
+        }
+        ++i;
+      }
+    }
+
+    for (const node of this.activeLayer.nodes) {
+      i = this.findNode(node);
+      if (i > -1) {
+        this.nodes.splice(i, 1);
+      }
+    }
+
+    this.activeLayer.saveNodeRects();
+    this.render();
+    this.cache();
   }
 
   cut() {

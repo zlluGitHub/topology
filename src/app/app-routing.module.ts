@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
-import { HomeComponent } from './home/home.component';
+import { HotComponent } from './hot/hot.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'hot', loadChildren: './hot/hot.module#HotModule' },
+  { path: '', component: HotComponent, pathMatch: 'full' },
+  { path: 'workspace', loadChildren: './home/home.module#HomeModule' },
   { path: 'user', loadChildren: './user/user.module#UserModule' }
 ];
 

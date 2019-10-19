@@ -43,7 +43,12 @@
               <i class="iconfont icon-appreciate"></i>
               <span class="ml5">{{ item.star || 0 }}</span>
             </span>
-            <a class="ml15" title="文件历史" routerLink="/user/history" [queryParams]="{ id: item.id }">
+            <a
+              class="ml15"
+              title="文件历史"
+              routerLink="/user/history"
+              [queryParams]="{ id: item.id, name: item.name }"
+            >
               <i class="iconfont icon-sort" style="font-size: .14rem"></i>
             </a>
           </div>

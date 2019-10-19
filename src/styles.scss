@@ -203,6 +203,61 @@ a:hover {
   }
 }
 
+.topo {
+  position: relative;
+  width: calc(25% - 0.2rem);
+  height: 3rem;
+  margin: 0.1rem;
+  border-radius: 2px;
+  background-color: #fff;
+
+  .image {
+    padding: 0.1rem 0.1rem 0.15rem 0.1rem;
+    text-align: center;
+    height: 1.85rem;
+    border-bottom: 1px solid #f7f7f7;
+    cursor: pointer;
+
+    img {
+      height: 100%;
+    }
+  }
+
+  .title {
+    font-size: 0.16rem;
+    line-height: 0.24rem;
+    height: 0.24rem;
+    cursor: pointer;
+  }
+
+  .desc {
+    font-size: 0.12rem;
+    line-height: 0.16rem;
+    height: 0.32rem;
+  }
+
+  .iconfont {
+    font-size: $font-size;
+  }
+
+  textarea {
+    &.input {
+      min-width: 0.3rem;
+      width: 100%;
+      max-width: 100%;
+      font-size: 0.1rem;
+      padding: 0.02rem 0.05rem;
+      resize: none;
+    }
+  }
+
+  .icon-delete {
+    position: absolute;
+    top: 0.05rem;
+    right: 0.1rem;
+  }
+}
+
 @media screen and (max-width: 760px) {
   .hide-mobile {
     display: none;

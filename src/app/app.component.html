@@ -1,6 +1,6 @@
 <div class="page" (click)="onClick()">
   <div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
-    <div class="item">
+    <div class="item pointer" (click)="onHome()">
       <img src="/assets/img/favicon.ico" />
     </div>
     <div class="item">
@@ -13,50 +13,30 @@
             新建文件
           </a>
         </div>
+        <div class="item">
+          <a (click)="onMenu('open')">
+            打开本地文件（新建）
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('open', true)">
+            导入本地文件...
+          </a>
+        </div>
         <div class="item" (mouseenter)="showFigure = true" (mouseleave)="onLeaveFigure()">
           <a>
-            打开云端文件...
+            打开最近的文件
             <i class="iconfont icon-angle-right"></i>
           </a>
           <div class="dropdown pt15" [class.block]="showFigure">
             <figure>
-              <div class="mb20">
-                <div class="title">推荐图文</div>
-                <div class="flex wrap">
-                  <a
-                    class="topo"
-                    *ngFor="let item of list.recommend"
-                    [title]="item.name"
-                    routerLink="/"
-                    [queryParams]="{ id: item.id, fileId: item.fileId }"
-                  >
-                    <img [appImgAuthSrc]="item.image" />
-                  </a>
-                </div>
-              </div>
               <div *ngIf="list.recently.length" class="mb20">
-                <div class="title">最近使用</div>
                 <div class="flex wrap">
                   <a
                     class="topo"
                     *ngFor="let item of list.recently"
                     [title]="item.name"
-                    routerLink="/"
-                    [queryParams]="{ id: item.id, fileId: item.fileId }"
-                  >
-                    <img [appImgAuthSrc]="item.image" />
-                  </a>
-                </div>
-              </div>
-
-              <div *ngIf="list.created.length" class="mb20">
-                <div class="title">最近创建</div>
-                <div class="flex wrap">
-                  <a
-                    class="topo"
-                    *ngFor="let item of list.created"
-                    [title]="item.name"
-                    routerLink="/"
+                    routerLink="/workspace"
                     [queryParams]="{ id: item.id, fileId: item.fileId }"
                   >
                     <img [appImgAuthSrc]="item.image" />
@@ -64,18 +44,7 @@
                 </div>
               </div>
             </figure>
-            <div class="item line"></div>
-            <div class="item">
-              <a routerLink="/hot">
-                更多...
-              </a>
-            </div>
           </div>
-        </div>
-        <div class="item">
-          <a (click)="onMenu('open')">
-            打开本地文件...
-          </a>
         </div>
         <div class="item line"></div>
         <div [class.disabled]="!editMode">
@@ -148,14 +117,14 @@
       <a>查看</a>
       <div class="dropdown">
         <div class="item">
-          <a (click)="blank = true">
-            推荐图文（对话框）
+          <a (click)="onHome()">
+            大家分享的图文
           </a>
         </div>
         <div class="item line"></div>
         <div class="item">
           <a href="http://le5le.com" target="_blank">
-            更多
+            乐吾乐
           </a>
         </div>
       </div>
@@ -164,19 +133,18 @@
       <a>社区</a>
       <div class="dropdown">
         <div class="item">
-          <a routerLink="/hot">
-            大家分享的图文
-          </a>
-        </div>
-        <div class="item line"></div>
-        <div class="item">
           <a (click)="showAbout = true" target="_blank">
             咨询与建议
           </a>
         </div>
         <div class="item">
           <a href="https://github.com/le5le-com/topology" target="_blank">
-            开源（GitHub）
+            开源GitHub
+          </a>
+        </div>
+        <div class="item">
+          <a href="https://www.yuque.com/alsmile/topology" target="_blank">
+            开发文档
           </a>
         </div>
         <div class="item line"></div>
@@ -196,18 +164,12 @@
             产品介绍
           </a>
         </div>
-        <div class="item">
-          <a href="https://www.yuque.com/alsmile/topology/about" target="_blank">
-            API开发教程
-          </a>
-        </div>
         <div class="item line"></div>
         <div class="item">
           <a (click)="showLicense = true">
             许可与声明
           </a>
         </div>
-        <div class="item line"></div>
         <div class="item">
           <a (click)="showHelp = true">
             资助与加入
@@ -221,22 +183,23 @@
         </div>
       </div>
     </div>
-    <div class="full text-center" *ngIf="editMode">
-      <form
-        class="inline"
-        [class.hidden]="!editFilename"
-        #myForm="ngForm"
-        (ngSubmit)="onSubmit(myForm.invalid)"
-        [uiTouchForm]="myForm"
-        (click)="$event.stopPropagation()"
-      >
-        <input name="filename" #filenameInput class="input" [(ngModel)]="filename" required />
-      </form>
-      <div class="inline" *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击修改">
-        {{ filename || '空白文件' }}
+    <div class="full text-center">
+      <div *ngIf="editMode">
+        <form
+          class="inline"
+          [class.hidden]="!editFilename"
+          #myForm="ngForm"
+          (ngSubmit)="onSubmit(myForm.invalid)"
+          [uiTouchForm]="myForm"
+          (click)="$event.stopPropagation()"
+        >
+          <input name="filename" #filenameInput class="input" [(ngModel)]="filename" required />
+        </form>
+        <div class="inline" *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击修改">
+          {{ filename || '空白文件' }}
+        </div>
       </div>
     </div>
-    <div class="full text-center" *ngIf="!editMode"></div>
     <div class="flex" [class.disabled]="!editMode">
       <div class="separator"></div>
       <div class="item mh5">

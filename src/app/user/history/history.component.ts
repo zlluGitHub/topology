@@ -17,6 +17,7 @@ import { CoreService } from 'src/app/core/core.service';
   }
 })
 export class UserHistoryComponent implements OnInit, OnDestroy {
+  name = '';
   search = {
     fileId: '',
     pageIndex: 1,
@@ -55,6 +56,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.isVip = this.coreService.isVip(this.user);
 
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
+      this.name = params.get('name');
       this.search.fileId = params.get('id');
       this.search.pageIndex = +params.get('pageIndex') || 1;
       this.search.pageCount = +params.get('pageCount') || 5;
@@ -73,7 +75,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
   }
 
   onOpen(item: any) {
-    this.router.navigate(['/'], {
+    this.router.navigate(['/workspace'], {
       queryParams: {
         id: item.id
       }

@@ -1,17 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 import { StoreService } from 'le5le-store';
 import { environment } from 'src/environments/environment';
 
-import { AppService } from './app.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [AppService]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
   user: any;
@@ -27,9 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   };
   filename = '';
   list = {
-    recommend: [],
-    recently: [],
-    created: []
+    recently: []
   };
   lineName = 'curve';
   fromArrowType = '';
@@ -62,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showLicense = false;
   showHelp = false;
   showAbout = false;
-  constructor(private service: AppService, private storeService: StoreService, private router: Router) {}
+  constructor(private storeService: StoreService, private router: Router, private activateRoute: ActivatedRoute) {}
 
   ngOnInit() {
     this.disableStartDlg = localStorage.getItem('disable.startDlg') === 'true';
@@ -71,8 +66,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.storeService.get$('user').subscribe((user: any) => {
       this.user = user;
       this.getRecently();
-      this.getStarTopo();
-      this.getUserTopo();
     });
 
     this.storeService.get$('file').subscribe((file: any) => {
@@ -104,7 +97,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.storeService.get$('recently').subscribe((item: any) => {
       for (let i = 0; i < this.list.recently.length; ++i) {
-        if (this.list.recently[i].id === item.id || i > 3) {
+        if (this.list.recently[i].id === item.id || i > 18) {
           this.list.recently.splice(i, 1);
         }
       }
@@ -116,8 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
-      const pathname = (event as NavigationEnd).url.substring(0, (event as NavigationEnd).url.indexOf('?'));
-      if ((event as NavigationEnd).url === '/' || pathname === '/') {
+      if ((event as NavigationEnd).url.indexOf('/workspace') === 0) {
         this.editMode = true;
       } else {
         this.editMode = false;
@@ -134,22 +126,6 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.getRecently();
-    this.getStarTopo();
-    this.getUserTopo();
-  }
-
-  async getStarTopo() {
-    const ret = await this.service.Topologies({ pageIndex: 1, pageCount: 5, count: 0 });
-    this.list.recommend = ret.list;
-  }
-
-  async getUserTopo() {
-    if (!this.user) {
-      return;
-    }
-
-    const ret = await this.service.UserTopologies({ pageIndex: 1, pageCount: 5, count: 0 });
-    this.list.created = ret.list;
   }
 
   getRecently() {
@@ -172,7 +148,14 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     if (menu === 'new' || menu === 'open') {
-      this.router.navigateByUrl('/');
+      const queryParams: any = {};
+      if (data) {
+        queryParams.id = this.activateRoute.snapshot.queryParamMap.get('id');
+        queryParams.fileId = this.activateRoute.snapshot.queryParamMap.get('fileId');
+      }
+      this.router.navigate(['/workspace'], {
+        queryParams
+      });
     }
 
     setTimeout(

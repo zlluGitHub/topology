@@ -347,7 +347,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   async onOpen(data: { id: string; fileId?: string }) {
     const ret = await this.service.Get(data);
     if (!ret) {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/workspace');
       return;
     }
 
@@ -464,7 +464,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           desc: this.data.desc
         });
 
-        this.router.navigate(['/'], { queryParams: { id: this.data.id } });
+        this.router.navigate(['/workspace'], { queryParams: { id: this.data.id } });
       }
     });
   }
@@ -681,6 +681,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     this.canvas.uncombine(this.selNodes[0]);
     this.canvas.render();
+  }
+
+  onDel() {
+    this.canvas.delete();
   }
 
   onCopyImage() {

@@ -2,7 +2,7 @@ English | [简体中文](./README.CN.md)
 
 # Le5le-topology
 
-Le5le-topology is a diagram visualization framework uses canvas and typescript. Developers are able to build diagram (topology, UML) and analysis micro-services architecture application easily.
+Le5le-topology is a diagram visualization framework uses canvas and typescript. Developers are able to build diagram (topology, UML), micro-services architecture, SCADA and so on.
 
 - [→ Home website, online diagramming](http://topology.le5le.com) . It is very slow while open the site for my network speed is 1Mb/s.
 - [→ Online Demo](https://le5le-com.github.io/topology/)
@@ -12,9 +12,9 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 # Why le5le-topology
 
 - Extensible - Developers are able to make own diagrams easily. You just have to focus on your core logic in the framework.
-- Fast rendering - It uses canvas and offscreen.
-- Animate - Can be used the details of networking and tracking.
-- TypeScript.
+- Fast rendering
+- Animate
+- TypeScript
 
 # Source
 
