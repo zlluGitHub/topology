@@ -36,12 +36,11 @@ export class HotComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const data = this.storeService.get('hots');
 
-    this.subRoute = this.activateRoute.queryParamMap.subscribe(async params => {
+    this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.search.pageIndex = +params.get('pageIndex') || 1;
       this.search.pageCount = +params.get('pageCount') || 8;
       if (!data || this.search.pageIndex !== 1) {
-        await this.list();
-        this.storeService.set('hots', this.data);
+        this.list();
       } else {
         this.data = data;
         this.loading = false;
@@ -57,6 +56,10 @@ export class HotComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.data = await this.service.Topologies(this.search);
     this.loading = false;
+
+    if (this.search.pageIndex === 1) {
+      this.storeService.set('hots', this.data);
+    }
   }
 
   onOpen(item: any) {
