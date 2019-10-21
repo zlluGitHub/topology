@@ -95,6 +95,10 @@ export class AppComponent implements OnInit, OnDestroy {
       this.scale = scale * 100;
     });
 
+    this.storeService.get$('locked').subscribe((locked: number) => {
+      this.locked = locked;
+    });
+
     this.storeService.get$('recently').subscribe((item: any) => {
       for (let i = 0; i < this.list.recently.length; ++i) {
         if (this.list.recently[i].id === item.id || i > 18) {

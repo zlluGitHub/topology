@@ -342,7 +342,7 @@ export class Topology {
   open(data: any) {
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
-    this.locked = 0;
+    this.lock(data.locked || 0);
 
     if (data.lineName) {
       this.lineName = data.lineName;
@@ -1274,7 +1274,8 @@ export class Topology {
       lineName: this.lineName,
       fromArrowType: this.fromArrowType,
       toArrowType: this.toArrowType,
-      scaleState: this.scaleState
+      scaleState: this.scaleState,
+      locked: this.locked
     };
   }
 
@@ -1500,6 +1501,9 @@ export class Topology {
   lock(lock: number) {
     this.locked = lock;
     Store.set('locked', lock);
+    if (this.options.on) {
+      this.options.on('locked', this.locked);
+    }
   }
 
   top(node: Node) {

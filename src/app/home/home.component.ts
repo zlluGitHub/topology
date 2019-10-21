@@ -592,6 +592,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.animateDemo(+data.data.data + 1);
         }
         break;
+      case 'locked':
+        this.storeService.set('locked', data);
+        break;
     }
     // console.log('onMessage:', event, data, this.selected);
   };
