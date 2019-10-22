@@ -167,13 +167,13 @@ export class Topology {
     this.subcribe = Store.subcribe('render', () => {
       this.renderOffscreen();
     });
-    this.subcribeAnimateMoved = Store.subcribe('animateMoved', (e: any) => {
+    this.subcribeAnimateMoved = Store.subcribe('nodeMovedInAnimate', (e: any) => {
       this.activeLayer.updateLines(this.nodes);
       this.activeLayer.render();
       this.offscreen.render();
 
       if (this.options.on) {
-        this.options.on('animateMoved', e);
+        this.options.on('nodeMovedInAnimate', e);
       }
     });
     this.subcribeAnimateEnd = Store.subcribe('animateEnd', (e: any) => {
@@ -262,6 +262,13 @@ export class Topology {
     this.activeLayer.resize(this.canvas.width, this.canvas.height);
     this.animateLayer.resize(this.canvas.width, this.canvas.height);
     this.render();
+
+    if (this.options.on) {
+      this.options.on('resize', {
+        width: this.canvas.width,
+        height: this.canvas.height
+      });
+    }
   }
 
   private ondrop(event: DragEvent) {

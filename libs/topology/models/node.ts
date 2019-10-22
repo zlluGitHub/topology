@@ -424,7 +424,7 @@ export class Node extends Pen {
     }
     if (rectChanged) {
       this.init();
-      Store.set('animateMoved', this);
+      Store.set('nodeMovedInAnimate', this);
     }
 
     this.render(ctx);
