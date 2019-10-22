@@ -3,6 +3,7 @@ import { Point } from './point';
 import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
 import { Store } from '../store/store';
+import { lineLen, curveLen } from '../middles/utils';
 
 export class Line extends Pen {
   from: Point;
@@ -108,6 +109,31 @@ export class Line extends Pen {
 
   pointIn(pt: Point) {
     return drawLineFns[this.name].pointIn(pt, this);
+  }
+
+  getLen() {
+    switch (this.name) {
+      case 'line':
+        return lineLen(this.from, this.to);
+      case 'polyline':
+        if (!this.controlPoints || !this.controlPoints.length) {
+          return lineLen(this.from, this.to);
+        }
+
+        let len = 0;
+        let curPt = this.from;
+        for (const pt of this.controlPoints) {
+          len += lineLen(curPt, pt);
+          curPt = pt;
+        }
+        len += lineLen(curPt, this.to);
+        return len | 0;
+
+      case 'curve':
+        return curveLen(this.from, this.controlPoints[0], this.controlPoints[1], this.to);
+    }
+
+    return 0;
   }
 
   animate(ctx: CanvasRenderingContext2D) {

@@ -138,13 +138,4 @@ export class HoverLayer {
     this.canvas.height = height;
   }
 
-  getLen(line: Line) {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute(
-      'd',
-      // tslint:disable-next-line:max-line-length
-      `M${line.from.x} ${line.from.y} C${line.controlPoints[0].x} ${line.controlPoints[0].y} ${line.controlPoints[1].x} ${line.controlPoints[1].y} ${line.to.x} ${line.to.y}`
-    );
-    return path.getTotalLength();
-  }
 }

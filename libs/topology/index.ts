@@ -150,7 +150,7 @@ export class Topology {
       this.parentElem = parent;
     }
 
-    this.offscreen = new Canvas(this.options, 'offscreen');
+    this.offscreen = new Canvas(this.options);
     Store.set('offscreen', this.offscreen.canvas);
     this.parentElem.appendChild(this.canvas);
     this.activeLayer = new ActiveLayer(this.parentElem, this.options);
@@ -338,7 +338,7 @@ export class Topology {
     this.offscreen.render();
   }
 
-  // open - Is load a new File
+  // open - redraw by the data
   open(data: any) {
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];

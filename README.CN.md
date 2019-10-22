@@ -98,7 +98,7 @@ $ npm run prod
 ## 编译流程图源码 Topology-flow-diagram lib
 
 ```
-[libs/topology#] yarn
+[libs/topology-flow-diagram#] yarn
 
 # build
 [libs/topology-flow-diagram#] npm run build

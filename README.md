@@ -92,7 +92,7 @@ $ npm run prod
 ## Topology-flow-diagram lib
 
 ```
-[libs/topology#] yarn
+[libs/topology-flow-diagram#] yarn
 
 # build
 [libs/topology-flow-diagram#] npm run build
