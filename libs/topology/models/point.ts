@@ -6,6 +6,8 @@ export class Point {
   direction: Direction;
   // The index of docker anchor on node.
   anchorIndex: number;
+
+  hidden: boolean;
   data: any;
   constructor(public x: number, public y: number, direction?: Direction, anchorIndex?: number, id?: number | string) {
     this.x = this.x;

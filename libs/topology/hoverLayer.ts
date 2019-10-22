@@ -77,7 +77,7 @@ export class HoverLayer {
     // anchors
     if (this.node) {
       for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
-        if (this.node.rotatedAnchors[i].data === 'hidden' && this.hoverAnchorIndex !== i) {
+        if (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i) {
           continue;
         }
         ctx.beginPath();
@@ -137,5 +137,4 @@ export class HoverLayer {
     this.canvas.width = width;
     this.canvas.height = height;
   }
-
 }

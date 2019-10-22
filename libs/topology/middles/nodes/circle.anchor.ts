@@ -19,7 +19,7 @@ export function circleAnchors(node: Node) {
       node.rect.center.y + (Math.cos((i / 180) * Math.PI) * node.rect.height) / 2,
       direction
     );
-    pt.data = 'hidden';
+    pt.hidden = true;
     node.anchors.push(pt);
   }
 }
