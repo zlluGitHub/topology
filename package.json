@@ -29,7 +29,6 @@
     "le5le-ui": "^0.7.1",
     "ngresizable": "^1.0.0",
     "ngx-color-picker": "^8.1.0",
-    "node-sass": "^4.9.0",
     "rxjs": "~6.4.0",
     "ts-clipboard": "^1.0.15",
     "tslib": "^1.9.0",
