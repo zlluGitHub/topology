@@ -1640,7 +1640,6 @@ export class Topology {
 
     for (const item of this.nodes) {
       item.scale(scale, center);
-      this.activeLayer.updateChildren(item);
     }
 
     for (const item of this.lines) {

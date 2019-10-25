@@ -450,5 +450,11 @@ export class Node extends Pen {
     this.rect.ey = this.rect.y + this.rect.height;
     this.rect.calceCenter();
     this.init();
+
+    if (this.children) {
+      for (const item of this.children) {
+        item.scale(scale, center);
+      }
+    }
   }
 }
