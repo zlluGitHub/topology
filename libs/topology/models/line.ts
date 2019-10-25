@@ -53,8 +53,6 @@ export class Line extends Pen {
   }
 
   setTo(to: Point, toArrow: string = 'triangleSolid') {
-    to.x = to.x;
-    to.y = to.y;
     this.to = to;
     this.toArrow = toArrow;
   }

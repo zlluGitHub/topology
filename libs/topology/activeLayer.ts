@@ -409,6 +409,11 @@ export class ActiveLayer {
     return found;
   }
 
+  setLines(lines: Line[]) {
+    this.nodes = [];
+    this.lines = lines;
+  }
+
   renderNodesLines() {
     const ctx = this.canvas.getContext('2d');
     ctx.save();

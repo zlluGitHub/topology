@@ -275,7 +275,7 @@ export class Topology {
     const node = JSON.parse(event.dataTransfer.getData('Text'));
     node.rect.x = (event.offsetX - node.rect.width / 2) << 0;
     node.rect.y = (event.offsetY - node.rect.height / 2) << 0;
-    this.addNode(new Node(node));
+    this.addNode(new Node(node), true);
   }
 
   getTouchOffset(touch: Touch) {
@@ -299,11 +299,11 @@ export class Topology {
     this.touchedNode.rect.x = pos.offsetX - this.touchedNode.rect.width / 2;
     this.touchedNode.rect.y = pos.offsetY - this.touchedNode.rect.height / 2;
 
-    this.addNode(new Node(this.touchedNode));
+    this.addNode(new Node(this.touchedNode), true);
     this.touchedNode = undefined;
   }
 
-  addNode(node: Node): boolean {
+  addNode(node: Node, focus = false): boolean {
     if (!drawNodeFns[node.name]) {
       return false;
     }
@@ -313,8 +313,10 @@ export class Topology {
     }
 
     // New active.
-    this.activeLayer.setNodes([node]);
-    this.activeLayer.render();
+    if (focus) {
+      this.activeLayer.setNodes([node]);
+      this.activeLayer.render();
+    }
 
     this.hoverLayer.canvas.focus();
 
@@ -328,6 +330,36 @@ export class Topology {
     }
 
     return true;
+  }
+
+  addLine(line: Line, focus = false) {
+    // New active.
+    if (focus) {
+      this.activeLayer.setLines([line]);
+      this.activeLayer.render();
+    }
+
+    this.hoverLayer.canvas.focus();
+
+    this.lines.push(line);
+    this.offscreen.render();
+
+    this.cache();
+
+    if (this.options.on) {
+      this.options.on('line', line);
+    }
+  }
+
+  addLineByPt(name: string, from: Point, fromArrow: string, to: Point, toArrow: string, focus = false) {
+    const line = new Line({
+      name,
+      from,
+      fromArrow,
+      to,
+      toArrow
+    });
+    this.addLine(line, focus);
   }
 
   // Render or redraw
