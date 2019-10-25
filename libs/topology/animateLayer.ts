@@ -1,6 +1,6 @@
 import { Node } from './models/node';
 import { Line } from './models/line';
-import { Store } from './store/store';
+import { Store } from 'le5le-store';
 
 export class AnimateLayer {
   canvas = document.createElement('canvas');

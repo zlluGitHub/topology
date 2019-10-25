@@ -5,7 +5,7 @@ import { anchorsFns, iconRectFns, textRectFns, drawNodeFns } from '../middles';
 import { defaultAnchors } from '../middles/default.anchor';
 import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
-import { Store } from '../store/store';
+import { Store } from 'le5le-store';
 
 export class Node extends Pen {
   is3D = false;
