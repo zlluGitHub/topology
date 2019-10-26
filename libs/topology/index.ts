@@ -180,20 +180,10 @@ export class Topology {
         return;
       }
       switch (e.type) {
-        case 'line':
-          for (const item of this.lines) {
-            if (item.id === e.data.id) {
-              item.animateStart = 0;
-              break;
-            }
-          }
-          break;
         case 'node':
-          // this.activeLayer.render();
           this.offscreen.render();
           break;
       }
-
       if (this.options.on) {
         this.options.on('animateEnd', e);
       }
@@ -396,6 +386,8 @@ export class Topology {
     this.lines = [];
     Store.set('nodes', this.nodes);
     Store.set('lines', this.lines);
+    this.offscreen.init();
+
     for (const item of data.nodes) {
       this.nodes.push(new Node(item));
     }

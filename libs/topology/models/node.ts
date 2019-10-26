@@ -328,6 +328,16 @@ export class Node extends Pen {
     this.img = null;
   }
 
+  updateAnimateProps() {
+    let passed = 0;
+    for (let i = 0; i < this.animateFrames.length; ++i) {
+      this.animateFrames[i].start = passed;
+      passed += this.animateFrames[i].duration;
+      this.animateFrames[i].end = passed;
+      this.animateFrames[i].initState = Node.cloneState(i ? this.animateFrames[i - 1].state : this);
+    }
+  }
+
   animate(ctx: CanvasRenderingContext2D, now: number) {
     let timeline = now - this.animateStart;
     if (timeline > this.animateDuration) {
@@ -351,7 +361,7 @@ export class Node extends Pen {
           type: 'node',
           data: this
         });
-        return;
+        return this.nextAnimate;
       }
       this.animateStart = now;
       timeline = 0;

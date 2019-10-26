@@ -15,7 +15,6 @@ export class HotService {
         count: 0
       };
     }
-    console.log(123, ret);
     this.parseData(ret);
     return ret;
   }

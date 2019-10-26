@@ -373,17 +373,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.animateDemo();
   }
 
-  animateDemo(index = 1) {
+  animateDemo() {
     if (this.data.name === 'cube-demo') {
       const d = this.canvas.data();
       const n = Date.now();
       for (const item of d.nodes) {
-        if (+item.data === index) {
-          item.animateStart = n;
-        }
-      }
-      for (const item of d.lines) {
-        if (+item.data === index) {
+        if (item.tags.indexOf('1') > -1) {
           item.animateStart = n;
         }
       }
@@ -583,13 +578,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
       case 'scale':
         Store.set('scale', data);
-        break;
-      case 'animateEnd':
-        if (data.data.data === '9') {
-          this.animateDemo(1);
-        } else {
-          this.animateDemo(+data.data.data + 1);
-        }
         break;
       case 'locked':
         Store.set('locked', data);

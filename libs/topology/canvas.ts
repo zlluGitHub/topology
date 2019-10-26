@@ -5,11 +5,16 @@ import { Options } from './options';
 
 export class Canvas {
   canvas = document.createElement('canvas');
-  private readonly nodes: Node[] = Store.get('nodes');
-  private readonly lines: Line[] = Store.get('lines');
+  private nodes: Node[] = Store.get('nodes');
+  private lines: Line[] = Store.get('lines');
   rendering = false;
   constructor(public options: Options = {}) {
     this.canvas.style.outline = 'none';
+  }
+
+  init() {
+    this.nodes = Store.get('nodes');
+    this.lines = Store.get('lines');
   }
 
   resize(width: number, height: number) {

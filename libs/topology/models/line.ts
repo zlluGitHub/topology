@@ -148,7 +148,7 @@ export class Line extends Pen {
           type: 'line',
           data: this
         });
-        return;
+        return this.nextAnimate;
       }
 
       this.animatePos = this.animateSpan;
