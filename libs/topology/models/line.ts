@@ -154,4 +154,9 @@ export class Line extends Pen {
       this.animatePos = this.animateSpan;
     }
   }
+
+  round() {
+    this.from.round();
+    this.to.round();
+  }
 }

@@ -392,8 +392,10 @@ export class Topology {
       this.options.on('scale', this.scaleState);
     }
 
-    this.nodes.splice(0, this.nodes.length);
-    this.lines.splice(0, this.lines.length);
+    this.nodes = [];
+    this.lines = [];
+    Store.set('nodes', this.nodes);
+    Store.set('lines', this.lines);
     for (const item of data.nodes) {
       this.nodes.push(new Node(item));
     }
@@ -1701,6 +1703,12 @@ export class Topology {
   // scale for origin canvas:
   scaleTo(scale: number) {
     this.scale(scale / this.scaleState);
+  }
+
+  round() {
+    for (const item of this.nodes) {
+      item.round();
+    }
   }
 
   destory() {

@@ -457,4 +457,13 @@ export class Node extends Pen {
       }
     }
   }
+
+  round() {
+    this.rect.round();
+    if (this.children) {
+      for (const item of this.children) {
+        item.rect.round();
+      }
+    }
+  }
 }
