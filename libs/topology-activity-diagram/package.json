@@ -1,6 +1,6 @@
 {
   "name": "topology-activity-diagram",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A activity diagram tool using le5le-topology.",
   "main": "index.js",
   "scripts": {
@@ -17,10 +17,10 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Alsmile/topology.git"
+    "url": "git+https://github.com/le5le-com/topology.git"
   },
   "bugs": {
-    "url": "https://github.com/Alsmile/topology/issues"
+    "url": "https://github.com/le5le-com/topology/issues"
   },
   "devDependencies": {
     "copyfiles": "^2.1.1",
