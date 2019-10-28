@@ -884,24 +884,6 @@ export class Topology {
     this.cache();
   };
 
-  private getHoverNode(pt: Point) {
-    for (let i = this.activeLayer.nodes.length - 1; i > -1; --i) {
-      if (this.activeLayer.nodes[i].hit(pt, 2)) {
-        this.moveIn.hoverNode = this.activeLayer.nodes[i];
-        this.moveIn.type = MoveInType.Nodes;
-        return;
-      }
-    }
-
-    for (let i = this.nodes.length - 1; i > -1; --i) {
-      if (this.nodes[i].hit(pt, 2)) {
-        this.moveIn.hoverNode = this.nodes[i];
-        this.moveIn.type = MoveInType.Nodes;
-        break;
-      }
-    }
-  }
-
   private getMoveIn(pt: Point) {
     this.lastHoverNode = this.moveIn.hoverNode;
     this.moveIn.type = MoveInType.None;
@@ -910,67 +892,56 @@ export class Topology {
     this.moveIn.hoverLine = null;
     this.hoverLayer.hoverAnchorIndex = -1;
 
-    // In active line.
-    if (this.locked !== 1) {
-      for (const item of this.activeLayer.lines) {
-        if (this.isInLine(pt, item)) {
-          return;
-        }
-      }
+    if (this.activeLayer.rotateCPs[0] && this.activeLayer.rotateCPs[0].hit(pt, 15)) {
+      this.moveIn.type = MoveInType.Rotate;
+      this.hoverLayer.canvas.style.cursor = `url("${this.options.rotateCursor}"), auto`;
+      return;
     }
 
-    // In nodes
-    this.getHoverNode(pt);
-    if (this.moveIn.hoverNode) {
+    if (this.activeLayer.nodes.length && pointInRect(pt, this.activeLayer.sizeCPs)) {
+      this.moveIn.type = MoveInType.Nodes;
       this.hoverLayer.canvas.style.cursor = 'move';
-    } else {
-      this.hoverLayer.canvas.style.cursor = 'default';
-    }
-    // In activeLayer
-    if (this.activeLayer.nodes.length) {
-      if (this.activeLayer.rotateCPs[0].hit(pt, 15)) {
-        this.moveIn.type = MoveInType.Rotate;
-        this.hoverLayer.canvas.style.cursor = `url("${this.options.rotateCursor}"), auto`;
-      } else {
-        if (pointInRect(pt, this.activeLayer.sizeCPs)) {
-          this.moveIn.type = MoveInType.Nodes;
-          this.hoverLayer.canvas.style.cursor = 'move';
-        }
-
-        if (!this.locked) {
-          for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
-            if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
-              this.moveIn.type = MoveInType.ResizeCP;
-              this.moveIn.activeAnchorIndex = i;
-              this.hoverLayer.canvas.style.cursor = resizeCursors[i];
-              break;
-            }
-          }
-        }
-      }
     }
 
-    if (this.moveIn.type === MoveInType.ResizeCP || this.moveIn.type === MoveInType.Rotate) {
-      return;
-    }
-
-    // In anchors of hoverNode
-    if (this.moveIn.hoverNode && !this.locked) {
-      for (let i = 0; i < this.moveIn.hoverNode.rotatedAnchors.length; ++i) {
-        if (this.moveIn.hoverNode.rotatedAnchors[i].hit(pt, 8)) {
-          this.moveIn.type = MoveInType.HoverAnchors;
-          this.moveIn.hoverAnchorIndex = i;
-          this.hoverLayer.hoverAnchorIndex = i;
-          this.hoverLayer.canvas.style.cursor = 'crosshair';
+    if (!this.locked) {
+      for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
+        if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
+          this.moveIn.type = MoveInType.ResizeCP;
+          this.moveIn.activeAnchorIndex = i;
+          this.hoverLayer.canvas.style.cursor = resizeCursors[i];
           return;
         }
       }
     }
 
-    // In line
-    if (this.locked === 1) {
+    // In active line.
+    for (const item of this.activeLayer.lines) {
+      for (let i = 0; i < item.controlPoints.length; ++i) {
+        if (item.controlPoints[i].hit(pt)) {
+          item.controlPoints[i].id = i;
+          this.moveIn.type = MoveInType.LineControlPoint;
+          this.moveIn.lineControlPoint = item.controlPoints[i];
+          this.moveIn.hoverLine = item;
+          this.hoverLayer.canvas.style.cursor = 'pointer';
+          return;
+        }
+      }
+
+      if (this.inLine(pt, item)) {
+        return;
+      }
+    }
+
+    this.hoverLayer.canvas.style.cursor = 'default';
+
+    if (this.inNodes(pt, this.activeLayer.nodes)) {
       return;
     }
+
+    if (this.inNodes(pt, this.nodes)) {
+      return;
+    }
+
     let index = 0;
     for (const item of this.lines) {
       ++index;
@@ -979,29 +950,49 @@ export class Topology {
         continue;
       }
 
-      if (this.isInLine(pt, item)) {
+      if (this.inLine(pt, item)) {
         return;
       }
     }
   }
 
-  isInLine(point: Point, line: Line) {
-    // In LineControlPoint
-    if (this.activeLayer.lines.length) {
-      let i = 0;
-      for (const pt of line.controlPoints) {
-        if (pt.hit(point)) {
-          pt.id = i;
-          this.moveIn.type = MoveInType.LineControlPoint;
-          this.moveIn.lineControlPoint = pt;
-          this.moveIn.hoverLine = line;
-          this.hoverLayer.canvas.style.cursor = 'pointer';
-          return true;
+  inNodes(pt: Point, nodes: Node[]) {
+    for (let i = nodes.length - 1; i > -1; --i) {
+      if (nodes[i].hit(pt)) {
+        this.moveIn.hoverNode = nodes[i];
+        this.moveIn.type = MoveInType.Nodes;
+        this.hoverLayer.canvas.style.cursor = 'move';
+
+        for (let j = 0; j < nodes[i].rotatedAnchors.length; ++j) {
+          if (!nodes[i].rotatedAnchors[j].out && nodes[i].rotatedAnchors[j].hit(pt, 5)) {
+            this.moveIn.hoverNode = nodes[i];
+            this.moveIn.type = MoveInType.HoverAnchors;
+            this.moveIn.hoverAnchorIndex = j;
+            this.hoverLayer.hoverAnchorIndex = j;
+            this.hoverLayer.canvas.style.cursor = 'crosshair';
+            return true;
+          }
         }
-        ++i;
+
+        return true;
+      }
+
+      if (nodes[i].hit(pt, 5)) {
+        for (let j = 0; j < nodes[i].rotatedAnchors.length; ++j) {
+          if (nodes[i].rotatedAnchors[j].hit(pt, 5)) {
+            this.moveIn.hoverNode = nodes[i];
+            this.moveIn.type = MoveInType.HoverAnchors;
+            this.moveIn.hoverAnchorIndex = j;
+            this.hoverLayer.hoverAnchorIndex = j;
+            this.hoverLayer.canvas.style.cursor = 'crosshair';
+            return true;
+          }
+        }
       }
     }
+  }
 
+  inLine(point: Point, line: Line) {
     if (line.from.hit(point, 10)) {
       this.moveIn.type = MoveInType.LineFrom;
       this.moveIn.hoverLine = line;

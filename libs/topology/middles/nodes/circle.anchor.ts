@@ -8,7 +8,7 @@ export function circleAnchors(node: Node) {
   node.anchors.push(new Point(node.rect.x + node.rect.width, node.rect.y + node.rect.height / 2, Direction.Right));
   node.anchors.push(new Point(node.rect.x + node.rect.width / 2, node.rect.y + node.rect.height, Direction.Bottom));
 
-  for (let i = 10; i < 360; i += 10) {
+  for (let i = 5; i < 360; i += 5) {
     if (i % 90 === 0) {
       continue;
     }

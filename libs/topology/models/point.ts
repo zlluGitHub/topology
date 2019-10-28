@@ -8,6 +8,7 @@ export class Point {
   anchorIndex: number;
 
   hidden: boolean;
+  out: boolean;
   data: any;
   constructor(
     public x: number,
@@ -15,7 +16,8 @@ export class Point {
     direction?: Direction,
     anchorIndex?: number,
     id?: number | string,
-    hidden?: boolean
+    hidden?: boolean,
+    out?: boolean
   ) {
     this.x = this.x;
     this.y = this.y;
@@ -23,10 +25,11 @@ export class Point {
     this.anchorIndex = anchorIndex;
     this.id = id;
     this.hidden = hidden;
+    this.out = out;
   }
 
   clone(): Point {
-    const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id, this.hidden);
+    const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id, this.hidden, this.out);
     if (this.data) {
       pt.data = this.data;
     }
