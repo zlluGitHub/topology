@@ -294,7 +294,7 @@ export class Topology {
   }
 
   addNode(node: Node, focus = false): boolean {
-    if (!drawNodeFns[node.name]) {
+    if (this.locked < 0 || !drawNodeFns[node.name]) {
       return false;
     }
 
@@ -323,6 +323,10 @@ export class Topology {
   }
 
   addLine(line: Line, focus = false) {
+    if (this.locked) {
+      return false;
+    }
+
     // New active.
     if (focus) {
       this.activeLayer.setLines([line]);
@@ -424,9 +428,10 @@ export class Topology {
       return;
     }
 
-    if (this.locked < 0) {
+    if (this.locked < 0 && this.mouseDown && this.moveIn.type !== MoveInType.None) {
       return;
     }
+
     this.scheduledAnimationFrame = true;
     const pos = new Point(e.offsetX, e.offsetY);
     requestAnimationFrame(() => {
