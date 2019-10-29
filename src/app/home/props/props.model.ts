@@ -56,6 +56,10 @@ export interface Props {
     imageRatio?: boolean;
     text?: string;
     textMaxLine?: number;
+    paddingTop?: number | string;
+    paddingBottom?: number | string;
+    paddingLeft?: number | string;
+    paddingRight?: number | string;
     // End
 
     // Line

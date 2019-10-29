@@ -88,7 +88,7 @@
            
           </div>
         </div>
-      </div>
+      </div>      
       <div class="flex grid mt5">
         <div title="百分比%对应的小数值">圆角（0 - 1）</div>
         <div>旋转（°）</div>
@@ -100,7 +100,60 @@
         <div>
           <input type="number" name="rotate" class="input" [(ngModel)]="props.data.rotate" [uiMin]="0" [uiMax]="360" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
         </div>
-      </div>     
+      </div>    
+      <div class="flex grid mt5">
+        <div title="padding-left">内边距-左</div>
+        <div title="padding-right">内边距-右</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input
+            name="paddingLeft"
+            class="input"
+            [(ngModel)]="props.data.paddingLeft"
+            [readonly]="readonly"
+            required
+            (change)="onChangeProp(propForm.invalid)"
+          />
+        </div>
+        <div>
+          <input
+            name="paddingRight"
+            class="input"
+            [(ngModel)]="props.data.paddingRight"
+            [readonly]="readonly"
+            required
+            (change)="onChangeProp(propForm.invalid)"
+          />
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div title="padding-top">内边距-上</div>
+        <div title="padding-bottom">内边距-下</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input
+            name="paddingTop"
+            class="input"
+            [(ngModel)]="props.data.paddingTop"
+            [readonly]="readonly"
+            required
+            (change)="onChangeProp(propForm.invalid)"
+          />
+        </div>
+        <div>
+          <input
+            name="paddingBottom"
+            class="input"
+            [(ngModel)]="props.data.paddingBottom"
+            [readonly]="readonly"
+            required
+            (change)="onChangeProp(propForm.invalid)"
+          />
+        </div>
+      </div> 
+      <div class="mt5 gray" style="line-height: 1.5">内边距：输入数字表示像素；输入%表示百分比</div>
     </div>
     <div class="group" >
       <div class="flex middle">
