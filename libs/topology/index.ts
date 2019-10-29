@@ -1560,27 +1560,35 @@ export class Topology {
 
     const node = new Node({
       name: 'combine',
-      rect,
+      rect: new Rect(rect.x - 10, rect.y - 10, rect.width + 20, rect.height + 20),
       text: '',
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingTop: 10,
+      paddingBottom: 10,
       strokeStyle: 'transparent'
     });
     node.children = [];
     for (const item of nodes) {
       item.parentId = node.id;
-      item.parentRect = {
-        offsetX: 10,
-        offsetY: 10,
-        x: (item.rect.x - node.rect.x - 10) / (node.rect.width - 10),
-        y: (item.rect.y - node.rect.y - 10) / (node.rect.height - 10),
-        width: item.rect.width / (node.rect.width - 10),
-        height: item.rect.height / (node.rect.height - 10),
-        marginX: 0,
-        marginY: 0,
+      item.rectInParent = {
+        x: ((item.rect.x - rect.x) / rect.width) * 100 + '%',
+        y: ((item.rect.y - rect.y) / rect.height) * 100 + '%',
+        width: (item.rect.width / rect.width) * 100 + '%',
+        height: (item.rect.height / rect.height) * 100 + '%',
         rotate: item.rotate
       };
       node.children.push(item);
     }
     this.nodes.push(node);
+
+    this.activeLayer.setNodes([node]);
+    if (this.options.on) {
+      this.options.on('node', node);
+    }
+
+    this.activeLayer.render();
+
     this.cache();
   }
 
@@ -1596,7 +1604,7 @@ export class Topology {
 
     for (const item of node.children) {
       item.parentId = undefined;
-      item.parentRect = undefined;
+      item.rectInParent = undefined;
       this.nodes.push(item);
     }
 

@@ -673,6 +673,7 @@ export const Tools = [
             width: 270,
             height: 200
           },
+          paddingTop: 40,
           font: {
             fontFamily: 'Arial',
             color: '#000',
@@ -685,15 +686,15 @@ export const Tools = [
             {
               text: '- name: string\n+ setName(name: string): void',
               name: 'text',
-              parentRect: {
-                offsetX: 0,
-                offsetY: 40,
+              paddingLeft: 10,
+              paddingRight: 10,
+              paddingTop: 10,
+              paddingBottom: 10,
+              rectInParent: {
                 x: 0,
                 y: 0,
-                width: 1,
-                height: 1,
-                marginX: 10,
-                marginY: 5,
+                width: '100%',
+                height: '100%',
                 rotate: 0
               },
               font: {
@@ -715,6 +716,7 @@ export const Tools = [
             width: 270,
             height: 200
           },
+          paddingTop: 40,
           font: {
             fontFamily: 'Arial',
             color: '#000',
@@ -727,15 +729,15 @@ export const Tools = [
             {
               text: '- name: string',
               name: 'text',
-              parentRect: {
-                offsetX: 0,
-                offsetY: 40,
+              paddingLeft: 10,
+              paddingRight: 10,
+              paddingTop: 10,
+              paddingBottom: 10,
+              rectInParent: {
                 x: 0,
                 y: 0,
-                width: 1,
-                height: 0.5,
-                marginX: 10,
-                marginY: 5,
+                width: '100%',
+                height: '50%',
                 rotate: 0
               },
               font: {
@@ -748,15 +750,15 @@ export const Tools = [
             {
               text: '+ setName(name: string): void',
               name: 'text',
-              parentRect: {
-                offsetX: 0,
-                offsetY: 40,
+              paddingLeft: 10,
+              paddingRight: 10,
+              paddingTop: 10,
+              paddingBottom: 10,
+              rectInParent: {
                 x: 0,
-                y: 0.5,
-                width: 1,
-                height: 0.5,
-                marginX: 10,
-                marginY: 5,
+                y: '50%',
+                width: '100%',
+                height: '50%',
                 rotate: 0
               },
               font: {

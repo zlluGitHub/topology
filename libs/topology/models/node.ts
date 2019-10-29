@@ -54,15 +54,15 @@ export class Node extends Pen {
   anchors: Point[] = [];
   rotatedAnchors: Point[] = [];
   parentId: string;
-  parentRect: {
-    offsetX: number;
-    offsetY: number;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    marginX: number;
-    marginY: number;
+  rectInParent: {
+    x: number | string;
+    y: number | string;
+    width: number | string;
+    height: number | string;
+    marginTop?: number | string;
+    marginRight?: number | string;
+    marginBottom?: number | string;
+    marginLeft?: number | string;
     rotate: number;
   };
   children: Node[];
@@ -124,8 +124,33 @@ export class Node extends Pen {
     if (json.textMaxLine) {
       this.textMaxLine = +json.textMaxLine || 0;
     }
+
+    if (json.children && json.children[0] && json.children[0].parentRect) {
+      this.paddingLeft = json.children[0].parentRect.offsetX;
+      this.paddingRight = 0;
+      this.paddingTop = json.children[0].parentRect.offsetY;
+      this.paddingBottom = 0;
+    }
+
     if (json.parentRect) {
-      this.parentRect = json.parentRect;
+      this.rectInParent = {
+        x: json.parentRect.x * 100 + '%',
+        y: json.parentRect.y * 100 + '%',
+        width: json.parentRect.width * 100 + '%',
+        height: json.parentRect.height * 100 + '%',
+        marginTop: 0,
+        marginRight: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        rotate: json.parentRect.rotate
+      };
+      this.paddingTop = json.parentRect.marginY;
+      this.paddingBottom = json.parentRect.marginY;
+      this.paddingLeft = json.parentRect.marginX;
+      this.paddingRight = json.parentRect.marginX;
+    }
+    if (json.rectInParent) {
+      this.rectInParent = json.rectInParent;
     }
     if (json.animateFrames) {
       this.animateFrames = json.animateFrames;
@@ -188,36 +213,34 @@ export class Node extends Pen {
     }
   }
 
-  // 根据父节点rect计算自己（子节点）的rect.
-  // parent - 父节点.
-  // this.parentRect.offsetX - 固定偏移像素。
-  // this.parentRect.x - 除去固定偏移像素后，偏移百分比。
+  // 根据父节点rect计算自己（子节点）的rect
   calcChildRect(parent: Node) {
-    this.rect = new Rect(
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    let x =
       parent.rect.x +
-        this.parentRect.offsetX +
-        this.parentRect.marginX +
-        (parent.rect.width - this.parentRect.offsetX) * this.parentRect.x,
+      parent.paddingLeftNum +
+      abs(parentW, this.rectInParent.x) +
+      abs(parentW, this.rectInParent.marginLeft);
+    let y =
       parent.rect.y +
-        this.parentRect.offsetY +
-        this.parentRect.marginY +
-        (parent.rect.height - this.parentRect.offsetY) * this.parentRect.y,
-      (parent.rect.width - this.parentRect.offsetX) * this.parentRect.width - 2 * this.parentRect.marginX,
-      (parent.rect.height - this.parentRect.offsetY) * this.parentRect.height - 2 * this.parentRect.marginY
-    );
-
-    if (!this.parentRect.rotate) {
-      this.parentRect.rotate = 0;
+      parent.paddingTopNum +
+      abs(parentH, this.rectInParent.y) +
+      abs(parentW, this.rectInParent.marginTop);
+    const w = abs(parentW, this.rectInParent.width);
+    const h = abs(parentH, this.rectInParent.height);
+    if (this.rectInParent.marginLeft === undefined && this.rectInParent.marginRight) {
+      x -= abs(parentW, this.rectInParent.marginRight);
     }
+    if (this.rectInParent.marginTop === undefined && this.rectInParent.marginBottom) {
+      y -= abs(parentW, this.rectInParent.marginBottom);
+    }
+    this.rect = new Rect(x, y, w, h);
 
-    const nodeCenter = this.rect.center.clone();
-    nodeCenter.rotate(parent.rotate + parent.offsetRotate, parent.rect.center);
-    this.rect.x = nodeCenter.x - this.rect.width / 2;
-    this.rect.y = nodeCenter.y - this.rect.height / 2;
-    this.rect.ex = this.rect.x + this.rect.width;
-    this.rect.ey = this.rect.y + this.rect.height;
-    this.rect.calceCenter();
-    this.rotate = this.parentRect.rotate + parent.rotate + parent.offsetRotate;
+    if (!this.rectInParent.rotate) {
+      this.rectInParent.rotate = 0;
+    }
+    this.rotate = this.rectInParent.rotate + parent.rotate + parent.offsetRotate;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

@@ -123,7 +123,7 @@ export function abs(num: number, percent: number | string): number {
     return +percent;
   }
 
-  if (percent[(percent as string).length - 1] !== '%') {
+  if (!percent || percent[(percent as string).length - 1] !== '%') {
     return 0;
   }
 

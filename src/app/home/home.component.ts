@@ -662,7 +662,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     this.canvas.combine(this.selNodes);
-    this.canvas.render();
   }
 
   onUncombine() {
