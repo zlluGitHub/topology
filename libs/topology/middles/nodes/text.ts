@@ -63,6 +63,9 @@ export function fillText(
   for (let i = 0; i < maxLineLen - 1; ++i) {
     ctx.fillText(lines[i], x, y + i * lineHeight);
   }
+  if (!maxLineLen) {
+    maxLineLen = 1;
+  }
   if (maxLineLen < lines.length) {
     let str = lines[maxLineLen - 1] + '...';
     if (ctx.measureText(str).width > width) {

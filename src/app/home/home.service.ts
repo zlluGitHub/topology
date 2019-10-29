@@ -92,6 +92,10 @@ export const Tools = [
             width: 100,
             height: 100
           },
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 10,
+          paddingBottom: 10,
           name: 'rectangle',
           icon: '\ue64d',
           iconFamily: 'topology',
@@ -107,6 +111,10 @@ export const Tools = [
             width: 200,
             height: 50
           },
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 10,
+          paddingBottom: 10,
           borderRadius: 0.1,
           name: 'rectangle'
         }
@@ -169,6 +177,8 @@ export const Tools = [
             width: 100,
             height: 100
           },
+          paddingTop: 10,
+          paddingBottom: 10,
           name: 'hexagon'
         }
       },
@@ -253,6 +263,10 @@ export const Tools = [
             width: 100,
             height: 100
           },
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 10,
+          paddingBottom: 10,
           name: 'message'
         }
       },
@@ -265,6 +279,10 @@ export const Tools = [
             width: 80,
             height: 100
           },
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 10,
+          paddingBottom: 10,
           name: 'file'
         }
       },
@@ -284,9 +302,9 @@ export const Tools = [
         name: 'image',
         icon: 'icon-image',
         data: {
-          text: '图片',
+          text: '',
           rect: {
-            width: 80,
+            width: 100,
             height: 100
           },
           name: 'image',

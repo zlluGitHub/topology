@@ -1,4 +1,4 @@
-import { Point } from '../models/point';
+import { Point } from './models/point';
 
 export function pointInRect(point: Point, vertices: Point[]): boolean {
   if (vertices.length < 3) {
@@ -116,4 +116,18 @@ export function pSBC(p: any, c0: any, c1?: any, l?: any) {
       (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2)
     );
   }
+}
+
+export function abs(num: number, percent: number | string): number {
+  if (+percent) {
+    return +percent;
+  }
+
+  if (percent[(percent as string).length - 1] !== '%') {
+    return 0;
+  }
+
+  percent = (percent as string).substr(0, (percent as string).length - 1);
+
+  return Math.round((num * +percent) / 100);
 }

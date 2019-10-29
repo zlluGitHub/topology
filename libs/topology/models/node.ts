@@ -6,6 +6,8 @@ import { defaultAnchors } from '../middles/default.anchor';
 import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
+import { Direction } from './direction';
+import { abs } from '../utils';
 
 export class Node extends Pen {
   is3D = false;
@@ -28,7 +30,18 @@ export class Node extends Pen {
   imageWidth: number;
   imageHeight: number;
   imageRatio = true;
+  imageAlign: Direction;
   private img: HTMLImageElement;
+
+  paddingTop: number | string;
+  paddingBottom: number | string;
+  paddingLeft: number | string;
+  paddingRight: number | string;
+
+  paddingTopNum: number;
+  paddingBottomNum: number;
+  paddingLeftNum: number;
+  paddingRightNum: number;
 
   iconRect: Rect;
   fullIconRect: Rect;
@@ -100,6 +113,12 @@ export class Node extends Pen {
       this.imageHeight = json.imageHeight;
     }
     this.imageRatio = json.imageRatio;
+    this.imageAlign = json.imageAlign;
+
+    this.paddingTop = json.paddingTop || 0;
+    this.paddingBottom = json.paddingBottom || 0;
+    this.paddingLeft = json.paddingLeft || 0;
+    this.paddingRight = json.paddingRight || 0;
 
     this.text = json.text;
     if (json.textMaxLine) {
@@ -127,6 +146,8 @@ export class Node extends Pen {
   }
 
   init() {
+    this.calcAbsPadding();
+
     // Calc rect of text.
     if (textRectFns[this.name]) {
       textRectFns[this.name](this);
@@ -142,6 +163,13 @@ export class Node extends Pen {
     }
 
     this.calcAnchors();
+  }
+
+  calcAbsPadding() {
+    this.paddingLeftNum = abs(this.rect.width, this.paddingLeft);
+    this.paddingRightNum = abs(this.rect.width, this.paddingRight);
+    this.paddingTopNum = abs(this.rect.height, this.paddingTop);
+    this.paddingBottomNum = abs(this.rect.height, this.paddingBottom);
   }
 
   setChild(json: any) {

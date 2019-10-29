@@ -1,7 +1,7 @@
 import { s8 } from '../uuid/uuid';
 import { Point } from './point';
 import { Rect } from './rect';
-import { pointInRect } from '../middles/utils';
+import { pointInRect } from '../utils';
 
 export abstract class Pen {
   id = '';

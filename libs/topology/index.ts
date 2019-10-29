@@ -11,7 +11,7 @@ import { AnimateLayer } from './animateLayer';
 import { Rect } from './models/rect';
 import { s8 } from './uuid/uuid';
 import { getBezierPoint } from './middles/lines/curve';
-import { pointInRect } from './middles/utils';
+import { pointInRect } from './utils';
 
 const resizeCursors = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize'];
 enum MoveInType {
@@ -684,7 +684,6 @@ export class Topology {
         if (!this.moveIn.hoverNode || this.activeLayer.hasNode(this.moveIn.hoverNode)) {
           break;
         }
-
         if (e.ctrlKey) {
           this.activeLayer.addNode(this.moveIn.hoverNode);
 
