@@ -62,6 +62,7 @@ $color-border: #ddd;
   background-color: #f8f8f8;
   border-left: 1px solid $color-border;
   overflow-y: auto;
+  position: relative;
 
   .title,
   .popup-title {

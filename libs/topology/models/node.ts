@@ -271,7 +271,7 @@ export class Node extends Pen {
         this.drawBkRadialGradient(ctx);
         break;
     }
-    this.drawBkImg(ctx);
+    // this.drawBkImg(ctx);
 
     // Draw text.
     if (this.name !== 'text' && this.text) {
@@ -299,14 +299,21 @@ export class Node extends Pen {
   }
 
   drawBkImg(ctx: CanvasRenderingContext2D) {
-    if (!this.bkImage) {
-      return;
-    }
+    // if (!this.bkImage) {
+    //   return;
+    // }
 
     if (this.lastBkImage !== this.bkImage) {
       this.bkImg = null;
     }
     if (this.bkImg) {
+      ctx.save();
+      const pat = ctx.createPattern(this.bkImg, 'no-repeat');
+      ctx.fillStyle = pat;
+      ctx.clip();
+      ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
+      ctx.restore();
+      this.emitRender();
       // console.log(123123);
       return;
     }
@@ -319,7 +326,6 @@ export class Node extends Pen {
       this.bkImgNaturalWidth = this.bkImg.naturalWidth;
       this.bkImgNaturalHeight = this.bkImg.naturalHeight;
       this.drawBkImg(ctx);
-      this.emitRender();
     };
   }
 
@@ -328,6 +334,7 @@ export class Node extends Pen {
 
   drawImg(ctx: CanvasRenderingContext2D) {
     if (this.lastImage !== this.image) {
+      console.log(123123111111);
       this.img = null;
     }
 

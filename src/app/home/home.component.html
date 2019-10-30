@@ -20,40 +20,37 @@
     <div class="pv5">
       <div *ngIf="!selected">
         <div class="title">欢迎使用le5le-topology！</div>
-        <ul class="ml30 mb20 mt10">
-          <li>动画</li>
-          <li>便捷</li>
-          <li>高性能</li>
-          <li>可扩展</li>
-          <li>云存储</li>
-          <li>社区[todo]</li>
-
-          <br />
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a
-          ><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群</a
-          ><br />
+        <div class="ml30 mb20 mt10">
+          <a
+            href="https://github.com/le5le-com/topology"
+            target="_blank"
+            class="block mt20 mb15"
+            style="color:#f60!important"
+            >喜欢，就给我们点个赞star吧</a
+          >
+          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
+          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群</a><br />
           <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
-        </ul>
-        <div class="title mt20">[Todo] 未来规划</div>
+        </div>
+        <div class="title mt30">[Todo] 未来规划</div>
         <ul class="ml30 mb20 mt10">
-          <li>节点动画</li>
+          <li>Github issues</li>
           <li>React demo</li>
           <li>Vue3 demo</li>
-          <li>使用文档</li>
-          <li>API开发文档</li>
-          <li>社区与分享</li>
+          <li>系列教程</li>
         </ul>
-        <div class="title mt20">
-          小提示
+        <div class="abs" style="bottom:.2rem">
+          <div class="title mt30">
+            小提示
+          </div>
+          <ul class="ml30 mb20 mt10">
+            <li>方向键：控制节点移动5个像素</li>
+            <li>Ctrl + 方向键：控制节点移动1个像素</li>
+            <li>Alt + 鼠标移动：移动整个画布</li>
+            <li>Alt + 鼠标滚轮：缩放</li>
+            <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
+          </ul>
         </div>
-        <ul class="ml30 mb20 mt10">
-          <li>方向键：控制节点移动5个像素</li>
-          <li>Ctrl + 方向键：控制节点移动1个像素</li>
-          <li>Alt + 鼠标移动：移动整个画布</li>
-          <li>Alt + 鼠标滚轮：缩放</li>
-          <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
-        </ul>
       </div>
       <div *ngIf="selected">
         <app-props

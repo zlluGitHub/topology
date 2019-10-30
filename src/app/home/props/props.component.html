@@ -847,6 +847,81 @@
         />
       </div>
     </div>    
+  </div> 
+  <div class="group" *ngIf="props.type === 'node'">
+    <div class="title">文字</div>   
+    <div class="mt5">
+      字体
+    </div>
+    <div >
+      <input name="fontFamily" class="input full" [(ngModel)]="props.data.font.fontFamily" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+    </div>
+    <div class="flex grid mt5">
+      <div>颜色</div>
+      <div>大小</div>
+    </div>
+    <div class="flex grid">
+      <div class="mr5">
+        <div class="input color" [class.readonly]="readonly">
+          <i [(colorPicker)]="props.data.font.color" [style.background]="props.data.font.color" 
+          cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
+          <input name="fontColor" [(ngModel)]="props.data.font.color" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+        </div>
+      </div>
+      <div>
+        <input type="number" name="fontSize" class="input" [(ngModel)]="props.data.font.fontSize" uiMin="0" uiMax="500" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+      </div>
+    </div>
+    <div class="flex grid mt5">
+      <div>倾斜</div>
+      <div>加粗</div>
+    </div>
+    <div class="flex grid">
+      <div class="mr5">
+        <ui-select name="fontStyle" [(ngModel)]="props.data.font.fontStyle" [options]="fontStyleOptions" [multi]="false"
+          (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
+      </div>
+      <div>
+        <ui-select name="fontWeight" [(ngModel)]="props.data.font.fontWeight" [options]="fontWeightOptions" [multi]="false"
+        (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
+      </div>
+    </div>
+
+    <div class="flex grid mt5">
+      <div>水平对齐</div>
+      <div>垂直对齐</div>
+    </div>
+    <div class="flex grid">
+      <div class="mr5">
+        <ui-select name="textAlign" [(ngModel)]="props.data.font.textAlign" [options]="textAlignOptions" [multi]="false"
+          (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
+      </div>
+      <div>
+        <ui-select name="textBaseline" [(ngModel)]="props.data.font.textBaseline" [options]="textBaselineOptions" [multi]="false"
+        (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
+      </div>
+    </div>
+
+    <div class="flex grid mt5">
+      <div>行高</div>
+      <div>最大行数</div>
+    </div>
+    <div class="flex grid">
+      <div class="mr5">
+        <input type="number" name="lineHeight" class="input" [(ngModel)]="props.data.font.lineHeight" uiMin="1" uiMax="5" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+      </div>
+      <div>      
+          <input type="number" name="textMaxLine" class="input" [(ngModel)]="props.data.textMaxLine" uiMin="0" uiMax="500" [readonly]="readonly"
+            placeholder="0：自动匹配高度" (change)="onChangeProp(propForm.invalid)"/>
+      </div>
+    </div>
+    <div class="mt5">
+      内容
+    </div>
+    <div >
+      <textarea name="text" class="input full" [(ngModel)]="props.data.text" rows="2" [readonly]="readonly"
+      (change)="onChangeProp(propForm.invalid)"></textarea>
+    </div>
   </div>
   <div class="group">
     <div class="title">
@@ -1193,81 +1268,6 @@
       </div>  
     </div>
     
-  </div>
-  <div class="group" *ngIf="props.type === 'node'">
-    <div class="title">文字</div>   
-    <div class="mt5">
-      字体
-    </div>
-    <div >
-      <input name="fontFamily" class="input full" [(ngModel)]="props.data.font.fontFamily" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
-    </div>
-    <div class="flex grid mt5">
-      <div>颜色</div>
-      <div>大小</div>
-    </div>
-    <div class="flex grid">
-      <div class="mr5">
-        <div class="input color" [class.readonly]="readonly">
-          <i [(colorPicker)]="props.data.font.color" [style.background]="props.data.font.color" 
-          cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-          <input name="fontColor" [(ngModel)]="props.data.font.color" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
-        </div>
-      </div>
-      <div>
-        <input type="number" name="fontSize" class="input" [(ngModel)]="props.data.font.fontSize" uiMin="0" uiMax="500" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
-      </div>
-    </div>
-    <div class="flex grid mt5">
-      <div>倾斜</div>
-      <div>加粗</div>
-    </div>
-    <div class="flex grid">
-      <div class="mr5">
-        <ui-select name="fontStyle" [(ngModel)]="props.data.font.fontStyle" [options]="fontStyleOptions" [multi]="false"
-          (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
-      </div>
-      <div>
-        <ui-select name="fontWeight" [(ngModel)]="props.data.font.fontWeight" [options]="fontWeightOptions" [multi]="false"
-        (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
-      </div>
-    </div>
-
-    <div class="flex grid mt5">
-      <div>水平对齐</div>
-      <div>垂直对齐</div>
-    </div>
-    <div class="flex grid">
-      <div class="mr5">
-        <ui-select name="textAlign" [(ngModel)]="props.data.font.textAlign" [options]="textAlignOptions" [multi]="false"
-          (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
-      </div>
-      <div>
-        <ui-select name="textBaseline" [(ngModel)]="props.data.font.textBaseline" [options]="textBaselineOptions" [multi]="false"
-        (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
-      </div>
-    </div>
-
-    <div class="flex grid mt5">
-      <div>行高</div>
-      <div>最大行数</div>
-    </div>
-    <div class="flex grid">
-      <div class="mr5">
-        <input type="number" name="lineHeight" class="input" [(ngModel)]="props.data.font.lineHeight" uiMin="1" uiMax="5" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
-      </div>
-      <div>      
-          <input type="number" name="textMaxLine" class="input" [(ngModel)]="props.data.textMaxLine" uiMin="0" uiMax="500" [readonly]="readonly"
-            placeholder="0：自动匹配高度" (change)="onChangeProp(propForm.invalid)"/>
-      </div>
-    </div>
-    <div class="mt5">
-      内容
-    </div>
-    <div >
-      <textarea name="text" class="input full" [(ngModel)]="props.data.text" rows="2" [readonly]="readonly"
-      (change)="onChangeProp(propForm.invalid)"></textarea>
-    </div>
   </div>
   <div class="group" *ngIf="props.type !== 'multi'">
     <div class="title">标签</div> 

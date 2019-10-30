@@ -164,6 +164,7 @@ export class Topology {
     };
 
     this.subcribe = Store.subscribe('render', () => {
+      this.offscreen.render();
       this.renderOffscreen();
     });
     this.subcribeAnimateMoved = Store.subscribe('nodeMovedInAnimate', (e: any) => {
