@@ -334,7 +334,6 @@ export class Node extends Pen {
 
   drawImg(ctx: CanvasRenderingContext2D) {
     if (this.lastImage !== this.image) {
-      console.log(123123111111);
       this.img = null;
     }
 
