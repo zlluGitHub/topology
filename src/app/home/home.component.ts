@@ -141,7 +141,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = Store.get('user');
-    this.subUser = Store.subcribe('user', (user: any) => {
+    this.subUser = Store.subscribe('user', (user: any) => {
       this.user = user;
       if (this.data && user && this.data.userId !== this.user.id) {
         this.data.shared = false;
@@ -150,7 +150,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.canvasOptions.on = this.onMessage;
-    this.subMenu = Store.subcribe('clickMenu', (menu: { event: string; data: any }) => {
+    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
       switch (menu.event) {
         case 'new':
           this.onNew();

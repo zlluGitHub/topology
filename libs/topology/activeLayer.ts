@@ -420,6 +420,7 @@ export class ActiveLayer {
     for (const item of this.nodes) {
       const tmp = new Node(item);
       tmp.fillStyle = null;
+      tmp.bkType = 0;
       tmp.icon = '';
       tmp.image = '';
       tmp.text = '';
@@ -479,10 +480,6 @@ export class ActiveLayer {
         item.strokeStyle = props.strokeStyle;
         item.fillStyle = props.fillStyle;
         item.globalAlpha = props.globalAlpha;
-        // if (item.children) {
-        //   this.updateProps(item.children, null, props);
-        //   this.updateChildren(item);
-        // }
       }
       this.updateLines(nodes);
     }

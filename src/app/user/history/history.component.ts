@@ -47,7 +47,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = Store.get('user');
-    this.subUser = Store.subcribe('user', (user: any) => {
+    this.subUser = Store.subscribe('user', (user: any) => {
       this.user = user;
       this.isVip = this.coreService.isVip(this.user);
     });

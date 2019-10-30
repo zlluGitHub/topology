@@ -33,7 +33,7 @@ export class CoreModule {
     Store.set('author', 'alsmile123@qq.com');
 
     // 监听用户认证
-    Store.subcribe('auth', (ret: any) => {
+    Store.subscribe('auth', (ret: any) => {
       // 认证失败
       if (ret === -1) {
         this._coreService.removeToken();
@@ -42,7 +42,7 @@ export class CoreModule {
     });
 
     // 监听是否需要重定向
-    Store.subcribe('redirect', (ret: string) => {
+    Store.subscribe('redirect', (ret: string) => {
       if (ret) {
         this._router.navigateByUrl(ret);
       }

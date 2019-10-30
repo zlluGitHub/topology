@@ -57,43 +57,43 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private router: Router, private activateRoute: ActivatedRoute) {}
 
   ngOnInit() {
-    Store.subcribe('user', (user: any) => {
+    Store.subscribe('user', (user: any) => {
       this.user = user;
       this.getRecently();
     });
 
-    Store.subcribe('file', (file: any) => {
+    Store.subscribe('file', (file: any) => {
       this.locked = 0;
       this.file = file;
       this.filename = file.name;
       this.editFilename = false;
     });
 
-    Store.subcribe('lineName', (lineName: string) => {
+    Store.subscribe('lineName', (lineName: string) => {
       if (lineName) {
         this.lineName = lineName;
       }
     });
 
-    Store.subcribe('fromArrowType', (fromArrowType: string) => {
+    Store.subscribe('fromArrowType', (fromArrowType: string) => {
       this.fromArrowType = fromArrowType || '';
     });
 
-    Store.subcribe('toArrowType', (toArrowType: string) => {
+    Store.subscribe('toArrowType', (toArrowType: string) => {
       if (toArrowType !== undefined) {
         this.toArrowType = toArrowType || '';
       }
     });
 
-    Store.subcribe('scale', (scale: number) => {
+    Store.subscribe('scale', (scale: number) => {
       this.scale = scale * 100;
     });
 
-    Store.subcribe('locked', (locked: number) => {
+    Store.subscribe('locked', (locked: number) => {
       this.locked = locked;
     });
 
-    Store.subcribe('recently', (item: any) => {
+    Store.subscribe('recently', (item: any) => {
       for (let i = 0; i < this.list.recently.length; ++i) {
         if (this.list.recently[i].id === item.id || i > 18) {
           this.list.recently.splice(i, 1);

@@ -33,6 +33,14 @@ export class Node extends Pen {
   imageAlign: Direction;
   private img: HTMLImageElement;
 
+  // 0 - 纯色；1 - 图片；2 - 线性渐变；3 - 径向渐变
+  bkType: number;
+  bkImage: string;
+  lastBkImage: string;
+  bkImgNaturalWidth: number;
+  bkImgNaturalHeight: number;
+  private bkImg: HTMLImageElement;
+
   paddingTop: number | string;
   paddingBottom: number | string;
   paddingLeft: number | string;
@@ -251,6 +259,20 @@ export class Node extends Pen {
     // Draw shape.
     drawNodeFns[this.name](ctx, this);
 
+    // DrawBk
+    switch (this.bkType) {
+      case 1:
+        this.drawBkImg(ctx);
+        break;
+      case 2:
+        this.drawBkLinearGradient(ctx);
+        break;
+      case 3:
+        this.drawBkRadialGradient(ctx);
+        break;
+    }
+    this.drawBkImg(ctx);
+
     // Draw text.
     if (this.name !== 'text' && this.text) {
       ctx.save();
@@ -262,28 +284,7 @@ export class Node extends Pen {
 
     // Draw image.
     if (this.image) {
-      if (this.lastImage !== this.image) {
-        this.img = null;
-      }
-      this.lastImage = this.image;
-
-      // There is the cache of image.
-      if (this.img) {
-        this.drawImg(ctx);
-        return;
-      } else {
-        // Load image and draw it.
-        this.img = new Image();
-        this.img.crossOrigin = 'anonymous';
-        this.img.src = this.image;
-        this.img.onload = () => {
-          this.imgNaturalWidth = this.img.naturalWidth;
-          this.imgNaturalHeight = this.img.naturalHeight;
-          this.drawImg(ctx);
-          this.emitRender();
-        };
-      }
-
+      this.drawImg(ctx);
       return;
     }
 
@@ -297,34 +298,82 @@ export class Node extends Pen {
     }
   }
 
+  drawBkImg(ctx: CanvasRenderingContext2D) {
+    if (!this.bkImage) {
+      return;
+    }
+
+    if (this.lastBkImage !== this.bkImage) {
+      this.bkImg = null;
+    }
+    if (this.bkImg) {
+      // console.log(123123);
+      return;
+    }
+
+    this.bkImg = new Image();
+    this.bkImg.crossOrigin = 'anonymous';
+    this.bkImg.src = this.bkImage || '/assets/img/favicon.ico';
+    this.bkImg.onload = () => {
+      this.lastBkImage = this.bkImage;
+      this.bkImgNaturalWidth = this.bkImg.naturalWidth;
+      this.bkImgNaturalHeight = this.bkImg.naturalHeight;
+      this.drawBkImg(ctx);
+      this.emitRender();
+    };
+  }
+
+  drawBkLinearGradient(ctx: CanvasRenderingContext2D) {}
+  drawBkRadialGradient(ctx: CanvasRenderingContext2D) {}
+
   drawImg(ctx: CanvasRenderingContext2D) {
-    ctx.save();
-    ctx.shadowColor = '';
-    ctx.shadowBlur = 0;
+    if (this.lastImage !== this.image) {
+      this.img = null;
+    }
 
-    const rect = this.getIconRect().clone();
-    const w = rect.width;
-    const h = rect.height;
-    if (this.imageWidth) {
-      rect.width = this.imageWidth;
-    }
-    if (this.imageHeight) {
-      rect.height = this.imageHeight;
-    }
-    if (this.imageRatio) {
+    if (this.img) {
+      ctx.save();
+      ctx.shadowColor = '';
+      ctx.shadowBlur = 0;
+
+      const rect = this.getIconRect().clone();
+      const w = rect.width;
+      const h = rect.height;
       if (this.imageWidth) {
-        rect.height = (this.imgNaturalHeight / this.imgNaturalWidth) * rect.width;
-      } else {
-        rect.width = (this.imgNaturalWidth / this.imgNaturalHeight) * rect.height;
+        rect.width = this.imageWidth;
       }
-    }
-    if (this.name !== 'image') {
-      rect.x += (w - rect.width) / 2;
-      rect.y += (h - rect.height) / 2;
+      if (this.imageHeight) {
+        rect.height = this.imageHeight;
+      }
+      if (this.imageRatio) {
+        if (this.imageWidth) {
+          rect.height = (this.imgNaturalHeight / this.imgNaturalWidth) * rect.width;
+        } else {
+          rect.width = (this.imgNaturalWidth / this.imgNaturalHeight) * rect.height;
+        }
+      }
+      if (this.name !== 'image') {
+        rect.x += (w - rect.width) / 2;
+        rect.y += (h - rect.height) / 2;
+      }
+
+      ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height);
+      ctx.restore();
+
+      this.emitRender();
+      return;
     }
 
-    ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height);
-    ctx.restore();
+    // Load image and draw it.
+    this.img = new Image();
+    this.img.crossOrigin = 'anonymous';
+    this.img.src = this.image;
+    this.img.onload = () => {
+      this.lastImage = this.image;
+      this.imgNaturalWidth = this.img.naturalWidth;
+      this.imgNaturalHeight = this.img.naturalHeight;
+      this.drawImg(ctx);
+    };
   }
 
   emitRender() {
@@ -377,6 +426,7 @@ export class Node extends Pen {
 
   clearImg() {
     this.img = null;
+    this.bkImg = null;
   }
 
   updateAnimateProps() {

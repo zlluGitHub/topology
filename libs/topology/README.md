@@ -4,7 +4,7 @@ Topology-core is the core of the framework.
 
 # store
 
-Store provides a way to pass data through snapshot/subcribe/unsubcribe .
+Store provides a way to pass data through snapshot/subcribe/unsubscribe .
 
 # Development
 

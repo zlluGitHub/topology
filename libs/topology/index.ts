@@ -163,10 +163,10 @@ export class Topology {
       this.ondrop(event);
     };
 
-    this.subcribe = Store.subcribe('render', () => {
+    this.subcribe = Store.subscribe('render', () => {
       this.renderOffscreen();
     });
-    this.subcribeAnimateMoved = Store.subcribe('nodeMovedInAnimate', (e: any) => {
+    this.subcribeAnimateMoved = Store.subscribe('nodeMovedInAnimate', (e: any) => {
       this.activeLayer.updateLines(this.nodes);
       this.activeLayer.render();
       this.offscreen.render();
@@ -175,7 +175,7 @@ export class Topology {
         this.options.on('nodeMovedInAnimate', e);
       }
     });
-    this.subcribeAnimateEnd = Store.subcribe('animateEnd', (e: any) => {
+    this.subcribeAnimateEnd = Store.subscribe('animateEnd', (e: any) => {
       if (!e) {
         return;
       }
@@ -891,7 +891,7 @@ export class Topology {
     this.moveIn.hoverLine = null;
     this.hoverLayer.hoverAnchorIndex = -1;
 
-    if (this.activeLayer.rotateCPs[0] && this.activeLayer.rotateCPs[0].hit(pt, 15)) {
+    if (this.locked > -1 && this.activeLayer.rotateCPs[0] && this.activeLayer.rotateCPs[0].hit(pt, 15)) {
       this.moveIn.type = MoveInType.Rotate;
       this.hoverLayer.canvas.style.cursor = `url("${this.options.rotateCursor}"), auto`;
       return;
@@ -1471,7 +1471,6 @@ export class Topology {
       const line = new Line(item);
       this.lines.push(line);
       this.activeLayer.lines.push(line);
-      Store.set('activeLine', line);
     }
 
     this.offscreen.render();
@@ -1707,8 +1706,8 @@ export class Topology {
   }
 
   destory() {
-    this.subcribe.unsubcribe();
-    this.subcribeAnimateEnd.unsubcribe();
-    this.subcribeAnimateMoved.unsubcribe();
+    this.subcribe.unsubscribe();
+    this.subcribeAnimateEnd.unsubscribe();
+    this.subcribeAnimateMoved.unsubscribe();
   }
 }
