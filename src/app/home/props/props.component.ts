@@ -98,6 +98,26 @@ export class PropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
+  bkTypeOptions = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: 0,
+        name: '纯色背景'
+      },
+      {
+        id: 1,
+        name: '线性渐变'
+      },
+      {
+        id: 2,
+        name: '径向渐变'
+      }
+    ],
+    noDefaultOption: true
+  };
+
   showDialog = 0;
   images: { id: string; image: string }[];
 
@@ -311,6 +331,10 @@ export class PropsComponent implements OnInit, OnChanges {
       }
     } else {
       this.icon = null;
+    }
+
+    if (!this.props.data.bkType) {
+      this.props.data.bkType = 0;
     }
   }
 
@@ -689,5 +713,19 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.onAnimateDuration();
+  }
+
+  onChangeBkType() {
+    if (this.props.data.bkType === 1) {
+      this.props.data.gradientFromColor = this.props.data.gradientFromColor || '#f50000a0';
+      this.props.data.gradientToColor = this.props.data.gradientToColor || '#fff6dda0';
+      this.props.data.gradientAngle = this.props.data.gradientAngle || 0;
+    } else if (this.props.data.bkType === 2) {
+      this.props.data.gradientFromColor = this.props.data.gradientFromColor || '#ffffff00';
+      this.props.data.gradientToColor = this.props.data.gradientToColor || '#f5000040';
+      this.props.data.gradientRadius = this.props.data.gradientRadius || 0.01;
+    }
+
+    this.onChangeProp();
   }
 }

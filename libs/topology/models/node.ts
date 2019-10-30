@@ -33,13 +33,12 @@ export class Node extends Pen {
   imageAlign: Direction;
   private img: HTMLImageElement;
 
-  // 0 - 纯色；1 - 图片；2 - 线性渐变；3 - 径向渐变
+  // 0 - 纯色；1 - 线性渐变；2 - 径向渐变
   bkType: number;
-  bkImage: string;
-  lastBkImage: string;
-  bkImgNaturalWidth: number;
-  bkImgNaturalHeight: number;
-  private bkImg: HTMLImageElement;
+  gradientFromColor: string;
+  gradientToColor: string;
+  gradientAngle: number;
+  gradientRadius: number;
 
   paddingTop: number | string;
   paddingBottom: number | string;
@@ -122,6 +121,11 @@ export class Node extends Pen {
     }
     this.imageRatio = json.imageRatio;
     this.imageAlign = json.imageAlign;
+
+    this.gradientFromColor = json.gradientFromColor;
+    this.gradientToColor = json.gradientToColor;
+    this.gradientAngle = json.gradientAngle || 0;
+    this.gradientRadius = json.gradientRadius || 0.01;
 
     this.paddingTop = json.paddingTop || 0;
     this.paddingBottom = json.paddingBottom || 0;
@@ -256,22 +260,18 @@ export class Node extends Pen {
       return;
     }
 
-    // Draw shape.
-    drawNodeFns[this.name](ctx, this);
-
     // DrawBk
     switch (this.bkType) {
       case 1:
-        this.drawBkImg(ctx);
-        break;
-      case 2:
         this.drawBkLinearGradient(ctx);
         break;
-      case 3:
+      case 2:
         this.drawBkRadialGradient(ctx);
         break;
     }
-    // this.drawBkImg(ctx);
+
+    // Draw shape.
+    drawNodeFns[this.name](ctx, this);
 
     // Draw text.
     if (this.name !== 'text' && this.text) {
@@ -298,39 +298,40 @@ export class Node extends Pen {
     }
   }
 
-  drawBkImg(ctx: CanvasRenderingContext2D) {
-    // if (!this.bkImage) {
-    //   return;
-    // }
-
-    if (this.lastBkImage !== this.bkImage) {
-      this.bkImg = null;
-    }
-    if (this.bkImg) {
-      ctx.save();
-      const pat = ctx.createPattern(this.bkImg, 'no-repeat');
-      ctx.fillStyle = pat;
-      ctx.clip();
-      ctx.fillRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
-      ctx.restore();
-      this.emitRender();
-      // console.log(123123);
-      return;
+  drawBkLinearGradient(ctx: CanvasRenderingContext2D) {
+    const from = new Point(this.rect.x, this.rect.center.y);
+    const to = new Point(this.rect.ex, this.rect.center.y);
+    if (this.gradientAngle) {
+      from.rotate(this.gradientAngle, this.rect.center);
+      to.rotate(this.gradientAngle, this.rect.center);
     }
 
-    this.bkImg = new Image();
-    this.bkImg.crossOrigin = 'anonymous';
-    this.bkImg.src = this.bkImage || '/assets/img/favicon.ico';
-    this.bkImg.onload = () => {
-      this.lastBkImage = this.bkImage;
-      this.bkImgNaturalWidth = this.bkImg.naturalWidth;
-      this.bkImgNaturalHeight = this.bkImg.naturalHeight;
-      this.drawBkImg(ctx);
-    };
+    // contributor: https://github.com/sunnyguohua/topology
+    const grd = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
+    grd.addColorStop(0, this.gradientFromColor);
+    grd.addColorStop(1, this.gradientToColor);
+    ctx.fillStyle = grd;
   }
 
-  drawBkLinearGradient(ctx: CanvasRenderingContext2D) {}
-  drawBkRadialGradient(ctx: CanvasRenderingContext2D) {}
+  drawBkRadialGradient(ctx: CanvasRenderingContext2D) {
+    let r = this.rect.width;
+    if (r < this.rect.height) {
+      r = this.rect.height;
+    }
+    r *= 0.5;
+    const grd = ctx.createRadialGradient(
+      this.rect.center.x,
+      this.rect.center.y,
+      r * this.gradientRadius,
+      this.rect.center.x,
+      this.rect.center.y,
+      r
+    );
+    grd.addColorStop(0, this.gradientFromColor);
+    grd.addColorStop(1, this.gradientToColor);
+
+    ctx.fillStyle = grd;
+  }
 
   drawImg(ctx: CanvasRenderingContext2D) {
     if (this.lastImage !== this.image) {
@@ -383,7 +384,7 @@ export class Node extends Pen {
   }
 
   emitRender() {
-    Store.set('render', 1);
+    Store.set('render', -1);
   }
 
   calcAnchors() {
@@ -432,7 +433,6 @@ export class Node extends Pen {
 
   clearImg() {
     this.img = null;
-    this.bkImg = null;
   }
 
   updateAnimateProps() {

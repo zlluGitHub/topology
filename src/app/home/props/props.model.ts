@@ -11,6 +11,11 @@ export interface Props {
     lineWidth: number;
     strokeStyle: string;
     fillStyle: string;
+    bkType: number;
+    gradientFromColor: string;
+    gradientToColor: string;
+    gradientAngle: number;
+    gradientRadius: number;
     globalAlpha: number;
     rotate: number;
     font: {
