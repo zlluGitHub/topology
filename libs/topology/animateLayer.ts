@@ -121,6 +121,9 @@ export class AnimateLayer {
 
         const ctx = this.canvas.getContext('2d');
         for (let i = 0; i < this.lines.length; ++i) {
+          if (this.lines[i].animateStart > now) {
+            continue;
+          }
           const next = this.lines[i].animate(ctx);
           if (!this.lines[i].animateStart) {
             for (const item of Store.get('lines')) {
@@ -141,9 +144,11 @@ export class AnimateLayer {
           }
         }
         for (let i = 0; i < this.nodes.length; ++i) {
+          if (this.nodes[i].animateStart > now) {
+            continue;
+          }
           if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
             const next = this.nodes[i].animate(ctx, now);
-            // console.log(123123, next);
             if (next) {
               this.getNodes(Store.get('nodes'), next);
               this.getLines(next);

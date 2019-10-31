@@ -30,7 +30,7 @@ export class Node extends Pen {
   imageWidth: number;
   imageHeight: number;
   imageRatio = true;
-  imageAlign: Direction;
+  imageAlign: string;
   private img: HTMLImageElement;
 
   // 0 - 纯色；1 - 线性渐变；2 - 径向渐变
@@ -120,7 +120,7 @@ export class Node extends Pen {
       this.imageHeight = json.imageHeight;
     }
     this.imageRatio = json.imageRatio;
-    this.imageAlign = json.imageAlign;
+    this.imageAlign = json.imageAlign || 'center';
 
     this.bkType = json.bkType;
     this.gradientFromColor = json.gradientFromColor;
@@ -344,28 +344,59 @@ export class Node extends Pen {
       ctx.shadowColor = '';
       ctx.shadowBlur = 0;
 
-      const rect = this.getIconRect().clone();
-      const w = rect.width;
-      const h = rect.height;
+      const rect = this.getIconRect();
+      let x = rect.x;
+      let y = rect.y;
+      let w = rect.width;
+      let h = rect.height;
       if (this.imageWidth) {
-        rect.width = this.imageWidth;
+        w = this.imageWidth;
       }
       if (this.imageHeight) {
-        rect.height = this.imageHeight;
+        h = this.imageHeight;
       }
       if (this.imageRatio) {
         if (this.imageWidth) {
-          rect.height = (this.imgNaturalHeight / this.imgNaturalWidth) * rect.width;
+          h = (this.imgNaturalHeight / this.imgNaturalWidth) * w;
         } else {
-          rect.width = (this.imgNaturalWidth / this.imgNaturalHeight) * rect.height;
+          w = (this.imgNaturalWidth / this.imgNaturalHeight) * h;
         }
       }
       if (this.name !== 'image') {
-        rect.x += (w - rect.width) / 2;
-        rect.y += (h - rect.height) / 2;
+        x += (rect.width - w) / 2;
+        y += (rect.height - h) / 2;
       }
-
-      ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height);
+      switch (this.imageAlign) {
+        case 'top':
+          y = rect.y;
+          break;
+        case 'bottom':
+          y = rect.ey - h;
+          break;
+        case 'left':
+          x = rect.x;
+          break;
+        case 'right':
+          x = rect.ex - w;
+          break;
+        case 'left-top':
+          x = rect.x;
+          y = rect.y;
+          break;
+        case 'right-top':
+          x = rect.ex - w;
+          y = rect.y;
+          break;
+        case 'left-bottom':
+          x = rect.x;
+          y = rect.ey - h;
+          break;
+        case 'right-bottom':
+          x = rect.ex - w;
+          y = rect.ey - h;
+          break;
+      }
+      ctx.drawImage(this.img, x, y, w, h);
       ctx.restore();
 
       this.emitRender();

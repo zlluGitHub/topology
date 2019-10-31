@@ -140,9 +140,56 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
 
 export function iconfont(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.save();
+
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+
   const iconRect = node.getIconRect();
+  let x = iconRect.x + iconRect.width / 2;
+  let y = iconRect.y + iconRect.height / 2;
+  switch (node.imageAlign) {
+    case 'top':
+      y = iconRect.y;
+      ctx.textBaseline = 'top';
+      break;
+    case 'bottom':
+      y = iconRect.ey;
+      ctx.textBaseline = 'bottom';
+      break;
+    case 'left':
+      x = iconRect.x;
+      ctx.textAlign = 'left';
+      break;
+    case 'right':
+      x = iconRect.ex;
+      ctx.textAlign = 'right';
+      break;
+    case 'left-top':
+      x = iconRect.x;
+      y = iconRect.y;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      break;
+    case 'right-top':
+      x = iconRect.ex;
+      y = iconRect.y;
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      break;
+    case 'left-bottom':
+      x = iconRect.x;
+      y = iconRect.ey;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      break;
+    case 'right-bottom':
+      x = iconRect.ex;
+      y = iconRect.ey;
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      break;
+  }
+
   if (node.iconSize > 0) {
     ctx.font = `${node.iconSize}px ${node.iconFamily}`;
   } else if (iconRect.width > iconRect.height) {
@@ -155,6 +202,6 @@ export function iconfont(ctx: CanvasRenderingContext2D, node: Node) {
   }
   ctx.fillStyle = node.iconColor;
   ctx.beginPath();
-  ctx.fillText(node.icon, iconRect.x + iconRect.width / 2, iconRect.y + iconRect.height / 2);
+  ctx.fillText(node.icon, x, y);
   ctx.restore();
 }

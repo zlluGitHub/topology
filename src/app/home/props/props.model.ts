@@ -59,6 +59,7 @@ export interface Props {
     imageWidth?: number;
     imageHeight?: number;
     imageRatio?: boolean;
+    imageAlign?: string;
     text?: string;
     textMaxLine?: number;
     paddingTop?: number | string;

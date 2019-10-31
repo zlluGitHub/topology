@@ -266,6 +266,13 @@
         </div>
       </div>
     </div>
+    <div class="group">
+      <div class="title">图片/图标对齐方式</div>
+      <div class="mt5">
+        <ui-select class="full" name="imageAlign" [(ngModel)]="props.data.imageAlign" [options]="iconAligns" [multi]="false"
+          (change)="onChangeProp()" [readonly]="readonly"></ui-select>
+      </div>
+    </div>
   </div>
   <div class="group" *ngIf="props.type === 'line'">
     <div class="title">位置</div>

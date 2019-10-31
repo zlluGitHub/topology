@@ -179,6 +179,50 @@ export class PropsComponent implements OnInit, OnChanges {
     ]
   };
 
+  iconAligns = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: 'center',
+        name: '居中'
+      },
+      {
+        id: 'top',
+        name: '上'
+      },
+      {
+        id: 'bottom',
+        name: '下'
+      },
+      {
+        id: 'left',
+        name: '左'
+      },
+      {
+        id: 'right',
+        name: '右'
+      },
+      {
+        id: 'left-top',
+        name: '左上'
+      },
+      {
+        id: 'right-top',
+        name: '右上'
+      },
+      {
+        id: 'left-bottom',
+        name: '左下'
+      },
+      {
+        id: 'right-bottom',
+        name: '右下'
+      }
+    ],
+    noDefaultOption: true
+  };
+
   icons: any[] = [
     { class: 'topology-upload', unicode: '59295' },
     { class: 'topology-download', unicode: '59292' },
@@ -335,6 +379,10 @@ export class PropsComponent implements OnInit, OnChanges {
 
     if (!this.props.data.bkType) {
       this.props.data.bkType = 0;
+    }
+
+    if (!this.props.data.imageAlign) {
+      this.props.data.imageAlign = 'center';
     }
   }
 
@@ -717,12 +765,14 @@ export class PropsComponent implements OnInit, OnChanges {
 
   onChangeBkType() {
     if (this.props.data.bkType === 1) {
-      this.props.data.gradientFromColor = this.props.data.gradientFromColor || '#f50000a0';
-      this.props.data.gradientToColor = this.props.data.gradientToColor || '#fff6dda0';
+      this.props.data.strokeStyle = '#52c41aff';
+      this.props.data.gradientFromColor = this.props.data.gradientFromColor || '#c6ebb463';
+      this.props.data.gradientToColor = this.props.data.gradientToColor || '#bae7ff0f';
       this.props.data.gradientAngle = this.props.data.gradientAngle || 0;
     } else if (this.props.data.bkType === 2) {
+      this.props.data.strokeStyle = '#52c41aff';
       this.props.data.gradientFromColor = this.props.data.gradientFromColor || '#ffffff00';
-      this.props.data.gradientToColor = this.props.data.gradientToColor || '#f5000040';
+      this.props.data.gradientToColor = this.props.data.gradientToColor || '#c6ebb463';
       this.props.data.gradientRadius = this.props.data.gradientRadius || 0.01;
     }
 
