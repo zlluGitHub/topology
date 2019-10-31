@@ -6,6 +6,24 @@ export class Rect {
   ey: number;
   center: Point = new Point(0, 0);
   constructor(public x: number, public y: number, public width: number, public height: number) {
+    this.floor();
+    this.calceCenter();
+  }
+
+  floor() {
+    this.x |= 0;
+    this.y |= 0;
+    this.width |= 0;
+    this.height |= 0;
+    this.ex = this.x + this.width;
+    this.ey = this.y + this.height;
+  }
+
+  round() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+    this.width = Math.round(this.width);
+    this.height = Math.round(this.height);
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
     this.calceCenter();
@@ -59,16 +77,6 @@ export class Rect {
     this.y = center.y - (center.y - this.y) * scale;
     this.width *= scale;
     this.height *= scale;
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
-  }
-
-  round() {
-    this.x = Math.round(this.x);
-    this.y = Math.round(this.y);
-    this.width = Math.round(this.width);
-    this.height = Math.round(this.height);
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
     this.calceCenter();

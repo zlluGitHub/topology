@@ -103,8 +103,8 @@ export class AnimateLayer {
 
   animate() {
     if (!this.lines.length && !this.nodes.length) {
-      // clear
-      this.canvas.height = this.canvas.height;
+      const ctx = this.canvas.getContext('2d');
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.timer = null;
       return;
     }
@@ -116,10 +116,9 @@ export class AnimateLayer {
 
       // Not too fast.
       if (interval > 15) {
-        // clear
-        this.canvas.height = this.canvas.height;
-
         const ctx = this.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         for (let i = 0; i < this.lines.length; ++i) {
           if (this.lines[i].animateStart > now) {
             continue;

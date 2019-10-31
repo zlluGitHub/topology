@@ -101,7 +101,7 @@ export class Topology {
 
     if (!this.options.font) {
       this.options.font = {
-        color: '#333',
+        color: '#000',
         fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
         fontSize: 12,
         lineHeight: 1.5,
@@ -111,7 +111,7 @@ export class Topology {
     }
 
     if (!this.options.color) {
-      this.options.color = '#000';
+      this.options.color = '#333';
     }
 
     if (!this.options.rotateCursor) {
@@ -123,7 +123,7 @@ export class Topology {
     }
 
     if (!this.options.font.color) {
-      this.options.font.color = '#333';
+      this.options.font.color = '#000';
     }
     if (!this.options.font.fontSize) {
       // px
@@ -253,6 +253,11 @@ export class Topology {
     this.hoverLayer.resize(this.canvas.width, this.canvas.height);
     this.activeLayer.resize(this.canvas.width, this.canvas.height);
     this.animateLayer.resize(this.canvas.width, this.canvas.height);
+
+    this.offscreen.canvas.getContext('2d').translate(0.5, 0.5);
+    this.activeLayer.canvas.getContext('2d').translate(0.5, 0.5);
+    this.animateLayer.canvas.getContext('2d').translate(0.5, 0.5);
+
     this.render();
 
     if (this.options.on) {

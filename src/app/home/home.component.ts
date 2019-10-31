@@ -352,7 +352,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl('/workspace');
       return;
     }
-
     Store.set('recently', {
       id: ret.id,
       fileId: ret.fileId || '',
@@ -455,7 +454,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         Store.set('recently', {
           id: this.data.id,
-          fileId: this.data.fileId || '',
           image: this.data.image,
           name: this.data.name,
           desc: this.data.desc

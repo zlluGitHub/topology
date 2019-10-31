@@ -28,10 +28,10 @@ export class Canvas {
     }
 
     this.rendering = true;
-    // Clear the canvas.
-    this.canvas.height = this.canvas.height;
 
     const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     ctx.strokeStyle = this.options.color;
     ctx.fillStyle = '#fff';
 

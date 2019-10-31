@@ -496,6 +496,7 @@ export class Node extends Pen {
           this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
           this.init();
         }
+        this.round();
         Store.set('animateEnd', {
           type: 'node',
           data: this

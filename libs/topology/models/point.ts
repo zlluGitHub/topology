@@ -19,13 +19,23 @@ export class Point {
     hidden?: boolean,
     out?: boolean
   ) {
-    this.x = this.x;
-    this.y = this.y;
+    this.x |= 0;
+    this.y |= 0;
     this.direction = direction;
     this.anchorIndex = anchorIndex;
     this.id = id;
     this.hidden = hidden;
     this.out = out;
+  }
+
+  floor() {
+    this.x |= 0;
+    this.y |= 0;
+  }
+
+  round() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
   }
 
   clone(): Point {
@@ -51,10 +61,5 @@ export class Point {
     this.x = x;
     this.y = y;
     return this;
-  }
-
-  round() {
-    this.x = Math.round(this.x);
-    this.y = Math.round(this.y);
   }
 }

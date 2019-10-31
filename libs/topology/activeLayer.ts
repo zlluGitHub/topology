@@ -119,8 +119,8 @@ export class ActiveLayer {
   }
 
   render() {
-    // clear
-    this.canvas.height = this.canvas.height;
+    const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (!this.nodes.length && !this.lines.length) {
       return;
@@ -130,7 +130,6 @@ export class ActiveLayer {
       this.calcControlPoints();
     }
 
-    const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.activeColor;
     ctx.fillStyle = '#fff';
     ctx.lineWidth = 1;
@@ -148,10 +147,10 @@ export class ActiveLayer {
     ctx.save();
     ctx.globalAlpha = 0.3;
     ctx.beginPath();
-    ctx.moveTo(this.sizeCPs[0].x - 0.5, this.sizeCPs[0].y - 0.5);
-    ctx.lineTo(this.sizeCPs[1].x + 0.5, this.sizeCPs[1].y - 0.5);
-    ctx.lineTo(this.sizeCPs[2].x + 0.5, this.sizeCPs[2].y + 0.5);
-    ctx.lineTo(this.sizeCPs[3].x - 0.5, this.sizeCPs[3].y - 0.5);
+    ctx.moveTo(this.sizeCPs[0].x, this.sizeCPs[0].y);
+    ctx.lineTo(this.sizeCPs[1].x, this.sizeCPs[1].y);
+    ctx.lineTo(this.sizeCPs[2].x, this.sizeCPs[2].y);
+    ctx.lineTo(this.sizeCPs[3].x, this.sizeCPs[3].y);
     ctx.closePath();
     ctx.stroke();
     ctx.restore();
@@ -272,6 +271,7 @@ export class ActiveLayer {
         w / (this.initialSizeCPs[2].x - this.initialSizeCPs[0].x),
         h / (this.initialSizeCPs[2].y - this.initialSizeCPs[0].y)
       );
+      item.rect.floor();
       item.rect.calceCenter();
       item.init();
       this.updateChildren(item);
@@ -304,6 +304,7 @@ export class ActiveLayer {
       item.rect.y = this.nodeRects[i].y + y;
       item.rect.ex = item.rect.x + item.rect.width;
       item.rect.ey = item.rect.y + item.rect.height;
+      item.rect.floor();
       item.rect.calceCenter();
       item.init();
       this.updateChildren(item);
