@@ -1,12 +1,12 @@
-import { Topology } from '../../libs/topology';
-import { registerNode } from '../../libs/topology/middles';
-import { Pen } from '../../libs/topology/models/pen';
-import { Node } from '../../libs/topology/models/node';
-import { Point } from '../../libs/topology/models/point';
-import { Line } from '../../libs/topology/models/line';
-import { Rect } from '../../libs/topology/models/rect';
+import { Topology } from 'topology-core';
+import { registerNode } from 'topology-core/middles';
+import { Pen } from 'topology-core/models/pen';
+import { Node } from 'topology-core/models/node';
+import { Point } from 'topology-core/models/point';
+import { Line } from 'topology-core/models/line';
+import { Rect } from 'topology-core/models/rect';
 import { Store, Observer } from 'le5le-store';
-import { s8 } from '../../libs/topology/uuid/uuid';
+import { s8 } from 'topology-core/uuid/uuid';
 
 import {
   flowData,
@@ -45,7 +45,7 @@ import {
   flowParallelAnchors,
   flowComment,
   flowCommentAnchors
-} from '../../libs/topology-flow-diagram';
+} from 'topology-flow-diagram';
 
 import {
   activityFinal,
@@ -62,7 +62,7 @@ import {
   forkIconRect,
   forkTextRect,
   forkVAnchors
-} from '../../libs/topology-activity-diagram';
+} from 'topology-activity-diagram';
 import {
   simpleClass,
   simpleClassIconRect,
@@ -70,7 +70,7 @@ import {
   interfaceClass,
   interfaceClassIconRect,
   interfaceClassTextRect
-} from '../../libs/topology-class-diagram';
+} from 'topology-class-diagram';
 import {
   lifeline,
   lifelineAnchors,
@@ -80,7 +80,7 @@ import {
   sequenceFocusAnchors,
   sequenceFocusIconRect,
   sequenceFocusTextRect
-} from '../../libs/topology-sequence-diagram';
+} from 'topology-sequence-diagram';
 
 // Register flow diagrams.
 registerNode('flowData', flowData, flowDataAnchors, flowDataIconRect, flowDataTextRect);
