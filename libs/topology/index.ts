@@ -1684,6 +1684,9 @@ export class Topology {
       item.to.x = center.x - (center.x - item.to.x) * scale;
       item.to.y = center.y - (center.y - item.to.y) * scale;
 
+      item.from.round();
+      item.to.round();
+
       for (const pt of item.controlPoints) {
         pt.x = center.x - (center.x - pt.x) * scale;
         pt.y = center.y - (center.y - pt.y) * scale;

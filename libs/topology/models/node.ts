@@ -596,9 +596,7 @@ export class Node extends Pen {
     }
     this.font.fontSize *= scale;
     this.iconSize *= scale;
-    this.rect.ex = this.rect.x + this.rect.width;
-    this.rect.ey = this.rect.y + this.rect.height;
-    this.rect.calceCenter();
+    this.rect.round();
     this.init();
 
     if (this.children) {
