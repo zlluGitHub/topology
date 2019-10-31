@@ -236,6 +236,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           };
         }
       });
+      // For debug
+      (window as any).canvas = this.canvas;
+      // End
     });
 
     this.canvasRegister();

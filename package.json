@@ -26,7 +26,7 @@
     "file-saver": "^2.0.2",
     "le5le-components": "^0.8.8",
     "le5le-store": "^1.0.2",
-    "le5le-ui": "^0.7.1",
+    "le5le-ui": "^0.8.2",
     "ngresizable": "^1.0.0",
     "ngx-color-picker": "^8.1.0",
     "rxjs": "~6.4.0",

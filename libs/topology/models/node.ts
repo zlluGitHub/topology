@@ -122,6 +122,7 @@ export class Node extends Pen {
     this.imageRatio = json.imageRatio;
     this.imageAlign = json.imageAlign;
 
+    this.bkType = json.bkType;
     this.gradientFromColor = json.gradientFromColor;
     this.gradientToColor = json.gradientToColor;
     this.gradientAngle = json.gradientAngle || 0;
