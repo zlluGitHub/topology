@@ -406,8 +406,6 @@ export class Topology {
 
     this.overflow();
     this.render();
-
-    this.scaleTo(window.devicePixelRatio);
   }
 
   private overflow() {
