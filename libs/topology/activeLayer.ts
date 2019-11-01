@@ -448,47 +448,6 @@ export class ActiveLayer extends Canvas {
     ctx.restore();
   }
 
-  // Only public prop is requied, for mulit object selected.
-  updateProps(
-    nodes: Node[],
-    lines: Line[],
-    props: {
-      dash: number;
-      lineWidth: number;
-      strokeStyle: string;
-      fillStyle: string;
-      globalAlpha: number;
-      rotate: number;
-    }
-  ) {
-    if (nodes) {
-      for (const item of nodes) {
-        item.rect.ex = item.rect.x + item.rect.width;
-        item.rect.ey = item.rect.y + item.rect.height;
-        item.rect.calceCenter();
-        item.init();
-        item.dash = props.dash;
-        item.lineWidth = props.lineWidth;
-        item.strokeStyle = props.strokeStyle;
-        item.fillStyle = props.fillStyle;
-        item.globalAlpha = props.globalAlpha;
-      }
-      this.updateLines(nodes);
-    }
-
-    if (lines) {
-      for (const item of lines) {
-        item.dash = props.dash;
-        item.lineWidth = props.lineWidth;
-        item.strokeStyle = props.strokeStyle;
-        item.fillStyle = props.fillStyle;
-        item.globalAlpha = props.globalAlpha;
-      }
-    }
-
-    this.calcControlPoints();
-  }
-
   getDockWatchers() {
     if (this.nodes.length === 1) {
       this.dockWatchers = this.nodeRects[0].toPoints();
@@ -498,5 +457,66 @@ export class ActiveLayer extends Canvas {
 
     this.dockWatchers = this.rect.toPoints();
     this.dockWatchers.unshift(this.rect.center);
+  }
+
+  alignNodes(align: string) {
+    switch (align) {
+      case 'left':
+        for (const item of this.nodes) {
+          item.rect.x = this.rect.x;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+      case 'right':
+        for (const item of this.nodes) {
+          item.rect.x = this.rect.ex - item.rect.width;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+      case 'top':
+        for (const item of this.nodes) {
+          item.rect.y = this.rect.y;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+      case 'bottom':
+        for (const item of this.nodes) {
+          item.rect.y = this.rect.ey - item.rect.height;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+      case 'center':
+        for (const item of this.nodes) {
+          item.rect.x = this.rect.center.x - item.rect.width / 2;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+      case 'middle':
+        for (const item of this.nodes) {
+          item.rect.y = this.rect.center.y - item.rect.height / 2;
+          item.rect.floor();
+          item.rect.calceCenter();
+          item.init();
+          this.updateChildren(item);
+        }
+        break;
+    }
+
+    this.updateLines();
   }
 }

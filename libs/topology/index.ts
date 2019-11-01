@@ -1481,19 +1481,13 @@ export class Topology {
     this.animateLayer.render(false);
   }
 
-  updateProps(
-    nodes: Node[],
-    lines: Line[],
-    props: {
-      dash: number;
-      lineWidth: number;
-      strokeStyle: string;
-      fillStyle: string;
-      globalAlpha: number;
-      rotate: number;
+  updateProps(node?: Node) {
+    if (node) {
+      node.round();
+      node.init();
+      this.activeLayer.updateLines([node]);
     }
-  ) {
-    this.activeLayer.updateProps(nodes, lines, props);
+    this.activeLayer.calcControlPoints();
     this.activeLayer.saveNodeRects();
     this.activeLayer.changeLineType();
 
@@ -1687,6 +1681,14 @@ export class Topology {
     for (const item of this.nodes) {
       item.round();
     }
+  }
+
+  alignNodes(align: string) {
+    this.activeLayer.alignNodes(align);
+    this.hoverLayer.render();
+    this.activeLayer.render();
+    this.animateLayer.render();
+    this.offscreen.render();
   }
 
   destory() {

@@ -223,6 +223,8 @@ export class PropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
+  nodesAlgin = ['left', 'right', 'top', 'bottom', 'center', 'middle'];
+
   icons: any[] = [
     { class: 'topology-upload', unicode: '59295' },
     { class: 'topology-download', unicode: '59292' },
@@ -777,5 +779,12 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.onChangeProp();
+  }
+
+  onNodesAlign(align: string) {
+    this.ok.emit({
+      type: 'multi',
+      align
+    });
   }
 }
