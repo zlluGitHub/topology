@@ -1,24 +1,23 @@
+import { Store } from 'le5le-store';
 import { Node } from './models/node';
 import { Line } from './models/line';
-import { Store } from 'le5le-store';
+import { Canvas } from './canvas';
+import { Options } from './options';
 
-export class AnimateLayer {
+export class AnimateLayer extends Canvas {
   canvas = document.createElement('canvas');
   nodes: Node[] = [];
   lines: Line[] = [];
 
   private last = Date.now();
   private timer: any;
-  constructor(parent: HTMLElement, public options: any) {
+  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+    super(parentElem, options);
+    parentElem.appendChild(this.canvas);
+
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
     }
-
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.left = '0';
-    this.canvas.style.top = '0';
-    this.canvas.style.outline = 'none';
-    parent.appendChild(this.canvas);
   }
 
   render(force = true) {
@@ -94,6 +93,7 @@ export class AnimateLayer {
         l.fromArrow = '';
         l.toArrow = '';
         l.lineWidth += 1;
+        l.fillStyle = '#fff';
         l.strokeStyle = l.animateColor || this.options.animateColor;
         l.length = l.getLen();
         this.lines.push(l);
@@ -103,8 +103,6 @@ export class AnimateLayer {
 
   animate() {
     if (!this.lines.length && !this.nodes.length) {
-      const ctx = this.canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.timer = null;
       return;
     }
@@ -159,10 +157,5 @@ export class AnimateLayer {
       }
       this.animate();
     });
-  }
-
-  resize(width: number, height: number) {
-    this.canvas.width = width;
-    this.canvas.height = height;
   }
 }

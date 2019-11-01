@@ -4,10 +4,10 @@ import { Line } from './models/line';
 import { Node } from './models/node';
 import { Store } from 'le5le-store';
 import { drawLineFns } from './middles';
+import { Canvas } from './canvas';
+import { Options } from './options';
 
-export class HoverLayer {
-  canvas = document.createElement('canvas');
-
+export class HoverLayer extends Canvas {
   anchorRadius = 4;
 
   line: Line;
@@ -24,7 +24,10 @@ export class HoverLayer {
   dockLineY = 0;
 
   dragRect: Rect;
-  constructor(parent: HTMLElement, public options: any) {
+  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+    super(parentElem, options);
+    parentElem.appendChild(this.canvas);
+
     if (!this.options.hoverColor) {
       this.options.hoverColor = '#d4380d';
     }
@@ -33,12 +36,6 @@ export class HoverLayer {
     if (!this.options.dragColor) {
       this.options.dragColor = '#d4380d';
     }
-
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.left = '0';
-    this.canvas.style.top = '0';
-    this.canvas.style.outline = 'none';
-    parent.appendChild(this.canvas);
   }
 
   setLine(from: Point, fromArrow = '', lineName = 'curve') {
@@ -67,11 +64,9 @@ export class HoverLayer {
   }
 
   render() {
-    // clear
-    this.canvas.height = this.canvas.height;
+    super.render();
 
     const ctx = this.canvas.getContext('2d');
-    ctx.translate(0, 0);
     ctx.strokeStyle = this.options.hoverColor;
     ctx.fillStyle = '#fff';
     // anchors
@@ -108,7 +103,6 @@ export class HoverLayer {
     ctx.strokeStyle = this.options.dragColor + '50';
     ctx.fillStyle = this.options.dragColor + '30';
     ctx.lineWidth = 1;
-    ctx.translate(0.5, 0.5);
 
     if (this.dockLineX > 0) {
       ctx.beginPath();
@@ -131,10 +125,5 @@ export class HoverLayer {
       ctx.strokeRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
       ctx.fillRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
     }
-  }
-
-  resize(width: number, height: number) {
-    this.canvas.width = width;
-    this.canvas.height = height;
   }
 }

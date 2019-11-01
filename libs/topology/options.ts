@@ -5,6 +5,7 @@ export interface Options {
   activeColor?: string;
   hoverColor?: string;
   dragColor?: string;
+  animateColor?: string;
   font?: {
     color: string;
     fontFamily: string;

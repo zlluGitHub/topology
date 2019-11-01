@@ -91,7 +91,7 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
   if (node.font.color) {
     ctx.fillStyle = node.font.color;
   } else {
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#222';
   }
   if (node.font.textAlign) {
     ctx.textAlign = node.font.textAlign as any;

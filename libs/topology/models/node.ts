@@ -6,7 +6,6 @@ import { defaultAnchors } from '../middles/default.anchor';
 import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
-import { Direction } from './direction';
 import { abs } from '../utils';
 
 export class Node extends Pen {
@@ -89,6 +88,7 @@ export class Node extends Pen {
     state: Node;
   }[] = [];
 
+  private imgLoaded = false;
   constructor(json: any) {
     super(json);
 
@@ -174,7 +174,7 @@ export class Node extends Pen {
     this.animateType = json.animateType ? json.animateType : json.animateDuration ? '8' : '';
     this.init();
 
-    this.setChild(json);
+    this.setChild(json.children);
   }
 
   static cloneState(json: any) {
@@ -210,18 +210,18 @@ export class Node extends Pen {
     this.paddingBottomNum = abs(this.rect.height, this.paddingBottom);
   }
 
-  setChild(json: any) {
-    if (!json.children) {
+  setChild(children: any[]) {
+    if (!children) {
       return;
     }
 
     this.children = [];
-    for (let i = 0; i < json.children.length; ++i) {
-      const child = new Node(json.children[i]);
+    for (let i = 0; i < children.length; ++i) {
+      const child = new Node(children[i]);
       child.parentId = this.id;
       child.calcChildRect(this);
       child.init();
-      child.setChild(json.children[i]);
+      child.setChild(children[i]);
       this.children.push(child);
     }
   }
@@ -399,7 +399,11 @@ export class Node extends Pen {
       ctx.drawImage(this.img, x, y, w, h);
       ctx.restore();
 
-      this.emitRender();
+      if (!this.imgLoaded) {
+        this.imgLoaded = true;
+        Store.set('render', -1);
+      }
+
       return;
     }
 
@@ -408,15 +412,12 @@ export class Node extends Pen {
     this.img.crossOrigin = 'anonymous';
     this.img.src = this.image;
     this.img.onload = () => {
+      this.imgLoaded = false;
       this.lastImage = this.image;
       this.imgNaturalWidth = this.img.naturalWidth;
       this.imgNaturalHeight = this.img.naturalHeight;
       this.drawImg(ctx);
     };
-  }
-
-  emitRender() {
-    Store.set('render', -1);
   }
 
   calcAnchors() {

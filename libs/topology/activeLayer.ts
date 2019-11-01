@@ -4,10 +4,9 @@ import { Rect } from './models/rect';
 import { Point } from './models/point';
 import { Store } from 'le5le-store';
 import { Options } from './options';
+import { Canvas } from './canvas';
 
-export class ActiveLayer {
-  canvas = document.createElement('canvas');
-
+export class ActiveLayer extends Canvas {
   rotateCPs: Point[] = [];
   sizeCPs: Point[] = [];
   rect: Rect;
@@ -28,16 +27,13 @@ export class ActiveLayer {
 
   rotating = false;
 
-  constructor(parent: HTMLElement, public options: Options) {
+  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+    super(parentElem, options);
+    parentElem.appendChild(this.canvas);
+
     if (!this.options.activeColor) {
       this.options.activeColor = '#d4380d';
     }
-
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.left = '0';
-    this.canvas.style.top = '0';
-    this.canvas.style.outline = 'none';
-    parent.appendChild(this.canvas);
   }
 
   calcControlPoints() {
@@ -119,8 +115,7 @@ export class ActiveLayer {
   }
 
   render() {
-    const ctx = this.canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    super.render();
 
     if (!this.nodes.length && !this.lines.length) {
       return;
@@ -130,6 +125,7 @@ export class ActiveLayer {
       this.calcControlPoints();
     }
 
+    const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.activeColor;
     ctx.fillStyle = '#fff';
     ctx.lineWidth = 1;
@@ -450,11 +446,6 @@ export class ActiveLayer {
       tmp.render(ctx);
     }
     ctx.restore();
-  }
-
-  resize(width: number, height: number) {
-    this.canvas.width = width;
-    this.canvas.height = height;
   }
 
   // Only public prop is requied, for mulit object selected.

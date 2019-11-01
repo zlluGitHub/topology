@@ -345,7 +345,7 @@ export class PropsComponent implements OnInit, OnChanges {
   ngOnInit() {
     if (!this.props.data.font) {
       this.props.data.font = {
-        color: '#000',
+        color: '#222',
         fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
         fontSize: 12,
         lineHeight: 1.5,

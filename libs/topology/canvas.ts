@@ -1,74 +1,51 @@
-import { Node } from './models/node';
-import { Line } from './models/line';
-import { Store } from 'le5le-store';
 import { Options } from './options';
 
 export class Canvas {
   canvas = document.createElement('canvas');
-  private nodes: Node[] = Store.get('nodes');
-  private lines: Line[] = Store.get('lines');
-  rendering = false;
-  constructor(public options: Options = {}) {
+  dpiRatio = 1;
+  width = 0;
+  height = 0;
+  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.left = '0';
+    this.canvas.style.top = '0';
     this.canvas.style.outline = 'none';
+
+    const ctx = this.canvas.getContext('2d');
+    const bsr =
+      ctx['webkitBackingStorePixelRatio'] ||
+      ctx['mozBackingStorePixelRatio'] ||
+      ctx['msBackingStorePixelRatio'] ||
+      ctx['oBackingStorePixelRatio'] ||
+      ctx['backingStorePixelRatio'] ||
+      1;
+
+    this.dpiRatio = window.devicePixelRatio / bsr;
   }
 
-  init() {
-    this.nodes = Store.get('nodes');
-    this.lines = Store.get('lines');
-  }
+  resize(size?: { width: number; height: number }) {
+    if (size) {
+      this.width = size.width;
+      this.height = size.height;
+    } else {
+      if (this.options.width && this.options.width !== 'auto') {
+        this.width = +this.options.width;
+      } else {
+        this.width = this.parentElem.clientWidth;
+      }
+      if (this.options.height && this.options.height !== 'auto') {
+        this.height = +this.options.height;
+      } else {
+        this.height = this.parentElem.clientHeight - 8;
+      }
+    }
 
-  resize(width: number, height: number) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
   }
 
   render() {
-    if (this.rendering) {
-      return;
-    }
-
-    this.rendering = true;
-
     const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    ctx.strokeStyle = this.options.color;
-    ctx.fillStyle = '#fff';
-
-    this.renderNodes();
-    this.renderLines();
-    Store.set('render', 1);
-    this.rendering = false;
-  }
-
-  renderNodes() {
-    if (!this.nodes.length) {
-      return;
-    }
-
-    const ctx = this.canvas.getContext('2d');
-    for (const item of this.nodes) {
-      if (item.animateStart && item.animateDuration) {
-        continue;
-      }
-      item.render(ctx);
-    }
-  }
-
-  renderLines() {
-    if (!this.lines.length) {
-      return;
-    }
-
-    const ctx = this.canvas.getContext('2d');
-    let i = 0;
-    for (const item of this.lines) {
-      if (!item.to) {
-        this.lines.splice(i++, 1);
-        continue;
-      }
-      item.render(ctx);
-      ++i;
-    }
   }
 }

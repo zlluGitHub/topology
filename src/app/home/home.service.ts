@@ -676,7 +676,7 @@ export const Tools = [
           paddingTop: 40,
           font: {
             fontFamily: 'Arial',
-            color: '#000',
+            color: '#222',
             fontWeight: 'bold'
           },
           fillStyle: '#ffffba',
@@ -699,7 +699,7 @@ export const Tools = [
               },
               font: {
                 fontFamily: 'Arial',
-                color: '#000',
+                color: '#222',
                 textAlign: 'left',
                 textBaseline: 'top'
               }
@@ -719,7 +719,7 @@ export const Tools = [
           paddingTop: 40,
           font: {
             fontFamily: 'Arial',
-            color: '#000',
+            color: '#222',
             fontWeight: 'bold'
           },
           fillStyle: '#ffffba',
@@ -742,7 +742,7 @@ export const Tools = [
               },
               font: {
                 fontFamily: 'Arial',
-                color: '#000',
+                color: '#222',
                 textAlign: 'left',
                 textBaseline: 'top'
               }
@@ -763,7 +763,7 @@ export const Tools = [
               },
               font: {
                 fontFamily: 'Arial',
-                color: '#000',
+                color: '#222',
                 textAlign: 'left',
                 textBaseline: 'top'
               }

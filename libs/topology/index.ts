@@ -1,10 +1,12 @@
+import { Store, Observer } from 'le5le-store';
+
 import { Options } from './options';
 import { Node } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { drawNodeFns, drawLineFns } from './middles/index';
-import { Canvas } from './canvas';
-import { Store, Observer } from 'le5le-store';
+import { Offscreen } from './offscreen';
+import { RenderLayer } from './renderLayer';
 import { HoverLayer } from './hoverLayer';
 import { ActiveLayer } from './activeLayer';
 import { AnimateLayer } from './animateLayer';
@@ -45,11 +47,12 @@ const dockOffset = 10;
 
 export class Topology {
   parentElem: HTMLElement;
-  canvas = document.createElement('canvas');
-  offscreen: Canvas;
+  canvas: RenderLayer;
+  offscreen: Offscreen;
   hoverLayer: HoverLayer;
   activeLayer: ActiveLayer;
   animateLayer: AnimateLayer;
+  size: { width: number; height: number };
   nodes: Node[] = [];
   lines: Line[] = [];
   scaleState = 1;
@@ -101,7 +104,7 @@ export class Topology {
 
     if (!this.options.font) {
       this.options.font = {
-        color: '#000',
+        color: '#222',
         fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
         fontSize: 12,
         lineHeight: 1.5,
@@ -111,7 +114,7 @@ export class Topology {
     }
 
     if (!this.options.color) {
-      this.options.color = '#333';
+      this.options.color = '#222';
     }
 
     if (!this.options.rotateCursor) {
@@ -123,7 +126,7 @@ export class Topology {
     }
 
     if (!this.options.font.color) {
-      this.options.font.color = '#000';
+      this.options.font.color = '#222';
     }
     if (!this.options.font.fontSize) {
       // px
@@ -149,9 +152,8 @@ export class Topology {
       this.parentElem = parent;
     }
 
-    this.offscreen = new Canvas(this.options);
-    Store.set('offscreen', this.offscreen.canvas);
-    this.parentElem.appendChild(this.canvas);
+    this.offscreen = new Offscreen(this.parentElem, this.options);
+    this.canvas = new RenderLayer(this.parentElem, this.options);
     this.activeLayer = new ActiveLayer(this.parentElem, this.options);
     this.animateLayer = new AnimateLayer(this.parentElem, this.options);
     this.hoverLayer = new HoverLayer(this.parentElem, this.options);
@@ -167,7 +169,7 @@ export class Topology {
       if (e < 0) {
         this.offscreen.render();
       }
-      this.renderOffscreen();
+      this.canvas.render();
     });
     this.subcribeAnimateMoved = Store.subscribe('nodeMovedInAnimate', (e: any) => {
       this.activeLayer.updateLines(this.nodes);
@@ -227,44 +229,21 @@ export class Topology {
     this.input.style.resize = 'none';
     this.parentElem.appendChild(this.input);
 
-    this.canvas.style.outline = 'none';
-
     this.cache();
   }
 
   resize(size?: { width: number; height: number }) {
-    if (size) {
-      this.canvas.width = size.width;
-      this.canvas.height = size.height;
-    } else {
-      if (this.options.width && this.options.width !== 'auto') {
-        this.canvas.width = +this.options.width;
-      } else {
-        this.canvas.width = this.parentElem.clientWidth;
-      }
-      if (this.options.height && this.options.height !== 'auto') {
-        this.canvas.height = +this.options.height;
-      } else {
-        this.canvas.height = this.parentElem.clientHeight - 8;
-      }
-    }
-
-    this.offscreen.resize(this.canvas.width, this.canvas.height);
-    this.hoverLayer.resize(this.canvas.width, this.canvas.height);
-    this.activeLayer.resize(this.canvas.width, this.canvas.height);
-    this.animateLayer.resize(this.canvas.width, this.canvas.height);
-
-    this.offscreen.canvas.getContext('2d').translate(0.5, 0.5);
-    this.activeLayer.canvas.getContext('2d').translate(0.5, 0.5);
-    this.animateLayer.canvas.getContext('2d').translate(0.5, 0.5);
+    this.size = size;
+    this.canvas.resize(size);
+    this.offscreen.resize(size);
+    this.hoverLayer.resize(size);
+    this.activeLayer.resize(size);
+    this.animateLayer.resize(size);
 
     this.render();
 
     if (this.options.on) {
-      this.options.on('resize', {
-        width: this.canvas.width,
-        height: this.canvas.height
-      });
+      this.options.on('resize', size);
     }
   }
 
@@ -418,12 +397,6 @@ export class Topology {
     if (rect.width > this.canvas.width || rect.height > this.canvas.height) {
       this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
     }
-  }
-
-  private renderOffscreen() {
-    this.canvas.height = this.canvas.height;
-    const ctx = this.canvas.getContext('2d');
-    ctx.drawImage(this.offscreen.canvas, 0, 0);
   }
 
   private onMouseMove = (e: MouseEvent) => {
