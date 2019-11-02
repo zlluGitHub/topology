@@ -460,11 +460,7 @@ export class Topology {
         if (this.options.on) {
           this.options.on('moveOutParent', pos);
         }
-      }
 
-      // Send a resize event.
-      const out = pos.x + 50 > this.hoverLayer.canvas.width || pos.y + 50 > this.hoverLayer.canvas.height;
-      if (out) {
         if (pos.x + 50 > this.hoverLayer.canvas.width) {
           this.canvas.width += 200;
         }
@@ -472,20 +468,7 @@ export class Topology {
           this.canvas.height += 200;
         }
 
-        this.offscreen.canvas.width = this.canvas.width;
-        this.offscreen.canvas.height = this.canvas.height;
-        this.hoverLayer.canvas.width = this.canvas.width;
-        this.hoverLayer.canvas.height = this.canvas.height;
-        this.activeLayer.canvas.width = this.canvas.width;
-        this.activeLayer.canvas.height = this.canvas.height;
-
-        // Send a resize event.
-        if (this.options.on) {
-          this.options.on('resize', {
-            width: this.canvas.width,
-            height: this.canvas.height
-          });
-        }
+        this.resize({ width: this.canvas.width, height: this.canvas.height });
       }
 
       switch (this.moveIn.type) {
@@ -496,7 +479,7 @@ export class Topology {
             pos.x - this.mouseDown.x,
             pos.y - this.mouseDown.y
           );
-          if (!out) {
+          if (!moveOut) {
             this.hoverLayer.render();
             return;
           }
@@ -1289,10 +1272,20 @@ export class Topology {
 
   toImage(type?: string, quality?: any, callback?: any): string {
     const rect = this.getRect();
-    const canvas = document.createElement('canvas');
-    canvas.width = rect.width + 20;
-    canvas.height = rect.height + 20;
+    rect.x -= 10;
+    rect.y -= 10;
+    rect.width += 20;
+    rect.height += 20;
+    rect.round();
+    const srcRect = rect.clone();
+    srcRect.scale(this.offscreen.dpiRatio, new Point(0, 0));
+    srcRect.round();
 
+    const canvas = document.createElement('canvas');
+    canvas.width = srcRect.width;
+    canvas.height = srcRect.height;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
     const ctx = canvas.getContext('2d');
     if (type && type !== 'image/png') {
       ctx.fillStyle = 'white';
@@ -1300,15 +1293,16 @@ export class Topology {
     }
     ctx.drawImage(
       this.offscreen.canvas,
-      rect.x - 10,
-      rect.y - 10,
-      rect.width + 20,
-      rect.height + 20,
+      srcRect.x,
+      srcRect.y,
+      srcRect.width,
+      srcRect.height,
       0,
       0,
-      rect.width + 20,
-      rect.height + 20
+      srcRect.width,
+      srcRect.height
     );
+    document.body.appendChild(canvas);
 
     if (callback) {
       canvas.toBlob(callback);
