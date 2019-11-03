@@ -1,6 +1,6 @@
-import { Rect } from 'libs/topology/models/rect';
-import { Point } from 'libs/topology/models/point';
-import { Node } from 'libs/topology/models/node';
+import { Rect } from 'topology-core/models/rect';
+import { Point } from 'topology-core/models/point';
+import { Node } from 'topology-core/models/node';
 
 export interface Props {
   type: string;

@@ -32,7 +32,12 @@
     "rxjs": "~6.4.0",
     "ts-clipboard": "^1.0.15",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "topology-activity-diagram": "^0.0.4",
+    "topology-class-diagram": "^0.0.1",
+    "topology-core": "^0.0.8",
+    "topology-flow-diagram": "^0.0.1",
+    "topology-sequence-diagram": "^0.0.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",

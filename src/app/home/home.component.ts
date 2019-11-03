@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Clipboard } from 'ts-clipboard';
 
-import { Topology } from 'libs/topology';
-import { Options } from 'libs/topology/options';
-import { registerNode } from 'libs/topology/middles';
+import { Topology } from 'topology-core';
+import { Options } from 'topology-core/options';
+import { registerNode } from 'topology-core/middles';
 import {
   flowData,
   flowDataAnchors,
@@ -43,7 +43,7 @@ import {
   flowParallelAnchors,
   flowComment,
   flowCommentAnchors
-} from 'libs/topology-flow-diagram';
+} from 'topology-flow-diagram';
 
 import {
   activityFinal,
@@ -60,7 +60,7 @@ import {
   forkIconRect,
   forkTextRect,
   forkVAnchors
-} from 'libs/topology-activity-diagram';
+} from 'topology-activity-diagram';
 import {
   simpleClass,
   simpleClassIconRect,
@@ -68,7 +68,7 @@ import {
   interfaceClass,
   interfaceClassIconRect,
   interfaceClassTextRect
-} from 'libs/topology-class-diagram';
+} from 'topology-class-diagram';
 import {
   lifeline,
   lifelineAnchors,
@@ -78,7 +78,7 @@ import {
   sequenceFocusAnchors,
   sequenceFocusIconRect,
   sequenceFocusTextRect
-} from 'libs/topology-sequence-diagram';
+} from 'topology-sequence-diagram';
 
 import * as FileSaver from 'file-saver';
 import { Store } from 'le5le-store';

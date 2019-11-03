@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChange
 
 import { NoticeService } from 'le5le-components/notice';
 
-import { Node } from 'libs/topology/models/node';
+import { Node } from 'topology-core/models/node';
 import { Props } from './props.model';
 import { PropsService } from './props.service';
 
