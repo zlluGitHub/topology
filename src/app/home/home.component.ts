@@ -361,7 +361,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
     }
 
-    if (key.ctrlKey) {
+    if (key.ctrlKey && key.keyCode === 83) {
       key.preventDefault();
       key.returnValue = false;
       return false;
