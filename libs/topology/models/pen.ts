@@ -34,8 +34,10 @@ export abstract class Pen {
   animateCycleIndex = 0;
   nextAnimate: string;
 
-  // For users.
+  // User data.
   data: any;
+
+  locked = false;
   constructor(json?: any) {
     if (json) {
       this.id = json.id || s8();
@@ -57,6 +59,7 @@ export abstract class Pen {
       this.animateCycle = json.animateCycle;
       this.nextAnimate = json.nextAnimate;
       this.data = json.data || '';
+      this.locked = json.locked;
     } else {
       this.id = s8();
     }

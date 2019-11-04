@@ -1,6 +1,11 @@
+import { Store } from 'le5le-store';
+
+import { TopologyData } from './models/data';
 import { Options } from './options';
 
 export class Canvas {
+  protected data: TopologyData = Store.get('topology-data');
+
   canvas = document.createElement('canvas');
   dpiRatio = 1;
   width = 0;

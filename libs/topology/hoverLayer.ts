@@ -42,20 +42,29 @@ export class HoverLayer extends Canvas {
     this.line = new Line();
     this.line.name = lineName;
     this.line.setFrom(from, fromArrow);
-    Store.get('lines').push(this.line);
+    this.data.lines.push(this.line);
   }
 
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
+    if (this.line.locked) {
+      return;
+    }
     this.line.setTo(to, toArrow);
     this.line.calcControlPoints();
   }
 
   lineFrom(from: Point) {
+    if (this.line.locked) {
+      return;
+    }
     this.line.setFrom(from, this.line.fromArrow);
     this.line.calcControlPoints();
   }
 
   lineMove(pt: Point, initPos: { x: number; y: number }) {
+    if (this.line.locked) {
+      return;
+    }
     const x = pt.x - initPos.x;
     const y = pt.y - initPos.y;
     this.line.setTo(new Point(this.initLine.to.x + x, this.initLine.to.y + y), this.line.toArrow);
@@ -64,15 +73,18 @@ export class HoverLayer extends Canvas {
   }
 
   render() {
+    if (this.data.locked < 0) {
+      return;
+    }
     super.render();
 
     const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.hoverColor;
     ctx.fillStyle = '#fff';
     // anchors
-    if (this.node) {
+    if (this.node && !this.data.locked) {
       for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
-        if (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i) {
+        if (this.node.locked || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
           continue;
         }
         ctx.beginPath();
@@ -105,25 +117,41 @@ export class HoverLayer extends Canvas {
     ctx.lineWidth = 1;
 
     if (this.dockLineX > 0) {
+      ctx.save();
+      ctx.translate(0.5, 0.5);
       ctx.beginPath();
       ctx.moveTo(this.dockLineX, 0);
       ctx.lineTo(this.dockLineX, this.canvas.height);
       ctx.stroke();
+      ctx.restore();
     }
 
     if (this.dockLineY > 0) {
+      ctx.save();
+      ctx.translate(0.5, 0.5);
       ctx.beginPath();
       ctx.moveTo(0, this.dockLineY);
       ctx.lineTo(this.canvas.width, this.dockLineY);
       ctx.stroke();
+      ctx.restore();
     }
 
     // Select nodes by drag.
     if (this.dragRect) {
+      ctx.save();
+      ctx.translate(0.5, 0.5);
       ctx.strokeStyle = this.options.dragColor;
       ctx.beginPath();
       ctx.strokeRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
       ctx.fillRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
+      ctx.restore();
     }
+  }
+
+  clear() {
+    this.node = null;
+    this.line = null;
+    const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }

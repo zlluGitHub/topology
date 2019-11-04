@@ -1,6 +1,7 @@
 import { Rect } from 'topology-core/models/rect';
 import { Point } from 'topology-core/models/point';
 import { Node } from 'topology-core/models/node';
+import { Line } from 'topology-core/models/line';
 
 export interface Props {
   type: string;
@@ -42,6 +43,7 @@ export interface Props {
     nextAnimate?: string;
     tags: string[];
     data?: any;
+    locked?: boolean;
 
     // Node
     rect?: Rect;
@@ -75,6 +77,7 @@ export interface Props {
     toArrow?: string;
     // End
 
-    dirty?: boolean;
+    nodes?: Node[];
+    lines?: Line[];
   };
 }

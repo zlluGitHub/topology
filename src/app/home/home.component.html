@@ -77,14 +77,19 @@
     </a>
   </div>
   <div class="line"></div>
-  <div>
+  <div *ngIf="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'">
     <a [class.disabled]="!selNodes || selNodes.length < 2" (click)="onCombine()">
       组合
     </a>
   </div>
-  <div>
-    <a [class.disabled]="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'" (click)="onUncombine()">
+  <div *ngIf="selNodes && selNodes.length === 1 && selNodes[0].name === 'combine'">
+    <a (click)="onUncombine()">
       取消组合
+    </a>
+  </div>
+  <div>
+    <a [class.disabled]="!selNodes && !selected" (click)="onLock()">
+      {{ locked ? '解锁' : '锁定' }}
     </a>
   </div>
   <div class="line"></div>

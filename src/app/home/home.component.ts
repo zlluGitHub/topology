@@ -130,6 +130,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   contextmenu: any;
   selNodes: any;
+  locked = false;
 
   subRoute: any;
   constructor(
@@ -203,13 +204,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.canvas.lock(menu.data);
           break;
         case 'lineName':
-          this.canvas.lineName = menu.data;
+          this.canvas.data.lineName = menu.data;
           break;
         case 'fromArrowType':
-          this.canvas.fromArrowType = menu.data;
+          this.canvas.data.fromArrowType = menu.data;
           break;
         case 'toArrowType':
-          this.canvas.toArrowType = menu.data;
+          this.canvas.data.toArrowType = menu.data;
           break;
         case 'scale':
           this.canvas.scaleTo(menu.data);
@@ -377,7 +378,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   animateDemo() {
     if (this.data.name === 'cube-demo') {
-      const d = this.canvas.data();
+      const d = this.canvas.data;
       const n = Date.now();
       for (const item of d.nodes) {
         if (item.tags.indexOf('1') > -1) {
@@ -429,7 +430,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    this.data.data = this.canvas.data();
+    this.data.data = this.canvas.data;
     this.canvas.toImage(null, null, async blob => {
       if (this.data.id && !this.coreService.isVip(this.user)) {
         if (!(await this.service.DelImage(this.data.image))) {
@@ -488,7 +489,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSaveLocal() {
-    const data = this.canvas.data();
+    const data = this.canvas.data;
     FileSaver.saveAs(
       new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' }),
       `${this.data.name || 'le5le.topology'}.json`
@@ -540,16 +541,35 @@ export class HomeComponent implements OnInit, OnDestroy {
           type: event,
           data
         };
+        this.locked = data.locked;
+        this.readonly = this.locked;
         break;
       case 'line':
         this.selected = {
           type: event,
           data
         };
+        this.locked = data.locked;
+        this.readonly = this.locked;
         break;
       case 'multi':
+        this.locked = true;
         if (data.nodes && data.nodes.length) {
           this.selNodes = data.nodes;
+          for (const item of data.nodes) {
+            if (!item.locked) {
+              this.locked = false;
+              break;
+            }
+          }
+        }
+        if (this.locked && data.lines) {
+          for (const item of data.lines) {
+            if (!item.locked) {
+              this.locked = false;
+              break;
+            }
+          }
         }
         this.selected = {
           type: event,
@@ -588,7 +608,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   onChangeProps(props: any) {
-    if (this.canvas.locked) {
+    if (this.canvas.data.locked) {
       return;
     }
     switch (props.type) {
@@ -620,7 +640,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.clientY + 300 < document.body.clientHeight) {
+    if (event.clientY + 360 < document.body.clientHeight) {
       this.contextmenu = {
         left: event.clientX + 'px',
         top: event.clientY + 'px'
@@ -673,6 +693,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.canvas.render();
   }
 
+  onLock() {
+    this.locked = !this.locked;
+    if (this.selected.type === 'multi') {
+      if (this.selected.data.nodes) {
+        for (const item of this.selected.data.nodes) {
+          item.locked = this.locked;
+        }
+      }
+      if (this.selected.data.lines) {
+        for (const item of this.selected.data.lines) {
+          item.locked = this.locked;
+        }
+      }
+    } else {
+      this.selected.data.locked = this.locked;
+      this.readonly = this.locked;
+    }
+    this.canvas.render(true);
+  }
+
   onDel() {
     this.canvas.delete();
   }
@@ -693,11 +733,11 @@ ${this.selNodes[0].image}`,
 
   toSVG() {
     const ctx = new C2S(this.canvas.canvas.width + 200, this.canvas.canvas.height + 200);
-    for (const item of this.canvas.nodes) {
+    for (const item of this.canvas.data.nodes) {
       item.render(ctx);
     }
 
-    for (const item of this.canvas.lines) {
+    for (const item of this.canvas.data.lines) {
       item.render(ctx);
     }
 

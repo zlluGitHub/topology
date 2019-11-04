@@ -30,7 +30,7 @@ export class AnimateLayer extends Canvas {
       this.lines = [];
     }
 
-    this.getNodes(Store.get('nodes'));
+    this.getNodes(this.data.nodes);
     this.getLines();
 
     this.animate();
@@ -64,8 +64,7 @@ export class AnimateLayer extends Canvas {
   }
 
   getLines(tag = '') {
-    const lines = Store.get('lines');
-    for (const item of lines) {
+    for (const item of this.data.lines) {
       let found = false;
       if (tag && item.tags.indexOf(tag) > -1) {
         item.animateStart = Date.now();
@@ -123,7 +122,7 @@ export class AnimateLayer extends Canvas {
           }
           const next = this.lines[i].animate(ctx);
           if (!this.lines[i].animateStart) {
-            for (const item of Store.get('lines')) {
+            for (const item of this.data.lines) {
               if (this.lines[i].id === item.id) {
                 item.animateStart = 0;
                 break;
@@ -132,7 +131,7 @@ export class AnimateLayer extends Canvas {
           }
           if (next) {
             this.lines.splice(i, 1);
-            this.getNodes(Store.get('nodes'), next);
+            this.getNodes(this.data.nodes, next);
             this.getLines(next);
           }
 
@@ -147,7 +146,7 @@ export class AnimateLayer extends Canvas {
           if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
             const next = this.nodes[i].animate(ctx, now);
             if (next) {
-              this.getNodes(Store.get('nodes'), next);
+              this.getNodes(this.data.nodes, next);
               this.getLines(next);
             }
           } else {

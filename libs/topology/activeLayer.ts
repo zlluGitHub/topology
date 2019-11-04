@@ -2,7 +2,6 @@ import { Node } from './models/node';
 import { Line } from './models/line';
 import { Rect } from './models/rect';
 import { Point } from './models/point';
-import { Store } from 'le5le-store';
 import { Options } from './options';
 import { Canvas } from './canvas';
 
@@ -26,6 +25,8 @@ export class ActiveLayer extends Canvas {
   dockWatchers: Point[] = [];
 
   rotating = false;
+
+  locked = false;
 
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     super(parentElem, options);
@@ -99,6 +100,23 @@ export class ActiveLayer extends Canvas {
     }
   }
 
+  private isLocked() {
+    this.locked = true;
+    for (const item of this.nodes) {
+      if (!item.locked) {
+        this.locked = false;
+        return;
+      }
+    }
+
+    for (const item of this.lines) {
+      if (!item.locked) {
+        this.locked = false;
+        break;
+      }
+    }
+  }
+
   getPoints() {
     const points: Point[] = [];
     for (const item of this.nodes) {
@@ -114,7 +132,27 @@ export class ActiveLayer extends Canvas {
     return points;
   }
 
+  clear() {
+    this.lines = [];
+    this.nodes = [];
+    const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  resize(size?: { width: number; height: number }) {
+    super.resize(size);
+
+    this.canvas.style.width = this.width + 'px';
+    this.canvas.style.height = this.height + 'px';
+    this.canvas.width = this.width * this.dpiRatio;
+    this.canvas.height = this.height * this.dpiRatio;
+    this.canvas.getContext('2d').scale(this.dpiRatio, this.dpiRatio);
+  }
+
   render() {
+    if (this.data.locked < -1) {
+      return;
+    }
     super.render();
 
     if (!this.nodes.length && !this.lines.length) {
@@ -123,6 +161,7 @@ export class ActiveLayer extends Canvas {
 
     if (this.nodes.length === 1 || !this.rotating) {
       this.calcControlPoints();
+      this.isLocked();
     }
 
     const ctx = this.canvas.getContext('2d');
@@ -142,6 +181,7 @@ export class ActiveLayer extends Canvas {
     // Occupied territory.
     ctx.save();
     ctx.globalAlpha = 0.3;
+    ctx.translate(0.5, 0.5);
     ctx.beginPath();
     ctx.moveTo(this.sizeCPs[0].x, this.sizeCPs[0].y);
     ctx.lineTo(this.sizeCPs[1].x, this.sizeCPs[1].y);
@@ -151,7 +191,7 @@ export class ActiveLayer extends Canvas {
     ctx.stroke();
     ctx.restore();
 
-    if (Store.get('locked')) {
+    if (this.data.locked || this.locked) {
       return;
     }
 
@@ -296,6 +336,9 @@ export class ActiveLayer extends Canvas {
     }
     let i = 0;
     for (const item of this.nodes) {
+      if (item.locked) {
+        continue;
+      }
       item.rect.x = this.nodeRects[i].x + x;
       item.rect.y = this.nodeRects[i].y + y;
       item.rect.ex = item.rect.x + item.rect.width;
@@ -324,8 +367,7 @@ export class ActiveLayer extends Canvas {
     if (!nodes) {
       nodes = this.nodes;
     }
-    const lines = Store.get('lines');
-    for (const line of lines) {
+    for (const line of this.data.lines) {
       let found = false;
       for (const item of nodes) {
         if (line.from.id === item.id) {
