@@ -1493,14 +1493,38 @@ export class Topology {
   }
 
   lockNodes(nodes: Node[], lock: boolean) {
+    for (const item of this.data.nodes) {
+      for (const node of nodes) {
+        if (item.id === node.id) {
+          item.locked = lock;
+          break;
+        }
+      }
+    }
+
     if (this.options.on) {
-      this.options.on('lockNodes', lock);
+      this.options.on('lockNodes', {
+        nodes,
+        lock
+      });
     }
   }
 
   lockLines(lines: Line[], lock: boolean) {
+    for (const item of this.data.lines) {
+      for (const line of lines) {
+        if (item.id === line.id) {
+          item.locked = lock;
+          break;
+        }
+      }
+    }
+
     if (this.options.on) {
-      this.options.on('locked', lock);
+      this.options.on('lockLines', {
+        lines,
+        lock
+      });
     }
   }
 
