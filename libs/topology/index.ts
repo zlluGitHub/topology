@@ -1322,12 +1322,14 @@ export class Topology {
   }
 
   delete() {
+    const nodes: Node[] = [];
+    const lines: Line[] = [];
     let i = 0;
     for (const line of this.activeLayer.lines) {
       i = 0;
       for (const l of this.lines) {
         if (line.id === l.id) {
-          this.lines.splice(i, 1);
+          lines.push.apply(lines, this.lines.splice(i, 1));
           break;
         }
         ++i;
@@ -1337,13 +1339,20 @@ export class Topology {
     for (const node of this.activeLayer.nodes) {
       i = this.findNode(node);
       if (i > -1) {
-        this.nodes.splice(i, 1);
+        nodes.push.apply(nodes, this.nodes.splice(i, 1));
       }
     }
 
     this.activeLayer.saveNodeRects();
     this.render();
     this.cache();
+
+    if (this.options.on) {
+      this.options.on('delete', {
+        nodes,
+        lines
+      });
+    }
   }
 
   cut() {
@@ -1390,6 +1399,10 @@ export class Topology {
 
     this.moveIn.hoverLine = null;
     this.moveIn.hoverNode = null;
+
+    if (this.options.on) {
+      this.options.on('delete', this.clipboard);
+    }
   }
 
   copy() {
@@ -1454,19 +1467,21 @@ export class Topology {
 
     this.cache();
 
-    if (
-      this.clipboard.nodes.length > 1 ||
-      this.clipboard.lines.length > 1 ||
-      (this.clipboard.nodes.length && this.clipboard.lines.length)
-    ) {
-      this.options.on('multi', {
-        nodes: this.clipboard.nodes,
-        lines: this.clipboard.lines
-      });
-    } else if (this.clipboard.nodes.length) {
-      this.options.on('node', this.activeLayer.nodes[0]);
-    } else if (this.clipboard.lines.length) {
-      this.options.on('line', this.activeLayer.lines[0]);
+    if (this.options.on) {
+      if (
+        this.clipboard.nodes.length > 1 ||
+        this.clipboard.lines.length > 1 ||
+        (this.clipboard.nodes.length && this.clipboard.lines.length)
+      ) {
+        this.options.on('multi', {
+          nodes: this.clipboard.nodes,
+          lines: this.clipboard.lines
+        });
+      } else if (this.clipboard.nodes.length) {
+        this.options.on('node', this.activeLayer.nodes[0]);
+      } else if (this.clipboard.lines.length) {
+        this.options.on('line', this.activeLayer.lines[0]);
+      }
     }
   }
 
