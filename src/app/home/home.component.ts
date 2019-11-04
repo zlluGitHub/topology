@@ -160,6 +160,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.selected = null;
           });
+          if (!this.data.id) {
+            this.onNew();
+          }
           this.onOpenLocal();
           break;
         case 'save':
@@ -295,33 +298,60 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onkeyDocument(key: KeyboardEvent) {
-    if (key.target !== this.canvas.hoverLayer.canvas) {
-      return;
-    }
-
     switch (key.keyCode) {
-      case 88:
+      case 79:
         if (key.ctrlKey) {
+          setTimeout(() => {
+            this.selected = null;
+          });
+          if (!this.data.id) {
+            this.onNew();
+          }
+          this.onOpenLocal();
+        }
+        break;
+      case 73:
+        if (key.ctrlKey) {
+          setTimeout(() => {
+            this.selected = null;
+          });
+          this.onOpenLocal();
+        }
+        break;
+      case 83:
+        if (key.ctrlKey) {
+          if (key.shiftKey) {
+            this.data.id = '';
+            this.save();
+          } else if (key.altKey) {
+            this.onSaveLocal();
+          } else {
+            this.save();
+          }
+        }
+        break;
+      case 88:
+        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
           this.onCut();
         }
         break;
       case 67:
-        if (key.ctrlKey) {
+        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
           this.onCopy();
         }
         break;
       case 86:
-        if (key.ctrlKey) {
+        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
           this.onParse();
         }
         break;
       case 89:
-        if (key.ctrlKey) {
+        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
           this.canvas.redo();
         }
         break;
       case 90:
-        if (key.ctrlKey) {
+        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
           if (key.shiftKey) {
             this.canvas.redo();
           } else {
@@ -329,6 +359,12 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
         }
         break;
+    }
+
+    if (key.ctrlKey) {
+      key.preventDefault();
+      key.returnValue = false;
+      return false;
     }
   }
 

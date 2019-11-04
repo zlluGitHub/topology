@@ -182,7 +182,7 @@ export class Topology {
     this.hoverLayer.canvas.tabIndex = 0;
     this.hoverLayer.canvas.onkeydown = this.onkeydown;
     this.hoverLayer.canvas.onwheel = event => {
-      if (!event.altKey) {
+      if (!event.ctrlKey && !event.altKey) {
         return;
       }
       event.preventDefault();
@@ -194,6 +194,8 @@ export class Topology {
       }
 
       this.hoverLayer.canvas.focus();
+
+      return false;
     };
 
     this.hoverLayer.canvas.ontouchend = event => {
@@ -383,9 +385,9 @@ export class Topology {
       return;
     }
 
-    if (e.altKey && this.mouseDown) {
+    if ((e.ctrlKey || e.altKey) && this.mouseDown) {
       this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y);
-      return;
+      return false;
     }
 
     if (this.data.locked < 0 && this.mouseDown && this.moveIn.type !== MoveInType.None) {
