@@ -20,7 +20,7 @@ export class Canvas {
       ctx['backingStorePixelRatio'] ||
       1;
 
-    this.dpiRatio = window.devicePixelRatio / bsr;
+    this.dpiRatio = window.devicePixelRatio / bsr + 0.25;
   }
 
   resize(size?: { width: number; height: number }) {
