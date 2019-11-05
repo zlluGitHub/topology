@@ -691,7 +691,9 @@ export class Topology {
             if (this.hoverLayer.line.to.id || !this.options.disableEmptyLine) {
               this.activeLayer.lines = [this.hoverLayer.line];
               Store.set('activeLine', this.hoverLayer.line);
-              this.options.on('line', this.hoverLayer.line);
+              if (this.options.on) {
+                this.options.on('line', this.hoverLayer.line);
+              }
             } else {
               this.data.lines.pop();
             }
