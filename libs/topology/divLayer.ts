@@ -227,14 +227,6 @@ export class DivLayer {
     }
 
     player.style.background = 'transparent';
-    player.appendChild(media);
-    player.appendChild(current);
-    this[type + 's'][node.id] = {
-      player,
-      current,
-      media
-    };
-    this.canvas.appendChild(player);
 
     if (node.play === 1) {
       media.autoplay = true;
@@ -265,6 +257,16 @@ export class DivLayer {
       this.getMediaCurrent();
     };
     media.src = node[type];
+
+    player.appendChild(media);
+    player.appendChild(current);
+    this[type + 's'][node.id] = {
+      player,
+      current,
+      media
+    };
+    this.canvas.appendChild(player);
+
     return player;
   }
 
