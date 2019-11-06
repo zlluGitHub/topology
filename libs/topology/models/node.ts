@@ -88,6 +88,14 @@ export class Node extends Pen {
     state: Node;
   }[] = [];
 
+  video: string;
+  audio: string;
+  // 0 - 人工播放；1 - auto自动播放；2 - animate play
+  play: number;
+  playLoop: boolean;
+  iframe: string;
+  nextPlay: string;
+
   private imgLoaded = false;
   constructor(json: any) {
     super(json);
@@ -171,7 +179,14 @@ export class Node extends Pen {
     if (json.animateDuration) {
       this.animateDuration = json.animateDuration;
     }
-    this.animateType = json.animateType ? json.animateType : json.animateDuration ? '8' : '';
+    this.animateType = json.animateType ? json.animateType : json.animateDuration ? 'custom' : '';
+
+    this.iframe = json.iframe;
+    this.audio = json.audio;
+    this.video = json.video;
+    this.play = json.play;
+    this.nextPlay = json.nextPlay;
+
     this.init();
 
     this.setChild(json.children);
@@ -201,6 +216,10 @@ export class Node extends Pen {
     }
 
     this.calcAnchors();
+
+    if (this.audio || this.video || this.iframe) {
+      Store.set('addDiv', this);
+    }
   }
 
   calcAbsPadding() {

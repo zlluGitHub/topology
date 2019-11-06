@@ -18,5 +18,9 @@ export interface Options {
   hideInput?: boolean;
   hideRotateCP?: boolean;
   disableEmptyLine?: boolean;
+  playIcon?: string;
+  pauseIcon?: string;
+  fullScreenIcon?: string;
+  loopIcon?: string;
   on?: (event: string, data: any) => void;
 }

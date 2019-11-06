@@ -83,6 +83,9 @@ function init() {
   // Combine
   drawNodeFns.combine = rectangle;
 
+  // Div
+  drawNodeFns.div = rectangle;
+
   // Rectangle
   drawNodeFns.rectangle = rectangle;
 

@@ -68,6 +68,12 @@ export interface Props {
     paddingBottom?: number | string;
     paddingLeft?: number | string;
     paddingRight?: number | string;
+    audio?: string;
+    video?: string;
+    play?: number;
+    playLoop?: boolean;
+    nextPlay?: string;
+    iframe?: string;
     // End
 
     // Line

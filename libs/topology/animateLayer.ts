@@ -1,4 +1,3 @@
-import { Store } from 'le5le-store';
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { Canvas } from './canvas';

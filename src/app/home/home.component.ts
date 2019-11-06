@@ -132,6 +132,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   selNodes: any;
   locked = false;
 
+  divNode: any;
+
   subRoute: any;
   constructor(
     private service: HomeService,

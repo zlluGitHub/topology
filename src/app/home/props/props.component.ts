@@ -118,6 +118,21 @@ export class PropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
+  playOptions = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: 1,
+        name: '自动播放'
+      },
+      {
+        id: 2,
+        name: '跟随动画播放'
+      }
+    ]
+  };
+
   showDialog = 0;
   images: { id: string; image: string }[];
 
@@ -173,7 +188,7 @@ export class PropsComponent implements OnInit, OnChanges {
         name: '炫耀'
       },
       {
-        id: '8',
+        id: 'custom',
         name: '自定义'
       }
     ]
@@ -597,7 +612,7 @@ export class PropsComponent implements OnInit, OnChanges {
   }
 
   onChangeAnimate() {
-    if (this.props.data.animateType === '8') {
+    if (this.props.data.animateType === 'custom') {
       return;
     }
 

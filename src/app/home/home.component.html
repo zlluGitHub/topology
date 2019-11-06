@@ -137,3 +137,17 @@
     </a>
   </div>
 </div>
+
+<div class="modal" *ngIf="divNode">
+  <div class="modal-content">
+    <div class="modal-header pointer" uiDivMove [isHead]="true">
+      <div class="caption">添加视频/网页</div>
+      <i class="fr iconfont icon-close" (click)="divNode = null"></i>
+    </div>
+    <div class="modal-body"></div>
+    <div class="modal-footer">
+      <button type="button" class="button mr10" (click)="divNode = null">取消</button>
+      <button type="button" class="button primary" (click)="divNode = null">确定</button>
+    </div>
+  </div>
+</div>

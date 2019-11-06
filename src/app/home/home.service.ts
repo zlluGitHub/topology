@@ -340,6 +340,23 @@ export const Tools = [
           },
           name: 'people'
         }
+      },
+      {
+        name: '视频/网页',
+        icon: 'icon-pc',
+        data: {
+          text: '视频/网页',
+          rect: {
+            width: 200,
+            height: 200
+          },
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 10,
+          paddingBottom: 10,
+          // strokeStyle: 'transparent',
+          name: 'div'
+        }
       }
     ]
   },

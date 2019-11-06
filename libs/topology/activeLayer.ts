@@ -1,3 +1,5 @@
+import { Store } from 'le5le-store';
+
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { Rect } from './models/rect';
@@ -137,6 +139,8 @@ export class ActiveLayer extends Canvas {
     this.nodes = [];
     const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    Store.set('activeNode', null);
   }
 
   resize(size?: { width: number; height: number }) {
@@ -429,11 +433,17 @@ export class ActiveLayer extends Canvas {
 
   addNode(node: Node) {
     this.nodes.push(node);
+    if (this.nodes.length === 1) {
+      Store.set('activeNode', this.nodes[0]);
+    }
   }
 
   setNodes(nodes: Node[]) {
     this.nodes = nodes;
     this.lines = [];
+    if (this.nodes.length === 1) {
+      Store.set('activeNode', this.nodes[0]);
+    }
   }
 
   hasNode(node: Node) {

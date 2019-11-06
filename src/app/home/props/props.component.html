@@ -18,7 +18,7 @@
               [uiMax]="5000"
               [readonly]="readonly"            
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
           <div>
@@ -31,7 +31,7 @@
               [uiMax]="5000"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
         </div>
@@ -50,7 +50,7 @@
               [uiMax]="5000"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
           <div>
@@ -63,7 +63,7 @@
               [uiMax]="5000"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
         </div>
@@ -82,7 +82,7 @@
                 [uiMin]="0"
                 [uiMax]="5000"
                 [readonly]="readonly"
-                (change)="onChangeProp(propForm.invalid)"
+                (change)="onChangeProp()"
               />
             </div>
             <div>
@@ -96,10 +96,10 @@
         </div>
         <div class="flex grid">
           <div class="mr5">
-            <input type="number" name="borderRadius" class="input" [(ngModel)]="props.data.borderRadius" [uiMin]="0" [uiMax]="1" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+            <input type="number" name="borderRadius" class="input" [(ngModel)]="props.data.borderRadius" [uiMin]="0" [uiMax]="1" [readonly]="readonly" (change)="onChangeProp()"/>
           </div>
           <div>
-            <input type="number" name="rotate" class="input" [(ngModel)]="props.data.rotate" [uiMin]="0" [uiMax]="360" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+            <input type="number" name="rotate" class="input" [(ngModel)]="props.data.rotate" [uiMin]="0" [uiMax]="360" [readonly]="readonly" (change)="onChangeProp()"/>
           </div>
         </div>    
         <div class="flex grid mt5">
@@ -114,7 +114,7 @@
               [(ngModel)]="props.data.paddingLeft"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
           <div>
@@ -124,7 +124,7 @@
               [(ngModel)]="props.data.paddingRight"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
         </div>
@@ -140,7 +140,7 @@
               [(ngModel)]="props.data.paddingTop"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
           <div>
@@ -150,7 +150,7 @@
               [(ngModel)]="props.data.paddingBottom"
               [readonly]="readonly"
               required
-              (change)="onChangeProp(propForm.invalid)"
+              (change)="onChangeProp()"
             />
           </div>
         </div> 
@@ -202,7 +202,7 @@
               [(ngModel)]="props.data.imageWidth"
               [uiMin]="0"
               [uiMax]="5000"
-              (change)="onChangeImgWidth(propForm.invalid)"
+              (change)="onChangeImgWidth()"
               [readonly]="readonly"
             />
           </div>
@@ -214,14 +214,14 @@
               [(ngModel)]="props.data.imageHeight"
               [uiMin]="0"
               [uiMax]="5000"
-              (change)="onChangeImgHeight(propForm.invalid)"
+              (change)="onChangeImgHeight()"
               [readonly]="readonly"
             />
           </div>
         </div>     
         <div class="mt5">
           <label class="checkbox">
-            <input name="imageRatio" type="checkbox" [(ngModel)]="props.data.imageRatio" (change)="onChangeImgRatio(propForm.invalid)" />
+            <input name="imageRatio" type="checkbox" [(ngModel)]="props.data.imageRatio" (change)="onChangeImgRatio()" />
             <span>保存图片比例</span>
           </label>
         </div>      
@@ -253,7 +253,7 @@
           <label>字体大小</label>
           <div>
             <input type="number" name="iconSize" class="input" [(ngModel)]="props.data.iconSize" [uiMin]="0" [uiMax]="500" [readonly]="readonly"
-              placeholder="<=0表示自适应" (change)="onChangeProp(propForm.invalid)" />
+              placeholder="<=0表示自适应" (change)="onChangeProp()" />
           </div>
         </div>
         <div class="flex input-line">
@@ -262,7 +262,7 @@
             <div class="input color right" [class.readonly]="readonly">
               <i [(colorPicker)]="props.data.iconColor" [style.background]="props.data.iconColor" cpPosition="bottom"
                 cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-              <input name="iconColor" [(ngModel)]="props.data.iconColor" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>            
+              <input name="iconColor" [(ngModel)]="props.data.iconColor" [readonly]="readonly" (change)="onChangeProp()"/>            
             </div>
           </div>
         </div>
@@ -292,7 +292,7 @@
             [uiMax]="5000"
             [readonly]="readonly"
             required
-            (change)="onChangeProp(propForm.invalid)"
+            (change)="onChangeProp()"
           />
         </div>
         <div>
@@ -306,7 +306,7 @@
             [uiMax]="5000"
             [readonly]="readonly"
             required
-            (change)="onChangeProp(propForm.invalid)"
+            (change)="onChangeProp()"
           />
         </div>
       </div>
@@ -325,7 +325,7 @@
             [uiMax]="5000"
             [readonly]="readonly"
             required
-            (change)="onChangeProp(propForm.invalid)"
+            (change)="onChangeProp()"
           />
         </div>
         <div>
@@ -339,7 +339,7 @@
             [uiMax]="5000"
             [readonly]="readonly"
             required
-            (change)="onChangeProp(propForm.invalid)"
+            (change)="onChangeProp()"
           />
         </div>
       </div>
@@ -817,7 +817,7 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="props.data.strokeStyle" [style.background]="props.data.strokeStyle" cpPosition="bottom"
                 cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-            <input name="strokeStyle" [(ngModel)]="props.data.strokeStyle" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+            <input name="strokeStyle" [(ngModel)]="props.data.strokeStyle" [readonly]="readonly" (change)="onChangeProp()"/>
           </div>
         </div>
         <div>
@@ -829,7 +829,7 @@
             [uiMin]="0"
             [uiMax]="100"
             [readonly]="readonly"
-            (change)="onChangeProp(propForm.invalid)"
+            (change)="onChangeProp()"
           />
         </div>
       </div>
@@ -848,7 +848,7 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="props.data.fillStyle" [style.background]="props.data.fillStyle" cpPosition="bottom"
                 cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-            <input name="fillStyle" [(ngModel)]="props.data.fillStyle" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+            <input name="fillStyle" [(ngModel)]="props.data.fillStyle" [readonly]="readonly" (change)="onChangeProp()"/>
           </div>
         </div>
         <div *ngIf="props.data.bkType" >
@@ -861,14 +861,14 @@
               <div class="input color" [class.readonly]="readonly">
                 <i [(colorPicker)]="props.data.gradientFromColor" [style.background]="props.data.gradientFromColor" cpPosition="bottom"
                     cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-                <input name="gradientFromColor" [(ngModel)]="props.data.gradientFromColor" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+                <input name="gradientFromColor" [(ngModel)]="props.data.gradientFromColor" [readonly]="readonly" (change)="onChangeProp()"/>
               </div>
             </div>
             <div>
               <div class="input color grid-right" [class.readonly]="readonly">
                 <i [(colorPicker)]="props.data.gradientToColor" [style.background]="props.data.gradientToColor" cpPosition="bottom"
                     cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-                <input name="gradientToColor" [(ngModel)]="props.data.gradientToColor" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+                <input name="gradientToColor" [(ngModel)]="props.data.gradientToColor" [readonly]="readonly" (change)="onChangeProp()"/>
               </div>
             </div>
           </div>
@@ -916,7 +916,7 @@
           [uiMin]="0"
           [uiMax]="1"
           [readonly]="readonly"
-          (change)="onChangeProp(propForm.invalid)"
+          (change)="onChangeProp()"
         />
       </div>
     </div> 
@@ -926,7 +926,7 @@
         字体
       </div>
       <div >
-        <input name="fontFamily" class="input full" [(ngModel)]="props.data.font.fontFamily" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+        <input name="fontFamily" class="input full" [(ngModel)]="props.data.font.fontFamily" [readonly]="readonly" (change)="onChangeProp()"/>
       </div>
       <div class="flex grid mt5">
         <div>颜色</div>
@@ -937,11 +937,11 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="props.data.font.color" [style.background]="props.data.font.color" cpPosition="bottom"
             cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors" (colorPickerChange)="onChangeProp(false)"></i>
-            <input name="fontColor" [(ngModel)]="props.data.font.color" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+            <input name="fontColor" [(ngModel)]="props.data.font.color" [readonly]="readonly" (change)="onChangeProp()"/>
           </div>
         </div>
         <div>
-          <input type="number" name="fontSize" class="input" [(ngModel)]="props.data.font.fontSize" uiMin="0" uiMax="500" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+          <input type="number" name="fontSize" class="input" [(ngModel)]="props.data.font.fontSize" uiMin="0" uiMax="500" [readonly]="readonly" (change)="onChangeProp()"/>
         </div>
       </div>
       <div class="flex grid mt5">
@@ -951,11 +951,11 @@
       <div class="flex grid">
         <div class="mr5">
           <ui-select name="fontStyle" [(ngModel)]="props.data.font.fontStyle" [options]="fontStyleOptions" [multi]="false"
-            (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
+            (change)="onChangeProp()" placeholder="正常" [readonly]="readonly"></ui-select>
         </div>
         <div>
           <ui-select name="fontWeight" [(ngModel)]="props.data.font.fontWeight" [options]="fontWeightOptions" [multi]="false"
-          (change)="onChangeProp(propForm.invalid)" placeholder="正常" [readonly]="readonly"></ui-select>
+          (change)="onChangeProp()" placeholder="正常" [readonly]="readonly"></ui-select>
         </div>
       </div>
   
@@ -966,11 +966,11 @@
       <div class="flex grid">
         <div class="mr5">
           <ui-select name="textAlign" [(ngModel)]="props.data.font.textAlign" [options]="textAlignOptions" [multi]="false"
-            (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
+            (change)="onChangeProp()" [readonly]="readonly"></ui-select>
         </div>
         <div>
           <ui-select name="textBaseline" [(ngModel)]="props.data.font.textBaseline" [options]="textBaselineOptions" [multi]="false"
-          (change)="onChangeProp(propForm.invalid)" [readonly]="readonly"></ui-select>
+          (change)="onChangeProp()" [readonly]="readonly"></ui-select>
         </div>
       </div>
   
@@ -980,11 +980,11 @@
       </div>
       <div class="flex grid">
         <div class="mr5">
-          <input type="number" name="lineHeight" class="input" [(ngModel)]="props.data.font.lineHeight" uiMin="1" uiMax="5" [readonly]="readonly" (change)="onChangeProp(propForm.invalid)"/>
+          <input type="number" name="lineHeight" class="input" [(ngModel)]="props.data.font.lineHeight" uiMin="1" uiMax="5" [readonly]="readonly" (change)="onChangeProp()"/>
         </div>
         <div>      
             <input type="number" name="textMaxLine" class="input" [(ngModel)]="props.data.textMaxLine" uiMin="0" uiMax="500" [readonly]="readonly"
-              placeholder="0：自动匹配高度" (change)="onChangeProp(propForm.invalid)"/>
+              placeholder="0：自动匹配高度" (change)="onChangeProp()"/>
         </div>
       </div>
       <div class="mt5">
@@ -992,7 +992,7 @@
       </div>
       <div >
         <textarea name="text" class="input full" [(ngModel)]="props.data.text" rows="2" [readonly]="readonly"
-        (change)="onChangeProp(propForm.invalid)"></textarea>
+        (change)="onChangeProp()"></textarea>
       </div>
     </div>
     <div class="group">
@@ -1062,7 +1062,7 @@
         <div class="flex animate">
           <div class="nowrap"></div>
           <div>
-              <a *ngIf="props.data.animateType === '8'" (click)="showDialog===3?showDialog=0: showDialog=3">设置</a> 
+              <a *ngIf="props.data.animateType === 'custom'" (click)="showDialog===3?showDialog=0: showDialog=3">设置</a> 
           </div>
         </div>      
         <div class="flex animate mt5">
@@ -1338,8 +1338,46 @@
             <button class="button primary" (click)="onAddFrame()">+ 添加帧</button>
           </div>        
         </div>  
+      </div>      
+    </div>
+    <div class="group" *ngIf="props.type === 'node'">
+      <div class="title">音视频/网页</div> 
+      <div >音频URL</div> 
+      <div>
+        <input name="audio" class="input full" [(ngModel)]="props.data.audio" [readonly]="readonly" (change)="onChangeProp()" />
       </div>
-      
+      <div *ngIf="props.data.name === 'div'">
+        <div class="mt5">视频URL</div> 
+        <div>
+          <input name="video" class="input full" [(ngModel)]="props.data.video" [readonly]="readonly" (change)="onChangeProp()" />
+        </div>     
+        <div class="mt5">网页URL</div> 
+        <div>
+          <input name="iframe" class="input full" [(ngModel)]="props.data.iframe" [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="mt5">播放方式</div> 
+      <div>
+        <ui-select name="play" [(ngModel)]="props.data.play" [options]="playOptions" [multi]="false"
+          (change)="onChangeProp()" placeholder="手动播放" [readonly]="readonly"></ui-select>
+      </div>     
+      <div class="mt5">下个动画/播放：</div>
+      <div >
+        <input 
+          name="nextPlay"
+          class="input full"
+          [(ngModel)]="props.data.nextPlay"
+          [readonly]="readonly"
+          (change)="onChangeProp()"
+          placeholder="tag"
+        />
+      </div>
+      <div class="mt5">
+        <label class="checkbox">
+          <input name="loop" type="checkbox" [(ngModel)]="props.data.playLoop" (change)="onChangeProp()" />
+          <span>循环播放</span>
+        </label>
+      </div>      
     </div>
     <div class="group">
       <div class="title">标签</div> 
@@ -1351,11 +1389,11 @@
       </div>
       <div *ngIf="!readonly">
         <input name="tag" class="input full" [(ngModel)]="tag" placeholder="按回车键添加" (keydown.enter)="props.data.tags.push(tag);tag=''"/>
-      </div>
+      </div>      
       <div class="title mt5">自定义数据</div> 
       <div>
         <textarea name="data" class="input full" [(ngModel)]="props.data.data" rows="3" [readonly]="readonly"
-        (change)="onChangeProp(propForm.invalid)"></textarea>
+        (change)="onChangeProp()"></textarea>
       </div>
     </div>
   </div>
