@@ -18,7 +18,6 @@ export class DivLayer {
   audios: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement } } = {};
   iframes: { [key: string]: HTMLIFrameElement } = {};
 
-  private isFull = false;
   private subcribe: Observer;
   private subcribeNode: Observer;
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
@@ -69,6 +68,18 @@ export class DivLayer {
         this.playBtn.className = this.options.pauseIcon;
       }
     });
+
+    document.addEventListener('fullscreenchange', e => {
+      if (document.fullscreen) {
+        this.media.controls = true;
+        this.media.style.userSelect = 'initial';
+        this.media.style.pointerEvents = 'initial';
+      } else {
+        this.media.style.userSelect = 'none';
+        this.media.style.pointerEvents = 'none';
+        this.media.controls = false;
+      }
+    });
   }
 
   addDiv = (node: Node) => {
@@ -103,6 +114,9 @@ export class DivLayer {
     this.player.style.background = 'rgba(200,200,200,.1)';
     this.player.style.display = 'flex';
     this.player.style.alignItems = 'center';
+    this.player.style.userSelect = 'initial';
+    this.player.style.pointerEvents = 'initial';
+    this.player.style.zIndex = '1';
 
     this.playBtn = document.createElement('i');
     this.currentTime = document.createElement('span');
@@ -175,12 +189,7 @@ export class DivLayer {
     };
 
     fullScreen.onclick = () => {
-      if (this.isFull) {
-        document.exitFullscreen();
-      } else {
-        this.isFull = true;
-        this.media.requestFullscreen();
-      }
+      this.media.requestFullscreen();
     };
   }
 
@@ -293,8 +302,8 @@ export class DivLayer {
     elem.style.width = node.rect.width + 'px';
     elem.style.height = node.rect.height + 'px';
     if (node.video && this.videos[node.id] && this.videos[node.id].media) {
-      this.videos[node.id].media.style.width = node.rect.width + 'px';
-      this.videos[node.id].media.style.height = node.rect.height + 'px';
+      this.videos[node.id].media.style.width = '100%';
+      this.videos[node.id].media.style.height = '100%';
     }
     if (this.data.locked > -1) {
       elem.style.userSelect = 'none';
