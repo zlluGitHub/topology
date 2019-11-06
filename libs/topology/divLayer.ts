@@ -45,7 +45,7 @@ export class DivLayer {
     this.createPlayer();
 
     this.subcribe = Store.subscribe('addDiv', (node: Node) => {
-      if (node.audio && !this.audios[node.id]) {
+      if (node.audio) {
         if (this.audios[node.id] && this.audios[node.id].media.src !== node.audio) {
           this.audios[node.id].media.src = node.audio;
         }
@@ -248,13 +248,6 @@ export class DivLayer {
         }
       }
     };
-    media.oncanplay = () => {
-      if (media.paused && node.play === 1) {
-        setTimeout(() => {
-          media.play();
-        }, 200);
-      }
-    };
     media.onended = () => {
       Store.set('mediaEnd', node);
 
@@ -274,6 +267,9 @@ export class DivLayer {
           }
         }
       }
+    };
+    media.onloadedmetadata = () => {
+      this.getMediaCurrent();
     };
     media.src = node[type];
     return player;
