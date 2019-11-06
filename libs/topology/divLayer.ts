@@ -396,6 +396,7 @@ export class DivLayer {
   }
 
   destory() {
+    this.clear();
     this.subcribe.unsubscribe();
     this.subcribeNode.unsubscribe();
   }

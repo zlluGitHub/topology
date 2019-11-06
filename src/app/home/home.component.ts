@@ -810,5 +810,6 @@ ${this.selNodes[0].image}`,
     this.subMenu.unsubscribe();
     this.subUser.unsubscribe();
     this.subRoute.unsubscribe();
+    this.canvas.destory();
   }
 }
