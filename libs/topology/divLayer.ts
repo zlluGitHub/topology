@@ -44,32 +44,7 @@ export class DivLayer {
     parentElem.appendChild(this.player);
     this.createPlayer();
 
-    this.subcribe = Store.subscribe('addDiv', (node: Node) => {
-      if (node.audio) {
-        if (this.audios[node.id] && this.audios[node.id].media.src !== node.audio) {
-          this.audios[node.id].media.src = node.audio;
-        }
-        this.setElemPosition(
-          node,
-          (this.audios[node.id] && this.audios[node.id].player) || this.addMedia(node, 'audio')
-        );
-      }
-      if (node.video) {
-        if (this.videos[node.id] && this.videos[node.id].media.src !== node.video) {
-          this.videos[node.id].media.src = node.video;
-        }
-        this.setElemPosition(
-          node,
-          (this.videos[node.id] && this.videos[node.id].player) || this.addMedia(node, 'video')
-        );
-      }
-      if (node.iframe) {
-        if (this.iframes[node.id] && this.iframes[node.id].src !== node.iframe) {
-          this.iframes[node.id].src = node.iframe;
-        }
-        this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
-      }
-    });
+    this.subcribe = Store.subscribe('addDiv', this.addDiv);
 
     this.subcribeNode = Store.subscribe('activeNode', (node: Node) => {
       if (!node || (!node.video && !node.audio)) {
@@ -77,16 +52,16 @@ export class DivLayer {
         return;
       }
 
-      this.curNode = node;
-      this.player.style.top = this.parentElem.offsetTop + this.parentElem.clientHeight - 40 + 'px';
-      if (node.audio) {
+      if (node.audio && this.audios[node.id]) {
         this.media = this.audios[node.id].media;
-      } else if (node.video) {
+      } else if (node.video && this.videos[node.id]) {
         this.media = this.videos[node.id].media;
       } else {
         return;
       }
 
+      this.curNode = node;
+      this.player.style.top = this.parentElem.offsetTop + this.parentElem.clientHeight - 40 + 'px';
       this.getMediaCurrent();
       if (this.media.paused) {
         this.playBtn.className = this.options.playIcon;
@@ -95,6 +70,27 @@ export class DivLayer {
       }
     });
   }
+
+  addDiv = (node: Node) => {
+    if (node.audio) {
+      if (this.audios[node.id] && this.audios[node.id].media.src !== node.audio) {
+        this.audios[node.id].media.src = node.audio;
+      }
+      this.setElemPosition(node, (this.audios[node.id] && this.audios[node.id].player) || this.addMedia(node, 'audio'));
+    }
+    if (node.video) {
+      if (this.videos[node.id] && this.videos[node.id].media.src !== node.video) {
+        this.videos[node.id].media.src = node.video;
+      }
+      this.setElemPosition(node, (this.videos[node.id] && this.videos[node.id].player) || this.addMedia(node, 'video'));
+    }
+    if (node.iframe) {
+      if (this.iframes[node.id] && this.iframes[node.id].src !== node.iframe) {
+        this.iframes[node.id].src = node.iframe;
+      }
+      this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
+    }
+  };
 
   createPlayer() {
     this.player.style.position = 'fixed';
@@ -254,25 +250,29 @@ export class DivLayer {
       if (this.media === media) {
         this.playBtn.className = this.options.playIcon;
       }
-
-      if (!node.nextPlay) {
-        return;
-      }
-      for (const item of this.data.nodes) {
-        if (item.tags.indexOf(node.nextPlay) > -1) {
-          if (node.audio && this.audios[item.id] && this.audios[item.id].media && this.audios[item.id].media.paused) {
-            this.audios[item.id].media.play();
-          } else if (node.video && this.videos[item.id].media && this.videos[item.id].media.paused) {
-            this.videos[item.id].media.play();
-          }
-        }
-      }
+      this.playNext(node.nextPlay);
     };
     media.onloadedmetadata = () => {
       this.getMediaCurrent();
     };
     media.src = node[type];
     return player;
+  }
+
+  playNext(next: string) {
+    if (!next) {
+      return;
+    }
+
+    for (const item of this.data.nodes) {
+      if (item.tags.indexOf(next) > -1) {
+        if (item.audio && this.audios[item.id] && this.audios[item.id].media && this.audios[item.id].media.paused) {
+          this.audios[item.id].media.play();
+        } else if (item.video && this.videos[item.id].media && this.videos[item.id].media.paused) {
+          this.videos[item.id].media.play();
+        }
+      }
+    }
   }
 
   addIframe(node: Node) {
@@ -302,6 +302,43 @@ export class DivLayer {
     } else {
       elem.style.userSelect = 'initial';
       elem.style.pointerEvents = 'initial';
+    }
+  }
+
+  removeDiv(item: Node) {
+    if (item.id === this.curNode.id) {
+      this.curNode = null;
+      this.media = null;
+      this.player.style.top = '-99999px';
+    }
+    if (item.audio) {
+      this.canvas.removeChild(this.audios[item.id].player);
+      this.audios[item.id] = null;
+    }
+    if (item.video) {
+      this.canvas.removeChild(this.videos[item.id].player);
+      this.videos[item.id] = null;
+    }
+    if (item.iframe) {
+      this.canvas.removeChild(this.iframes[item.id]);
+      this.iframes[item.id] = null;
+    }
+  }
+
+  clear() {
+    for (const item of this.data.nodes) {
+      if (item.audio) {
+        this.canvas.removeChild(this.audios[item.id].player);
+        this.audios[item.id] = null;
+      }
+      if (item.video) {
+        this.canvas.removeChild(this.videos[item.id].player);
+        this.videos[item.id] = null;
+      }
+      if (item.iframe) {
+        this.canvas.removeChild(this.iframes[item.id]);
+        this.iframes[item.id] = null;
+      }
     }
   }
 
@@ -341,7 +378,11 @@ export class DivLayer {
     }
   }
 
-  render() {}
+  render() {
+    for (const item of this.data.nodes) {
+      this.addDiv(item);
+    }
+  }
 
   destory() {
     this.subcribe.unsubscribe();

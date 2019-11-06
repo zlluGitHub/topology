@@ -58,7 +58,7 @@ export class Topology {
   private subcribe: Observer;
   private subcribeAnimateEnd: Observer;
   private subcribeAnimateMoved: Observer;
-  private subcribeMediaEnded: Observer;
+  private subcribeMediaEnd: Observer;
 
   touchedNode: any;
   lastHoverNode: Node;
@@ -165,9 +165,10 @@ export class Topology {
         this.options.on('nodeMovedInAnimate', e);
       }
     });
-    this.subcribeMediaEnded = Store.subscribe('mediaEnd', (node: Node) => {
+    this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
       if (node.nextPlay) {
         this.animateLayer.getNodes(this.data.nodes, node.nextPlay);
+        this.animateLayer.getLines(node.nextPlay);
         this.animateLayer.animate();
       }
 
@@ -184,6 +185,7 @@ export class Topology {
           this.offscreen.render();
           break;
       }
+      this.divLayer.playNext(e.data.nextAnimate);
       if (this.options.on) {
         this.options.on('animateEnd', e);
       }
@@ -364,6 +366,8 @@ export class Topology {
 
   // open - redraw by the data
   open(data: any) {
+    this.divLayer.clear();
+
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
     this.lock(data.locked || 0);
@@ -1246,25 +1250,28 @@ export class Topology {
       return;
     }
 
+    this.divLayer.clear();
     const data = this.caches.list[--this.caches.index];
     this.data.nodes.splice(0, this.data.nodes.length);
     this.data.lines.splice(0, this.data.lines.length);
     this.data.nodes.push.apply(this.data.nodes, data.nodes);
     this.data.lines.push.apply(this.data.lines, data.lines);
     this.render();
+    this.divLayer.render();
   }
 
   redo() {
     if (this.data.locked || this.caches.index > this.caches.list.length - 2) {
       return;
     }
-
+    this.divLayer.clear();
     const data = this.caches.list[++this.caches.index];
     this.data.nodes.splice(0, this.data.nodes.length);
     this.data.lines.splice(0, this.data.lines.length);
     this.data.nodes.push.apply(this.data.nodes, data.nodes);
     this.data.lines.push.apply(this.data.lines, data.lines);
     this.render();
+    this.divLayer.render();
   }
 
   toImage(type?: string, quality?: any, callback?: any): string {
@@ -1299,7 +1306,6 @@ export class Topology {
       srcRect.width,
       srcRect.height
     );
-    document.body.appendChild(canvas);
 
     if (callback) {
       canvas.toBlob(callback);
@@ -1336,6 +1342,7 @@ export class Topology {
     for (const node of this.activeLayer.nodes) {
       i = this.findNode(node);
       if (i > -1) {
+        this.divLayer.removeDiv(this.data.nodes[i]);
         nodes.push.apply(nodes, this.data.nodes.splice(i, 1));
       }
     }
@@ -1366,6 +1373,7 @@ export class Topology {
 
       const i = this.findNode(item);
       if (i > -1) {
+        this.divLayer.removeDiv(this.data.nodes[i]);
         this.data.nodes.splice(i, 1);
       }
     }
@@ -1739,7 +1747,7 @@ export class Topology {
     this.subcribe.unsubscribe();
     this.subcribeAnimateEnd.unsubscribe();
     this.subcribeAnimateMoved.unsubscribe();
-    this.subcribeMediaEnded.unsubscribe();
+    this.subcribeMediaEnd.unsubscribe();
     this.divLayer.destory();
   }
 }

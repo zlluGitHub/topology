@@ -333,27 +333,27 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
         break;
       case 88:
-        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
           this.onCut();
         }
         break;
       case 67:
-        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
           this.onCopy();
         }
         break;
       case 86:
-        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
           this.onParse();
         }
         break;
       case 89:
-        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
           this.canvas.redo();
         }
         break;
       case 90:
-        if (key.ctrlKey && key.target === this.canvas.hoverLayer.canvas) {
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
           if (key.shiftKey) {
             this.canvas.redo();
           } else {
