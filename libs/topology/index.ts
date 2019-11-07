@@ -1000,6 +1000,9 @@ export class Topology {
       this.moveIn.type = MoveInType.LineMove;
       this.moveIn.hoverLine = line;
       this.divLayer.canvas.style.cursor = 'pointer';
+      if (line.from.id || line.to.id) {
+        this.moveIn.type = MoveInType.Line;
+      }
       return true;
     }
 
@@ -1463,8 +1466,13 @@ export class Topology {
         idMaps[item.from.id]
       );
       item.to = new Point(item.to.x + 20, item.to.y + 20, item.to.direction, item.to.anchorIndex, idMaps[item.to.id]);
+      const controlPoints = [];
+      for (const pt of item.controlPoints) {
+        controlPoints.push(new Point(pt.x + 20, pt.y + 20));
+      }
 
       const line = new Line(item);
+      line.controlPoints = controlPoints;
       this.data.lines.push(line);
       this.activeLayer.lines.push(line);
     }

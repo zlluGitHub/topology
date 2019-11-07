@@ -50,7 +50,9 @@ export class HoverLayer extends Canvas {
       return;
     }
     this.line.setTo(to, toArrow);
-    this.line.calcControlPoints();
+    if (this.line.from.id || this.line.to.id) {
+      this.line.calcControlPoints();
+    }
   }
 
   lineFrom(from: Point) {
@@ -58,7 +60,9 @@ export class HoverLayer extends Canvas {
       return;
     }
     this.line.setFrom(from, this.line.fromArrow);
-    this.line.calcControlPoints();
+    if (this.line.from.id || this.line.to.id) {
+      this.line.calcControlPoints();
+    }
   }
 
   lineMove(pt: Point, initPos: { x: number; y: number }) {
@@ -69,7 +73,15 @@ export class HoverLayer extends Canvas {
     const y = pt.y - initPos.y;
     this.line.setTo(new Point(this.initLine.to.x + x, this.initLine.to.y + y), this.line.toArrow);
     this.line.setFrom(new Point(this.initLine.from.x + x, this.initLine.from.y + y), this.line.fromArrow);
-    this.line.calcControlPoints();
+    if (this.line.from.id || this.line.to.id) {
+      this.line.calcControlPoints();
+    } else {
+      for (let i = 0; i < this.initLine.controlPoints.length; ++i) {
+        this.line.controlPoints[i].x = this.initLine.controlPoints[i].x + x;
+        this.line.controlPoints[i].y = this.initLine.controlPoints[i].y + y;
+      }
+      Store.set('pts-' + this.line.id, null);
+    }
   }
 
   render() {
