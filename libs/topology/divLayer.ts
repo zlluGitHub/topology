@@ -317,7 +317,7 @@ export class DivLayer {
   }
 
   removeDiv(item: Node) {
-    if (item.id === this.curNode.id) {
+    if (this.curNode && item.id === this.curNode.id) {
       this.curNode = null;
       this.media = null;
       this.player.style.top = '-99999px';
