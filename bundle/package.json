@@ -4,7 +4,8 @@
   "description": "The bundle of topology libs.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "doc": "typedoc --out ../docs --target es6 --mode file src && cp -r ../examples ../docs/"
   },
   "keywords": [
     "topology"
