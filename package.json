@@ -7,6 +7,7 @@
     "dev": "ng serve --open --host=local.dev.le5le.com --port=3200 --configuration=dev --proxy-config=proxy.conf.dev.json",
     "prod": "ng serve --open --host=local.le5le.com --port=3200 --configuration=prod --proxy-config=proxy.conf.prod.json",
     "build": "ng build --prod",
+    "gen:doc": "typedoc --out ./docs --target es6 --theme minimal --mode file libs && cp -r ./examples ./docs/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
