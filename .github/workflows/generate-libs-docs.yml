@@ -61,19 +61,22 @@ jobs:
       - name: Git Clone
         uses: actions/checkout@master
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
+
+      - name: Install lib dependencies
         working-directory: ./libs/topology
+        run: npm install
 
       - name: build
-        run: npm run build
         working-directory: ./libs/topology
+        run: npm run build
 
       - name: publish
+        working-directory: ./dist/topology-core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
         run: npm publish
-        working-directory: ./dist/topology-core
 
   release:
     runs-on: ubuntu-latest
@@ -88,13 +91,16 @@ jobs:
       - name: Git Clone
         uses: actions/checkout@master
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
+
+      - name: Install bundle dependencies
         working-directory: ./bundle
+        run: npm install
 
       - name: build
-        run: npm run build
         working-directory: ./bundle
+        run: npm run build
 
       - name: push release
         uses: meeDamian/github-release@v1.0.1
