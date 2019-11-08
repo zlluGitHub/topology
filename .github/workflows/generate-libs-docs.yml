@@ -47,3 +47,58 @@ jobs:
         run: |
           cd ./docs
           git push --set-upstream --force --quiet "https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master:gh-pages
+
+  publish-npm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+
+      - name: Git Clone
+        uses: actions/checkout@master
+
+      - name: Install dependencies
+        run: |
+          pwd
+          cd ./libs/topology
+          npm install
+          npm run build
+
+      - name: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+        run: npm publish
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+
+      - name: Git Clone
+        uses: actions/checkout@master
+
+      - name: Install dependencies
+        run: |
+          pwd
+          cd ./bundle
+          npm install
+
+      - name: push release
+        uses: meeDamian/github-release@v1.0.1
+        with:
+          token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
+          tag: v0.0.14
+          name: bundle.js
+          body: >
+            This is a bundle js.
+          files: >
+            bundle/demo/topology.bundle.js

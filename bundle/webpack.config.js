@@ -6,7 +6,7 @@ module.exports = {
   entry: './src',
   output: {
     path: path.resolve(__dirname, '.'),
-    filename: 'topology.bundle.js',
+    filename: './demo/topology.bundle.js',
     library: 'MA',
     libraryTarget: 'umd'
   },
@@ -21,7 +21,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    plugins: [new TsconfigPathsPlugin({/* options: see below */})]
+    plugins: [
+      new TsconfigPathsPlugin({
+        /* options: see below */
+      })
+    ]
   }
   // devtool: "inline-source-map"
 };
