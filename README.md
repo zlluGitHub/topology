@@ -6,6 +6,7 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 
 - [→ Home website, online diagramming](http://topology.le5le.com) . It is very slow while open the site for my network speed is 1Mb/s.
 - [→ Online Demo](https://le5le-com.github.io/topology/examples/index.html)
+- [→ Topology Docs](https://le5le-com.github.io/topology/)
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
