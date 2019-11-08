@@ -420,7 +420,7 @@ export class Node extends Pen {
 
       if (!this.imgLoaded) {
         this.imgLoaded = true;
-        Store.set('render', -1);
+        Store.set('render', 'all');
       }
 
       return;

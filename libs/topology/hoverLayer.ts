@@ -26,7 +26,7 @@ export class HoverLayer extends Canvas {
   dragRect: Rect;
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     super(parentElem, options);
-    parentElem.appendChild(this.canvas);
+    Store.set('hoverLayer', this.canvas);
 
     if (!this.options.hoverColor) {
       this.options.hoverColor = '#d4380d';
@@ -46,7 +46,7 @@ export class HoverLayer extends Canvas {
   }
 
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
-    if (this.line.locked) {
+    if (!this.line || this.line.locked) {
       return;
     }
     this.line.setTo(to, toArrow);
@@ -89,6 +89,8 @@ export class HoverLayer extends Canvas {
       return;
     }
     super.render();
+
+    // this.canvas.width = this.canvas.width;
 
     const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.hoverColor;
@@ -158,6 +160,8 @@ export class HoverLayer extends Canvas {
       ctx.fillRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
       ctx.restore();
     }
+
+    Store.set('render', 'hoverLayer');
   }
 
   clear() {

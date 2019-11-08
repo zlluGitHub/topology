@@ -11,7 +11,6 @@ export class ActiveLayer extends Canvas {
   rotateCPs: Point[] = [];
   sizeCPs: Point[] = [];
   rect: Rect;
-  // center: Point = new Point(0, 0);
 
   nodes: Node[] = [];
   lines: Line[] = [];
@@ -32,7 +31,7 @@ export class ActiveLayer extends Canvas {
 
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     super(parentElem, options);
-    parentElem.appendChild(this.canvas);
+    Store.set('activeLayer', this.canvas);
 
     if (!this.options.activeColor) {
       this.options.activeColor = '#d4380d';
@@ -143,16 +142,6 @@ export class ActiveLayer extends Canvas {
     Store.set('activeNode', null);
   }
 
-  resize(size?: { width: number; height: number }) {
-    super.resize(size);
-
-    this.canvas.style.width = this.width + 'px';
-    this.canvas.style.height = this.height + 'px';
-    this.canvas.width = this.width * this.dpiRatio;
-    this.canvas.height = this.height * this.dpiRatio;
-    this.canvas.getContext('2d').scale(this.dpiRatio, this.dpiRatio);
-  }
-
   render() {
     if (this.data.locked < -1) {
       return;
@@ -224,6 +213,8 @@ export class ActiveLayer extends Canvas {
       ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
       ctx.restore();
     }
+
+    Store.set('render', 'activeLayer');
   }
 
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
@@ -501,6 +492,9 @@ export class ActiveLayer extends Canvas {
   }
 
   getDockWatchers() {
+    if (!this.rect) {
+      return;
+    }
     if (this.nodes.length === 1) {
       this.dockWatchers = this.nodeRects[0].toPoints();
       this.dockWatchers.unshift(this.nodeRects[0].center);

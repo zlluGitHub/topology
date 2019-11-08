@@ -55,7 +55,6 @@ export class Topology {
   animateLayer: AnimateLayer;
   divLayer: DivLayer;
 
-  private subcribe: Observer;
   private subcribeAnimateEnd: Observer;
   private subcribeAnimateMoved: Observer;
   private subcribeMediaEnd: Observer;
@@ -137,10 +136,10 @@ export class Topology {
     }
 
     this.offscreen = new Offscreen(this.parentElem, this.options);
-    this.canvas = new RenderLayer(this.parentElem, this.options);
     this.activeLayer = new ActiveLayer(this.parentElem, this.options);
     this.animateLayer = new AnimateLayer(this.parentElem, this.options);
     this.hoverLayer = new HoverLayer(this.parentElem, this.options);
+    this.canvas = new RenderLayer(this.parentElem, this.options);
     this.divLayer = new DivLayer(this.parentElem, this.options);
 
     this.resize();
@@ -150,12 +149,6 @@ export class Topology {
       this.ondrop(event);
     };
 
-    this.subcribe = Store.subscribe('render', (e: any) => {
-      if (e < 0) {
-        this.offscreen.render();
-      }
-      this.canvas.render();
-    });
     this.subcribeAnimateMoved = Store.subscribe('nodeMovedInAnimate', (e: any) => {
       this.activeLayer.updateLines(this.data.nodes);
       this.activeLayer.render();
@@ -1285,7 +1278,7 @@ export class Topology {
     rect.height += 20;
     rect.round();
     const srcRect = rect.clone();
-    srcRect.scale(this.offscreen.dpiRatio, new Point(0, 0));
+    srcRect.scale(this.offscreen.getDpiRatio(), new Point(0, 0));
     srcRect.round();
 
     const canvas = document.createElement('canvas');
@@ -1752,10 +1745,10 @@ export class Topology {
   }
 
   destory() {
-    this.subcribe.unsubscribe();
     this.subcribeAnimateEnd.unsubscribe();
     this.subcribeAnimateMoved.unsubscribe();
     this.subcribeMediaEnd.unsubscribe();
+    this.canvas.destory();
     this.divLayer.destory();
   }
 }

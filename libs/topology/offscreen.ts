@@ -5,17 +5,7 @@ import { Canvas } from './canvas';
 export class Offscreen extends Canvas {
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     super(parentElem, options);
-    this.canvas.style.left = '-10000px';
-    this.canvas.style.top = '-10000px';
     Store.set('offscreen', this.canvas);
-  }
-
-  resize(size?: { width: number; height: number }) {
-    super.resize(size);
-
-    this.canvas.width = this.width * this.dpiRatio;
-    this.canvas.height = this.height * this.dpiRatio;
-    this.canvas.getContext('2d').scale(this.dpiRatio, this.dpiRatio);
   }
 
   render() {
@@ -26,7 +16,7 @@ export class Offscreen extends Canvas {
 
     this.renderNodes();
     this.renderLines();
-    Store.set('render', 1);
+    Store.set('render', 'offscreen');
   }
 
   renderNodes() {

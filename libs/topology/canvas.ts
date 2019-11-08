@@ -4,10 +4,10 @@ import { TopologyData } from './models/data';
 import { Options } from './options';
 
 export class Canvas {
-  protected data: TopologyData = Store.get('topology-data');
+  static dpiRatio = 0;
 
+  protected data: TopologyData = Store.get('topology-data');
   canvas = document.createElement('canvas');
-  dpiRatio = 1;
   width = 0;
   height = 0;
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
@@ -16,22 +16,24 @@ export class Canvas {
     this.canvas.style.top = '0';
     this.canvas.style.outline = 'none';
 
-    const ctx = this.canvas.getContext('2d');
-    const bsr =
-      ctx['webkitBackingStorePixelRatio'] ||
-      ctx['mozBackingStorePixelRatio'] ||
-      ctx['msBackingStorePixelRatio'] ||
-      ctx['oBackingStorePixelRatio'] ||
-      ctx['backingStorePixelRatio'] ||
-      1;
+    if (!Canvas.dpiRatio) {
+      const ctx = this.canvas.getContext('2d');
+      const bsr =
+        ctx['webkitBackingStorePixelRatio'] ||
+        ctx['mozBackingStorePixelRatio'] ||
+        ctx['msBackingStorePixelRatio'] ||
+        ctx['oBackingStorePixelRatio'] ||
+        ctx['backingStorePixelRatio'] ||
+        1;
 
-    this.dpiRatio = window.devicePixelRatio / bsr + 0.25;
+      Canvas.dpiRatio = window.devicePixelRatio / bsr + 0.25;
+    }
   }
 
   resize(size?: { width: number; height: number }) {
     if (size) {
-      this.width = size.width;
-      this.height = size.height;
+      this.width = size.width | 0;
+      this.height = size.height | 0;
     } else {
       if (this.options.width && this.options.width !== 'auto') {
         this.width = +this.options.width;
@@ -45,12 +47,19 @@ export class Canvas {
       }
     }
 
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
+    this.canvas.style.width = this.width + 'px';
+    this.canvas.style.height = this.height + 'px';
+    this.canvas.width = (this.width * Canvas.dpiRatio) | 0;
+    this.canvas.height = (this.height * Canvas.dpiRatio) | 0;
+    this.canvas.getContext('2d').scale(Canvas.dpiRatio, Canvas.dpiRatio);
   }
 
   render() {
     const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  getDpiRatio() {
+    return Canvas.dpiRatio;
   }
 }

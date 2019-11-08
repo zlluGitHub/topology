@@ -1,3 +1,5 @@
+import { Store } from 'le5le-store';
+
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { Canvas } from './canvas';
@@ -12,7 +14,7 @@ export class AnimateLayer extends Canvas {
   private timer: any;
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     super(parentElem, options);
-    parentElem.appendChild(this.canvas);
+    Store.set('animateLayer', this.canvas);
 
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
@@ -152,6 +154,8 @@ export class AnimateLayer extends Canvas {
             this.nodes.splice(i, 1);
           }
         }
+
+        Store.set('render', 'animateLayer');
       }
       this.animate();
     });
