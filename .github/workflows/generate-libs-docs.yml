@@ -66,12 +66,20 @@ jobs:
           pwd
           cd ./libs/topology
           npm install
+
+      - name: build
+        run: |
+          pwd
+          cd ./libs/topology
           npm run build
 
       - name: publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
-        run: npm publish
+        run: |
+          pwd
+          cd ./dist/topology-core
+          npm publish
 
   release:
     runs-on: ubuntu-latest
@@ -91,6 +99,12 @@ jobs:
           pwd
           cd ./bundle
           npm install
+
+      - name: build
+        run: |
+          pwd
+          cd ./bundle
+          npm run build
 
       - name: push release
         uses: meeDamian/github-release@v1.0.1
