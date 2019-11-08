@@ -103,9 +103,7 @@ jobs:
         run: npm run build
 
       - name: push release
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
-        uses: thedoctor0/zip-release@master
+        uses: ncipollo/release-action@v1
         with:
-          filename: release.zip
-          path: bundle/demo/topology.bundle.js
+          artifacts: "bundle/demo/topology.bundle.js"
+          token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
