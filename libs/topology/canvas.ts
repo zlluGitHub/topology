@@ -52,6 +52,8 @@ export class Canvas {
     this.canvas.width = (this.width * Canvas.dpiRatio) | 0;
     this.canvas.height = (this.height * Canvas.dpiRatio) | 0;
     this.canvas.getContext('2d').scale(Canvas.dpiRatio, Canvas.dpiRatio);
+
+    Store.set('LT:size', { width: this.canvas.width, height: this.canvas.height });
   }
 
   render() {

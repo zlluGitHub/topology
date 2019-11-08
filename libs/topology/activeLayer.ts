@@ -4,10 +4,13 @@ import { Node } from './models/node';
 import { Line } from './models/line';
 import { Rect } from './models/rect';
 import { Point } from './models/point';
-import { Options } from './options';
-import { Canvas } from './canvas';
+import { TopologyData } from './models/data';
 
-export class ActiveLayer extends Canvas {
+import { Options } from './options';
+
+export class ActiveLayer {
+  protected data: TopologyData = Store.get('topology-data');
+
   rotateCPs: Point[] = [];
   sizeCPs: Point[] = [];
   rect: Rect;
@@ -27,12 +30,8 @@ export class ActiveLayer extends Canvas {
 
   rotating = false;
 
-  locked = false;
-
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
-    super(parentElem, options);
-    Store.set('activeLayer', this.canvas);
-
+  constructor(public options: Options = {}) {
+    Store.set('LT:ActiveLayer', this);
     if (!this.options.activeColor) {
       this.options.activeColor = '#d4380d';
     }
@@ -101,21 +100,20 @@ export class ActiveLayer extends Canvas {
     }
   }
 
-  private isLocked() {
-    this.locked = true;
+  locked() {
     for (const item of this.nodes) {
       if (!item.locked) {
-        this.locked = false;
-        return;
+        return false;
       }
     }
 
     for (const item of this.lines) {
       if (!item.locked) {
-        this.locked = false;
-        break;
+        return false;
       }
     }
+
+    return true;
   }
 
   getPoints() {
@@ -136,85 +134,7 @@ export class ActiveLayer extends Canvas {
   clear() {
     this.lines = [];
     this.nodes = [];
-    const ctx = this.canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     Store.set('activeNode', null);
-  }
-
-  render() {
-    if (this.data.locked < -1) {
-      return;
-    }
-    super.render();
-
-    if (!this.nodes.length && !this.lines.length) {
-      return;
-    }
-
-    if (this.nodes.length === 1 || !this.rotating) {
-      this.calcControlPoints();
-      this.isLocked();
-    }
-
-    const ctx = this.canvas.getContext('2d');
-    ctx.strokeStyle = this.options.activeColor;
-    ctx.fillStyle = '#fff';
-    ctx.lineWidth = 1;
-
-    this.renderNodesLines();
-
-    // This is diffence between single node and more.
-    if (this.rotate && this.nodes.length > 1) {
-      ctx.translate(this.rect.center.x, this.rect.center.y);
-      ctx.rotate((this.rotate * Math.PI) / 180);
-      ctx.translate(-this.rect.center.x, -this.rect.center.y);
-    }
-
-    // Occupied territory.
-    ctx.save();
-    ctx.globalAlpha = 0.3;
-    ctx.translate(0.5, 0.5);
-    ctx.beginPath();
-    ctx.moveTo(this.sizeCPs[0].x, this.sizeCPs[0].y);
-    ctx.lineTo(this.sizeCPs[1].x, this.sizeCPs[1].y);
-    ctx.lineTo(this.sizeCPs[2].x, this.sizeCPs[2].y);
-    ctx.lineTo(this.sizeCPs[3].x, this.sizeCPs[3].y);
-    ctx.closePath();
-    ctx.stroke();
-    ctx.restore();
-
-    if (this.data.locked || this.locked) {
-      return;
-    }
-
-    // Draw rotate control point.
-    ctx.beginPath();
-    ctx.moveTo(this.rotateCPs[0].x, this.rotateCPs[0].y);
-    ctx.lineTo(this.rotateCPs[1].x, this.rotateCPs[1].y);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(this.rotateCPs[0].x, this.rotateCPs[0].y, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Draw size control points.
-    ctx.lineWidth = 1;
-    for (const item of this.sizeCPs) {
-      ctx.save();
-      ctx.beginPath();
-      if (this.nodes.length === 1 && (this.nodes[0].rotate || this.rotate)) {
-        ctx.translate(item.x, item.y);
-        ctx.rotate(((this.nodes[0].rotate + this.rotate) * Math.PI) / 180);
-        ctx.translate(-item.x, -item.y);
-      }
-      ctx.fillRect(item.x - 4.5, item.y - 4.5, 8, 8);
-      ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
-      ctx.restore();
-    }
-
-    Store.set('render', 'activeLayer');
   }
 
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
@@ -345,6 +265,10 @@ export class ActiveLayer extends Canvas {
       ++i;
     }
     this.updateLines();
+
+    if (this.options.on) {
+      this.options.on('moveNodes', this.nodes);
+    }
   }
 
   updateChildren(node: Node) {
@@ -454,9 +378,25 @@ export class ActiveLayer extends Canvas {
     this.lines = lines;
   }
 
-  renderNodesLines() {
-    const ctx = this.canvas.getContext('2d');
+  render(ctx: CanvasRenderingContext2D) {
+    if (this.data.locked < -1) {
+      return;
+    }
+
+    if (!this.nodes.length && !this.lines.length) {
+      return;
+    }
+
+    if (this.nodes.length === 1 || !this.rotating) {
+      this.calcControlPoints();
+    }
+
     ctx.save();
+
+    ctx.strokeStyle = this.options.activeColor;
+    ctx.fillStyle = '#fff';
+    ctx.lineWidth = 1;
+
     for (const item of this.nodes) {
       const tmp = new Node(item);
       tmp.fillStyle = null;
@@ -481,26 +421,78 @@ export class ActiveLayer extends Canvas {
       }
       const tmp = new Line(item);
       tmp.strokeStyle = '#ffffff';
-      tmp.lineWidth += 2;
+      tmp.lineWidth += 1;
       tmp.render(ctx);
 
       tmp.strokeStyle = '#d4380d';
-      tmp.lineWidth -= 2;
+      tmp.lineWidth -= 1;
       tmp.render(ctx);
     }
+
+    // This is diffence between single node and more.
+    if (this.rotate && this.nodes.length > 1) {
+      ctx.translate(this.rect.center.x, this.rect.center.y);
+      ctx.rotate((this.rotate * Math.PI) / 180);
+      ctx.translate(-this.rect.center.x, -this.rect.center.y);
+    }
+
+    // Occupied territory.
+    ctx.save();
+    ctx.globalAlpha = 0.3;
+    ctx.translate(0.5, 0.5);
+    ctx.beginPath();
+    ctx.moveTo(this.sizeCPs[0].x, this.sizeCPs[0].y);
+    ctx.lineTo(this.sizeCPs[1].x, this.sizeCPs[1].y);
+    ctx.lineTo(this.sizeCPs[2].x, this.sizeCPs[2].y);
+    ctx.lineTo(this.sizeCPs[3].x, this.sizeCPs[3].y);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+
+    if (this.data.locked || this.locked()) {
+      ctx.restore();
+      return;
+    }
+
+    // Draw rotate control point.
+    ctx.beginPath();
+    ctx.moveTo(this.rotateCPs[0].x, this.rotateCPs[0].y);
+    ctx.lineTo(this.rotateCPs[1].x, this.rotateCPs[1].y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(this.rotateCPs[0].x, this.rotateCPs[0].y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw size control points.
+    ctx.lineWidth = 1;
+    for (const item of this.sizeCPs) {
+      ctx.save();
+      ctx.beginPath();
+      if (this.nodes.length === 1 && (this.nodes[0].rotate || this.rotate)) {
+        ctx.translate(item.x, item.y);
+        ctx.rotate(((this.nodes[0].rotate + this.rotate) * Math.PI) / 180);
+        ctx.translate(-item.x, -item.y);
+      }
+      ctx.fillRect(item.x - 4.5, item.y - 4.5, 8, 8);
+      ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
+      ctx.restore();
+    }
+
     ctx.restore();
   }
 
   getDockWatchers() {
-    if (!this.rect) {
-      return;
-    }
     if (this.nodes.length === 1) {
       this.dockWatchers = this.nodeRects[0].toPoints();
       this.dockWatchers.unshift(this.nodeRects[0].center);
       return;
     }
 
+    if (!this.rect) {
+      return;
+    }
     this.dockWatchers = this.rect.toPoints();
     this.dockWatchers.unshift(this.rect.center);
   }

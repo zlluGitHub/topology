@@ -1,13 +1,15 @@
+import { TopologyData } from './models/data';
 import { Rect } from './models/rect';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { Node } from './models/node';
 import { Store } from 'le5le-store';
 import { drawLineFns } from './middles';
-import { Canvas } from './canvas';
 import { Options } from './options';
 
-export class HoverLayer extends Canvas {
+export class HoverLayer {
+  protected data: TopologyData = Store.get('topology-data');
+
   anchorRadius = 4;
 
   line: Line;
@@ -15,6 +17,7 @@ export class HoverLayer extends Canvas {
   initLine: Line;
   node: Node;
   hoverLineCP: Point;
+  lasthoverLineCP: Point;
   // The dock of to point of line.
   dockAnchor: Point;
 
@@ -24,14 +27,12 @@ export class HoverLayer extends Canvas {
   dockLineY = 0;
 
   dragRect: Rect;
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
-    super(parentElem, options);
-    Store.set('hoverLayer', this.canvas);
+  constructor(public options: Options = {}) {
+    Store.set('LT:HoverLayer', this);
 
     if (!this.options.hoverColor) {
       this.options.hoverColor = '#d4380d';
     }
-
     // The backgournd color of selecting nodes by draging.
     if (!this.options.dragColor) {
       this.options.dragColor = '#d4380d';
@@ -84,15 +85,11 @@ export class HoverLayer extends Canvas {
     }
   }
 
-  render() {
+  render(ctx: CanvasRenderingContext2D) {
     if (this.data.locked < 0) {
       return;
     }
-    super.render();
-
-    // this.canvas.width = this.canvas.width;
-
-    const ctx = this.canvas.getContext('2d');
+    ctx.save();
     ctx.strokeStyle = this.options.hoverColor;
     ctx.fillStyle = '#fff';
     // anchors
@@ -131,43 +128,34 @@ export class HoverLayer extends Canvas {
     ctx.lineWidth = 1;
 
     if (this.dockLineX > 0) {
-      ctx.save();
-      ctx.translate(0.5, 0.5);
+      const size = Store.get('LT:size');
       ctx.beginPath();
       ctx.moveTo(this.dockLineX, 0);
-      ctx.lineTo(this.dockLineX, this.canvas.height);
+      ctx.lineTo(this.dockLineX, size.height);
       ctx.stroke();
-      ctx.restore();
     }
 
     if (this.dockLineY > 0) {
-      ctx.save();
-      ctx.translate(0.5, 0.5);
+      const size = Store.get('LT:size');
       ctx.beginPath();
       ctx.moveTo(0, this.dockLineY);
-      ctx.lineTo(this.canvas.width, this.dockLineY);
+      ctx.lineTo(size.width, this.dockLineY);
       ctx.stroke();
-      ctx.restore();
     }
 
     // Select nodes by drag.
     if (this.dragRect) {
-      ctx.save();
-      ctx.translate(0.5, 0.5);
       ctx.strokeStyle = this.options.dragColor;
       ctx.beginPath();
       ctx.strokeRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
       ctx.fillRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
-      ctx.restore();
     }
 
-    Store.set('render', 'hoverLayer');
+    ctx.restore();
   }
 
   clear() {
     this.node = null;
     this.line = null;
-    const ctx = this.canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }

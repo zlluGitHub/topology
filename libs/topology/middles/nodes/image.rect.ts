@@ -40,7 +40,7 @@ export function imageTextRect(node: Node) {
   if (node.textMaxLine) {
     height = lineHeight * node.textMaxLine;
   } else {
-    const canvas = Store.get('offscreen');
+    const canvas = Store.get('LT:offscreen');
     const lines = getLines(canvas.getContext('2d'), getWords(node.text), node.rect.width);
     height = lineHeight * lines.length;
   }

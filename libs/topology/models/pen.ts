@@ -14,8 +14,10 @@ export abstract class Pen {
   globalAlpha = 1;
 
   dash = 0;
+  lineDash: number[];
   strokeStyle = '';
   fillStyle = '';
+  lineCap: string;
   font = {
     color: '',
     fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
@@ -34,10 +36,12 @@ export abstract class Pen {
   animateCycleIndex = 0;
   nextAnimate: string;
 
+  locked = false;
+
   // User data.
   data: any;
 
-  locked = false;
+  active: boolean;
   constructor(json?: any) {
     if (json) {
       this.id = json.id || s8();
@@ -47,9 +51,11 @@ export abstract class Pen {
         this.rect = new Rect(json.rect.x, json.rect.y, json.rect.width, json.rect.height);
       }
       this.dash = json.dash || 0;
+      this.lineDash = json.lineDash;
       this.lineWidth = json.lineWidth || 1;
       this.strokeStyle = json.strokeStyle || '';
       this.fillStyle = json.fillStyle || '';
+      this.lineCap = json.lineCap;
       this.globalAlpha = json.globalAlpha || 1;
       this.rotate = json.rotate || 0;
       this.offsetRotate = json.offsetRotate || 0;
@@ -89,6 +95,10 @@ export abstract class Pen {
       ctx.fillStyle = 'transparent';
     }
 
+    if (this.lineCap) {
+      ctx.lineCap = this.lineCap as CanvasLineCap;
+    }
+
     if (this.globalAlpha < 1) {
       ctx.globalAlpha = this.globalAlpha;
     }
@@ -103,6 +113,10 @@ export abstract class Pen {
       case 3:
         ctx.setLineDash([10, 10, 2, 10]);
         break;
+    }
+
+    if (this.lineDash) {
+      ctx.setLineDash(this.lineDash);
     }
 
     this.draw(ctx);

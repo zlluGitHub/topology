@@ -420,7 +420,7 @@ export class Node extends Pen {
 
       if (!this.imgLoaded) {
         this.imgLoaded = true;
-        Store.set('render', 'all');
+        Store.set('LT:render', true);
       }
 
       return;
@@ -497,7 +497,7 @@ export class Node extends Pen {
     }
   }
 
-  animate(ctx: CanvasRenderingContext2D, now: number) {
+  animate(now: number) {
     let timeline = now - this.animateStart;
     if (timeline > this.animateDuration) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
@@ -594,10 +594,8 @@ export class Node extends Pen {
     }
     if (rectChanged) {
       this.init();
-      Store.set('nodeMovedInAnimate', this);
+      Store.set('nodeRectChanged', this);
     }
-
-    this.render(ctx);
   }
 
   scale(scale: number, center?: Point) {

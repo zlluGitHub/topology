@@ -134,13 +134,9 @@ export class Line extends Pen {
     return 0;
   }
 
-  animate(ctx: CanvasRenderingContext2D) {
-    ctx.save();
-    ctx.lineCap = 'round';
+  animate() {
     this.animatePos += this.animateSpan;
-    ctx.setLineDash([this.animatePos, this.length - this.animatePos + 1]);
-    this.render(ctx);
-    ctx.restore();
+    this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
     if (this.animatePos > this.length + this.animateSpan) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
