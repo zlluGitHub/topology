@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install Dependencies
-        run: cd client && npm install && cd ..
+        run: npm install
 
       - name: Generate libs doc
         run: |
