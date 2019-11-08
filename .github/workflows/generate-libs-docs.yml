@@ -105,5 +105,6 @@ jobs:
       - name: push release
         uses: ncipollo/release-action@v1
         with:
+          tag: "0.0.14"
           artifacts: "bundle/demo/topology.bundle.js"
           token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
