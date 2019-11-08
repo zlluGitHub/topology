@@ -105,12 +105,7 @@ jobs:
       - name: push release
         env:
           ACCESS_TOKEN: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
-        uses: meeDamian/github-release@v1.0.0
+        uses: thedoctor0/zip-release@master
         with:
-          token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
-          tag: v0.0.14
-          name: bundle.js
-          body: >
-            This is a bundle js.
-          files: >
-            bundle/demo/topology.bundle.js
+          filename: release.zip
+          path: bundle/demo/topology.bundle.js
