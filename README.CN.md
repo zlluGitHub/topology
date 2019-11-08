@@ -7,6 +7,7 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 - [→ 在线画图官网](http://topology.le5le.com) ，网站可能比较慢，个人申请的云服务器带宽仅仅 1M。
 - [→ 在线 Demo](https://le5le-com.github.io/topology/examples/index.html)
 - [→ Topology 核心库接口文档](https://le5le-com.github.io/topology/)
+- [→ js 压缩包下载](https://github.com/le5le-com/topology/releases)
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
