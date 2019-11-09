@@ -294,7 +294,7 @@ export class Topology {
     this.cache();
 
     if (this.options.on) {
-      this.options.on('node', node);
+      this.options.on('addNode', node);
     }
 
     return true;
@@ -316,7 +316,7 @@ export class Topology {
     this.cache();
 
     if (this.options.on) {
-      this.options.on('line', line);
+      this.options.on('addLine', line);
     }
   }
 
