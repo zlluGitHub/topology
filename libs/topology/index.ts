@@ -679,6 +679,7 @@ export class Topology {
         case MoveInType.HoverAnchors:
           // New active.
           if (this.hoverLayer.line && this.hoverLayer.line.to) {
+            this.data.lines.push(this.hoverLayer.line);
             // Deactive nodes.
             this.activeLayer.nodes = [];
 

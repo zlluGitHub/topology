@@ -105,6 +105,10 @@ export class HoverLayer {
       }
     }
 
+    if (this.line && this.line.to) {
+      this.line.render(ctx);
+    }
+
     const activeLine = Store.get('activeLine');
     if (activeLine) {
       drawLineFns[activeLine.name].drawControlPointsFn(ctx, activeLine);
