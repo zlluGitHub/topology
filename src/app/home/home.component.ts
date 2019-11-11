@@ -651,9 +651,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     switch (props.type) {
       case 'node':
+      case 'addNode':
         this.canvas.updateProps(props.data);
         break;
       case 'line':
+      case 'addLine':
         this.canvas.updateProps();
         break;
       case 'multi':
