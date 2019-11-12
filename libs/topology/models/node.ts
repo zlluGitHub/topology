@@ -615,6 +615,16 @@ export class Node extends Pen {
     this.font.fontSize *= scale;
     this.iconSize *= scale;
     this.rect.round();
+
+    if (this.animateFrames) {
+      for (const item of this.animateFrames) {
+        if (item.state) {
+          item.state = new Node(item.state);
+          item.state.scale(scale, center);
+        }
+      }
+    }
+
     this.init();
 
     if (this.children) {

@@ -74,13 +74,13 @@ export class Topology {
     hoverLine: Line;
     lineControlPoint: Point;
   } = {
-    type: MoveInType.None,
-    activeAnchorIndex: 0,
-    hoverAnchorIndex: 0,
-    hoverNode: null,
-    hoverLine: null,
-    lineControlPoint: null
-  };
+      type: MoveInType.None,
+      activeAnchorIndex: 0,
+      hoverAnchorIndex: 0,
+      hoverNode: null,
+      hoverLine: null,
+      lineControlPoint: null
+    };
   nodesMoved = false;
 
   private scheduledAnimationFrame = false;
@@ -1610,6 +1610,18 @@ export class Topology {
       item.rect.ex = item.rect.x + item.rect.width;
       item.rect.ey = item.rect.y + item.rect.height;
       item.rect.calceCenter();
+
+      if (item.animateFrames) {
+        for (const frame of item.animateFrames) {
+          if (frame.state) {
+            frame.state.rect.x += offsetX;
+            frame.state.rect.y += offsetY;
+            frame.state.rect.ex = frame.state.rect.x + frame.state.rect.width;
+            frame.state.rect.ey = frame.state.rect.y + frame.state.rect.height;
+          }
+        }
+      }
+
       item.init();
       this.activeLayer.updateChildren(item);
     }
