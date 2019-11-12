@@ -224,6 +224,17 @@
         </div>
       </div>
     </div>
+    <div class="flex">
+      <div class="item mh5">
+        <a (click)="onMenu('fullscreen', 1)" style="padding-right: 0;">
+          全屏
+          <i
+            class="iconfont icon-full-screen rel"
+            style="top:1px; margin-left: 2px"
+          ></i>
+        </a>
+      </div>
+    </div>
     <div class="flex" [class.disabled]="!editMode">
       <div class="separator"></div>
       <div class="item mh5">

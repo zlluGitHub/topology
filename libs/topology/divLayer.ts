@@ -70,6 +70,9 @@ export class DivLayer {
     });
 
     document.addEventListener('fullscreenchange', e => {
+      if (!this.media) {
+        return;
+      }
       if (document.fullscreen) {
         this.media.controls = true;
         this.media.style.userSelect = 'initial';

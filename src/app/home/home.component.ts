@@ -140,7 +140,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private coreService: CoreService,
     private router: Router,
     private activateRoute: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.user = Store.get('user');
@@ -219,6 +219,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           break;
         case 'scale':
           this.canvas.scaleTo(menu.data);
+          break;
+        case 'fullscreen':
+          this.workspace.nativeElement.requestFullscreen();
+          setTimeout(() => {
+            this.canvas.resize();
+            this.canvas.overflow();
+          }, 500);
           break;
       }
     });

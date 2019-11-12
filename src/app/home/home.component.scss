@@ -1,5 +1,5 @@
-@import 'src/variables';
-@import '~le5le-ui/variables';
+@import "src/variables";
+@import "~le5le-ui/variables";
 
 $color-border: #ddd;
 
@@ -54,6 +54,7 @@ $color-border: #ddd;
   width: initial;
   position: relative;
   overflow: auto;
+  background: #fff;
 }
 
 .props {
