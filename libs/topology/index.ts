@@ -289,8 +289,7 @@ export class Topology {
     }
 
     this.data.nodes.push(node);
-    this.offscreen.render();
-
+    this.render();
     this.cache();
 
     if (this.options.on) {
