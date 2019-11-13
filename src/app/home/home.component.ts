@@ -581,6 +581,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   onMessage = (event: string, data: any) => {
     switch (event) {
       case 'node':
+      case 'addNode':
         this.selNodes = [data];
         this.selected = {
           type: event,
@@ -590,6 +591,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.readonly = this.locked;
         break;
       case 'line':
+      case 'addLine':
         this.selected = {
           type: event,
           data
