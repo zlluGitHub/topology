@@ -584,7 +584,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       case 'addNode':
         this.selNodes = [data];
         this.selected = {
-          type: event,
+          type: 'node',
           data
         };
         this.locked = data.locked;
@@ -593,7 +593,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       case 'line':
       case 'addLine':
         this.selected = {
-          type: event,
+          type: 'line',
           data
         };
         this.locked = data.locked;
