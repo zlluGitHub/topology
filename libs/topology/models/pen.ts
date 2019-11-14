@@ -35,6 +35,7 @@ export abstract class Pen {
   animateCycle: number;
   animateCycleIndex = 0;
   nextAnimate: string;
+  animatePlay: boolean;
 
   locked = false;
 
@@ -64,6 +65,7 @@ export abstract class Pen {
       }
       this.animateCycle = json.animateCycle;
       this.nextAnimate = json.nextAnimate;
+      this.animatePlay = json.animatePlay;
       this.data = json.data || '';
       this.locked = json.locked;
     } else {

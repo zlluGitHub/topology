@@ -41,6 +41,7 @@ export interface Props {
       state: Node;
     }[];
     nextAnimate?: string;
+    animatePlay?: boolean;
     tags: string[];
     data?: any;
     locked?: boolean;

@@ -1,5 +1,5 @@
-@import 'src/variables';
-@import '~le5le-ui/variables';
+@import "src/variables";
+@import "~le5le-ui/variables";
 
 .group {
   padding: 0.05rem 0.15rem 0.15rem 0.15rem;
@@ -94,6 +94,11 @@
         font-size: 0.3rem;
       }
     }
+  }
+
+  .checkbox > span > span {
+    position: relative;
+    top: -0.01rem;
   }
 }
 

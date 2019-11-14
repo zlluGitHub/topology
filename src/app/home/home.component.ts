@@ -418,20 +418,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     Store.set('file', this.data);
 
-    this.animateDemo();
+    this.animate();
   }
 
-  animateDemo() {
-    if (this.data.name === 'cube-demo') {
-      const d = this.canvas.data;
-      const n = Date.now();
-      for (const item of d.nodes) {
-        if (item.tags.indexOf('1') > -1) {
-          item.animateStart = n;
-        }
+  animate() {
+    const n = Date.now();
+    for (const item of this.canvas.data.nodes) {
+      if (item.animatePlay) {
+        item.animateStart = n;
       }
-      this.canvas.animate();
     }
+    this.canvas.animate();
   }
 
   onOpenLocal() {

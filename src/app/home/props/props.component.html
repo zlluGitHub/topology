@@ -996,12 +996,21 @@
       </div>
     </div>
     <div class="group">
-      <div class="title">
-        <label class="checkbox">
-          <input name="remember" type="checkbox" [(ngModel)]="props.data.animateStart" (change)="onAnimate()" [readonly]="readonly"/>
-          <span>动画</span>
-        </label>
-      </div> 
+      <div class="flex">
+        <div class="title">
+          <label class="checkbox">
+            <input name="remember" type="checkbox" [(ngModel)]="props.data.animateStart" (change)="onAnimate()" [readonly]="readonly"/>
+            <span><span>动画</span></span>
+          </label>
+        </div> 
+        <div class="gray full ml5">勾选播放</div>
+        <div>
+          <label class="checkbox">
+            <input name="autoPlay" type="checkbox" [(ngModel)]="props.data.animatePlay" (change)="onAnimate()" [readonly]="readonly"/>
+            <span><span>自动播放</span></span>
+          </label>
+        </div>
+      </div>
       <div *ngIf="props.type === 'line'">
         <div class="flex grid mt5">
           <div>颜色</div>
