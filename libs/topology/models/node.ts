@@ -634,6 +634,33 @@ export class Node extends Pen {
     }
   }
 
+  translate(x: number, y: number) {
+    this.rect.x += x;
+    this.rect.y += y;
+    this.rect.ex = this.rect.x + this.rect.width;
+    this.rect.ey = this.rect.y + this.rect.height;
+    this.rect.calceCenter();
+
+    if (this.animateFrames) {
+      for (const frame of this.animateFrames) {
+        if (frame.state) {
+          frame.state.rect.x += x;
+          frame.state.rect.y += y;
+          frame.state.rect.ex = frame.state.rect.x + frame.state.rect.width;
+          frame.state.rect.ey = frame.state.rect.y + frame.state.rect.height;
+        }
+      }
+    }
+
+    this.init();
+
+    if (this.children) {
+      for (const item of this.children) {
+        item.translate(x, y);
+      }
+    }
+  }
+
   round() {
     this.rect.round();
     if (this.children) {

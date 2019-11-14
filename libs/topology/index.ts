@@ -1540,12 +1540,12 @@ export class Topology {
 
     const node = new Node({
       name: 'combine',
-      rect: new Rect(rect.x - 10, rect.y - 10, rect.width + 20, rect.height + 20),
+      rect: new Rect(rect.x, rect.y, rect.width, rect.height),
       text: '',
-      paddingLeft: 10,
-      paddingRight: 10,
-      paddingTop: 10,
-      paddingBottom: 10,
+      paddingLeft: 0,
+      paddingRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
       strokeStyle: 'transparent'
     });
     node.children = [];
@@ -1604,25 +1604,7 @@ export class Topology {
     const offsetY = y - this.lastTranlated.y;
 
     for (const item of this.data.nodes) {
-      item.rect.x += offsetX;
-      item.rect.y += offsetY;
-      item.rect.ex = item.rect.x + item.rect.width;
-      item.rect.ey = item.rect.y + item.rect.height;
-      item.rect.calceCenter();
-
-      if (item.animateFrames) {
-        for (const frame of item.animateFrames) {
-          if (frame.state) {
-            frame.state.rect.x += offsetX;
-            frame.state.rect.y += offsetY;
-            frame.state.rect.ex = frame.state.rect.x + frame.state.rect.width;
-            frame.state.rect.ey = frame.state.rect.y + frame.state.rect.height;
-          }
-        }
-      }
-
-      item.init();
-      this.activeLayer.updateChildren(item);
+      item.translate(offsetX, offsetY);
     }
 
     for (const item of this.data.lines) {
