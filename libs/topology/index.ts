@@ -416,13 +416,13 @@ export class Topology {
             this.options.on('moveInNode', this.moveIn.hoverNode);
           }
         } else if (this.lastHoverNode) {
-          // Clear hover anchors.
-          this.hoverLayer.node = null;
-
           // Send a move event.
           if (this.options.on) {
-            this.options.on('moveOutNode', null);
+            this.options.on('moveOutNode', this.moveIn.hoverNode);
           }
+
+          // Clear hover anchors.
+          this.hoverLayer.node = null;
         }
 
         if (this.moveIn.type === MoveInType.LineControlPoint) {
@@ -686,7 +686,7 @@ export class Topology {
               this.activeLayer.lines = [this.hoverLayer.line];
               Store.set('activeLine', this.hoverLayer.line);
               if (this.options.on) {
-                this.options.on('line', this.hoverLayer.line);
+                this.options.on('addLine', this.hoverLayer.line);
               }
             } else {
               this.data.lines.pop();
@@ -826,7 +826,7 @@ export class Topology {
 
     if (
       this.data.locked > -1 &&
-      !this.activeLayer.locked &&
+      !this.activeLayer.locked() &&
       this.activeLayer.rotateCPs[0] &&
       this.activeLayer.rotateCPs[0].hit(pt, 15)
     ) {
@@ -1445,9 +1445,9 @@ export class Topology {
           lines: this.clipboard.lines
         });
       } else if (this.clipboard.nodes.length) {
-        this.options.on('node', this.activeLayer.nodes[0]);
+        this.options.on('addNode', this.activeLayer.nodes[0]);
       } else if (this.clipboard.lines.length) {
-        this.options.on('line', this.activeLayer.lines[0]);
+        this.options.on('addLine', this.activeLayer.lines[0]);
       }
     }
   }
