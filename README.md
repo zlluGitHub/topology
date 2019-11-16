@@ -1,4 +1,4 @@
-喜欢，请到这里给我们投一票：https://www.oschina.net/project/top_cn_2019?utm_source=projectdetail
+喜欢，请到这里给我们投一票：https://www.oschina.net/project/top_cn_2019?utm_source=projectdetail 。（开发工具栏，或下滑网页搜索：Topology）
 
 English | [简体中文](./README.CN.md)
 
