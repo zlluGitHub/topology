@@ -878,6 +878,7 @@ export class Topology {
     this.divLayer.canvas.style.cursor = 'default';
 
     if (this.inNodes(pt, this.activeLayer.nodes)) {
+      this.hoverLayer.nodeRect = null;
       return;
     }
 

@@ -95,6 +95,9 @@ export class HoverLayer {
     ctx.fillStyle = '#fff';
     // anchors
     if (this.node && !this.data.locked) {
+      if (!this.nodeRect) {
+        this.nodeRect = this.getParentRect(this.node);
+      }
       if (this.nodeRect) {
         ctx.save();
         ctx.globalAlpha = 0.2;
@@ -165,6 +168,21 @@ export class HoverLayer {
     }
 
     ctx.restore();
+  }
+
+  getParentRect(node: Node) {
+    if (!node.parentId) {
+      return null;
+    }
+
+    for (const item of this.data.nodes) {
+      if (item.id === node.parentId) {
+        const rect = this.getParentRect(item);
+        return rect ? rect : item.rect;
+      }
+    }
+
+    return null;
   }
 
   clear() {
