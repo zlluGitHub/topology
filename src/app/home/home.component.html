@@ -28,11 +28,24 @@
             style="color:#f60!important;text-decoration: underline;"
             >喜欢，点击这里打个star吧</a
           >
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群（大群）</a
+          <a href="https://www.yuque.com/alsmile/topology" target="_blank"
+            >使用教程</a
           ><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">微信交流群2</a><br />
-          <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
+          <a
+            href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1"
+            target="_blank"
+            >微信交流群（大群）</a
+          ><br />
+          <a
+            href="http://topology.le5le.com/assets/img/topology_wechat2.jpg"
+            target="_blank"
+            >微信交流群2</a
+          ><br />
+          <a
+            href="https://www.yuque.com/alsmile/topology/faq#EVbCgt"
+            target="_blank"
+            >联系我们</a
+          >
         </div>
         <div class="title mt30">[Todo] 未来规划</div>
         <ul class="ml30 mb20 mt10">
@@ -77,19 +90,34 @@
     </a>
   </div>
   <div class="line"></div>
-  <div *ngIf="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'">
-    <a [class.disabled]="!selNodes || selNodes.length < 2" (click)="onCombine()">
+  <div
+    *ngIf="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'"
+  >
+    <a
+      [class.disabled]="!selNodes || selNodes.length < 2"
+      (click)="onCombine()"
+    >
       组合
     </a>
+    <div>
+      <a
+        [class.disabled]="!selNodes || selNodes.length < 2"
+        (click)="onCombine(true)"
+      >
+        包含
+      </a>
+    </div>
   </div>
-  <div *ngIf="selNodes && selNodes.length === 1 && selNodes[0].name === 'combine'">
+  <div
+    *ngIf="selNodes && selNodes.length === 1 && selNodes[0].name === 'combine'"
+  >
     <a (click)="onUncombine()">
-      取消组合
+      取消组合/包含
     </a>
   </div>
   <div>
     <a [class.disabled]="!selNodes && !selected" (click)="onLock()">
-      {{ locked ? '解锁' : '锁定' }}
+      {{ locked ? "解锁" : "锁定" }}
     </a>
   </div>
   <div class="line"></div>
@@ -132,7 +160,11 @@
   </div>
   <div class="line"></div>
   <div>
-    <a [class.disabled]="!selNodes || selNodes.length > 1 || !selNodes[0].image" (click)="onCopyImage()" class="flex">
+    <a
+      [class.disabled]="!selNodes || selNodes.length > 1 || !selNodes[0].image"
+      (click)="onCopyImage()"
+      class="flex"
+    >
       <span class="full">复制节点图片地址</span>
     </a>
   </div>
@@ -146,8 +178,12 @@
     </div>
     <div class="modal-body"></div>
     <div class="modal-footer">
-      <button type="button" class="button mr10" (click)="divNode = null">取消</button>
-      <button type="button" class="button primary" (click)="divNode = null">确定</button>
+      <button type="button" class="button mr10" (click)="divNode = null">
+        取消
+      </button>
+      <button type="button" class="button primary" (click)="divNode = null">
+        确定
+      </button>
     </div>
   </div>
 </div>

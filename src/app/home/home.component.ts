@@ -723,12 +723,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.canvas.render();
   }
 
-  onCombine() {
+  onCombine(stand: boolean) {
     if (!this.selNodes || this.selNodes.length < 2) {
       return;
     }
 
-    this.canvas.combine(this.selNodes);
+    this.canvas.combine(this.selNodes, stand);
   }
 
   onUncombine() {
@@ -818,6 +818,6 @@ ${this.selNodes[0].image}`,
     this.subMenu.unsubscribe();
     this.subUser.unsubscribe();
     this.subRoute.unsubscribe();
-    this.canvas.destory();
+    this.canvas.destroy();
   }
 }

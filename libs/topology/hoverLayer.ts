@@ -26,6 +26,7 @@ export class HoverLayer {
   dockLineX = 0;
   dockLineY = 0;
 
+  nodeRect: Rect;
   dragRect: Rect;
   constructor(public options: Options = {}) {
     Store.set('LT:HoverLayer', this);
@@ -94,6 +95,14 @@ export class HoverLayer {
     ctx.fillStyle = '#fff';
     // anchors
     if (this.node && !this.data.locked) {
+      if (this.nodeRect) {
+        ctx.save();
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+        ctx.strokeRect(this.nodeRect.x, this.nodeRect.y, this.nodeRect.width, this.nodeRect.height);
+        ctx.restore();
+      }
+
       for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
         if (this.node.locked || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
           continue;

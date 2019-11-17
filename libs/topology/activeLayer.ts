@@ -262,6 +262,18 @@ export class ActiveLayer {
       item.rect.calceCenter();
       item.init();
       this.updateChildren(item);
+
+      if (item.parentId && item.stand) {
+        let parent: Node;
+        for (const n of this.data.nodes) {
+          if (n.id === item.parentId) {
+            parent = n;
+            break;
+          }
+        }
+        item.calcRectInParent(parent);
+      }
+
       ++i;
     }
     this.updateLines();

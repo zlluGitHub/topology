@@ -190,7 +190,7 @@ export class AnimateLayer {
     }
   }
 
-  destory() {
+  destroy() {
     if (this.timer) {
       cancelAnimationFrame(this.timer);
     }

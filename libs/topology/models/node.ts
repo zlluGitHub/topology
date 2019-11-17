@@ -71,7 +71,11 @@ export class Node extends Pen {
     marginLeft?: number | string;
     rotate: number;
   };
+  // Can selected as child.
+  stand: boolean;
   children: Node[];
+  // Has stand children
+  childStand: boolean;
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
@@ -170,6 +174,8 @@ export class Node extends Pen {
       this.paddingLeft = json.parentRect.marginX;
       this.paddingRight = json.parentRect.marginX;
     }
+    this.childStand = json.childStand;
+    this.stand = json.stand;
     if (json.rectInParent) {
       this.rectInParent = json.rectInParent;
     }
@@ -476,6 +482,16 @@ export class Node extends Pen {
     }
 
     return rect;
+  }
+
+  calcRectInParent(parent: Node) {
+    this.rectInParent = {
+      x: ((this.rect.x - parent.rect.x) / parent.rect.width) * 100 + '%',
+      y: ((this.rect.y - parent.rect.y) / parent.rect.height) * 100 + '%',
+      width: (this.rect.width / parent.rect.width) * 100 + '%',
+      height: (this.rect.height / parent.rect.height) * 100 + '%',
+      rotate: this.rotate
+    };
   }
 
   getDockWatchers() {
