@@ -347,6 +347,10 @@ export class ActiveLayer {
       ++i;
     }
     this.rotate = angle;
+
+    if (this.options.on) {
+      this.options.on('rotateNodes', this.nodes);
+    }
   }
 
   updateRotate() {

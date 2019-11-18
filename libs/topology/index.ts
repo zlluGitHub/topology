@@ -524,10 +524,6 @@ export class Topology {
             this.activeLayer.offsetRotate(this.getAngle(pos));
             this.activeLayer.updateLines();
           }
-
-          if (this.options.on) {
-            this.options.on('rotateNodes', this.activeLayer.nodes);
-          }
           break;
       }
 
