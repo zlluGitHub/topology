@@ -1660,6 +1660,10 @@ export class Topology {
   //   > 1, expand
   //   < 1, reduce
   scale(scale: number) {
+    if (this.data.scale * scale < 0.25) {
+      return;
+    }
+
     this.data.scale *= scale;
     const center = this.getRect().center;
 
@@ -1672,9 +1676,6 @@ export class Topology {
       item.from.y = center.y - (center.y - item.from.y) * scale;
       item.to.x = center.x - (center.x - item.to.x) * scale;
       item.to.y = center.y - (center.y - item.to.y) * scale;
-
-      item.from.round();
-      item.to.round();
 
       for (const pt of item.controlPoints) {
         pt.x = center.x - (center.x - pt.x) * scale;

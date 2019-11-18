@@ -627,6 +627,8 @@ export class Node extends Pen {
     this.rect.y = center.y - (center.y - this.rect.y) * scale;
     this.rect.width *= scale;
     this.rect.height *= scale;
+    this.rect.ex = this.rect.x + this.rect.width;
+    this.rect.ey = this.rect.y + this.rect.height;
     if (this.imageWidth) {
       this.imageWidth *= scale;
     }
@@ -635,7 +637,7 @@ export class Node extends Pen {
     }
     this.font.fontSize *= scale;
     this.iconSize *= scale;
-    this.rect.round();
+    this.rect.calceCenter();
 
     if (this.animateFrames) {
       for (const item of this.animateFrames) {
@@ -690,4 +692,6 @@ export class Node extends Pen {
       }
     }
   }
+
+
 }
