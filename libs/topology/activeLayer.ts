@@ -134,7 +134,7 @@ export class ActiveLayer {
   clear() {
     this.lines = [];
     this.nodes = [];
-    Store.set('activeNode', null);
+    Store.set('LT:activeNode', null);
   }
 
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
@@ -361,7 +361,7 @@ export class ActiveLayer {
   addNode(node: Node) {
     this.nodes.push(node);
     if (this.nodes.length === 1) {
-      Store.set('activeNode', this.nodes[0]);
+      Store.set('LT:activeNode', this.nodes[0]);
     }
   }
 
@@ -369,7 +369,7 @@ export class ActiveLayer {
     this.nodes = nodes;
     this.lines = [];
     if (this.nodes.length === 1) {
-      Store.set('activeNode', this.nodes[0]);
+      Store.set('LT:activeNode', this.nodes[0]);
     }
   }
 

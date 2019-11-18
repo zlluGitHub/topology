@@ -245,7 +245,7 @@ export class Topology {
     this.addNode(node, true);
     if (node.name === 'div') {
       if (this.options.on) {
-        this.options.on('addDiv', node);
+        this.options.on('LT:addDiv', node);
       }
     }
   }
@@ -397,7 +397,7 @@ export class Topology {
     }
 
     if ((e.ctrlKey || e.altKey) && this.mouseDown) {
-      this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y);
+      this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y, true);
       return false;
     }
 
@@ -1623,7 +1623,11 @@ export class Topology {
     return -1;
   }
 
-  translate(x: number, y: number) {
+  translate(x: number, y: number, process?: boolean) {
+    if (!process) {
+      this.lastTranlated.x = 0;
+      this.lastTranlated.y = 0;
+    }
     const offsetX = x - this.lastTranlated.x;
     const offsetY = y - this.lastTranlated.y;
 

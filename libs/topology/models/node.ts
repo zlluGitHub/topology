@@ -30,7 +30,7 @@ export class Node extends Pen {
   imageHeight: number;
   imageRatio = true;
   imageAlign: string;
-  private img: HTMLImageElement;
+  img: HTMLImageElement;
 
   // 0 - 纯色；1 - 线性渐变；2 - 径向渐变
   bkType: number;
@@ -92,6 +92,7 @@ export class Node extends Pen {
     state: Node;
   }[] = [];
 
+  gif: boolean;
   video: string;
   audio: string;
   // 0 - 人工播放；1 - auto自动播放；2 - animate play
@@ -223,8 +224,8 @@ export class Node extends Pen {
 
     this.calcAnchors();
 
-    if (this.audio || this.video || this.iframe) {
-      Store.set('addDiv', this);
+    if (this.audio || this.video || this.iframe || this.gif) {
+      Store.set('LT:addDiv', this);
     }
   }
 
@@ -436,6 +437,10 @@ export class Node extends Pen {
     this.img = new Image();
     this.img.crossOrigin = 'anonymous';
     this.img.src = this.image;
+    if (!this.gif && this.image.indexOf('.gif') > 0) {
+      this.gif = true;
+      Store.set('LT:addDiv', this);
+    }
     this.img.onload = () => {
       this.imgLoaded = false;
       this.lastImage = this.image;

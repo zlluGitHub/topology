@@ -17,6 +17,7 @@ export class DivLayer {
   videos: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement } } = {};
   audios: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement } } = {};
   iframes: { [key: string]: HTMLIFrameElement } = {};
+  gifs: { [key: string]: HTMLImageElement } = {};
 
   private subcribe: Observer;
   private subcribeNode: Observer;
@@ -43,9 +44,9 @@ export class DivLayer {
     parentElem.appendChild(this.player);
     this.createPlayer();
 
-    this.subcribe = Store.subscribe('addDiv', this.addDiv);
+    this.subcribe = Store.subscribe('LT:addDiv', this.addDiv);
 
-    this.subcribeNode = Store.subscribe('activeNode', (node: Node) => {
+    this.subcribeNode = Store.subscribe('LT:activeNode', (node: Node) => {
       if (!node || (!node.video && !node.audio)) {
         this.player.style.top = '-99999px';
         return;
@@ -103,6 +104,12 @@ export class DivLayer {
         this.iframes[node.id].src = node.iframe;
       }
       this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
+    }
+    if (node.gif) {
+      if (this.gifs[node.id] && this.gifs[node.id].src !== node.image) {
+        this.gifs[node.id].src = node.image;
+      }
+      this.setElemPosition(node, this.gifs[node.id] || this.addGif(node));
     }
   };
 
@@ -297,6 +304,12 @@ export class DivLayer {
     this.iframes[node.id] = iframe;
     this.canvas.appendChild(iframe);
     return iframe;
+  }
+
+  addGif(node: Node) {
+    this.gifs[node.id] = node.img;
+    this.canvas.appendChild(node.img);
+    return node.img;
   }
 
   setElemPosition(node: Node, elem: HTMLElement) {
