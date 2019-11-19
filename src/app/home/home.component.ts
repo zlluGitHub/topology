@@ -815,6 +815,7 @@ ${this.selNodes[0].image}`,
   }
 
   ngOnDestroy() {
+    (window as any).canvas = null;
     this.subMenu.unsubscribe();
     this.subUser.unsubscribe();
     this.subRoute.unsubscribe();
