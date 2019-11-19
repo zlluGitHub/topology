@@ -414,6 +414,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     Store.set('lineName', ret.data.lineName);
     Store.set('fromArrowType', ret.data.fromArrowType);
     Store.set('toArrowType', ret.data.toArrowType);
+    Store.set('scale', ret.data.scale);
+    Store.set('locked', ret.data.locked);
     this.canvas.open(ret.data);
 
     Store.set('file', this.data);

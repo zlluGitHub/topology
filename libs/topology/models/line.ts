@@ -68,7 +68,7 @@ export class Line extends Pen {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
-    const scale = Store.get('scale');
+    const scale = Store.get('LT:scale');
     if (this.fromArrow && drawArrowFns[this.fromArrow]) {
       ctx.save();
       ctx.beginPath();

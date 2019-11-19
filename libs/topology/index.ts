@@ -362,8 +362,8 @@ export class Topology {
       this.data.lineName = data.lineName;
     }
 
-    this.data.scale = data.scaleState || 1;
-    Store.set('scale', this.data.scale);
+    this.data.scale = data.scale || 1;
+    Store.set('LT:scale', this.data.scale);
     if (this.options.on) {
       this.options.on('scale', this.data.scale);
     }
@@ -1684,7 +1684,7 @@ export class Topology {
 
       Store.set('pts-' + item.id, null);
     }
-    Store.set('scale', this.data.scale);
+    Store.set('LT:scale', this.data.scale);
 
     this.overflow();
     this.render();
