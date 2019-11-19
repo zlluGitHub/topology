@@ -386,7 +386,7 @@ export class Topology {
 
   overflow() {
     const rect = this.getRect();
-    if (rect.width > this.canvas.width || rect.height > this.canvas.height) {
+    if (rect.ex > this.canvas.width || rect.ey > this.canvas.height) {
       this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
     }
   }
