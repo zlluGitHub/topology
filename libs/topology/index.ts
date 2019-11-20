@@ -362,8 +362,8 @@ export class Topology {
       this.data.lineName = data.lineName;
     }
 
-    this.data.scale = data.scaleState || 1;
-    Store.set('scale', this.data.scale);
+    this.data.scale = data.scale || 1;
+    Store.set('LT:scale', this.data.scale);
     if (this.options.on) {
       this.options.on('scale', this.data.scale);
     }
@@ -523,10 +523,6 @@ export class Topology {
           if (this.activeLayer.nodes.length) {
             this.activeLayer.offsetRotate(this.getAngle(pos));
             this.activeLayer.updateLines();
-          }
-
-          if (this.options.on) {
-            this.options.on('rotateNodes', this.activeLayer.nodes);
           }
           break;
       }
@@ -1664,6 +1660,10 @@ export class Topology {
   //   > 1, expand
   //   < 1, reduce
   scale(scale: number) {
+    if (this.data.scale * scale < 0.25) {
+      return;
+    }
+
     this.data.scale *= scale;
     const center = this.getRect().center;
 
@@ -1677,9 +1677,6 @@ export class Topology {
       item.to.x = center.x - (center.x - item.to.x) * scale;
       item.to.y = center.y - (center.y - item.to.y) * scale;
 
-      item.from.round();
-      item.to.round();
-
       for (const pt of item.controlPoints) {
         pt.x = center.x - (center.x - pt.x) * scale;
         pt.y = center.y - (center.y - pt.y) * scale;
@@ -1687,7 +1684,7 @@ export class Topology {
 
       Store.set('pts-' + item.id, null);
     }
-    Store.set('scale', this.data.scale);
+    Store.set('LT:scale', this.data.scale);
 
     this.overflow();
     this.render();

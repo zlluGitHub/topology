@@ -319,6 +319,9 @@ export class DivLayer {
     elem.style.top = node.rect.y + 'px';
     elem.style.width = node.rect.width + 'px';
     elem.style.height = node.rect.height + 'px';
+    if (node.rotate || node.offsetRotate) {
+      elem.style.transform = `rotate(${node.rotate + node.offsetRotate}deg)`;
+    }
     if (node.video && this.videos[node.id] && this.videos[node.id].media) {
       this.videos[node.id].media.style.width = '100%';
       this.videos[node.id].media.style.height = '100%';
@@ -350,6 +353,10 @@ export class DivLayer {
       this.canvas.removeChild(this.iframes[item.id]);
       this.iframes[item.id] = null;
     }
+    if (item.gif) {
+      this.canvas.removeChild(this.gifs[item.id]);
+      this.gifs[item.id] = null;
+    }
   }
 
   clear() {
@@ -365,6 +372,10 @@ export class DivLayer {
       if (item.iframe) {
         this.canvas.removeChild(this.iframes[item.id]);
         this.iframes[item.id] = null;
+      }
+      if (item.gif) {
+        this.canvas.removeChild(this.gifs[item.id]);
+        this.gifs[item.id] = null;
       }
     }
   }

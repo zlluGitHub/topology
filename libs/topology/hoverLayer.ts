@@ -101,6 +101,11 @@ export class HoverLayer {
       if (this.nodeRect) {
         ctx.save();
         ctx.globalAlpha = 0.2;
+        if (this.node.rotate) {
+          ctx.translate(this.node.rect.center.x, this.node.rect.center.y);
+          ctx.rotate(((this.node.rotate + this.node.offsetRotate) * Math.PI) / 180);
+          ctx.translate(-this.node.rect.center.x, -this.node.rect.center.y);
+        }
         ctx.beginPath();
         ctx.strokeRect(this.nodeRect.x, this.nodeRect.y, this.nodeRect.width, this.nodeRect.height);
         ctx.restore();

@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showLicense = false;
   showHelp = false;
   showAbout = false;
-  constructor(private router: Router, private activateRoute: ActivatedRoute) {}
+  constructor(private router: Router, private activateRoute: ActivatedRoute) { }
 
   ngOnInit() {
     Store.subscribe('user', (user: any) => {
@@ -131,7 +131,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     try {
       this.list.recently = JSON.parse(localStorage.getItem('recently_' + this.user.id));
-    } catch (e) {}
+    } catch (e) { }
 
     if (!this.list.recently) {
       this.list.recently = [];
@@ -280,5 +280,5 @@ export class AppComponent implements OnInit, OnDestroy {
     Store.set('auth', -1);
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 }

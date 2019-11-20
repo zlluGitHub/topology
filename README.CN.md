@@ -9,6 +9,8 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 - [→ Topology 核心库接口文档](https://le5le-com.github.io/topology/)
 - [→ js 压缩包下载](https://github.com/le5le-com/topology/releases)
 
+- [→ React 入门教程](https://juejin.im/post/5dcc074151882559c8061905)
+
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
 # 特性
