@@ -1,93 +1,20 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Clipboard } from 'ts-clipboard';
-
 import { Topology } from 'topology-core';
 import { Options } from 'topology-core/options';
-import { registerNode } from 'topology-core/middles';
-import {
-  flowData,
-  flowDataAnchors,
-  flowDataIconRect,
-  flowDataTextRect,
-  flowSubprocess,
-  flowSubprocessIconRect,
-  flowSubprocessTextRect,
-  flowDb,
-  flowDbIconRect,
-  flowDbTextRect,
-  flowDocument,
-  flowDocumentAnchors,
-  flowDocumentIconRect,
-  flowDocumentTextRect,
-  flowInternalStorage,
-  flowInternalStorageIconRect,
-  flowInternalStorageTextRect,
-  flowExternStorage,
-  flowExternStorageAnchors,
-  flowExternStorageIconRect,
-  flowExternStorageTextRect,
-  flowQueue,
-  flowQueueIconRect,
-  flowQueueTextRect,
-  flowManually,
-  flowManuallyAnchors,
-  flowManuallyIconRect,
-  flowManuallyTextRect,
-  flowDisplay,
-  flowDisplayAnchors,
-  flowDisplayIconRect,
-  flowDisplayTextRect,
-  flowParallel,
-  flowParallelAnchors,
-  flowComment,
-  flowCommentAnchors
-} from 'topology-flow-diagram';
 
-import {
-  activityFinal,
-  activityFinalIconRect,
-  activityFinalTextRect,
-  swimlaneV,
-  swimlaneVIconRect,
-  swimlaneVTextRect,
-  swimlaneH,
-  swimlaneHIconRect,
-  swimlaneHTextRect,
-  fork,
-  forkHAnchors,
-  forkIconRect,
-  forkTextRect,
-  forkVAnchors
-} from 'topology-activity-diagram';
-import {
-  simpleClass,
-  simpleClassIconRect,
-  simpleClassTextRect,
-  interfaceClass,
-  interfaceClassIconRect,
-  interfaceClassTextRect
-} from 'topology-class-diagram';
-import {
-  lifeline,
-  lifelineAnchors,
-  lifelineIconRect,
-  lifelineTextRect,
-  sequenceFocus,
-  sequenceFocusAnchors,
-  sequenceFocusIconRect,
-  sequenceFocusTextRect
-} from 'topology-sequence-diagram';
 
 import * as FileSaver from 'file-saver';
 import { Store } from 'le5le-store';
 import { NoticeService } from 'le5le-components/notice';
 
-import { HomeService, Tools } from './home.service';
+import { HomeService } from './home.service';
 import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
+import { TopologyService } from './topology.service';
+import { Tools } from './tools/config';
 
 declare var C2S: any;
 
@@ -137,6 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   subRoute: any;
   constructor(
     private service: HomeService,
+    private topologySrv: TopologyService,
     private coreService: CoreService,
     private router: Router,
     private activateRoute: ActivatedRoute
@@ -254,48 +182,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       // End
     });
 
-    this.canvasRegister();
-  }
-
-  canvasRegister() {
-    registerNode('flowData', flowData, flowDataAnchors, flowDataIconRect, flowDataTextRect);
-    registerNode('flowSubprocess', flowSubprocess, null, flowSubprocessIconRect, flowSubprocessTextRect);
-    registerNode('flowDb', flowDb, null, flowDbIconRect, flowDbTextRect);
-    registerNode('flowDocument', flowDocument, flowDocumentAnchors, flowDocumentIconRect, flowDocumentTextRect);
-    registerNode(
-      'flowInternalStorage',
-      flowInternalStorage,
-      null,
-      flowInternalStorageIconRect,
-      flowInternalStorageTextRect
-    );
-    registerNode(
-      'flowExternStorage',
-      flowExternStorage,
-      flowExternStorageAnchors,
-      flowExternStorageIconRect,
-      flowExternStorageTextRect
-    );
-    registerNode('flowQueue', flowQueue, null, flowQueueIconRect, flowQueueTextRect);
-    registerNode('flowManually', flowManually, flowManuallyAnchors, flowManuallyIconRect, flowManuallyTextRect);
-    registerNode('flowDisplay', flowDisplay, flowDisplayAnchors, flowDisplayIconRect, flowDisplayTextRect);
-    registerNode('flowParallel', flowParallel, flowParallelAnchors, null, null);
-    registerNode('flowComment', flowComment, flowCommentAnchors, null, null);
-
-    // activity
-    registerNode('activityFinal', activityFinal, null, activityFinalIconRect, activityFinalTextRect);
-    registerNode('swimlaneV', swimlaneV, null, swimlaneVIconRect, swimlaneVTextRect);
-    registerNode('swimlaneH', swimlaneH, null, swimlaneHIconRect, swimlaneHTextRect);
-    registerNode('forkH', fork, forkHAnchors, forkIconRect, forkTextRect);
-    registerNode('forkV', fork, forkVAnchors, forkIconRect, forkTextRect);
-
-    // class
-    registerNode('simpleClass', simpleClass, null, simpleClassIconRect, simpleClassTextRect);
-    registerNode('interfaceClass', interfaceClass, null, interfaceClassIconRect, interfaceClassTextRect);
-
-    // sequence
-    registerNode('lifeline', lifeline, lifelineAnchors, lifelineIconRect, lifelineTextRect);
-    registerNode('sequenceFocus', sequenceFocus, sequenceFocusAnchors, sequenceFocusIconRect, sequenceFocusTextRect);
+    this.topologySrv.canvasRegister();
   }
 
   onDrag(event: DragEvent, node: any) {
@@ -651,7 +538,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
     }
     // console.log('onMessage:', event, data, this.selected);
-  };
+  }
 
   onChangeProps(props: any) {
     if (this.canvas.data.locked) {
@@ -703,80 +590,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onClickDocument(event: MouseEvent) {
     this.contextmenu = null;
-  }
-
-  onTop() {
-    if (!this.selNodes) {
-      return;
-    }
-    for (const item of this.selNodes) {
-      this.canvas.top(item);
-    }
-    this.canvas.render();
-  }
-
-  onBottom() {
-    if (!this.selNodes) {
-      return;
-    }
-    for (const item of this.selNodes) {
-      this.canvas.bottom(item);
-    }
-    this.canvas.render();
-  }
-
-  onCombine(stand: boolean) {
-    if (!this.selNodes || this.selNodes.length < 2) {
-      return;
-    }
-
-    this.canvas.combine(this.selNodes, stand);
-  }
-
-  onUncombine() {
-    if (!this.selNodes || this.selNodes.length > 1) {
-      return;
-    }
-    this.canvas.uncombine(this.selNodes[0]);
-    this.canvas.render();
-  }
-
-  onLock() {
-    this.locked = !this.locked;
-    if (this.selected.type === 'multi') {
-      if (this.selected.data.nodes) {
-        for (const item of this.selected.data.nodes) {
-          item.locked = this.locked;
-        }
-      }
-      if (this.selected.data.lines) {
-        for (const item of this.selected.data.lines) {
-          item.locked = this.locked;
-        }
-      }
-    } else {
-      this.selected.data.locked = this.locked;
-      this.readonly = this.locked;
-    }
-    this.canvas.render(true);
-  }
-
-  onDel() {
-    this.canvas.delete();
-  }
-
-  onCopyImage() {
-    if (!this.selNodes || this.selNodes.length > 1 || !this.selNodes[0].image) {
-      return;
-    }
-
-    Clipboard.copy(this.selNodes[0].image);
-    const _noticeService: NoticeService = new NoticeService();
-    _noticeService.notice({
-      body: `图片地址已复制：
-${this.selNodes[0].image}`,
-      theme: 'success'
-    });
   }
 
   toSVG() {
