@@ -542,6 +542,9 @@ export class Topology {
   }
 
   private onmousedown = (e: MouseEvent) => {
+    if (e.button) {
+      return;
+    }
     this.mouseDown = { x: e.offsetX, y: e.offsetY };
     Store.set('activeLine', null);
 
