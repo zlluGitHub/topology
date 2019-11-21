@@ -111,6 +111,12 @@ export class DivLayer {
       }
       this.setElemPosition(node, this.gifs[node.id] || this.addGif(node));
     }
+
+    if (node.children) {
+      for (const child of node.children) {
+        this.addDiv(child);
+      }
+    }
   };
 
   createPlayer() {
