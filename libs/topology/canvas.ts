@@ -26,7 +26,11 @@ export class Canvas {
         ctx['backingStorePixelRatio'] ||
         1;
 
-      Canvas.dpiRatio = window.devicePixelRatio / bsr + 0.25;
+      if (!options.extDpiRatio && options.extDpiRatio !== 0) {
+        options.extDpiRatio = 0.25;
+      }
+
+      Canvas.dpiRatio = window.devicePixelRatio / bsr + options.extDpiRatio;
     }
   }
 

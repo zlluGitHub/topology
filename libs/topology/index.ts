@@ -1320,13 +1320,10 @@ export class Topology {
     const lines: Line[] = [];
     let i = 0;
     for (const line of this.activeLayer.lines) {
-      i = 0;
-      for (const l of this.data.lines) {
-        if (line.id === l.id) {
-          lines.push.apply(lines, this.data.lines.splice(i, 1));
-          break;
-        }
-        ++i;
+      i = this.findLine(line);
+      if (i > -1) {
+        lines.push.apply(lines, this.data.lines.splice(i, 1));
+        break;
       }
     }
 
@@ -1347,6 +1344,31 @@ export class Topology {
         nodes,
         lines
       });
+    }
+  }
+
+  removeNode(node: Node) {
+    const i = this.findNode(node);
+    if (i > -1) {
+      this.divLayer.removeDiv(this.data.nodes[i]);
+      const nodes = this.data.nodes.splice(i, 1);
+      if (this.options.on) {
+        this.options.on('delete', {
+          nodes
+        });
+      }
+    }
+  }
+
+  removeLine(line: Line) {
+    const i = this.findLine(line);
+    if (i > -1) {
+      const lines = this.data.lines.splice(i, 1);
+      if (this.options.on) {
+        this.options.on('delete', {
+          lines
+        });
+      }
     }
   }
 
@@ -1615,6 +1637,16 @@ export class Topology {
   private findNode(node: Node) {
     for (let i = 0; i < this.data.nodes.length; ++i) {
       if (node.id === this.data.nodes[i].id) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  private findLine(line: Line) {
+    for (let i = 0; i < this.data.lines.length; ++i) {
+      if (line.id === this.data.lines[i].id) {
         return i;
       }
     }
