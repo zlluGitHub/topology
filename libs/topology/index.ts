@@ -348,6 +348,32 @@ export class Topology {
 
     this.offscreen.render();
     this.canvas.render();
+
+    if (this.imagesLoaded()) {
+      this.offscreen.render();
+      this.canvas.render();
+    } else {
+      this.checkImages();
+    }
+  }
+
+  checkImages() {
+    if (!this.imagesLoaded()) {
+      setTimeout(() => {
+        this.checkImages();
+      }, 200);
+    } else {
+      this.render();
+    }
+  }
+
+  imagesLoaded() {
+    for (const item of this.data.nodes) {
+      if (item.image && !item.imgLoaded) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // open - redraw by the data

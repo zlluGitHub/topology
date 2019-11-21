@@ -101,7 +101,7 @@ export class Node extends Pen {
   iframe: string;
   nextPlay: string;
 
-  private imgLoaded = false;
+  imgLoaded = false;
   constructor(json: any) {
     super(json);
 
@@ -224,9 +224,25 @@ export class Node extends Pen {
 
     this.calcAnchors();
 
-    if (this.audio || this.video || this.iframe || this.gif) {
+    if (this.audio || this.video || this.iframe || this.hasGif()) {
       Store.set('LT:addDiv', this);
     }
+  }
+
+  hasGif() {
+    if (this.gif) {
+      return true;
+    }
+
+    if (this.children) {
+      for (const item of this.children) {
+        if (item.hasGif()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   calcAbsPadding() {
@@ -427,7 +443,6 @@ export class Node extends Pen {
 
       if (!this.imgLoaded) {
         this.imgLoaded = true;
-        Store.set('LT:render', true);
       }
 
       return;
@@ -441,8 +456,8 @@ export class Node extends Pen {
       this.gif = true;
       Store.set('LT:addDiv', this);
     }
+    this.imgLoaded = false;
     this.img.onload = () => {
-      this.imgLoaded = false;
       this.lastImage = this.image;
       this.imgNaturalWidth = this.img.naturalWidth;
       this.imgNaturalHeight = this.img.naturalHeight;

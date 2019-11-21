@@ -106,10 +106,16 @@ export class DivLayer {
       this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
     }
     if (node.gif) {
-      if (this.gifs[node.id] && this.gifs[node.id].src !== node.image) {
-        this.gifs[node.id].src = node.image;
+      if (node.image.indexOf('.gif') < 0) {
+        node.gif = false;
+        this.canvas.removeChild(this.gifs[node.id]);
+        this.gifs[node.id] = null;
+      } else {
+        if (this.gifs[node.id] && this.gifs[node.id].src !== node.image) {
+          this.gifs[node.id].src = node.image;
+        }
+        this.setElemPosition(node, this.gifs[node.id] || this.addGif(node));
       }
-      this.setElemPosition(node, this.gifs[node.id] || this.addGif(node));
     }
 
     if (node.children) {
