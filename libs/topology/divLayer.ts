@@ -21,6 +21,7 @@ export class DivLayer {
 
   private subcribe: Observer;
   private subcribeNode: Observer;
+  private subcribeImg: Observer;
   constructor(public parentElem: HTMLElement, public options: Options = {}) {
     if (!this.options.playIcon) {
       this.options.playIcon = 'iconfont icon-play';
@@ -67,6 +68,13 @@ export class DivLayer {
         this.playBtn.className = this.options.playIcon;
       } else {
         this.playBtn.className = this.options.pauseIcon;
+      }
+    });
+
+    this.subcribeImg = Store.subscribe('LT:clearImg', (node: Node) => {
+      if (node.gif) {
+        this.canvas.removeChild(this.gifs[node.id]);
+        this.gifs[node.id] = null;
       }
     });
 
@@ -432,5 +440,6 @@ export class DivLayer {
     this.clear();
     this.subcribe.unsubscribe();
     this.subcribeNode.unsubscribe();
+    this.subcribeImg.unsubscribe();
   }
 }

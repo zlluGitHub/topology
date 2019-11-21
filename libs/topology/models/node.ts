@@ -363,6 +363,7 @@ export class Node extends Pen {
   drawImg(ctx: CanvasRenderingContext2D) {
     if (this.lastImage !== this.image) {
       this.img = null;
+      Store.set('LT:clearImg', this);
     }
 
     if (this.img) {
@@ -502,10 +503,6 @@ export class Node extends Pen {
   getDockWatchers() {
     this.dockWatchers = this.rect.toPoints();
     this.dockWatchers.unshift(this.rect.center);
-  }
-
-  clearImg() {
-    this.img = null;
   }
 
   updateAnimateProps() {
