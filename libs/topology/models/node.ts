@@ -363,7 +363,6 @@ export class Node extends Pen {
   drawImg(ctx: CanvasRenderingContext2D) {
     if (this.lastImage !== this.image) {
       this.img = null;
-      Store.set('LT:clearImg', this);
     }
 
     if (this.img) {
