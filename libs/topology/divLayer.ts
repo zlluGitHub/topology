@@ -357,6 +357,12 @@ export class DivLayer {
       this.canvas.removeChild(this.gifs[item.id]);
       this.gifs[item.id] = null;
     }
+
+    if (item.children) {
+      for (const child of item.children) {
+        this.removeDiv(child);
+      }
+    }
   }
 
   clear() {
