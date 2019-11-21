@@ -1335,7 +1335,6 @@ export class Topology {
       }
     }
 
-    this.activeLayer.saveNodeRects();
     this.render(true);
     this.cache();
 
@@ -1358,6 +1357,9 @@ export class Topology {
         });
       }
     }
+
+    this.render(true);
+    this.cache();
   }
 
   removeLine(line: Line) {
@@ -1370,6 +1372,9 @@ export class Topology {
         });
       }
     }
+
+    this.render(true);
+    this.cache();
   }
 
   cut() {
