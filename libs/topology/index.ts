@@ -349,7 +349,9 @@ export class Topology {
     this.offscreen.render();
     this.canvas.render();
 
-    this.checkImages();
+    if (!this.imagesLoaded()) {
+      this.checkImages();
+    }
   }
 
   checkImages() {
