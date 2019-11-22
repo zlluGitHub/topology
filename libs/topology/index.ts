@@ -349,22 +349,17 @@ export class Topology {
     this.offscreen.render();
     this.canvas.render();
 
-    if (this.imagesLoaded()) {
-      this.offscreen.render();
-      this.canvas.render();
-    } else {
-      this.checkImages();
-    }
+    this.checkImages();
   }
 
   checkImages() {
-    if (!this.imagesLoaded()) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (this.imagesLoaded()) {
+        this.render();
+      } else {
         this.checkImages();
-      }, 200);
-    } else {
-      this.render();
-    }
+      }
+    }, 200);
   }
 
   imagesLoaded() {
