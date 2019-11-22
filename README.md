@@ -11,6 +11,7 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 - [→ Topology Docs](https://le5le-com.github.io/topology/)
 - [→ Bundle download](https://github.com/le5le-com/topology/releases)
 
+- [→ Vue Guide](https://juejin.im/post/5dd73e85518825731c34b2ca)
 - [→ React Guide](https://juejin.im/post/5dcc074151882559c8061905)
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
