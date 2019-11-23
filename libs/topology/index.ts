@@ -1660,6 +1660,9 @@ export class Topology {
     }
 
     this.cache();
+
+    this.activeLayer.clear();
+    this.hoverLayer.clear();
   }
 
   private findNode(node: Node) {

@@ -270,6 +270,9 @@ export class Node extends Pen {
 
   // 根据父节点rect计算自己（子节点）的rect
   calcChildRect(parent: Node) {
+    if (!this.rectInParent) {
+      return;
+    }
     const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
     const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
     let x =
