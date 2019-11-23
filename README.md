@@ -6,13 +6,13 @@ English | [简体中文](./README.CN.md)
 
 Le5le-topology is a diagram visualization framework uses canvas and typescript. Developers are able to build diagram (topology, UML), micro-services architecture, SCADA and so on.
 
-- [→ Home website, online diagramming](http://topology.le5le.com) . It is very slow while open the site for my network speed is 1Mb/s.
-- [→ Online Demo](https://le5le-com.github.io/topology/examples/index.html)
-- [→ Topology Docs](https://le5le-com.github.io/topology/)
-- [→ Bundle download](https://github.com/le5le-com/topology/releases)
+- [→ Online](http://topology.le5le.com) . It is very slow while open the site for my network speed is 1Mb/s.
+- [→ Docs](https://le5le-com.github.io/topology/)
+- [→ Download](https://github.com/le5le-com/topology/releases)
 
-- [→ Vue Guide](https://juejin.im/post/5dd73e85518825731c34b2ca)
-- [→ React Guide](https://juejin.im/post/5dcc074151882559c8061905)
+* [→ Vue Guide](https://juejin.im/post/5dd73e85518825731c34b2ca)
+* [→ React Guide](https://juejin.im/post/5dcc074151882559c8061905)
+* [→ Es5](https://github.com/johnnyhhj/topolofy-es5)
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
