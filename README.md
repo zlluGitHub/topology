@@ -118,91 +118,29 @@ $ npm run prod
 
 ## Make your diagrams
 
-- Step 1:
-
 [→ Reference](https://github.com/le5le-com/topology/tree/master/libs/topology-flow-diagram/display)
 
-```
-export function diagram(ctx: CanvasRenderingContext2D, node: Node) {
-  ctx.beginPath();
-  // ...
-  ctx.fill();
-  ctx.stroke();
-}
+# Contributors
 
-// [Option] The default is same to rectangle.
-export function diagramIconRect(node: Node) {
-  let w = node.rect.width / 3;
-  let h = node.rect.height / 3;
-  if (w > h) {
-    w = h;
-  } else {
-    h = w;
-  }
-  let top = node.rect.width / 5;
-  if (top < 10) {
-    top = 10;
-  }
-  node.iconRect = new Rect(node.rect.x + (node.rect.width - w) / 2, node.rect.y + top, w, h);
-}
+- [Nickbing Lao](https://github.com/giscafer)
+- [ivanZzzz](https://github.com/ivan135)
+- [sunnyguohua](https://github.com/sunnyguohua)
 
-// [Option] The default is same to rectangle.
-// fullTextRect - Only text.
-// iconTextRect - Incloud icon and text.
-export function diagramTextRect(node: Node) {
-  let bottom = node.rect.height / 10;
-  if (bottom < 5) {
-    bottom = 0;
-  }
-  node.iconTextRect = new Rect(
-    node.rect.x + node.rect.width / 3,
-    node.rect.y + (node.rect.height * 2) / 3 - bottom,
-    node.rect.width / 3,
-    node.rect.height / 3 - 5
-  );
+# Contributing
 
-  const w = node.rect.width / 2;
-  const h = (node.rect.height * 1) / 2;
-  node.fullTextRect = new Rect(node.rect.x + (node.rect.width - w) / 2, node.rect.y + node.rect.height / 4, w, h);
-}
+- PR
+- Docs
+- Translate
+- Share
+- Writing (articles, demos, videos and so on)
+- Social networks
 
-// [Option] The default is same to rectangle.
-export function diagramAnchors(node: Node) {
-  node.anchors.push(new Point(node.rect.x + node.rect.width / 2, node.rect.y, Direction.Up));
-  node.anchors.push(new Point(node.rect.x + node.rect.width, node.rect.y + node.rect.height / 2, Direction.Right));
-  node.anchors.push(new Point(node.rect.x + node.rect.width / 2, node.rect.y + node.rect.height, Direction.Bottom));
-  node.anchors.push(new Point(node.rect.x, node.rect.y + node.rect.height / 2, Direction.Left));
-}
-```
+Wechat: alsmile123  
+Email: alsmile123@qq.com
 
-- Step 2:
+# Core Maintainers
 
-[→ Reference](https://github.com/le5le-com/topology/blob/master/demo/index.js)
-
-```
-// registerNode: Register a custom node.
-// name - The name of node.
-// drawFn - How to draw.
-// anchorsFn - How to get the anchors.
-// iconRectFn - How to get the icon rect.
-// textRectFn - How to get the text rect.
-// force - Overwirte the node if exists.
-registerNode(
-name: string,
-drawFn: (ctx: CanvasRenderingContext2D, node: Node) => void,
-anchorsFn?: (node: Node) => void,
-iconRectFn?: (node: Node) => void,
-textRectFn?: (node: Node) => void,
-force?: boolean
-);
-
-```
-
-# How to Contribute
-
-If you have any comment or advice, please report your issue, or make any change as you wish and submit an PR.
-
-alsmile123@qq.com
+- [Alsmile](https://github.com/Alsmile)
 
 # License
 

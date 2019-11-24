@@ -122,90 +122,27 @@ demo 源码
 
 ```
 
-## 扩展定制自己的图
+# 贡献者
 
-- 第 1 步: 绘制节点 node 的样式
+- [Nickbing Lao](https://github.com/giscafer)
+- [ivanZzzz](https://github.com/ivan135)
+- [sunnyguohua](https://github.com/sunnyguohua)
 
-```
-// 节点node绘图函数
-export function diagram(ctx: CanvasRenderingContext2D, node: Node) {
-  ctx.beginPath();
-  // ...
-  ctx.fill();
-  ctx.stroke();
-}
+# 如何贡献
 
-// [可选] 计算节点node图标区域，默认使用矩形相关函数.
-export function diagramIconRect(node: Node) {
-  let w = node.rect.width / 3;
-  let h = node.rect.height / 3;
-  if (w > h) {
-    w = h;
-  } else {
-    h = w;
-  }
-  let top = node.rect.width / 5;
-  if (top < 10) {
-    top = 10;
-  }
-  node.iconRect = new Rect(node.rect.x + (node.rect.width - w) / 2, node.rect.y + top, w, h);
-}
+- PR
+- Docs
+- Translate
+- Share
+- Writing (articles, demos, videos and so on)
+- Social networks
 
-// [可选] 计算节点node文字区域，默认使用矩形相关函数.
-// fullTextRect - Only text.
-// iconTextRect - Incloud icon and text.
-export function diagramTextRect(node: Node) {
-  let bottom = node.rect.height / 10;
-  if (bottom < 5) {
-    bottom = 0;
-  }
-  node.iconTextRect = new Rect(
-    node.rect.x + node.rect.width / 3,
-    node.rect.y + (node.rect.height * 2) / 3 - bottom,
-    node.rect.width / 3,
-    node.rect.height / 3 - 5
-  );
+微信：alsmile123  
+邮箱：alsmile123@qq.com
 
-  const w = node.rect.width / 2;
-  const h = (node.rect.height * 1) / 2;
-  node.fullTextRect = new Rect(node.rect.x + (node.rect.width - w) / 2, node.rect.y + node.rect.height / 4, w, h);
-}
+# 核心维护者
 
-// [可选] 计算节点node可连线的锚点，默认使用矩形相关函数.
-export function diagramAnchors(node: Node) {
-  node.anchors.push(new Point(node.rect.x + node.rect.width / 2, node.rect.y, Direction.Up));
-  node.anchors.push(new Point(node.rect.x + node.rect.width, node.rect.y + node.rect.height / 2, Direction.Right));
-  node.anchors.push(new Point(node.rect.x + node.rect.width / 2, node.rect.y + node.rect.height, Direction.Bottom));
-  node.anchors.push(new Point(node.rect.x, node.rect.y + node.rect.height / 2, Direction.Left));
-}
-```
-
-- 第 2 步: 注册节点 node
-
-```
-// registerNode: Register a custom node.
-// name - The name of node.
-// drawFn - How to draw.
-// anchorsFn - How to get the anchors.
-// iconRectFn - How to get the icon rect.
-// textRectFn - How to get the text rect.
-// force - Overwirte the node if exists.
-registerNode(
-name: string,
-drawFn: (ctx: CanvasRenderingContext2D, node: Node) => void,
-anchorsFn?: (node: Node) => void,
-iconRectFn?: (node: Node) => void,
-textRectFn?: (node: Node) => void,
-force?: boolean
-);
-
-```
-
-# 贡献
-
-有任何建议或问题可以在 issue 提出；或提供一个 pr。
-
-alsmile123@qq.com
+- [Alsmile](https://github.com/Alsmile)
 
 # License
 
