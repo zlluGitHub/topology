@@ -110,18 +110,6 @@ $ npm run prod
 
 ```
 
-## Demo
-
-demo 源码
-
-```
-[demo#] yarn or npm install
-
-# build
-[demo#] npm run build
-
-```
-
 # 贡献者
 
 - [Nickbing Lao](https://github.com/giscafer)

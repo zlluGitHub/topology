@@ -106,16 +106,6 @@ $ npm run prod
 
 ```
 
-## Demo
-
-```
-[demo#] yarn
-
-# build
-[demo#] npm run build
-
-```
-
 ## Make your diagrams
 
 [→ Reference](https://github.com/le5le-com/topology/tree/master/libs/topology-flow-diagram/display)
