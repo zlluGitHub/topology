@@ -639,6 +639,7 @@ export class Node extends Pen {
     }
     this.rect.x = center.x - (center.x - this.rect.x) * scale;
     this.rect.y = center.y - (center.y - this.rect.y) * scale;
+    this.z *= scale;
     this.rect.width *= scale;
     this.rect.height *= scale;
     this.rect.ex = this.rect.x + this.rect.width;
