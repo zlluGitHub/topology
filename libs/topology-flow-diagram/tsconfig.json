@@ -5,6 +5,7 @@
     "module": "commonjs",
     "outDir": "../../dist/topology-flow-diagram",
     "sourceMap": true,
+    "declaration": true,
     "lib": ["es2018", "dom"],
     "paths": {
       "topology-core": ["../topology"],

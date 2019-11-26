@@ -4,6 +4,7 @@
     "module": "commonjs",
     "outDir": "../../dist/topology-core",
     "sourceMap": true,
+    "declaration": true,
     "lib": ["es2018", "dom"]
   },
   "exclude": ["node_modules"]
