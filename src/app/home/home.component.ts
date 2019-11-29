@@ -306,18 +306,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.canvas.open(ret.data);
 
     Store.set('file', this.data);
-
-    this.animate();
-  }
-
-  animate() {
-    const n = Date.now();
-    for (const item of this.canvas.data.nodes) {
-      if (item.animatePlay) {
-        item.animateStart = n;
-      }
-    }
-    this.canvas.animate();
   }
 
   onOpenLocal() {

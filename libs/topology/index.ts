@@ -405,6 +405,19 @@ export class Topology {
 
     this.overflow();
     this.render(true);
+
+    const n = Date.now();
+    for (const item of this.data.nodes) {
+      if (item.animatePlay) {
+        item.animateStart = n;
+      }
+    }
+    for (const item of this.data.lines) {
+      if (item.animatePlay) {
+        item.animateStart = n;
+      }
+    }
+    this.animate();
   }
 
   overflow() {
