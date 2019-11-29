@@ -80,8 +80,6 @@ export class Node extends Pen {
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
 
-  // animateType仅仅是辅助标识
-  animateType = 0;
   animateDuration = 0;
   animateFrames: {
     duration: number;

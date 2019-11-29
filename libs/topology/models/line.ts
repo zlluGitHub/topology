@@ -14,6 +14,9 @@ export class Line extends Pen {
 
   length: number;
 
+  borderWidth = 0;
+  borderColor = '#000000';
+
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
@@ -41,6 +44,10 @@ export class Line extends Pen {
       if (json.length) {
         this.length = json.length;
       }
+      if (json.borderWidth) {
+        this.borderColor = json.borderColor;
+        this.borderWidth = json.borderWidth;
+      }
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
@@ -64,6 +71,16 @@ export class Line extends Pen {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.borderWidth > 0 && this.borderColor) {
+      ctx.save();
+      ctx.lineWidth = this.lineWidth + this.borderWidth;
+      ctx.strokeStyle = this.borderColor;
+      if (drawLineFns[this.name]) {
+        drawLineFns[this.name].drawFn(ctx, this);
+      }
+      ctx.restore();
+    }
+
     if (drawLineFns[this.name]) {
       drawLineFns[this.name].drawFn(ctx, this);
     }
@@ -136,7 +153,12 @@ export class Line extends Pen {
 
   animate() {
     this.animatePos += this.animateSpan;
-    this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
+    if (this.animateType) {
+      this.lineDashOffset = -this.animatePos;
+      this.lineDash = [this.lineWidth, this.lineWidth * 2];
+    } else {
+      this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
+    }
     if (this.animatePos > this.length + this.animateSpan) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;

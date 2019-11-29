@@ -15,6 +15,7 @@ export abstract class Pen {
 
   dash = 0;
   lineDash: number[];
+  lineDashOffset: number;
   strokeStyle = '';
   fillStyle = '';
   lineCap: string;
@@ -29,6 +30,8 @@ export abstract class Pen {
     textBaseline: 'middle'
   };
 
+  // animateType仅仅是辅助标识
+  animateType = 0;
   // Date.getTime
   animateStart = 0;
   // Cycle count. Infinite if <= 0.
@@ -53,6 +56,7 @@ export abstract class Pen {
       }
       this.dash = json.dash || 0;
       this.lineDash = json.lineDash;
+      this.lineDashOffset = json.lineDashOffset || 0;
       this.lineWidth = json.lineWidth || 1;
       this.strokeStyle = json.strokeStyle || '';
       this.fillStyle = json.fillStyle || '';
@@ -63,6 +67,8 @@ export abstract class Pen {
       if (json.font) {
         Object.assign(this.font, json.font);
       }
+
+      this.animateType = json.animateType;
       this.animateCycle = json.animateCycle;
       this.nextAnimate = json.nextAnimate;
       this.animatePlay = json.animatePlay;
@@ -119,6 +125,9 @@ export abstract class Pen {
 
     if (this.lineDash) {
       ctx.setLineDash(this.lineDash);
+    }
+    if (this.lineDashOffset) {
+      ctx.lineDashOffset = this.lineDashOffset;
     }
 
     this.draw(ctx);

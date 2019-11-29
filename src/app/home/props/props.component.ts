@@ -194,6 +194,17 @@ export class PropsComponent implements OnInit, OnChanges {
     ]
   };
 
+  lineAnimateOptions = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: '1',
+        name: '水珠流动'
+      }
+    ]
+  };
+
   iconAligns = {
     id: 'id',
     name: 'name',
@@ -609,6 +620,18 @@ export class PropsComponent implements OnInit, OnChanges {
     for (const item of this.props.data.animateFrames) {
       this.props.data.animateDuration += item.duration;
     }
+  }
+
+  onChangeLineAnimate() {
+    const animateStart = this.props.data.animateStart;
+    this.props.data.animateStart = 0;
+    this.animateChange.emit(this.props);
+    setTimeout(() => {
+      if (animateStart) {
+        this.props.data.animateStart = animateStart;
+        this.animateChange.emit(this.props);
+      }
+    }, 0);
   }
 
   onChangeAnimate() {

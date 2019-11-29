@@ -22,8 +22,8 @@ export class Offscreen extends Canvas {
 
     this.renderNodes();
     this.renderLines();
-    this.animateLayer.render(ctx);
     this.activeLayer.render(ctx);
+    this.animateLayer.render(ctx);
     this.hoverLayer.render(ctx);
   }
 
