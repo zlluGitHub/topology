@@ -949,6 +949,13 @@
           </div>
         </div>
         <div class="mt5">
+          <div class="nowrap">圆点大小（px）：</div>
+          <div>
+            <input type="number" name="animateDotSize" class="input full" [(ngModel)]="props.data.animateDotSize"
+              [readonly]="readonly" (change)="onAnimate()" />
+          </div>
+        </div>
+        <div class="mt5">
           <div class="nowrap">循环次数：</div>
           <div>
             <input type="number" name="cycle" class="input full" [(ngModel)]="props.data.animateCycle"

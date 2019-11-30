@@ -22,6 +22,9 @@ export class Line extends Pen {
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
+
+  animateDot: { x: number, y: number };
+  animateDotSize = 3;
   constructor(json?: any) {
     super(json);
 
@@ -50,6 +53,7 @@ export class Line extends Pen {
         this.borderColor = json.borderColor;
         this.borderWidth = json.borderWidth;
       }
+      this.animateDotSize = json.animateDotSize || 3;
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
@@ -74,6 +78,25 @@ export class Line extends Pen {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.animateDot) {
+      ctx.fillStyle = this.strokeStyle;
+      if (this.animateType === '2') {
+        ctx.beginPath();
+        ctx.arc(this.animateDot.x, this.animateDot.y, this.animateDotSize, 0, 2 * Math.PI, false);
+        ctx.fill();
+        return;
+      } else if (this.animateType === '3') {
+        const bulles = this.getBubbles();
+        for (const item of bulles) {
+          ctx.globalAlpha = item.a;
+          ctx.beginPath();
+          ctx.arc(item.pos.x, item.pos.y, item.r, 0, 2 * Math.PI, false);
+          ctx.fill();
+        }
+        return;
+      }
+    }
+
     if (this.borderWidth > 0 && this.borderColor) {
       ctx.save();
       ctx.lineWidth = this.lineWidth + this.borderWidth;
@@ -223,13 +246,71 @@ export class Line extends Pen {
     return new Point((from.x + to.x) / 2, (from.y + to.y) / 2);
   }
 
+  getPointByPos(pos: number): Point {
+    if (pos <= 0) {
+      return this.from;
+    }
+    switch (this.name) {
+      case 'line':
+        return this.getLinePtByPos(this.from, this.to, pos);
+      case 'polyline':
+        if (!this.controlPoints || !this.controlPoints.length) {
+          return this.getLinePtByPos(this.from, this.to, pos);
+        } else {
+          const points = [].concat(this.controlPoints, this.to);
+          let curPt = this.from;
+          for (const pt of points) {
+            const l = lineLen(curPt, pt);
+            if (pos > l) {
+              pos -= l;
+              curPt = pt;
+            } else {
+              return this.getLinePtByPos(curPt, pt, pos);
+            }
+          }
+          return this.to;
+        }
+      case 'curve':
+        return getBezierPoint(pos / this.getLen(), this.from, this.controlPoints[0], this.controlPoints[1], this.to);
+    }
+    return null;
+  }
+
+  getLinePtByPos(from: Point, to: Point, pos: number) {
+    const length = lineLen(from, to);
+    if (pos <= 0) {
+      return from;
+    }
+    if (pos >= length) {
+      return to;
+    }
+    let x: number, y: number;
+    x = from.x + (to.x - from.x) * (pos / length);
+    y = from.y + (to.y - from.y) * (pos / length);
+    return new Point(x, y);
+  }
+
   animate() {
     this.animatePos += this.animateSpan;
-    if (this.animateType) {
-      this.lineDashOffset = -this.animatePos;
-      this.lineDash = [this.lineWidth, this.lineWidth * 2];
-    } else {
-      this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
+    this.animateDot = null;
+    switch (this.animateType) {
+      case '1':
+        this.lineDashOffset = -this.animatePos;
+        let len = this.lineWidth;
+        if (len < 5) {
+          len = 5;
+        }
+        this.lineDash = [len, len * 2];
+        break;
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case '3':
+      case '2':
+        this.lineDash = null;
+        this.animateDot = this.getPointByPos(this.animatePos);
+        break;
+      default:
+        this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
+        break;
     }
     if (this.animatePos > this.length + this.animateSpan) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
@@ -243,6 +324,19 @@ export class Line extends Pen {
 
       this.animatePos = this.animateSpan;
     }
+  }
+
+  getBubbles() {
+    const bubbles: any[] = [];
+    for (let i = 0; i < 30 && this.animatePos - i > 0; ++i) {
+      bubbles.push({
+        pos: this.getPointByPos(this.animatePos - i * 2),
+        a: 1 - i * .03,
+        r: this.lineWidth * .7 - i * .01,
+      });
+    }
+
+    return bubbles;
   }
 
   round() {

@@ -19,8 +19,6 @@ export class Point {
     hidden?: boolean,
     out?: boolean
   ) {
-    this.x |= 0;
-    this.y |= 0;
     this.direction = direction;
     this.anchorIndex = anchorIndex;
     this.id = id;

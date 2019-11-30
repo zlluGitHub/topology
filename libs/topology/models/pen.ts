@@ -38,7 +38,7 @@ export abstract class Pen {
   textOffsetY: number;
 
   // animateType仅仅是辅助标识
-  animateType = 0;
+  animateType: string;
   // Date.getTime
   animateStart = 0;
   // Cycle count. Infinite if <= 0.

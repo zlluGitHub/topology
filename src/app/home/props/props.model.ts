@@ -34,6 +34,7 @@ export interface Props {
     animateColor: string;
     animateSpan: number;
     animateType?: string;
+    animateDotSize?: number;
     animateDuration?: number;
     animateFrames?: {
       duration: number;
