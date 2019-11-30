@@ -548,6 +548,7 @@ export class Topology {
         case MoveInType.LineControlPoint:
           this.moveIn.hoverLine.controlPoints[this.moveIn.lineControlPoint.id].x = pos.x;
           this.moveIn.hoverLine.controlPoints[this.moveIn.lineControlPoint.id].y = pos.y;
+          this.moveIn.hoverLine.textRect = null;
           if (drawLineFns[this.moveIn.hoverLine.name] && drawLineFns[this.moveIn.hoverLine.name].dockControlPointFn) {
             drawLineFns[this.moveIn.hoverLine.name].dockControlPointFn(
               this.moveIn.hoverLine.controlPoints[this.moveIn.lineControlPoint.id],

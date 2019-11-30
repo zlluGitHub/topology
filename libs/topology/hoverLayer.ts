@@ -122,11 +122,12 @@ export class HoverLayer {
       }
     }
 
-    if (this.line && this.line.to) {
+
+    const activeLine = Store.get('activeLine');
+    if (this.line && this.line.to && (!activeLine || this.line.id !== activeLine.id)) {
       this.line.render(ctx);
     }
 
-    const activeLine = Store.get('activeLine');
     if (activeLine) {
       drawLineFns[activeLine.name].drawControlPointsFn(ctx, activeLine);
     }

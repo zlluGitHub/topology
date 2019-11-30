@@ -52,11 +52,6 @@ export class Node extends Pen {
   iconRect: Rect;
   fullIconRect: Rect;
 
-  text: string;
-  textMaxLine: number;
-  textRect: Rect;
-  fullTextRect: Rect;
-
   anchors: Point[] = [];
   rotatedAnchors: Point[] = [];
   parentId: string;
@@ -144,10 +139,6 @@ export class Node extends Pen {
     this.paddingLeft = json.paddingLeft || 0;
     this.paddingRight = json.paddingRight || 0;
 
-    this.text = json.text;
-    if (json.textMaxLine) {
-      this.textMaxLine = +json.textMaxLine || 0;
-    }
 
     if (json.children && json.children[0] && json.children[0].parentRect) {
       this.paddingLeft = json.children[0].parentRect.offsetX;
@@ -319,11 +310,7 @@ export class Node extends Pen {
 
     // Draw text.
     if (this.name !== 'text' && this.text) {
-      ctx.save();
-      ctx.shadowColor = '';
-      ctx.shadowBlur = 0;
       text(ctx, this);
-      ctx.restore();
     }
 
     // Draw image.

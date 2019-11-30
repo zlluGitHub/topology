@@ -65,6 +65,8 @@ export interface Props {
     imageAlign?: string;
     text?: string;
     textMaxLine?: number;
+    textOffsetX?: number;
+    textOffsetY?: number;
     paddingTop?: number | string;
     paddingBottom?: number | string;
     paddingLeft?: number | string;

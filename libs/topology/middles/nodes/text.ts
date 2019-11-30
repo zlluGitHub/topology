@@ -1,4 +1,5 @@
 import { Node } from '../../models/node';
+import { Line } from '../../models/line';
 
 // getWords: Get the word array from text. A single Chinese character is a word.
 export function getWords(txt: string) {
@@ -77,16 +78,18 @@ export function fillText(
   }
 }
 
-export function text(ctx: CanvasRenderingContext2D, node: Node) {
+export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
   if (!node.text) {
     return;
   }
 
   ctx.save();
   ctx.beginPath();
+  ctx.shadowColor = '';
+  ctx.shadowBlur = 0;
   ctx.font = `${node.font.fontStyle || 'normal'} normal ${node.font.fontWeight || 'normal'} ${node.font.fontSize}px/${
     node.font.lineHeight
-  } ${node.font.fontFamily}`;
+    } ${node.font.fontFamily}`;
 
   if (node.font.color) {
     ctx.fillStyle = node.font.color;
@@ -134,7 +137,7 @@ export function text(ctx: CanvasRenderingContext2D, node: Node) {
       y = textRect.ey - lineHeight * lines.length + lineHeight;
       break;
   }
-  fillText(ctx, lines, x, y, textRect.width, textRect.height, lineHeight, maxLineLen);
+  fillText(ctx, lines, x + node.textOffsetX, y + node.textOffsetY, textRect.width, textRect.height, lineHeight, maxLineLen);
   ctx.restore();
 }
 

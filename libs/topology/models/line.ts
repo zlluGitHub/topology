@@ -4,6 +4,8 @@ import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
 import { Store } from 'le5le-store';
 import { lineLen, curveLen } from '../utils';
+import { text } from '../middles/nodes/text';
+import { Rect } from './rect';
 
 export class Line extends Pen {
   from: Point;
@@ -65,6 +67,7 @@ export class Line extends Pen {
   }
 
   calcControlPoints() {
+    this.textRect = null;
     if (this.to && drawLineFns[this.name]) {
       drawLineFns[this.name].controlPointsFn(this);
     }
@@ -120,6 +123,13 @@ export class Line extends Pen {
       drawArrowFns[this.toArrow](ctx, f, this.to, scale);
       ctx.restore();
     }
+
+    if (this.text) {
+      if (!this.textRect) {
+        this.calcTextRect();
+      }
+      text(ctx, this);
+    }
   }
 
   pointIn(pt: Point) {
@@ -149,6 +159,68 @@ export class Line extends Pen {
     }
 
     return 0;
+  }
+
+  calcTextRect() {
+    const center = this.getCenter();
+    let width = Math.abs(this.from.x - this.to.x);
+    if (width < 200) {
+      width = 200;
+    }
+    const height = this.font.lineHeight * this.font.fontSize * (this.textMaxLine || 1);
+    this.textRect = new Rect(
+      center.x - width / 2,
+      center.y - height / 2,
+      width,
+      height
+    );
+  }
+
+  getTextRect() {
+    return this.textRect;
+  }
+
+  getCenter() {
+    let center = new Point(this.from.x, this.from.y);
+    switch (this.name) {
+      case 'line':
+        center = this.getLineCenter(this.from, this.to);
+        break;
+      case 'polyline':
+        if (!this.controlPoints || !this.controlPoints.length) {
+          center = this.getLineCenter(this.from, this.to);
+          break;
+        }
+
+        let curPt = this.from;
+        let len = 0;
+        for (const pt of this.controlPoints) {
+          if (curPt.y === pt.y) {
+            const pos = Math.abs(curPt.x - pt.x);
+            if (pos > len) {
+              len = pos;
+              center = this.getLineCenter(curPt, pt);
+            }
+          }
+          curPt = pt;
+        }
+        if (curPt.y === this.to.y) {
+          const pos = Math.abs(curPt.x - this.to.x);
+          if (pos > len) {
+            len = pos;
+            center = this.getLineCenter(curPt, this.to);
+          }
+        }
+        break;
+      case 'curve':
+        center = getBezierPoint(0.5, this.to, this.controlPoints[1], this.controlPoints[0], this.from);
+    }
+
+    return center;
+  }
+
+  getLineCenter(from: Point, to: Point) {
+    return new Point((from.x + to.x) / 2, (from.y + to.y) / 2);
   }
 
   animate() {

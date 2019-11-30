@@ -437,6 +437,7 @@ export class ActiveLayer {
       }
 
       const tmp = new Line(item);
+      tmp.text = '';
       if (tmp.lineWidth > 2) {
         tmp.borderWidth = 0;
         tmp.strokeStyle = '#d4380da0';

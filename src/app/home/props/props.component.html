@@ -807,7 +807,7 @@
           [uiMax]="1" [readonly]="readonly" (change)="onChangeProp()" />
       </div>
     </div>
-    <div class="group" *ngIf="props.type === 'node'">
+    <div class="group">
       <div class="title">文字</div>
       <div class="mt5">
         字体
@@ -879,6 +879,22 @@
             uiMax="500" [readonly]="readonly" placeholder="0：自动匹配高度" (change)="onChangeProp()" />
         </div>
       </div>
+
+      <div class="flex grid mt5">
+        <div>水平偏移（px）</div>
+        <div>垂直偏移（px）</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input type="number" name="textOffsetX" class="input" [(ngModel)]="props.data.textOffsetX"
+            [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input type="number" name="textOffsetY" class="input" [(ngModel)]="props.data.textOffsetY"
+            [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+      </div>
+
       <div class="mt5">
         内容
       </div>

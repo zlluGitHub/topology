@@ -30,6 +30,13 @@ export abstract class Pen {
     textBaseline: 'middle'
   };
 
+  text: string;
+  textMaxLine: number;
+  textRect: Rect;
+  fullTextRect: Rect;
+  textOffsetX: number;
+  textOffsetY: number;
+
   // animateType仅仅是辅助标识
   animateType = 0;
   // Date.getTime
@@ -67,6 +74,13 @@ export abstract class Pen {
       if (json.font) {
         Object.assign(this.font, json.font);
       }
+      this.text = json.text;
+      if (json.textMaxLine) {
+        this.textMaxLine = +json.textMaxLine || 0;
+      }
+      this.textOffsetX = json.textOffsetX || 0;
+      this.textOffsetY = json.textOffsetY || 0;
+
 
       this.animateType = json.animateType;
       this.animateCycle = json.animateCycle;
@@ -76,6 +90,8 @@ export abstract class Pen {
       this.locked = json.locked;
     } else {
       this.id = s8();
+      this.textOffsetX = 0;
+      this.textOffsetY = 0;
     }
   }
   render(ctx: CanvasRenderingContext2D) {

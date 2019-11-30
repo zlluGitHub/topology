@@ -241,7 +241,7 @@ function getNextPointByLeft(from: Point, to: Point) {
 
     // The to point is on the right.
   } else {
-    if (to.direction === Direction.Left) {
+    if (to.direction === Direction.Right) {
       if (from.y < to.y) {
         return getVerticalPoints(from, to);
       } else {
