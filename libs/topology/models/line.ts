@@ -303,8 +303,8 @@ export class Line extends Pen {
         this.lineDash = [len, len * 2];
         break;
       // tslint:disable-next-line:no-switch-case-fall-through
-      case '3':
       case '2':
+      case '3':
         this.lineDash = null;
         this.animateDot = this.getPointByPos(this.animatePos);
         break;

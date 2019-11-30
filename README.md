@@ -115,6 +115,7 @@ $ npm run prod
 - [Nickbing Lao](https://github.com/giscafer)
 - [ivanZzzz](https://github.com/ivan135)
 - [johnnyhhj](https://github.com/johnnyhhj)
+- [FxLsoft]](https://github.com/FxLsoft)
 - [sunnyguohua](https://github.com/sunnyguohua)
 
 # Contributing
