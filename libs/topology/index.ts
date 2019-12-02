@@ -522,11 +522,12 @@ export class Topology {
           if (x || y) {
             const offset = this.getDockPos(x, y);
             this.activeLayer.moveNodes(offset.x ? offset.x : x, offset.y ? offset.y : y);
+            this.animateLayer.start(true);
           }
           break;
         case MoveInType.ResizeCP:
           this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, pos);
-
+          this.animateLayer.start(true);
           if (this.options.on) {
             this.options.on('resizeNodes', this.activeLayer.nodes);
           }
@@ -538,12 +539,14 @@ export class Topology {
             arrow = this.moveIn.hoverLine.toArrow;
           }
           this.hoverLayer.lineTo(this.getLineDock(pos), arrow);
+          this.animateLayer.start(true);
           break;
         case MoveInType.LineFrom:
           this.hoverLayer.lineFrom(this.getLineDock(pos));
           break;
         case MoveInType.LineMove:
           this.hoverLayer.lineMove(pos, this.mouseDown);
+          this.animateLayer.start(true);
           break;
         case MoveInType.LineControlPoint:
           this.moveIn.hoverLine.controlPoints[this.moveIn.lineControlPoint.id].x = pos.x;
@@ -852,6 +855,7 @@ export class Topology {
     if (moveX || moveY) {
       this.activeLayer.saveNodeRects();
       this.activeLayer.moveNodes(moveX, moveY);
+      this.animateLayer.start(true);
     }
 
     this.render();

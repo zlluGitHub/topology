@@ -10,7 +10,6 @@ export class AnimateLayer {
   nodes: Node[] = [];
   lines: Line[] = [];
 
-  private last = Date.now();
   private timer: any;
   constructor(public options: Options = {}) {
     Store.set('LT:AnimateLayer', this);
@@ -108,50 +107,44 @@ export class AnimateLayer {
 
     this.timer = requestAnimationFrame(() => {
       const now = Date.now();
-      const interval = now - this.last;
-      this.last = now;
-
-      // Not too fast.
-      if (interval > 15) {
-        for (let i = 0; i < this.lines.length; ++i) {
-          if (this.lines[i].animateStart > now) {
-            continue;
-          }
-          const next = this.lines[i].animate();
-          if (!this.lines[i].animateStart) {
-            for (const item of this.data.lines) {
-              if (this.lines[i].id === item.id) {
-                item.animateStart = 0;
-                break;
-              }
+      for (let i = 0; i < this.lines.length; ++i) {
+        if (this.lines[i].animateStart > now) {
+          continue;
+        }
+        const next = this.lines[i].animate();
+        if (!this.lines[i].animateStart) {
+          for (const item of this.data.lines) {
+            if (this.lines[i].id === item.id) {
+              item.animateStart = 0;
+              break;
             }
           }
+        }
+        if (next) {
+          this.lines.splice(i, 1);
+          this.getNodes(this.data.nodes, next);
+          this.getLines(next);
+        }
+
+        if (this.lines[i] && !this.lines[i].animateStart) {
+          this.lines.splice(i, 1);
+        }
+      }
+      for (let i = 0; i < this.nodes.length; ++i) {
+        if (this.nodes[i].animateStart > now) {
+          continue;
+        }
+        if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
+          const next = this.nodes[i].animate(now);
           if (next) {
-            this.lines.splice(i, 1);
             this.getNodes(this.data.nodes, next);
             this.getLines(next);
           }
-
-          if (this.lines[i] && !this.lines[i].animateStart) {
-            this.lines.splice(i, 1);
-          }
+        } else {
+          this.nodes.splice(i, 1);
         }
-        for (let i = 0; i < this.nodes.length; ++i) {
-          if (this.nodes[i].animateStart > now) {
-            continue;
-          }
-          if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
-            const next = this.nodes[i].animate(now);
-            if (next) {
-              this.getNodes(this.data.nodes, next);
-              this.getLines(next);
-            }
-          } else {
-            this.nodes.splice(i, 1);
-          }
-        }
-        Store.set('LT:render', true);
       }
+      Store.set('LT:render', true);
       this.animate();
     });
   }
