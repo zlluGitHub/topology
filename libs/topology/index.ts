@@ -1290,6 +1290,8 @@ export class Topology {
     this.data.lines.push.apply(this.data.lines, data.lines);
     this.render(true);
     this.divLayer.render();
+
+    this.options.on('undo', this.data);
   }
 
   redo() {
@@ -1304,6 +1306,8 @@ export class Topology {
     this.data.lines.push.apply(this.data.lines, data.lines);
     this.render(true);
     this.divLayer.render();
+
+    this.options.on('redo', this.data);
   }
 
   toImage(type?: string, quality?: any, callback?: any): string {
