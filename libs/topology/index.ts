@@ -248,6 +248,7 @@ export class Topology {
         this.options.on('LT:addDiv', node);
       }
     }
+    this.divLayer.canvas.focus();
   }
 
   getTouchOffset(touch: Touch) {
@@ -289,12 +290,12 @@ export class Topology {
       node.scale(this.data.scale);
     }
 
+    this.data.nodes.push(node);
     // New active.
     if (focus) {
       this.activeLayer.setNodes([node]);
     }
 
-    this.data.nodes.push(node);
     this.render();
     this.cache();
 
@@ -964,7 +965,7 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked < 0 || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
-        return;
+        return true;
       }
       this.divLayer.canvas.style.cursor = 'move';
 
@@ -1558,6 +1559,7 @@ export class Topology {
     if (node) {
       node.round();
       node.init();
+      this.activeLayer.updateChildren(node);
       this.activeLayer.updateLines([node]);
     }
     this.activeLayer.calcControlPoints();
