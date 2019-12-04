@@ -281,6 +281,10 @@ export class Topology {
       return false;
     }
 
+    if (!node.strokeStyle && this.options.color) {
+      node.strokeStyle = this.options.color;
+    }
+
     // if it's not a Node
     if (!node.init) {
       node = new Node(node);
