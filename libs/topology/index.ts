@@ -281,13 +281,16 @@ export class Topology {
       return false;
     }
 
-    if (!node.strokeStyle && this.options.color) {
-      node.strokeStyle = this.options.color;
-    }
-
     // if it's not a Node
     if (!node.init) {
       node = new Node(node);
+    }
+
+    if (!node.strokeStyle && this.options.color) {
+      node.strokeStyle = this.options.color;
+    }
+    if (!node.font.color) {
+      node.font = Object.assign(node.font, this.options.font);
     }
 
     if (this.data.scale !== 1) {

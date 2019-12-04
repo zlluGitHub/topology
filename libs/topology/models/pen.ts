@@ -107,17 +107,8 @@ export abstract class Pen {
       ctx.lineWidth = this.lineWidth;
     }
 
-    if (this.strokeStyle) {
-      ctx.strokeStyle = this.strokeStyle;
-    } else {
-      ctx.strokeStyle = '#333';
-    }
-
-    if (this.fillStyle) {
-      ctx.fillStyle = this.fillStyle;
-    } else {
-      ctx.fillStyle = 'transparent';
-    }
+    ctx.strokeStyle = this.strokeStyle || '#222';
+    ctx.fillStyle = this.fillStyle || 'transparent';
 
     if (this.lineCap) {
       ctx.lineCap = this.lineCap as CanvasLineCap;

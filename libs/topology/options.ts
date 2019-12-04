@@ -8,12 +8,12 @@ export interface Options {
   dragColor?: string;
   animateColor?: string;
   font?: {
-    color: string;
-    fontFamily: string;
-    fontSize: number;
-    lineHeight: number;
-    textAlign: string;
-    textBaseline: string;
+    color?: string;
+    fontFamily?: string;
+    fontSize?: number;
+    lineHeight?: number;
+    textAlign?: string;
+    textBaseline?: string;
   };
   rotateCursor?: string;
   hideInput?: boolean;
