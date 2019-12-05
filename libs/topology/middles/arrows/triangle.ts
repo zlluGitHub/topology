@@ -1,25 +1,23 @@
 import { Point } from '../../models/point';
-import { Rect } from '../../models/rect';
 
 export function triangleSolid(
   ctx: CanvasRenderingContext2D,
   from: Point,
   to: Point,
-  scale?: number,
+  size?: number,
   fillStyle?: string
 ) {
-  const rect = new Rect(to.x - 17, to.y - 5, 15, 10);
-  if (scale && scale !== 1) {
-    rect.scale(scale, new Point(rect.x + 15, rect.y + 5));
+  size += ctx.lineWidth * 3;
+  if (ctx.lineWidth < 2) {
+    ctx.lineWidth = 2;
   }
   ctx.translate(to.x, to.y);
   ctx.rotate(Math.atan2(to.y - from.y, to.x - from.x));
-  ctx.translate(-to.x, -to.y);
-  ctx.moveTo(rect.x, rect.y);
-  ctx.lineTo(rect.x + rect.width, rect.y + rect.height / 2);
-  ctx.lineTo(rect.x, rect.y + rect.height);
+  ctx.translate(-to.x - ctx.lineWidth, -to.y - ctx.lineWidth / 10);
+  ctx.moveTo(to.x, to.y);
+  ctx.lineTo(to.x - size, to.y - size / 3);
+  ctx.lineTo(to.x - size, to.y + size / 3);
   ctx.closePath();
-  ctx.lineWidth = 2;
   ctx.stroke();
   if (fillStyle) {
     ctx.fillStyle = fillStyle;
@@ -27,6 +25,6 @@ export function triangleSolid(
   ctx.fill();
 }
 
-export function triangle(ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) {
-  triangleSolid(ctx, from, to, scale, '#fff');
+export function triangle(ctx: CanvasRenderingContext2D, from: Point, to: Point, size: number) {
+  triangleSolid(ctx, from, to, size, '#fff');
 }

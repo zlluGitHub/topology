@@ -86,14 +86,32 @@ export class AnimateLayer {
 
       if (!found && item.animateStart) {
         const l = new Line(item);
+        l.isAnimate = true;
+        if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
+          if (l.fromArrow.indexOf('circle') === 0) {
+            l.animateFromSize = l.fromArrowSize + l.lineWidth * 3;
+          } else {
+            l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
+          }
+        }
+        if (l.toArrow && l.toArrow.indexOf('line') < 0) {
+          if (l.toArrow.indexOf('circle') === 0) {
+            l.animateToSize = l.toArrowSize + l.lineWidth * 3;
+          } else {
+            l.animateToSize = l.toArrowSize + l.lineWidth * 5;
+          }
+        }
         l.animateStart = item.animateStart;
-        l.fromArrow = '';
-        l.toArrow = '';
         l.lineCap = 'round';
-        l.lineWidth += 1;
         l.fillStyle = '#fff';
         l.strokeStyle = l.animateColor || this.options.animateColor;
         l.length = l.getLen();
+        if (!l.fromArrowColor) {
+          l.fromArrowColor = l.strokeStyle || '#222';
+        }
+        if (!l.toArrowColor) {
+          l.toArrowColor = l.strokeStyle || '#222';
+        }
         this.lines.push(l);
       }
     }

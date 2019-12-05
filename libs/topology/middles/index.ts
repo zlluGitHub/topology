@@ -160,7 +160,7 @@ function init() {
   // Text
   drawNodeFns.text = text;
   iconRectFns.text = lineIconRect;
-  anchorsFns.text = (node: Rect) => {};
+  anchorsFns.text = (node: Rect) => { };
 
   // Line
   drawNodeFns.line = nodeLine;
@@ -169,7 +169,7 @@ function init() {
   textRectFns.line = lineTextRect;
 
   // Image
-  drawNodeFns.image = (ctx: CanvasRenderingContext2D, node: Rect) => {};
+  drawNodeFns.image = (ctx: CanvasRenderingContext2D, node: Rect) => { };
   iconRectFns.image = imageIconRect;
   textRectFns.image = imageTextRect;
 
@@ -289,7 +289,7 @@ export function registerLine(
 // force - Overwirte the node if exists.
 export function registerArrow(
   name: string,
-  drawFn: (ctx: CanvasRenderingContext2D, from: Point, to: Point, scale?: number) => void,
+  drawFn: (ctx: CanvasRenderingContext2D, from: Point, to: Point, size: number) => void,
   force?: boolean
 ) {
   // Exist

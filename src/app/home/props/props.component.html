@@ -571,6 +571,40 @@
           </div>
         </div>
       </div>
+      <div class="flex grid mt5">
+        <div class="mr5">起点箭头颜色</div>
+        <div>终点箭头颜色</div>
+      </div>
+      <div class="flex grid">
+        <div class="input color mr5" [class.readonly]="readonly">
+          <i [(colorPicker)]="props.data.fromArrowColor" [style.background]="props.data.fromArrowColor"
+            cpPosition="bottom" cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
+            (colorPickerChange)="onChangeProp(false)"></i>
+          <input name="fromArrowColor" [(ngModel)]="props.data.fromArrowColor" [readonly]="readonly"
+            (change)="onChangeProp()" />
+        </div>
+        <div class="input color " [class.readonly]="readonly">
+          <i [(colorPicker)]="props.data.toArrowColor" [style.background]="props.data.toArrowColor" cpPosition="bottom"
+            cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
+            (colorPickerChange)="onChangeProp(false)"></i>
+          <input name="toArrowColor" [(ngModel)]="props.data.toArrowColor" [readonly]="readonly"
+            (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div class="mr5">起点箭头大小</div>
+        <div>终点箭头大小</div>
+      </div>
+      <div class="flex grid mt5">
+        <div class="mr5">
+          <input type="number" name="fromArrowSize" class="input" [(ngModel)]="props.data.fromArrowSize" [uiMin]="1"
+            [uiMax]="100" [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input type="number" name="toArrowSize" class="input" [(ngModel)]="props.data.toArrowSize" [uiMin]="1"
+            [uiMax]="100" [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+      </div>
     </div>
     <div class="group">
       <div class="title">外观</div>
@@ -695,8 +729,8 @@
         <div *ngIf="props.type !== 'line'"></div>
       </div>
       <div class="flex grid mt5">
-        <div>{{ props.type === "node" ? "边框颜色" : "连线颜色" }}</div>
-        <div>线宽（px）</div>
+        <div>{{ props.type === "node" ? "连线边框颜色" : "连线填充颜色" }}</div>
+        <div>连线宽度（px）</div>
       </div>
       <div class="flex grid">
         <div class="mr5">
@@ -716,7 +750,7 @@
       <div *ngIf="props.type === 'line'">
         <div class="flex grid mt5">
           <div>连线边框</div>
-          <div>线宽（px）</div>
+          <div>边框宽度（px）</div>
         </div>
         <div class="flex grid">
           <div class="mr5">

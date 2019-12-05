@@ -85,6 +85,10 @@ export interface Props {
     to?: Point;
     fromArrow?: string;
     toArrow?: string;
+    fromArrowSize?: number;
+    toArrowSize?: number;
+    fromArrowColor?: string;
+    toArrowColor?: string;
     borderWidth?: number;
     borderColor?: string;
     // End

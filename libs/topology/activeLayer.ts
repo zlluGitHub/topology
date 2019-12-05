@@ -438,24 +438,15 @@ export class ActiveLayer {
 
       const tmp = new Line(item);
       tmp.text = '';
-      if (tmp.lineWidth > 2) {
-        tmp.borderWidth = 0;
-        tmp.strokeStyle = '#d4380da0';
-        tmp.lineWidth += 2;
-        tmp.render(ctx);
-
-        tmp.strokeStyle = item.strokeStyle;
-        tmp.lineWidth -= 2;
-        tmp.render(ctx);
-      } else {
-        tmp.strokeStyle = '#ffffff';
-        tmp.lineWidth += 1;
-        tmp.render(ctx);
-
-        tmp.strokeStyle = '#d4380d';
-        tmp.lineWidth -= 1;
-        tmp.render(ctx);
+      if (tmp.lineWidth < 3) {
+        const bk = new Line(item);
+        bk.strokeStyle = '#ffffff';
+        bk.render(ctx);
       }
+      tmp.strokeStyle = '#d4380d';
+      tmp.fromArrowColor = '#d4380d';
+      tmp.toArrowColor = '#d4380d';
+      tmp.render(ctx);
     }
 
     // This is diffence between single node and more.

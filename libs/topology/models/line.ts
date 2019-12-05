@@ -13,6 +13,10 @@ export class Line extends Pen {
   controlPoints: Point[] = [];
   fromArrow: string;
   toArrow: string;
+  fromArrowSize = 10;
+  toArrowSize = 10;
+  fromArrowColor: string;
+  toArrowColor: string;
 
   length: number;
 
@@ -22,6 +26,10 @@ export class Line extends Pen {
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
+
+  isAnimate = false;
+  animateFromSize = 0;
+  animateToSize = 0;
 
   animateDot: { x: number, y: number };
   animateDotSize = 3;
@@ -40,6 +48,10 @@ export class Line extends Pen {
       }
       this.fromArrow = json.fromArrow || '';
       this.toArrow = json.toArrow || '';
+      this.fromArrowSize = json.fromArrowSize || 5;
+      this.toArrowSize = json.toArrowSize || 5;
+      this.fromArrowColor = json.fromArrowColor;
+      this.toArrowColor = json.toArrowColor;
       if (json.animateColor) {
         this.animateColor = json.animateColor;
       }
@@ -87,17 +99,18 @@ export class Line extends Pen {
         return;
       } else if (this.animateType === '3') {
         const bulles = this.getBubbles();
+        ctx.save();
         for (const item of bulles) {
           ctx.globalAlpha = item.a;
           ctx.beginPath();
           ctx.arc(item.pos.x, item.pos.y, item.r, 0, 2 * Math.PI, false);
           ctx.fill();
         }
-        return;
+        ctx.restore();
       }
     }
 
-    if (this.borderWidth > 0 && this.borderColor) {
+    if (!this.isAnimate && this.borderWidth > 0 && this.borderColor) {
       ctx.save();
       ctx.lineWidth = this.lineWidth + this.borderWidth;
       ctx.strokeStyle = this.borderColor;
@@ -107,7 +120,7 @@ export class Line extends Pen {
       ctx.restore();
     }
 
-    if (drawLineFns[this.name]) {
+    if ((!this.isAnimate || this.animateType !== '3') && drawLineFns[this.name]) {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
@@ -115,39 +128,37 @@ export class Line extends Pen {
     if (this.fromArrow && drawArrowFns[this.fromArrow]) {
       ctx.save();
       ctx.beginPath();
-      if (this.strokeStyle) {
-        ctx.fillStyle = this.strokeStyle;
-      } else {
-        ctx.fillStyle = ctx.strokeStyle;
-      }
+      ctx.lineDashOffset = 0;
+      ctx.setLineDash([]);
+      ctx.fillStyle = this.fromArrowColor || this.strokeStyle || ctx.strokeStyle;
+      ctx.strokeStyle = ctx.fillStyle;
       let f = this.to;
       if (this.name === 'curve') {
-        f = getBezierPoint(0.9, this.to, this.controlPoints[1], this.controlPoints[0], this.from);
+        f = getBezierPoint(0.95 - this.lineWidth / 100, this.to, this.controlPoints[1], this.controlPoints[0], this.from);
       } else if (this.name !== 'line' && this.controlPoints.length) {
         f = this.controlPoints[0];
       }
-      drawArrowFns[this.fromArrow](ctx, f, this.from, scale);
+      drawArrowFns[this.fromArrow](ctx, f, this.from, this.fromArrowSize * scale);
       ctx.restore();
     }
     if (this.toArrow && drawArrowFns[this.toArrow]) {
       ctx.save();
       ctx.beginPath();
-      if (this.strokeStyle) {
-        ctx.fillStyle = this.strokeStyle;
-      } else {
-        ctx.fillStyle = ctx.strokeStyle;
-      }
+      ctx.lineDashOffset = 0;
+      ctx.setLineDash([]);
+      ctx.fillStyle = this.toArrowColor || this.strokeStyle || ctx.strokeStyle;
+      ctx.strokeStyle = ctx.fillStyle;
       let f = this.from;
       if (this.name === 'curve') {
-        f = getBezierPoint(0.9, this.from, this.controlPoints[0], this.controlPoints[1], this.to);
+        f = getBezierPoint(0.95 - this.lineWidth / 100, this.from, this.controlPoints[0], this.controlPoints[1], this.to);
       } else if (this.name !== 'line' && this.controlPoints.length) {
         f = this.controlPoints[this.controlPoints.length - 1];
       }
-      drawArrowFns[this.toArrow](ctx, f, this.to, scale);
+      drawArrowFns[this.toArrow](ctx, f, this.to, this.toArrowSize * scale);
       ctx.restore();
     }
 
-    if (this.text) {
+    if (this.text && !this.isAnimate) {
       if (!this.textRect) {
         this.calcTextRect();
       }
@@ -291,6 +302,9 @@ export class Line extends Pen {
   }
 
   animate() {
+    if (this.animateFromSize) {
+      this.lineDashOffset = -this.animateFromSize;
+    }
     this.animatePos += this.animateSpan;
     this.animateDot = null;
     switch (this.animateType) {
@@ -306,13 +320,13 @@ export class Line extends Pen {
       case '2':
       case '3':
         this.lineDash = null;
-        this.animateDot = this.getPointByPos(this.animatePos);
+        this.animateDot = this.getPointByPos(this.animatePos + this.animateFromSize);
         break;
       default:
         this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
         break;
     }
-    if (this.animatePos > this.length + this.animateSpan) {
+    if (this.animatePos > this.length + this.animateSpan - this.animateFromSize - this.animateToSize) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
         Store.set('animateEnd', {
@@ -330,9 +344,9 @@ export class Line extends Pen {
     const bubbles: any[] = [];
     for (let i = 0; i < 30 && this.animatePos - i > 0; ++i) {
       bubbles.push({
-        pos: this.getPointByPos(this.animatePos - i * 2),
+        pos: this.getPointByPos(this.animatePos - i * 2 + this.animateFromSize),
         a: 1 - i * .03,
-        r: this.lineWidth * .7 - i * .01,
+        r: this.lineWidth - i * .01,
       });
     }
 
