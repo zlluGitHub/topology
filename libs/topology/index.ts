@@ -1881,7 +1881,7 @@ export class Topology {
     }
 
     const parentRect = this.parentElem.getBoundingClientRect();
-    const w = data.markdown ? 500 : this.tipExternElem.getBoundingClientRect().width;
+    const w = data.markdown ? 500 : (this.tipExternElem ? this.tipExternElem.getBoundingClientRect().width : 500);
     let x = pos.x + parentRect.left - w / 2;
     let y = pos.y + parentRect.top;
     if (data instanceof Node) {
@@ -1921,7 +1921,7 @@ export class Topology {
       this.tipElem.style.left = x + 'px';
       this.tipElem.style.top = y + 'px';
       this.tipElem.style.zIndex = '100';
-    } else {
+    } else if (this.tipExternElem) {
       this.tipExternElem.style.left = x + 'px';
       this.tipExternElem.style.top = y + 'px';
       this.tipExternElem.style.zIndex = '100';
