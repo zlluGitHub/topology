@@ -618,47 +618,61 @@
       <div class="flex grid mt5">
         <div class="mr5 rel" *ngIf="props.type === 'line'">
           <div class="input" [class.readonly]="readonly" (click)="$event.stopPropagation(); drowdown = 4">
-            <div class="icon-item" [class.hidden]="props.data.name !== 'curve'">
+            <div class="icon-item" [class.hidden]="props.data.name !== 'curve'" title="曲线">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 9 a100,50 0 0,1 85,0" />
                 </g>
               </svg>
             </div>
-            <div class="icon-item" [class.hidden]="props.data.name !== 'polyline'">
+            <div class="icon-item" [class.hidden]="props.data.name !== 'polyline'" title="线段">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 4 l40 0 l0 12 l40 0" />
                 </g>
               </svg>
             </div>
-            <div class="icon-item" [class.hidden]="props.data.name !== 'line'">
+            <div class="icon-item" [class.hidden]="props.data.name !== 'line'" title="直线">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 9 l85 0" />
                 </g>
               </svg>
             </div>
+            <div class="icon-item" [class.hidden]="props.data.name !== 'mind'" title="脑图曲线">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 15 C0,8 50,0 85,0" />
+                </g>
+              </svg>
+            </div>
           </div>
           <div class="dropdown" *ngIf="!readonly" [class.block]="drowdown === 4">
-            <div class="icon-item ph10 pv5" (click)="onClickName('curve')">
+            <div class="icon-item ph10 pv5" (click)="onClickName('curve')" title="曲线">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 9 a100,50 0 0,1 85,0" />
                 </g>
               </svg>
             </div>
-            <div class="icon-item ph10 pv5" (click)="onClickName('polyline')">
+            <div class="icon-item ph10 pv5" (click)="onClickName('polyline')" title="线段">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 4 l40 0 l0 12 l40 0" />
                 </g>
               </svg>
             </div>
-            <div class="icon-item ph10 pv5" (click)="onClickName('line')">
+            <div class="icon-item ph10 pv5" (click)="onClickName('line')" title="直线">
               <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
                 <g fill="none" stroke="black" stroke-width="1">
                   <path d="M0 9 l100 0" />
+                </g>
+              </svg>
+            </div>
+            <div class="icon-item ph10 pv5" (click)="onClickName('mind')" title="脑图曲线">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <g fill="none" stroke="black" stroke-width="1">
+                  <path d="M0 15 C0,8 50,0 85,0" />
                 </g>
               </svg>
             </div>

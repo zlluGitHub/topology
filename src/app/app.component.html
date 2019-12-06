@@ -1,9 +1,5 @@
 <div class="page" (click)="onClick()">
-  <div
-    class="menus"
-    [class.clicked]="menuClicked"
-    (click)="onClickMenu($event)"
-  >
+  <div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
     <div class="item pointer" (click)="onHome()">
       <img src="/assets/img/favicon.ico" />
     </div>
@@ -29,11 +25,7 @@
             <span class="ml50">Ctrl + I</span>
           </a>
         </div>
-        <div
-          class="item"
-          (mouseenter)="showFigure = true"
-          (mouseleave)="onLeaveFigure()"
-        >
+        <div class="item" (mouseenter)="showFigure = true" (mouseleave)="onLeaveFigure()">
           <a>
             打开最近的文件
             <i class="iconfont icon-angle-right"></i>
@@ -42,14 +34,10 @@
             <figure>
               <div *ngIf="list.recently.length" class="mb20">
                 <div class="flex wrap">
-                  <a
-                    class="topo"
-                    *ngFor="let item of list.recently"
-                    [title]="item.name"
-                    routerLink="/workspace"
-                    [queryParams]="{ id: item.id, fileId: item.fileId }"
-                  >
+                  <a class="topo" *ngFor="let item of list.recently;let i=index" [title]="item.name"
+                    routerLink="/workspace" [queryParams]="{ id: item.id, version: item.version }">
                     <img [appImgAuthSrc]="item.image" />
+                    <i class="iconfont icon-delete" (click)="onRemoveRecently($event, i)"></i>
                   </a>
                 </div>
               </div>
@@ -198,28 +186,11 @@
     </div>
     <div class="full text-center">
       <div *ngIf="editMode">
-        <form
-          class="inline"
-          [class.hidden]="!editFilename"
-          #myForm="ngForm"
-          (ngSubmit)="onSubmit(myForm.invalid)"
-          [uiTouchForm]="myForm"
-          (click)="$event.stopPropagation()"
-        >
-          <input
-            name="filename"
-            #filenameInput
-            class="input"
-            [(ngModel)]="filename"
-            required
-          />
+        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" (ngSubmit)="onSubmit(myForm.invalid)"
+          [uiTouchForm]="myForm" (click)="$event.stopPropagation()">
+          <input name="filename" #filenameInput class="input" [(ngModel)]="filename" required />
         </form>
-        <div
-          class="inline"
-          *ngIf="!editFilename"
-          (dblclick)="onEditFile(filenameInput)"
-          title="双击修改"
-        >
+        <div class="inline" *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击修改">
           {{ filename || "空白文件" }}
         </div>
       </div>
@@ -228,10 +199,7 @@
       <div class="item mh5">
         <a (click)="onMenu('fullscreen', 1)" style="padding-right: 0;">
           全屏
-          <i
-            class="iconfont icon-full-screen rel"
-            style="top:1px; margin-left: 2px"
-          ></i>
+          <i class="iconfont icon-full-screen rel" style="top:1px; margin-left: 2px"></i>
         </a>
       </div>
     </div>
@@ -239,32 +207,17 @@
       <div class="separator"></div>
       <div class="item mh5">
         视图：{{ scale | number: ".0-2" }}%
-        <a
-          class="hover"
-          *ngIf="scale !== 100"
-          (click)="onMenu('scale', 1)"
-          style="padding-right: 0;"
-        >
+        <a class="hover" *ngIf="scale !== 100" (click)="onMenu('scale', 1)" style="padding-right: 0;">
           还原
         </a>
       </div>
       <div class="separator"></div>
-      <div
-        *ngIf="!locked"
-        class="item"
-        (click)="locked = !locked; onMenu('lock', -1)"
-        title="锁定"
-      >
+      <div *ngIf="!locked" class="item" (click)="locked = !locked; onMenu('lock', -1)" title="锁定">
         <a>
           <i class="iconfont icon-unlock"></i>
         </a>
       </div>
-      <div
-        *ngIf="locked"
-        class="item"
-        (click)="locked = !locked; onMenu('lock', 0)"
-        title="解锁"
-      >
+      <div *ngIf="locked" class="item" (click)="locked = !locked; onMenu('lock', 0)" title="解锁">
         <a>
           <i class="iconfont icon-lock"></i>
         </a>
@@ -272,28 +225,23 @@
       <div class="separator"></div>
       <div class="item lines">
         <a>
-          <i
-            class="iconfont icon-{{ lineName }}"
-            style="position: relative;top: .06rem;"
-          ></i>
+          <i class="iconfont icon-{{ lineName }}" style="position: relative;top: .06rem;"></i>
         </a>
         <div class="dropdown">
           <div class="item">
             默认连线类型：
           </div>
           <div class="item" *ngFor="let item of lineNames">
-            <a (click)="onSelLine(item)">
-              <i class="iconfont icon-{{ item }}"></i>
+            <a (click)="onSelLine(item.value)" style="justify-content:initial">
+              <span class="inline" style="width: .8rem;">{{item.name}}：</span>
+              <i class="iconfont icon-{{ item.value }}"></i>
             </a>
           </div>
         </div>
       </div>
       <div class="item lines">
         <a>
-          <i
-            class="iconfont icon-from-{{ fromArrowType }}"
-            style="position: relative;top: .06rem;"
-          ></i>
+          <i class="iconfont icon-from-{{ fromArrowType }}" style="position: relative;top: .06rem;"></i>
         </a>
         <div class="dropdown">
           <div class="item">
@@ -308,10 +256,7 @@
       </div>
       <div class="item lines">
         <a>
-          <i
-            class="iconfont icon-to-{{ toArrowType }}"
-            style="position: relative;top: .06rem;"
-          ></i>
+          <i class="iconfont icon-to-{{ toArrowType }}" style="position: relative;top: .06rem;"></i>
         </a>
         <div class="dropdown">
           <div class="item">
@@ -335,16 +280,9 @@
           <i class="iconfont icon-download"></i>
         </a>
       </div>
-      <div
-        class="item"
-        [class.disabled]="!file.id"
-        [title]="file.id && file.shared ? '已分享，点击取消' : '分享'"
-      >
+      <div class="item" [class.disabled]="!file.id" [title]="file.id && file.shared ? '已分享，点击取消' : '分享'">
         <a (click)="onMenu('share')">
-          <i
-            class="iconfont icon-share"
-            [class.primary]="file.id && file.shared"
-          ></i>
+          <i class="iconfont icon-share" [class.primary]="file.id && file.shared"></i>
         </a>
       </div>
     </div>
@@ -361,12 +299,8 @@
     <div class="flex ph20" *ngIf="user">
       <div class="item">
         <a [href]="urls.account" class="flex middle">
-          <ui-avatar
-            class="mr5"
-            [letters]="user.usernamePinyin"
-            [img]="user.avatarUrl"
-            [colors]="['#ff4d4f']"
-          ></ui-avatar>
+          <ui-avatar class="mr5" [letters]="user.usernamePinyin" [img]="user.avatarUrl" [colors]="['#ff4d4f']">
+          </ui-avatar>
           {{ user.username }}
           <i class="iconfont icon-angle-down"></i>
         </a>
@@ -452,14 +386,8 @@
       <p>邮箱：alsmile123@qq.com</p>
       <p>微信：alsmile123</p>
       <div class="text-center">
-        <a
-          href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1"
-          target="_blank"
-        >
-          <img
-            src="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1"
-            style="height: 3rem"
-          />
+        <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">
+          <img src="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" style="height: 3rem" />
         </a>
       </div>
     </div>

@@ -908,7 +908,7 @@ export class Topology {
     // In active line.
     for (const item of this.activeLayer.lines) {
       for (let i = 0; i < item.controlPoints.length; ++i) {
-        if (item.controlPoints[i].hit(pt)) {
+        if (item.controlPoints[i].hit(pt, 10)) {
           item.controlPoints[i].id = i;
           this.moveIn.type = MoveInType.LineControlPoint;
           this.moveIn.lineControlPoint = item.controlPoints[i];

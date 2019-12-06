@@ -30,7 +30,7 @@ export class UserHomeComponent implements OnInit, OnDestroy {
   edited: any = {};
 
   subRoute: any;
-  constructor(private service: UserHomeService, private router: Router, private activateRoute: ActivatedRoute) {}
+  constructor(private service: UserHomeService, private router: Router, private activateRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
@@ -111,7 +111,7 @@ export class UserHomeComponent implements OnInit, OnDestroy {
         if (ret && (await this.service.Del(item.id))) {
           this.list();
           _noticeService.notice({
-            body: '已经删除配置文件！',
+            body: '已删除文件！',
             theme: 'success'
           });
         }

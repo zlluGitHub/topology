@@ -130,3 +130,16 @@ function getControlPt(pt: Point, to: Point) {
 
   return point;
 }
+
+
+export function calcMindControlPoints(l: Line) {
+  const w = l.to.x - l.from.x;
+  const h = l.to.y - l.from.y;
+  if (l.from.direction === Direction.Left || l.from.direction === Direction.Right) {
+    l.controlPoints = [new Point(l.from.x, l.from.y + h / 2), new Point(l.from.x, l.to.y)];
+  } else {
+    l.controlPoints = [new Point(l.from.x + w / 2, l.from.y), new Point(l.to.x, l.from.y)];
+  }
+
+  Store.set('pts-' + l.id, null);
+}

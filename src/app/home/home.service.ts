@@ -4,10 +4,10 @@ import { HttpService } from 'src/app/http/http.service';
 
 @Injectable()
 export class HomeService {
-  constructor(protected http: HttpService) {}
+  constructor(protected http: HttpService) { }
 
   async Get(data: any) {
-    const ret = await this.http.QueryString({ fileId: data.fileId }).Get('/api/topology/' + data.id);
+    const ret = await this.http.QueryString({ version: data.version }).Get('/api/topology/' + data.id);
     if (ret.error) {
       return null;
     }

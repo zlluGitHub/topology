@@ -15,7 +15,7 @@
       </tr>
       <tr *ngFor="let item of data.list">
         <td class="text-center">
-          <a routerLink="/workspace" [queryParams]="{ id: item.id, fileId: item.fileId }">
+          <a routerLink="/workspace" [queryParams]="{ id: item.src, version: item.id}">
             <img [appImgAuthSrc]="item.image" />
           </a>
         </td>
@@ -24,20 +24,12 @@
         </td>
         <td>
           <div *ngIf="!item.edited" (dblclick)="onEditDesc($event, item)">{{ item.desc }}</div>
-          <textarea
-            *ngIf="item.edited"
-            class="input"
-            rows="4"
-            [(ngModel)]="desc"
-            (mousedown)="$event.stopPropagation()"
-            (keydown)="onEnterDesc($event)"
-            title="回车：保存修改；Ctrl + 回车：换行"
-            required
-          ></textarea>
+          <textarea *ngIf="item.edited" class="input" rows="4" [(ngModel)]="desc" (mousedown)="$event.stopPropagation()"
+            (keydown)="onEnterDesc($event)" title="回车：保存修改；Ctrl + 回车：换行" required></textarea>
         </td>
         <td>{{ item.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
         <td width="140">
-          <a class="mr15" routerLink="/workspace" [queryParams]="{ id: item.id, fileId: item.fileId }">
+          <a class="mr15" routerLink="/workspace" [queryParams]="{ id: item.src, version: item.id }">
             进入编辑
           </a>
           <a class="mr15" (click)="onDel(item)">
@@ -48,24 +40,17 @@
       <tr *ngIf="!data.count">
         <td class="gray text-center" colspan="10">
           暂无历史记录，VIP会员保存文件将保存历史记录。
-          <a routerLink="/workspace" [queryParams]="{ id: search.fileId }">去编辑</a>
+          <a routerLink="/workspace" [queryParams]="{ id: search.id }">去编辑</a>
         </td>
       </tr>
     </table>
 
     <div class="pv10 mb30" *ngIf="data.count">
-      <ui-pagination
-        [(pageIndex)]="search.pageIndex"
-        [(pageCount)]="search.pageCount"
-        [pageTotal]="data.count"
-      ></ui-pagination>
+      <ui-pagination [(pageIndex)]="search.pageIndex" [(pageCount)]="search.pageCount" [pageTotal]="data.count">
+      </ui-pagination>
     </div>
   </div>
-  <ui-loading
-    *ngIf="loading"
-    class="mt50"
-    tip="正在加载，请稍等（个人云服务器资源小，人多访问可能慢，欢迎资助）..."
-  ></ui-loading>
+  <ui-loading *ngIf="loading" class="mt50" tip="正在加载，请稍等（个人云服务器资源小，人多访问可能慢，欢迎资助）..."></ui-loading>
 
   <div *ngIf="!isVip" class="text-center gray mt50">
     <div class="inline text-left">

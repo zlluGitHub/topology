@@ -19,7 +19,7 @@ import { CoreService } from 'src/app/core/core.service';
 export class UserHistoryComponent implements OnInit, OnDestroy {
   name = '';
   search = {
-    fileId: '',
+    id: '',
     pageIndex: 1,
     pageCount: 5
   };
@@ -43,7 +43,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     private router: Router,
     private activateRoute: ActivatedRoute,
     private coreService: CoreService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.user = Store.get('user');
@@ -56,7 +56,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
 
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.name = params.get('name');
-      this.search.fileId = params.get('id');
+      this.search.id = params.get('id');
       this.search.pageIndex = +params.get('pageIndex') || 1;
       this.search.pageCount = +params.get('pageCount') || 5;
       this.list();

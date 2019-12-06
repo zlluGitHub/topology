@@ -3,13 +3,8 @@
     <div *ngFor="let item of tools">
       <div class="title">{{ item.group }}</div>
       <div class="buttons">
-        <a
-          *ngFor="let button of item.children"
-          [title]="button.name"
-          [draggable]="button.data"
-          (dragstart)="onDrag($event, button)"
-          (touchstart)="onTouchstart(button)"
-        >
+        <a *ngFor="let button of item.children" [title]="button.name" [draggable]="button.data"
+          (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
           <i class="iconfont {{ button.icon }}"></i>
         </a>
       </div>
@@ -21,31 +16,12 @@
       <div *ngIf="!selected">
         <div class="title">欢迎使用le5le-topology！</div>
         <div class="ml30 mb20 mt10">
-          <a
-            href="https://github.com/le5le-com/topology"
-            target="_blank"
-            class="block mt20 mb15"
-            style="color:#f60!important;text-decoration: underline;"
-            >喜欢，点击这里打个star吧</a
-          >
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank"
-            >使用教程</a
-          ><br />
-          <a
-            href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1"
-            target="_blank"
-            >微信交流群（大群）</a
-          ><br />
-          <a
-            href="http://topology.le5le.com/assets/img/topology_wechat2.jpg"
-            target="_blank"
-            >微信交流群2</a
-          ><br />
-          <a
-            href="https://www.yuque.com/alsmile/topology/faq#EVbCgt"
-            target="_blank"
-            >联系我们</a
-          >
+          <a href="https://github.com/le5le-com/topology" target="_blank" class="block mt20 mb15"
+            style="color:#f60!important;text-decoration: underline;">喜欢，点击这里打个star吧</a>
+          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
+          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群（大群）</a><br />
+          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">微信交流群2</a><br />
+          <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
         </div>
         <div class="title mt30">[Todo] 未来规划</div>
         <ul class="ml30 mb20 mt10">
@@ -68,23 +44,14 @@
         </div>
       </div>
       <div *ngIf="selected">
-        <app-props
-          [props]="selected"
-          [readonly]="readonly"
-          (ok)="onChangeProps($event)"
-          (animateChange)="onAnimateChange()"
-        ></app-props>
+        <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"
+          (animateChange)="onAnimateChange()"></app-props>
       </div>
     </div>
   </div>
 </div>
-<app-context-menu
-  [contextmenu]="contextmenu"
-  [canvas]="canvas"
-  [selNodes]="selNodes"
-  [selected]="selected"
-  [locked]="locked"
-></app-context-menu>
+<app-context-menu [contextmenu]="contextmenu" [canvas]="canvas" [selNodes]="selNodes" [selected]="selected"
+  [locked]="locked"></app-context-menu>
 
 <div class="modal" *ngIf="divNode">
   <div class="modal-content">

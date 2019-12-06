@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   data = {
     id: '',
-    fileId: '',
+    version: '',
     data: { nodes: [], lines: [] },
     name: '',
     desc: '',
@@ -163,11 +163,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.canvas = new Topology(this.workspace.nativeElement, this.canvasOptions);
       this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
         if (params.get('id')) {
-          this.onOpen({ id: params.get('id'), fileId: params.get('fileId') });
+          this.onOpen({ id: params.get('id'), version: params.get('version') });
         } else {
           this.data = {
             id: '',
-            fileId: '',
+            version: '',
             data: { nodes: [], lines: [] },
             name: '',
             desc: '',
@@ -267,7 +267,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   onNew() {
     this.data = {
       id: '',
-      fileId: '',
+      version: '',
       data: { nodes: [], lines: [] },
       name: '',
       desc: '',
@@ -279,7 +279,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.canvas.open(this.data.data);
   }
 
-  async onOpen(data: { id: string; fileId?: string }) {
+  async onOpen(data: { id: string; version?: string }) {
     const ret = await this.service.Get(data);
     if (!ret) {
       this.router.navigateByUrl('/workspace');
@@ -287,7 +287,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     Store.set('recently', {
       id: ret.id,
-      fileId: ret.fileId || '',
+      version: ret.version,
       image: ret.image,
       name: ret.name,
       desc: ret.desc
@@ -328,7 +328,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               Store.set('toArrowType', data.toArrowType);
               this.data = {
                 id: '',
-                fileId: '',
+                version: '',
                 data,
                 name: name,
                 desc: '',
@@ -349,6 +349,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    if (!this.canvas) {
+      return;
+    }
     this.data.data = this.canvas.data;
     this.canvas.toImage(null, null, async blob => {
       if (this.data.id && !this.coreService.isVip(this.user)) {
@@ -364,7 +367,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.data.image = file.url;
       const ret = await this.service.Save(this.data);
       if (ret) {
-        this.data.id = ret.id;
         Store.set('file', this.data);
         const _noticeService: NoticeService = new NoticeService();
         _noticeService.notice({
@@ -400,7 +402,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       Store.set('recently', {
         id: this.data.id,
-        fileId: this.data.fileId || '',
+        version: this.data.version,
         image: this.data.image,
         name: filename
       });
