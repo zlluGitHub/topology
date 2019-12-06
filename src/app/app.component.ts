@@ -74,6 +74,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     Store.subscribe('file', (file: any) => {
       this.locked = 0;
+      if (file && file.data) {
+        this.locked = file.data.locked || 0;
+      }
       this.file = file;
     });
 

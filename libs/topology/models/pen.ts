@@ -49,6 +49,10 @@ export abstract class Pen {
 
   locked = false;
 
+  link: string;
+  markdown: string;
+  elementId: string;
+
   // User data.
   data: any;
 
@@ -88,6 +92,9 @@ export abstract class Pen {
       this.animatePlay = json.animatePlay;
       this.data = json.data || '';
       this.locked = json.locked;
+      this.link = json.link;
+      this.markdown = json.markdown;
+      this.elementId = json.elementId;
     } else {
       this.id = s8();
       this.textOffsetX = 0;

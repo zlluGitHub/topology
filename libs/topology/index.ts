@@ -1,6 +1,7 @@
 import { Store, Observer } from 'le5le-store';
 
 import { Options } from './options';
+import { Pen } from './models/pen';
 import { Node } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
@@ -63,6 +64,7 @@ export class Topology {
 
   touchedNode: any;
   lastHoverNode: Node;
+  lastHoverLine: Line;
   input = document.createElement('textarea');
   inputNode: Node;
   mouseDown: { x: number; y: number };
@@ -83,6 +85,10 @@ export class Topology {
       lineControlPoint: null
     };
   nodesMoved = false;
+
+  private tip = '';
+  tipElem: HTMLElement;
+  private tipExternElem: HTMLElement;
 
   private scheduledAnimationFrame = false;
 
@@ -221,6 +227,8 @@ export class Topology {
     this.input.style.border = '1px solid #cdcdcd';
     this.input.style.resize = 'none';
     this.parentElem.appendChild(this.input);
+
+    this.createTip();
 
     this.cache();
   }
@@ -466,14 +474,32 @@ export class Topology {
           if (!this.lastHoverNode && this.options.on) {
             this.options.on('moveInNode', this.moveIn.hoverNode);
           }
+
+          this.showTip(this.moveIn.hoverNode, pos);
         } else if (this.lastHoverNode) {
           // Send a move event.
           if (this.options.on) {
             this.options.on('moveOutNode', this.moveIn.hoverNode);
           }
 
+          this.hideTip();
+
           // Clear hover anchors.
           this.hoverLayer.node = null;
+        }
+
+        if (this.moveIn.hoverLine) {
+          if (!this.lastHoverLine && this.options.on) {
+            this.options.on('moveInLine', this.moveIn.hoverLine);
+          }
+
+          this.showTip(this.moveIn.hoverLine, pos);
+        } else if (this.lastHoverLine) {
+          if (this.options.on) {
+            this.options.on('moveOutLine', this.moveIn.hoverLine);
+          }
+
+          this.hideTip();
         }
 
         if (this.moveIn.type === MoveInType.LineControlPoint) {
@@ -637,6 +663,8 @@ export class Topology {
           if (this.options.on) {
             this.options.on('line', this.moveIn.hoverLine);
           }
+
+          this.link(this.moveIn.hoverLine);
         }
 
         Store.set('activeLine', this.moveIn.hoverLine);
@@ -670,6 +698,10 @@ export class Topology {
         );
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.Nodes:
+        if (!e.ctrlKey) {
+          this.link(this.moveIn.hoverNode);
+        }
+
         if (!this.moveIn.hoverNode || this.activeLayer.hasNode(this.moveIn.hoverNode)) {
           break;
         }
@@ -873,6 +905,7 @@ export class Topology {
 
   private getMoveIn(pt: Point) {
     this.lastHoverNode = this.moveIn.hoverNode;
+    this.lastHoverLine = this.moveIn.hoverLine;
     this.moveIn.type = MoveInType.None;
     this.moveIn.hoverNode = null;
     this.moveIn.lineControlPoint = null;
@@ -1807,6 +1840,110 @@ export class Topology {
   alignNodes(align: string) {
     this.activeLayer.alignNodes(align);
     this.render();
+  }
+
+  private link(data: Pen) {
+    if (!data || !data.link || !this.data.locked) {
+      return;
+    }
+
+    window.open(data.link, '_blank');
+
+    this.mouseDown = null;
+    setTimeout(() => {
+      this.divLayer.canvas.focus();
+    }, 1000);
+  }
+
+  private createTip() {
+    this.tipElem = document.createElement('div');
+    this.tipElem.style.position = 'absolute';
+    this.tipElem.style.zIndex = '-1';
+    this.tipElem.style.left = '-9999px';
+    this.tipElem.style.width = '500px';
+    this.tipElem.style.outline = 'none';
+    this.tipElem.style.border = '1px solid #d0d0d0';
+    this.tipElem.style.backgroundColor = '#fff';
+    this.tipElem.style.padding = '10px 15px';
+    this.tipElem.style.overflowY = 'auto';
+    document.body.appendChild(this.tipElem);
+  }
+
+
+
+  private showTip(data: Pen, pos: { x: number, y: number }) {
+    if (!this.data.locked || !data || (!data.markdown && !data.elementId) || data.id === this.tip) {
+      return;
+    }
+
+    if (data.elementId) {
+      this.tipExternElem = document.getElementById(data.elementId);
+    }
+
+    const parentRect = this.parentElem.getBoundingClientRect();
+    const w = data.markdown ? 500 : this.tipExternElem.getBoundingClientRect().width;
+    let x = pos.x + parentRect.left - w / 2;
+    let y = pos.y + parentRect.top;
+    if (data instanceof Node) {
+      x = parentRect.left + (data as Node).rect.center.x - w / 2;
+      y = parentRect.top + (data as Node).rect.ey;
+    }
+
+    if (x < 0) {
+      x = 0;
+    }
+    if (x + w > document.body.clientWidth) {
+      x = document.body.clientWidth - w;
+    }
+    if (y + 260 > document.body.clientHeight) {
+      y = document.body.clientHeight - 260;
+    }
+
+    if (data.markdown) {
+      this.tipElem.style.height = '30px';
+      const marked = (window as any).marked;
+      if (marked) {
+        this.tipElem.innerHTML = marked(data.markdown);
+      } else {
+        this.tipElem.innerHTML = data.markdown;
+      }
+
+      if (this.tipElem.scrollHeight < 260) {
+        this.tipElem.style.height = this.tipElem.scrollHeight + 10 + 'px';
+      } else {
+        this.tipElem.style.height = '260px';
+      }
+      const a = this.tipElem.getElementsByTagName('A');
+      for (let i = 0; i < a.length; ++i) {
+        a[i].setAttribute('target', '_blank');
+      }
+
+      this.tipElem.style.left = x + 'px';
+      this.tipElem.style.top = y + 'px';
+      this.tipElem.style.zIndex = '100';
+    } else {
+      this.tipExternElem.style.left = x + 'px';
+      this.tipExternElem.style.top = y + 'px';
+      this.tipExternElem.style.zIndex = '100';
+    }
+
+    this.tip = data.id;
+  }
+
+  private hideTip() {
+    if (!this.tip) {
+      return;
+    }
+
+    this.tipElem.style.left = '-9999px';
+    this.tipElem.style.zIndex = '-1';
+    if (this.tipExternElem) {
+      this.tipExternElem.style.left = '-9999px';
+      this.tipExternElem.style.zIndex = '-1';
+      this.tipExternElem = null;
+    }
+
+    this.tip = '';
   }
 
   destroy() {

@@ -46,6 +46,9 @@ export interface Props {
     tags: string[];
     data?: any;
     locked?: boolean;
+    link?: string;
+    markdown?: string;
+    elementId?: string;
 
     // Node
     rect?: Rect;

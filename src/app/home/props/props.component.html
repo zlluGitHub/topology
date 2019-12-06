@@ -1277,7 +1277,8 @@
       </div>
     </div>
     <div class="group">
-      <div class="title">标签</div>
+      <div class="title">数据</div>
+      <div class="mt5">标签</div>
       <div>
         <label class="label mr5 mb5" *ngFor="let item of props.data.tags; let i = index">
           {{ item }}
@@ -1288,7 +1289,20 @@
         <input name="tag" class="input full" [(ngModel)]="tag" placeholder="按回车键添加"
           (keydown.enter)="props.data.tags.push(tag); tag = ''" />
       </div>
-      <div class="title mt5">自定义数据</div>
+      <div class="mt5">链接（只读模式下点击跳转）</div>
+      <div>
+        <input name="link" class="input full" [(ngModel)]="props.data.link" (change)="onChangeProp()" [readonly]="readonly" uiIsUrl="true" />
+      </div>
+      <div class="mt5">鼠标移动提示 - Markdown/html </div>
+      <div>
+        <textarea name="markdown" class="input full" [(ngModel)]="props.data.markdown" rows="3" [readonly]="readonly"
+          (change)="onChangeProp()"></textarea>
+      </div>
+      <div class="mt5">鼠标移动提示 - HTMLElement ID</div>
+      <div>
+        <input name="elementId" class="input full" [(ngModel)]="props.data.elementId" [readonly]="readonly" (change)="onChangeProp()" />
+      </div>
+      <div class="mt5">自定义数据</div>
       <div>
         <textarea name="data" class="input full" [(ngModel)]="props.data.data" rows="3" [readonly]="readonly"
           (change)="onChangeProp()"></textarea>
