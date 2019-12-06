@@ -13,8 +13,8 @@ export class Line extends Pen {
   controlPoints: Point[] = [];
   fromArrow: string;
   toArrow: string;
-  fromArrowSize = 10;
-  toArrowSize = 10;
+  fromArrowSize = 5;
+  toArrowSize = 5;
   fromArrowColor: string;
   toArrowColor: string;
 
@@ -124,7 +124,7 @@ export class Line extends Pen {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
-    const scale = Store.get('LT:scale');
+    const scale = Store.get('LT:scale') || 1;
     if (this.fromArrow && drawArrowFns[this.fromArrow]) {
       ctx.save();
       ctx.beginPath();

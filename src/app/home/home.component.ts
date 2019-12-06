@@ -373,14 +373,17 @@ export class HomeComponent implements OnInit, OnDestroy {
           theme: 'success'
         });
 
-        Store.set('recently', {
-          id: this.data.id,
-          image: this.data.image,
-          name: this.data.name,
-          desc: this.data.desc
-        });
-
-        this.router.navigate(['/workspace'], { queryParams: { id: this.data.id } });
+        if (!this.data.id) {
+          this.data.id = ret.id;
+          this.router.navigate(['/workspace'], { queryParams: { id: this.data.id } });
+        } else {
+          Store.set('recently', {
+            id: this.data.id,
+            image: this.data.image,
+            name: this.data.name,
+            desc: this.data.desc
+          });
+        }
       }
     });
   }
@@ -465,7 +468,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           data
         };
         this.locked = data.locked;
-        this.readonly = this.locked;
+        this.readonly = this.locked || !!this.canvas.data.locked;
         break;
       case 'line':
       case 'addLine':
@@ -474,7 +477,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           data
         };
         this.locked = data.locked;
-        this.readonly = this.locked;
+        this.readonly = this.locked || !!this.canvas.data.locked;
         break;
       case 'multi':
         this.locked = true;

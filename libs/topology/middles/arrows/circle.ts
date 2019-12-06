@@ -2,7 +2,7 @@ import { Point } from '../../models/point';
 
 export function circleSolid(ctx: CanvasRenderingContext2D, from: Point, to: Point, size: number, fillStyle?: string) {
   size += ctx.lineWidth * 3;
-  const r = size / 3;
+  const r = size / 2;
   if (ctx.lineWidth < 2) {
     ctx.lineWidth = 2;
   }

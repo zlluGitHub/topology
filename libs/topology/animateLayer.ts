@@ -88,18 +88,10 @@ export class AnimateLayer {
         const l = new Line(item);
         l.isAnimate = true;
         if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
-          if (l.fromArrow.indexOf('circle') === 0) {
-            l.animateFromSize = l.fromArrowSize + l.lineWidth * 3;
-          } else {
-            l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
-          }
+          l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
         }
         if (l.toArrow && l.toArrow.indexOf('line') < 0) {
-          if (l.toArrow.indexOf('circle') === 0) {
-            l.animateToSize = l.toArrowSize + l.lineWidth * 3;
-          } else {
-            l.animateToSize = l.toArrowSize + l.lineWidth * 5;
-          }
+          l.animateToSize = l.toArrowSize + l.lineWidth * 5;
         }
         l.animateStart = item.animateStart;
         l.lineCap = 'round';
