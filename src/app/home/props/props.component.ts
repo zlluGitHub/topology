@@ -160,31 +160,31 @@ export class PropsComponent implements OnInit, OnChanges {
     name: 'name',
     list: [
       {
-        id: '1',
+        id: 'upDown',
         name: '上下跳动'
       },
       {
-        id: '2',
+        id: 'leftRight',
         name: '左右跳动'
       },
       {
-        id: '3',
+        id: 'heart',
         name: '心跳'
       },
       {
-        id: '4',
+        id: 'success',
         name: '成功'
       },
       {
-        id: '5',
+        id: 'warning',
         name: '警告'
       },
       {
-        id: '6',
+        id: 'error',
         name: '错误'
       },
       {
-        id: '7',
+        id: 'show',
         name: '炫耀'
       },
       {
@@ -199,15 +199,15 @@ export class PropsComponent implements OnInit, OnChanges {
     name: 'name',
     list: [
       {
-        id: '1',
+        id: 'beads',
         name: '水珠流动'
       },
       {
-        id: '2',
+        id: 'dot',
         name: '圆点'
       },
       {
-        id: '3',
+        id: 'comet',
         name: '彗星'
       }
     ]
@@ -650,7 +650,7 @@ export class PropsComponent implements OnInit, OnChanges {
     this.props.data.animateFrames = [];
     const state = Node.cloneState(this.props.data);
     switch (this.props.data.animateType) {
-      case '1':
+      case 'upDown':
         state.rect.y -= 10;
         state.rect.ey -= 10;
         this.props.data.animateFrames.push({
@@ -669,7 +669,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state: Node.cloneState(state)
         });
         break;
-      case '2':
+      case 'leftRight':
         state.rect.x -= 10;
         state.rect.ex -= 10;
         this.props.data.animateFrames.push({
@@ -704,7 +704,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state: Node.cloneState(this.props.data)
         });
         break;
-      case '3':
+      case 'heart':
         state.rect.x -= 5;
         state.rect.ex += 5;
         state.rect.y -= 5;
@@ -722,7 +722,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state: Node.cloneState(this.props.data)
         });
         break;
-      case '4':
+      case 'success':
         state.strokeStyle = '#237804';
         this.props.data.animateFrames.push({
           duration: 100,
@@ -753,7 +753,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state
         });
         break;
-      case '5':
+      case 'warning':
         state.strokeStyle = '#fa8c16';
         state.dash = 2;
         this.props.data.animateFrames.push({
@@ -776,7 +776,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state: Node.cloneState(state)
         });
         break;
-      case '6':
+      case 'error':
         state.strokeStyle = '#cf1322';
         state.fillStyle = '#cf132222';
         this.props.data.animateFrames.push({
@@ -785,7 +785,7 @@ export class PropsComponent implements OnInit, OnChanges {
           state
         });
         break;
-      case '7':
+      case 'show':
         state.strokeStyle = '#fa541c';
         state.rotate = -10;
         this.props.data.animateFrames.push({

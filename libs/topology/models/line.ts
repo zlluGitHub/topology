@@ -92,12 +92,12 @@ export class Line extends Pen {
   draw(ctx: CanvasRenderingContext2D) {
     if (this.animateDot) {
       ctx.fillStyle = this.strokeStyle;
-      if (this.animateType === '2') {
+      if (this.animateType === 'dot') {
         ctx.beginPath();
         ctx.arc(this.animateDot.x, this.animateDot.y, this.animateDotSize, 0, 2 * Math.PI, false);
         ctx.fill();
         return;
-      } else if (this.animateType === '3') {
+      } else if (this.animateType === 'comet') {
         const bulles = this.getBubbles();
         ctx.save();
         for (const item of bulles) {
@@ -120,7 +120,7 @@ export class Line extends Pen {
       ctx.restore();
     }
 
-    if ((!this.isAnimate || this.animateType !== '3') && drawLineFns[this.name]) {
+    if ((!this.isAnimate || this.animateType !== 'comet') && drawLineFns[this.name]) {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
@@ -308,7 +308,7 @@ export class Line extends Pen {
     this.animatePos += this.animateSpan;
     this.animateDot = null;
     switch (this.animateType) {
-      case '1':
+      case 'beads':
         this.lineDashOffset = -this.animatePos;
         let len = this.lineWidth;
         if (len < 5) {
@@ -317,8 +317,8 @@ export class Line extends Pen {
         this.lineDash = [len, len * 2];
         break;
       // tslint:disable-next-line:no-switch-case-fall-through
-      case '2':
-      case '3':
+      case 'dot':
+      case 'comet':
         this.lineDash = null;
         this.animateDot = this.getPointByPos(this.animatePos + this.animateFromSize);
         break;
