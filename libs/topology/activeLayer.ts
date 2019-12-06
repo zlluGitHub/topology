@@ -5,6 +5,7 @@ import { Line } from './models/line';
 import { Rect } from './models/rect';
 import { Point } from './models/point';
 import { TopologyData } from './models/data';
+import { Lock } from './models/status';
 
 import { Options } from './options';
 
@@ -395,7 +396,7 @@ export class ActiveLayer {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    if (this.data.locked < -1) {
+    if (this.data.locked > Lock.Readonly) {
       return;
     }
 

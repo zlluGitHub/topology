@@ -2,6 +2,7 @@ import { Store, Observer } from 'le5le-store';
 import { Options } from './options';
 import { Node } from './models/node';
 import { TopologyData } from './models/data';
+import { Lock } from './models/status';
 
 export class DivLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -338,7 +339,7 @@ export class DivLayer {
       this.videos[node.id].media.style.width = '100%';
       this.videos[node.id].media.style.height = '100%';
     }
-    if (this.data.locked > -1) {
+    if (this.data.locked < Lock.Readonly) {
       elem.style.userSelect = 'none';
       elem.style.pointerEvents = 'none';
     } else {

@@ -87,7 +87,7 @@ export class HoverLayer {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    if (this.data.locked < 0) {
+    if (this.data.locked) {
       return;
     }
     ctx.save();

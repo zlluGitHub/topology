@@ -1,5 +1,6 @@
 import { Node } from './node';
 import { Line } from './line';
+import { Lock } from './status';
 
 export class TopologyData {
   nodes: Node[] = [];
@@ -8,7 +9,7 @@ export class TopologyData {
   fromArrowType = '';
   toArrowType = 'triangleSolid';
   scale = 1;
-  locked = 0;
+  locked = Lock.None;
   constructor(json?: any) {
     if (json) {
       this.nodes = [];
@@ -23,7 +24,7 @@ export class TopologyData {
       this.fromArrowType = json.fromArrowType || '';
       this.toArrowType = json.toArrowType || 'triangleSolid';
       this.scale = json.scale || 1;
-      this.locked = json.locked || 0;
+      this.locked = json.locked || Lock.None;
     }
   }
 }

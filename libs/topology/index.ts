@@ -5,6 +5,7 @@ import { Node } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
+import { Lock } from './models/status';
 import { drawNodeFns, drawLineFns } from './middles/index';
 import { Offscreen } from './offscreen';
 import { RenderLayer } from './renderLayer';
@@ -277,7 +278,7 @@ export class Topology {
   }
 
   addNode(node: Node | any, focus = false): boolean {
-    if (this.data.locked < 0 || !drawNodeFns[node.name]) {
+    if (this.data.locked || !drawNodeFns[node.name]) {
       return false;
     }
 
@@ -387,7 +388,7 @@ export class Topology {
 
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
-    this.lock(data.locked || 0);
+    this.lock(data.locked || Lock.None);
 
     if (data.lineName) {
       this.data.lineName = data.lineName;
@@ -436,7 +437,7 @@ export class Topology {
   }
 
   private onMouseMove = (e: MouseEvent) => {
-    if (this.scheduledAnimationFrame || this.data.locked < -2) {
+    if (this.scheduledAnimationFrame || this.data.locked === Lock.NoEvent) {
       return;
     }
 
@@ -445,7 +446,7 @@ export class Topology {
       return false;
     }
 
-    if (this.data.locked < 0 && this.mouseDown && this.moveIn.type !== MoveInType.None) {
+    if (this.data.locked && this.mouseDown && this.moveIn.type !== MoveInType.None) {
       return;
     }
 
@@ -880,7 +881,7 @@ export class Topology {
     this.hoverLayer.nodeRect = null;
 
     if (
-      this.data.locked > -1 &&
+      !this.data.locked &&
       !this.activeLayer.locked() &&
       this.activeLayer.rotateCPs[0] &&
       this.activeLayer.rotateCPs[0].hit(pt, 15)
@@ -970,7 +971,7 @@ export class Topology {
       }
       this.moveIn.hoverNode = node;
       this.moveIn.type = MoveInType.Nodes;
-      if (this.data.locked < 0 || node.locked) {
+      if (this.data.locked || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
         return true;
       }
@@ -994,7 +995,7 @@ export class Topology {
       if (this.hoverLayer.nodeRect) {
         this.hoverLayer.nodeRect = node.rect;
       }
-      if (this.data.locked < 0 || node.locked) {
+      if (this.data.locked || node.locked) {
         return true;
       }
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
@@ -1014,7 +1015,7 @@ export class Topology {
     if (line.from.hit(point, 10)) {
       this.moveIn.type = MoveInType.LineFrom;
       this.moveIn.hoverLine = line;
-      if (this.data.locked < 0 || line.locked) {
+      if (this.data.locked || line.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
       } else {
         this.divLayer.canvas.style.cursor = 'move';
@@ -1025,7 +1026,7 @@ export class Topology {
     if (line.to.hit(point, 10)) {
       this.moveIn.type = MoveInType.LineTo;
       this.moveIn.hoverLine = line;
-      if (this.data.locked < 0 || line.locked) {
+      if (this.data.locked || line.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
       } else {
         this.divLayer.canvas.style.cursor = 'move';
