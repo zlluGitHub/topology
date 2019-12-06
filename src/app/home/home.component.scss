@@ -2,6 +2,8 @@
 @import "~le5le-ui/variables";
 
 $color-border: #ddd;
+$tools-width: 1.65rem;
+$props-width: 2.4rem;
 
 :host {
   display: block;
@@ -16,7 +18,7 @@ $color-border: #ddd;
 
 .tools {
   flex-shrink: 0;
-  width: 1.65rem;
+  width: $tools-width;
   background-color: #f8f8f8;
   border-right: 1px solid $color-border;
   overflow-y: auto;
@@ -55,11 +57,32 @@ $color-border: #ddd;
   position: relative;
   overflow: auto;
   background: #fff;
+
+  & > .flex {
+    position: fixed;
+    background: transparent;
+    top: $head-height;
+    left: $tools-width;
+    right: $props-width;
+
+    div {
+      background: transparent;
+    }
+
+    .icon-edit {
+      font-size: 0.12rem;
+      margin-left: 0.05rem;
+      cursor: pointer;
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
 }
 
 .props {
   flex-shrink: 0;
-  width: 2.4rem;
+  width: $props-width;
   background-color: #f8f8f8;
   border-left: 1px solid $color-border;
   overflow-y: auto;

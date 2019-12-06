@@ -1,4 +1,4 @@
-<div class="page" (click)="onClick()">
+<div class="page">
   <div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
     <div class="item pointer" (click)="onHome()">
       <img src="/assets/img/favicon.ico" />
@@ -184,17 +184,7 @@
         </div>
       </div>
     </div>
-    <div class="full text-center">
-      <div *ngIf="editMode">
-        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" (ngSubmit)="onSubmit(myForm.invalid)"
-          [uiTouchForm]="myForm" (click)="$event.stopPropagation()">
-          <input name="filename" #filenameInput class="input" [(ngModel)]="filename" required />
-        </form>
-        <div class="inline" *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击修改">
-          {{ filename || "空白文件" }}
-        </div>
-      </div>
-    </div>
+    <div class="full"></div>
     <div class="flex">
       <div class="item mh5">
         <a (click)="onMenu('fullscreen', 1)" style="padding-right: 0;">

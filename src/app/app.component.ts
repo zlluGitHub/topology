@@ -22,7 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
     image: '',
     shared: false
   };
-  filename = '';
   list = {
     recently: []
   };
@@ -58,7 +57,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   menuClicked = false;
   showFigure = false;
-  editFilename = false;
   editMode = false;
   locked = 0;
   scale = 100;
@@ -77,8 +75,6 @@ export class AppComponent implements OnInit, OnDestroy {
     Store.subscribe('file', (file: any) => {
       this.locked = 0;
       this.file = file;
-      this.filename = file.name;
-      this.editFilename = false;
     });
 
     Store.subscribe('lineName', (lineName: string) => {
@@ -216,31 +212,6 @@ export class AppComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showFigure = false;
     }, 800);
-  }
-
-  onEditFile(input: HTMLElement) {
-    this.editFilename = true;
-    setTimeout(() => {
-      input.focus();
-    });
-  }
-
-  async onSubmit(invalid: boolean) {
-    if (invalid) {
-      return;
-    }
-
-    Store.set('clickMenu', {
-      event: 'filename',
-      data: this.filename
-    });
-  }
-
-  onClick() {
-    if (this.editFilename) {
-      this.onSubmit(!this.filename);
-    }
-    this.editFilename = false;
   }
 
   onHome() {

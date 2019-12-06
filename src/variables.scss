@@ -1,8 +1,9 @@
 // logo color
 // #f90  #fa8c16
 
-$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
-  'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !default;
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+  "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+  sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 // $font-size: 0.14rem !default;
 $color: #314659 !default;
 $color-title: #0d1a26 !default;
@@ -53,3 +54,5 @@ $header-footer-color: #f8f8f8 !default;
 $header-footer-border: 1px solid #d9d9d9 !default;
 
 $notice-input-color: #314659 !default;
+
+$head-height: 0.4rem;

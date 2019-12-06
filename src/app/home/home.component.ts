@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     id: '',
     version: '',
     data: { nodes: [], lines: [] },
-    name: '',
+    name: '空白文件',
     desc: '',
     image: '',
     userId: '',
@@ -58,6 +58,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   contextmenu: any;
   selNodes: any;
   locked = false;
+
+  editFilename = false;
 
   divNode: any;
 
@@ -126,9 +128,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         case 'parse':
           this.canvas.parse();
           break;
-        case 'filename':
-          this.onSaveFilename(menu.data);
-          break;
         case 'share':
           this.onShare();
           break;
@@ -169,7 +168,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             id: '',
             version: '',
             data: { nodes: [], lines: [] },
-            name: '',
+            name: '空白文件',
             desc: '',
             image: '',
             userId: '',
@@ -269,7 +268,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       id: '',
       version: '',
       data: { nodes: [], lines: [] },
-      name: '',
+      name: '空白文件',
       desc: '',
       image: '',
       userId: '',
@@ -386,26 +385,28 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onSaveFilename(filename: string) {
-    this.data.name = filename;
-    Store.set('file', this.data);
+  onEditFile(input: HTMLElement) {
+    this.editFilename = true;
+    setTimeout(() => {
+      input.focus();
+    });
+  }
 
-    if (this.data.id) {
-      if (
-        !(await this.service.Patch({
-          id: this.data.id,
-          name: filename
-        }))
-      ) {
-        return;
-      }
+  async onSaveFilename() {
+    if (!this.data.name) {
+      return;
+    }
 
-      Store.set('recently', {
-        id: this.data.id,
-        version: this.data.version,
-        image: this.data.image,
-        name: filename
-      });
+    if (!this.data.id) {
+      this.editFilename = false;
+      return;
+    }
+
+    if (await this.service.Patch({
+      id: this.data.id,
+      name: this.data.name
+    })) {
+      this.editFilename = false;
     }
   }
 

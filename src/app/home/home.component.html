@@ -10,7 +10,23 @@
       </div>
     </div>
   </div>
-  <div class="full" #workspace (contextmenu)="onContextMenu($event)"></div>
+  <div class="full">
+    <div #workspace (contextmenu)="onContextMenu($event)"></div>
+    <div class="flex ph15 pv5">
+      <div class="full flex">
+        文件名：
+        <label *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击编辑，点击空白保存">{{data.name}}</label>
+        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" [uiTouchForm]="myForm" title="双击编辑，点击空白保存">
+          <input name="filename" #filenameInput class="input" [(ngModel)]="data.name" (blur)="onSaveFilename()"
+            required />
+        </form>
+        <i class="iconfont icon-edit" *ngIf="!editFilename" (click)="onEditFile(filenameInput)" title="双击编辑，点击空白保存"></i>
+      </div>
+      <div *ngIf="data.id">
+        <a routerLink="/user/history" [queryParams]="{ id: data.id, name: data.name }">-> 文件历史</a>
+      </div>
+    </div>
+  </div>
   <div class="props">
     <div class="pv5">
       <div *ngIf="!selected">
