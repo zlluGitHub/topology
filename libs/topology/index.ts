@@ -593,12 +593,14 @@ export class Topology {
               this.moveIn.hoverLine
             );
           }
+          this.animateLayer.start(true);
           break;
         case MoveInType.Rotate:
           if (this.activeLayer.nodes.length) {
             this.activeLayer.offsetRotate(this.getAngle(pos));
             this.activeLayer.updateLines();
           }
+          this.animateLayer.start(true);
           break;
       }
 
