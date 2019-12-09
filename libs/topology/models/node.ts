@@ -91,8 +91,15 @@ export class Node extends Pen {
   // 0 - 人工播放；1 - auto自动播放；2 - animate play
   play: number;
   playLoop: boolean;
-  iframe: string;
   nextPlay: string;
+
+  iframe: string;
+  // 加载外部dom id
+  elementId: string;
+  // 外部dom是否完成初始化（用于第三方库辅助变量）
+  elementLoaded: any;
+  // 外部dom是否已经渲染。当需要重绘时，设置为false（用于第三方库辅助变量）
+  elementRendered: boolean;
 
   imgLoaded = false;
   constructor(json: any) {
@@ -178,6 +185,7 @@ export class Node extends Pen {
     this.animateType = json.animateType ? json.animateType : json.animateDuration ? 'custom' : '';
 
     this.iframe = json.iframe;
+    this.elementId = json.elementId;
     this.audio = json.audio;
     this.video = json.video;
     this.play = json.play;
@@ -213,7 +221,7 @@ export class Node extends Pen {
 
     this.calcAnchors();
 
-    if (this.audio || this.video || this.iframe || this.hasGif()) {
+    if (this.audio || this.video || this.iframe || this.elementId || this.hasGif()) {
       Store.set('LT:addDiv', this);
     }
   }

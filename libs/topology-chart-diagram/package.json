@@ -1,16 +1,15 @@
 {
-  "name": "topology-activity-diagram",
-  "version": "0.0.5",
-  "description": "A activity diagram tool using le5le-topology.",
+  "name": "topology-chart-diagram",
+  "version": "0.0.1",
+  "description": "A chart tool using le5le-topology.",
   "main": "index.js",
   "scripts": {
-    "copy": "copyfiles  package.json ../../dist/topology-activity-diagram/",
+    "copy": "copyfiles  package.json ../../dist/topology-chart-diagram/",
     "build": "tsc && npm run copy"
   },
   "keywords": [
     "topology",
-    "activity",
-    "diagram",
+    "chart",
     "canvas"
   ],
   "author": "alsmile123@qq.com",
@@ -22,6 +21,7 @@
   "bugs": {
     "url": "https://github.com/le5le-com/topology/issues"
   },
+  "homepage": "https://github.com/le5le-com/topology#readme",
   "devDependencies": {
     "copyfiles": "^2.1.1",
     "typescript": "~3.4.3"

@@ -9,3 +9,4 @@ export * from './manually';
 export * from './display';
 export * from './parallel';
 export * from './comment';
+export * from './register';

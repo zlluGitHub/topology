@@ -1,2 +1,2 @@
-export * from './class';
+export * from './g2';
 export * from './register';

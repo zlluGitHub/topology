@@ -1,4 +1,5 @@
 import { Point } from './models/point';
+import { Node } from './models/node';
 
 export function pointInRect(point: Point, vertices: Point[]): boolean {
   if (vertices.length < 3) {
@@ -130,4 +131,24 @@ export function abs(num: number, percent: number | string): number {
   percent = (percent as string).substr(0, (percent as string).length - 1);
 
   return Math.round((num * +percent) / 100);
+}
+
+export function createDiv(node: Node) {
+  const div = document.createElement('div');
+  div.style.position = 'absolute';
+  div.style.outline = 'none';
+  div.style.left = '-9999px';
+  div.style.bottom = '-9999px';
+  div.style.width = node.rect.width + 'px';
+  div.style.height = node.rect.height + '2px';
+}
+
+export function loadJS(url: string, callback?: () => void) {
+  const loaderScript = document.createElement('script');
+  loaderScript.type = 'text/javascript';
+  loaderScript.src = url;
+  if (callback) {
+    loaderScript.addEventListener('load', callback);
+  }
+  document.body.appendChild(loaderScript);
 }
