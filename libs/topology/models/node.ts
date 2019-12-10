@@ -221,6 +221,10 @@ export class Node extends Pen {
 
     this.calcAnchors();
 
+    this.addToDiv();
+  }
+
+  addToDiv() {
     if (this.audio || this.video || this.iframe || this.elementId || this.hasGif()) {
       Store.set('LT:addDiv', this);
     }

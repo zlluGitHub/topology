@@ -1,3 +1,5 @@
+import { Store } from 'le5le-store';
+
 import { Point } from './models/point';
 import { Node } from './models/node';
 
@@ -141,14 +143,25 @@ export function createDiv(node: Node) {
   div.style.bottom = '-9999px';
   div.style.width = node.rect.width + 'px';
   div.style.height = node.rect.height + '2px';
+  if (node.elementId) {
+    div.id = node.elementId;
+  }
+
+  return div;
 }
 
-export function loadJS(url: string, callback?: () => void) {
+export function loadJS(url: string, callback?: () => void, render?: boolean) {
   const loaderScript = document.createElement('script');
   loaderScript.type = 'text/javascript';
   loaderScript.src = url;
-  if (callback) {
-    loaderScript.addEventListener('load', callback);
-  }
+  loaderScript.addEventListener('load', () => {
+    if (callback) {
+      callback();
+    }
+    if (render) {
+      Store.set('LT:render', true);
+    }
+  });
+
   document.body.appendChild(loaderScript);
 }

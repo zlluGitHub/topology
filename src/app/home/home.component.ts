@@ -364,6 +364,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         return;
       }
       this.data.image = file.url;
+
       const ret = await this.service.Save(this.data);
       if (ret) {
         Store.set('file', this.data);

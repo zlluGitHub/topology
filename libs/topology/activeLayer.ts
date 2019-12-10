@@ -226,6 +226,7 @@ export class ActiveLayer {
       item.rect.floor();
       item.rect.calceCenter();
       item.init();
+      item.elementRendered = false;
       this.updateChildren(item);
       ++i;
     }
@@ -416,6 +417,7 @@ export class ActiveLayer {
 
     for (const item of this.nodes) {
       const tmp = new Node(item);
+      tmp.data = null;
       tmp.fillStyle = null;
       tmp.bkType = 0;
       tmp.icon = '';

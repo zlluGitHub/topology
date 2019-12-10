@@ -1,2 +1,2 @@
-export * from './g2';
+export * from './echarts';
 export * from './register';

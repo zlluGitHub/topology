@@ -39,6 +39,11 @@ export class HomeService {
   }
 
   async Save(data: any) {
+    data = Object.assign({}, data);
+    for (const item of data.data.nodes) {
+      delete item.elementLoaded;
+      delete item.elementRendered;
+    }
     let ret: any;
     if (!data.name) {
       data.name = `Created at ${new Date().toLocaleString()}`;

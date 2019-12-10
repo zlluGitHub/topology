@@ -1,13 +1,12 @@
 import { registerNode } from 'topology-core/middles';
 import { loadJS } from 'topology-core/utils';
 import {
-  antvG2
-} from './g2';
-
+  echarts
+} from './echarts';
 
 export function register() {
-  if (!(window as any).G2) {
-    loadJS('https://gw.alipayobjects.com/os/lib/antv/g2/3.5.8/dist/g2.min.js');
+  if (!(window as any).echarts) {
+    loadJS('https://cdn.bootcss.com/echarts/4.3.0/echarts.min.js', null, true);
   }
-  registerNode('antvG2', antvG2, null, null, null);
+  registerNode('echarts', echarts, null, null, null);
 }

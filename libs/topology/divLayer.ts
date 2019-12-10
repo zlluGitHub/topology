@@ -107,6 +107,7 @@ export class DivLayer {
       }
       this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
     }
+
     if (node.elementId) {
       if (this.elements[node.id] && this.elements[node.id].id !== node.elementId) {
         if (this.elements[node.id]) {
@@ -117,6 +118,7 @@ export class DivLayer {
 
       if (!this.elements[node.id]) {
         this.elements[node.id] = document.getElementById(node.elementId);
+
         if (this.elements[node.id]) {
           this.canvas.appendChild(this.elements[node.id]);
         }
