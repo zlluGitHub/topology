@@ -3,6 +3,8 @@ import { rectangle } from 'topology-core/middles/nodes/rectangle';
 import { s8 } from 'topology-core/uuid/uuid';
 import { createDiv } from 'topology-core/utils';
 
+const echartsData: any = {};
+
 export function echarts(ctx: CanvasRenderingContext2D, node: Node) {
   // 绘制一个底图，类似于占位符。
   rectangle(ctx, node);
@@ -26,26 +28,27 @@ export function echarts(ctx: CanvasRenderingContext2D, node: Node) {
   }
 
   if (!node.elementLoaded) {
-    node.elementLoaded = {
+    echartsData[node.id] = {
       div: createDiv(node)
     };
-    document.body.appendChild(node.elementLoaded.div);
+    node.elementLoaded = true;
+    document.body.appendChild(echartsData[node.id].div);
     // 添加当前节点到div层
     node.addToDiv();
-    node.elementLoaded.chart = echarts.init(node.elementLoaded.div, node.data.echarts.theme);
+    echartsData[node.id].chart = echarts.init(echartsData[node.id].div, node.data.echarts.theme);
     node.elementRendered = false;
 
     // 等待父div先渲染完成，避免初始图表控件太大
     setTimeout(() => {
-      node.elementLoaded.chart.resize();
+      echartsData[node.id].chart.resize();
     });
   }
 
   if (!node.elementRendered) {
     // 初始化时，等待父div先渲染完成，避免初始图表控件太大。
     setTimeout(() => {
-      node.elementLoaded.chart.setOption(node.data.echarts.option);
-      node.elementLoaded.chart.resize();
+      echartsData[node.id].chart.setOption(node.data.echarts.option);
+      echartsData[node.id].chart.resize();
       node.elementRendered = true;
     });
   }

@@ -415,6 +415,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSaveLocal() {
+    if (!this.canvas) {
+      return;
+    }
     const data = this.canvas.data;
     FileSaver.saveAs(
       new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' }),
