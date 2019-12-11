@@ -369,6 +369,11 @@ export class Topology {
     if (!this.imagesLoaded()) {
       this.checkImages();
     }
+
+    setTimeout(() => {
+      this.offscreen.render();
+      this.canvas.render();
+    }, 500);
   }
 
   checkImages() {
@@ -408,6 +413,8 @@ export class Topology {
       this.options.on('scale', this.data.scale);
     }
 
+    this.data.bkColor = data.bkColor;
+    this.data.bkImage = data.bkImage;
     this.data.nodes = [];
     this.data.lines = [];
 
@@ -1540,9 +1547,7 @@ export class Topology {
 
     const idMaps: any = {};
     for (const item of this.clipboard.nodes) {
-      const old = item.id;
-      item.id = s8();
-      idMaps[old] = item.id;
+      this.newId(item, idMaps);
       item.rect.x += 20;
       item.rect.ex += 20;
       item.rect.y += 20;
@@ -1590,6 +1595,17 @@ export class Topology {
         this.options.on('addNode', this.activeLayer.nodes[0]);
       } else if (this.clipboard.lines.length) {
         this.options.on('addLine', this.activeLayer.lines[0]);
+      }
+    }
+  }
+
+  newId(node: any, idMaps: any) {
+    const old = node.id;
+    node.id = s8();
+    idMaps[old] = node.id;
+    if (node.children) {
+      for (const item of node.children) {
+        this.newId(item, idMaps);
       }
     }
   }

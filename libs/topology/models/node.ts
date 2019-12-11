@@ -264,7 +264,7 @@ export class Node extends Pen {
       child.parentId = this.id;
       child.calcChildRect(this);
       child.init();
-      child.setChild(children[i]);
+      child.setChild(children[i].children);
       this.children.push(child);
     }
   }

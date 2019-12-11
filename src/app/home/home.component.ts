@@ -374,7 +374,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           theme: 'success'
         });
 
-        if (!this.data.id) {
+        if (!this.data.id || this.activateRoute.snapshot.queryParamMap.get('version')) {
           this.data.id = ret.id;
           this.router.navigate(['/workspace'], { queryParams: { id: this.data.id } });
         } else {
