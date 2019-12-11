@@ -10,6 +10,8 @@ export class TopologyData {
   toArrowType = 'triangleSolid';
   scale = 1;
   locked = Lock.None;
+  bkImage: string;
+  bkColor: string;
   constructor(json?: any) {
     if (json) {
       this.nodes = [];
@@ -25,6 +27,8 @@ export class TopologyData {
       this.toArrowType = json.toArrowType || 'triangleSolid';
       this.scale = json.scale || 1;
       this.locked = json.locked || Lock.None;
+      this.bkImage = json.bkImage;
+      this.bkColor = json.bkColor;
     }
   }
 }

@@ -23,7 +23,5 @@ export interface Options {
   pauseIcon?: string;
   fullScreenIcon?: string;
   loopIcon?: string;
-  bkImage?: string;
-  bkColor?: string;
   on?: (event: string, data: any) => void;
 }

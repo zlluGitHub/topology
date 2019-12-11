@@ -16,9 +16,9 @@ export class RenderLayer extends Canvas {
     super(parentElem, options);
     this.parentElem.appendChild(this.canvas);
 
-    if (options.bkImage) {
+    if (this.data.bkImage) {
       this.bkImg = new Image();
-      this.bkImg.src = options.bkImage;
+      this.bkImg.src = this.data.bkImage;
       this.bkImg.onload = () => {
         this.bkImgRect = this.coverRect(this.canvas.width, this.canvas.height, this.bkImg.width, this.bkImg.height);
         this.render();
@@ -33,8 +33,8 @@ export class RenderLayer extends Canvas {
       ctx.drawImage(this.bkImg, this.bkImgRect.x, this.bkImgRect.y, this.bkImgRect.width,
         this.bkImgRect.height, 0, 0, this.width, this.height);
     }
-    if (this.options.bkColor) {
-      ctx.fillStyle = this.options.bkColor;
+    if (this.data.bkColor) {
+      ctx.fillStyle = this.data.bkColor;
       ctx.fillRect(0, 0, this.width, this.height);
     }
 
