@@ -711,10 +711,14 @@ export class Topology {
           this.link(this.moveIn.hoverNode);
         }
 
-        if (!this.moveIn.hoverNode || this.activeLayer.hasNode(this.moveIn.hoverNode)) {
+        if (!this.moveIn.hoverNode) {
           break;
         }
+
         if (e.ctrlKey) {
+          if (this.activeLayer.hasNode(this.moveIn.hoverNode)) {
+            break;
+          }
           this.activeLayer.addNode(this.moveIn.hoverNode);
 
           if (this.options.on) {
