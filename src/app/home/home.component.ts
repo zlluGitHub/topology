@@ -361,6 +361,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onOpenZip() {
+    if (!this.user) {
+      const _noticeService: NoticeService = new NoticeService();
+      _noticeService.notice({
+        body: '请先登录：上传文件需要身份认证！',
+        theme: 'error'
+      });
+      return;
+    }
+
     const input = document.createElement('input');
     input.type = 'file';
     input.onchange = async event => {

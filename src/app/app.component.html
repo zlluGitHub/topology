@@ -25,7 +25,7 @@
             <span class="ml50">Ctrl + I</span>
           </a>
         </div>
-        <div class="item">
+        <div class="item" [class.disabled]="!user" title="上传文件需要登录">
           <a (click)="onMenu('openZip')">
             导入Zip文件（新建）
             <span class="ml50">Ctrl + Shift + I</span>

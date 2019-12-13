@@ -156,11 +156,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onMenu(menu: string, data?: any) {
-    if (!this.editMode && menu !== 'new' && menu !== 'open') {
+    const isOpen = menu.indexOf('open') === 0;
+    if (!this.editMode && menu !== 'new' && !isOpen) {
       return;
     }
 
-    if (menu === 'new' || menu === 'open') {
+    if (menu === 'new' || isOpen) {
       const queryParams: any = {};
       if (data) {
         queryParams.id = this.activateRoute.snapshot.queryParamMap.get('id');
