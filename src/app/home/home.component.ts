@@ -462,19 +462,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     for (const item of nodes) {
-      if (!item.image) {
-        continue;
-      }
-      if (item.image.indexOf('/') === 0) {
-        const res = await this.http.get(item.image, { responseType: 'blob' }).toPromise();
-        zip.file(item.image, res, { createFolders: true });
-      } else if (item.img) {
-        let image = item.image;
-        const pos = image.indexOf('?');
-        if (pos > 0) {
-          image = image.substring(0, pos);
+      if (item.image) {
+        if (item.image.indexOf('/') === 0) {
+          const res = await this.http.get(item.image, { responseType: 'blob' }).toPromise();
+          zip.file(item.image, res, { createFolders: true });
+        } else if (item.img) {
+          let image = item.image;
+          const pos = image.indexOf('?');
+          if (pos > 0) {
+            image = image.substring(0, pos);
+          }
+          await zip.file(image, this.saveToBlob(item.img), { createFolders: true });
         }
-        await zip.file(image, this.saveToBlob(item.img), { createFolders: true });
       }
 
       await this.zipImages(zip, item.children);
