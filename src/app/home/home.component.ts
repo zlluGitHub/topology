@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Topology } from 'topology-core';
 import { Options } from 'topology-core/options';
-
+import { s8 } from 'topology-core/uuid/uuid';
 
 import * as FileSaver from 'file-saver';
 import { Store } from 'le5le-store';
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     userId: '',
     shared: false
   };
-  icons: { icon: string; iconFamily: string }[] = [];
+  icons: { icon: string; iconFamily: string; }[] = [];
   readonly = false;
 
   user: any;
@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.canvasOptions.on = this.onMessage;
-    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
+    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any; }) => {
       switch (menu.event) {
         case 'new':
           this.onNew();
@@ -99,6 +99,9 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.onNew();
           }
           this.onOpenLocal();
+          break;
+        case 'openZip':
+          this.onOpenZip();
           break;
         case 'save':
           this.save();
@@ -216,7 +219,11 @@ export class HomeComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.selected = null;
           });
-          this.onOpenLocal();
+          if (key.shiftKey) {
+            this.onOpenZip();
+          } else {
+            this.onOpenLocal();
+          }
         }
         break;
       case 83:
@@ -284,7 +291,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.canvas.open(this.data.data);
   }
 
-  async onOpen(data: { id: string; version?: string }) {
+  async onOpen(data: { id: string; version?: string; }) {
     const ret = await this.service.Get(data);
     if (!ret) {
       this.router.navigateByUrl('/workspace');
@@ -352,6 +359,82 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
     input.click();
   }
+
+  onOpenZip() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = async event => {
+      const elem: any = event.srcElement || event.target;
+      if (elem.files && elem.files[0]) {
+        const zip = new JSZip();
+        await zip.loadAsync(elem.files[0]);
+
+        let data: any = '';
+        let name = '';
+        for (const key in zip.files) {
+          if (zip.files[key].dir) {
+            continue;
+          }
+          const pos = key.indexOf('.json');
+          if (pos > 0) {
+            name = key;
+            name = name.replace('.json', '');
+            data = await zip.file(key).async('string');
+          }
+        }
+
+        if (!name || !data) {
+          return false;
+        }
+
+        for (const key in zip.files) {
+          if (zip.files[key].dir) {
+            continue;
+          }
+
+          const pos = key.indexOf('.json');
+          if (pos < 0) {
+            let filename = key.substr(key.lastIndexOf('/') + 1);
+            const extPos = filename.lastIndexOf('.');
+            let ext = '';
+            if (extPos > 0) {
+              ext = filename.substr(extPos);
+            }
+            filename = filename.substring(0, extPos > 8 ? 8 : extPos);
+            const file = await this.service.Upload(await zip.file(key).async('blob'), true, filename + ext);
+            if (file) {
+              data = data.replace(new RegExp(key, 'gm'), file.url);
+              await this.service.AddImage(file.url);
+            }
+          }
+        }
+
+        try {
+          data = JSON.parse(data);
+          if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
+            Store.set('lineName', data.lineName);
+            Store.set('fromArrowType', data.fromArrowType);
+            Store.set('toArrowType', data.toArrowType);
+            this.data = {
+              id: '',
+              version: '',
+              data,
+              name: name,
+              desc: '',
+              image: '',
+              userId: '',
+              shared: false
+            };
+            this.canvas.open(data);
+            Store.set('file', this.data);
+          }
+        } catch (e) {
+          return false;
+        }
+      }
+    };
+    input.click();
+  };
 
   save() {
     if (!this.canvas) {
@@ -504,7 +587,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return new Blob([u8arr], { type: mime });
   }
 
-  onSavePng(options?: { type?: string; quality?: any; ext?: string }) {
+  onSavePng(options?: { type?: string; quality?: any; ext?: string; }) {
     if (!options) {
       options = {};
     }
@@ -615,7 +698,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         break;
     }
     // console.log('onMessage:', event, data, this.selected);
-  }
+  };
 
   onChangeProps(props: any) {
     if (this.canvas.data.locked) {

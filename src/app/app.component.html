@@ -15,14 +15,20 @@
         </div>
         <div class="item">
           <a (click)="onMenu('open')">
-            打开本地文件（新建）
+            打开本地Json文件（新建）
             <span class="ml50">Ctrl + O</span>
           </a>
         </div>
         <div class="item">
           <a (click)="onMenu('open', true)">
-            导入本地文件...
+            导入Json文件到当前画布
             <span class="ml50">Ctrl + I</span>
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('openZip')">
+            导入Zip文件（新建）
+            <span class="ml50">Ctrl + Shift + I</span>
           </a>
         </div>
         <div class="item" (mouseenter)="showFigure = true" (mouseleave)="onLeaveFigure()">

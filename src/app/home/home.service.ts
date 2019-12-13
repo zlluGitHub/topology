@@ -15,9 +15,9 @@ export class HomeService {
     return ret;
   }
 
-  async Upload(blob: Blob, shared = false) {
+  async Upload(blob: Blob, shared = false, filename = '/topology/thumb.png') {
     const form = new FormData();
-    form.append('path', '/topology/thumb.png');
+    form.append('path', filename);
     form.append('randomName', '1');
     form.append('public', shared + '');
     form.append('file', blob);
@@ -36,6 +36,15 @@ export class HomeService {
     }
 
     return true;
+  }
+
+  async AddImage(image: string) {
+    const ret = await this.http.Post('/api/user/image', { image: image });
+    if (ret.error) {
+      return '';
+    }
+
+    return ret.id;
   }
 
   async Save(data: any) {
