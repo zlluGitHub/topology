@@ -265,10 +265,15 @@
           <i class="iconfont icon-upload"></i>
         </a>
       </div>
-      <div class="item" title="保存到本地">
-        <a (click)="onMenu('down')">
+      <div class="item">
+        <a (click)="onMenu('down')" title="直接点击图标，保存json到本地">
           <i class="iconfont icon-download"></i>
         </a>
+        <div class="dropdown">
+          <div class="item">
+            <a (click)="onMenu('downZip')">打包下载Json和图片</a>
+          </div>
+        </div>
       </div>
       <div class="item" [class.disabled]="!file.id" [title]="file.id && file.shared ? '已分享，点击取消' : '分享'">
         <a (click)="onMenu('share')">

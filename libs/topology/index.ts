@@ -92,6 +92,7 @@ export class Topology {
 
   private scheduledAnimationFrame = false;
 
+  private scrolling = false;
   constructor(parent: string | HTMLElement, options?: Options) {
     Store.set('topology-data', this.data);
     this.options = options || {};
@@ -526,22 +527,34 @@ export class Topology {
       }
 
       // Move out parent element.
-      const moveOut =
-        pos.x + 50 > this.parentElem.clientWidth + this.parentElem.scrollLeft ||
-        pos.y + 50 > this.parentElem.clientHeight + this.parentElem.scrollTop;
-      if (moveOut) {
+      const moveOutX =
+        pos.x + 50 > this.parentElem.clientWidth + this.parentElem.scrollLeft;
+      const moveOutY = pos.y + 50 > this.parentElem.clientHeight + this.parentElem.scrollTop;
+      if (moveOutX || moveOutY) {
         if (this.options.on) {
           this.options.on('moveOutParent', pos);
         }
 
+        let resize = false;
         if (pos.x + 50 > this.divLayer.canvas.clientWidth) {
           this.canvas.width += 200;
+          resize = true;
         }
         if (pos.y + 50 > this.divLayer.canvas.clientHeight) {
           this.canvas.height += 200;
+          resize = true;
+        }
+        if (resize) {
+          this.resize({ width: this.canvas.width, height: this.canvas.height });
         }
 
-        this.resize({ width: this.canvas.width, height: this.canvas.height });
+        this.scroll(moveOutX ? 100 : 0, moveOutY ? 100 : 0);
+      }
+
+      const moveLeft = pos.x - 100 < this.parentElem.scrollLeft;
+      const moveTop = pos.y - 100 < this.parentElem.scrollTop;
+      if (moveLeft || moveTop) {
+        this.scroll(moveLeft ? -100 : 0, moveTop ? -100 : 0);
       }
 
       switch (this.moveIn.type) {
@@ -855,8 +868,9 @@ export class Topology {
   }
 
   private onkeydown = (key: KeyboardEvent) => {
-    let done = false;
+    key.preventDefault();
 
+    let done = false;
     let moveX = 0;
     let moveY = 0;
     switch (key.keyCode) {
@@ -1019,19 +1033,8 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
-        return true;
-      }
-      this.divLayer.canvas.style.cursor = 'move';
-
-      for (let j = 0; j < node.rotatedAnchors.length; ++j) {
-        if (!node.rotatedAnchors[j].out && node.rotatedAnchors[j].hit(pt, 5)) {
-          this.moveIn.hoverNode = node;
-          this.moveIn.type = MoveInType.HoverAnchors;
-          this.moveIn.hoverAnchorIndex = j;
-          this.hoverLayer.hoverAnchorIndex = j;
-          this.divLayer.canvas.style.cursor = 'crosshair';
-          return true;
-        }
+      } else {
+        this.divLayer.canvas.style.cursor = 'move';
       }
 
       return true;
@@ -1966,6 +1969,18 @@ export class Topology {
     }
 
     this.tip = '';
+  }
+
+  scroll(x: number, y: number) {
+    if (this.scrolling) {
+      return;
+    }
+    this.scrolling = true;
+    this.parentElem.scrollLeft += x;
+    this.parentElem.scrollTop += y;
+    setTimeout(() => {
+      this.scrolling = false;
+    }, 700);
   }
 
   destroy() {

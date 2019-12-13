@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { Topology } from 'topology-core';
 import { Options } from 'topology-core/options';
@@ -17,6 +18,7 @@ import { TopologyService } from './topology.service';
 import { Tools } from './tools/config';
 
 declare var C2S: any;
+declare var JSZip: any;
 
 @Component({
   selector: 'app-home',
@@ -69,7 +71,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private topologySrv: TopologyService,
     private coreService: CoreService,
     private router: Router,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -106,6 +109,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           break;
         case 'down':
           this.onSaveLocal();
+          break;
+        case 'downZip':
+          this.onSaveZip();
           break;
         case 'downPng':
           this.onSavePng(menu.data);
@@ -423,6 +429,80 @@ export class HomeComponent implements OnInit, OnDestroy {
       new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' }),
       `${this.data.name || 'le5le.topology'}.json`
     );
+  }
+
+  async onSaveZip() {
+    if (!this.canvas) {
+      return;
+    }
+    const _noticeService: NoticeService = new NoticeService();
+    _noticeService.notice({
+      body: '正在下载打包中，可能需要几分钟，请耐心等待...',
+      theme: 'success'
+    });
+
+    const data = this.canvas.data;
+    const zip = new JSZip();
+    zip.file(`${this.data.name || 'le5le.topology'}.json`, JSON.stringify(data));
+    await this.zipImages(zip, data.nodes);
+
+    zip.generateAsync({ type: 'blob' }).then((blob: any) => {
+      FileSaver.saveAs(blob, `${this.data.name || 'le5le.topology'}.zip`);
+    }, (err: string) => {
+      _noticeService.notice({
+        body: err,
+        theme: 'error'
+      });
+    });
+  }
+
+  async zipImages(zip: any, nodes: any[]) {
+    if (!nodes) {
+      return;
+    }
+
+    for (const item of nodes) {
+      if (!item.image) {
+        continue;
+      }
+      if (item.image.indexOf('/') === 0) {
+        const res = await this.http.get(item.image, { responseType: 'blob' }).toPromise();
+        zip.file(item.image, res, { createFolders: true });
+      } else if (item.img) {
+        let image = item.image;
+        const pos = image.indexOf('?');
+        if (pos > 0) {
+          image = image.substring(0, pos);
+        }
+        await zip.file(image, this.saveToBlob(item.img), { createFolders: true });
+      }
+
+      await this.zipImages(zip, item.children);
+    }
+  }
+
+  saveToBlob(img: HTMLImageElement): Blob {
+    const canvas: HTMLCanvasElement = document.createElement('canvas');
+    canvas.setAttribute('origin-clean', 'false');
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    const context = canvas.getContext('2d');
+    (context as any).filter = window.getComputedStyle(img).filter;
+    context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return this.dataUrlToBlob(canvas.toDataURL('image/jpeg'));
+  }
+
+  dataUrlToBlob(dataUrl: string) {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   }
 
   onSavePng(options?: { type?: string; quality?: any; ext?: string }) {

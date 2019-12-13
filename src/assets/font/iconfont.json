@@ -321,6 +321,13 @@
       "unicode_decimal": 58880
     },
     {
+      "icon_id": "646995",
+      "name": "bar-chart",
+      "font_class": "bar-chart",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
       "icon_id": "647411",
       "name": "play",
       "font_class": "play",
@@ -426,6 +433,13 @@
       "unicode_decimal": 58937
     },
     {
+      "icon_id": "1869872",
+      "name": "Line Chart",
+      "font_class": "line-chart",
+      "unicode": "e851",
+      "unicode_decimal": 59473
+    },
+    {
       "icon_id": "1895376",
       "name": "download",
       "font_class": "download",
@@ -482,11 +496,25 @@
       "unicode_decimal": 60486
     },
     {
+      "icon_id": "6006249",
+      "name": "仪表盘",
+      "font_class": "dashboard-chart",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    },
+    {
       "icon_id": "6062453",
       "name": "image",
       "font_class": "picture",
       "unicode": "e64e",
       "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "6155665",
+      "name": "Pie chart-饼状图-1",
+      "font_class": "pie-chart",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
     },
     {
       "icon_id": "6370382",
@@ -818,6 +846,13 @@
       "unicode_decimal": 58921
     },
     {
+      "icon_id": "11100703",
+      "name": "file-svg",
+      "font_class": "svg",
+      "unicode": "e86e",
+      "unicode_decimal": 59502
+    },
+    {
       "icon_id": "11104629",
       "name": "triangleSolid",
       "font_class": "to-triangle",
@@ -991,6 +1026,13 @@
       "font_class": "align-middle",
       "unicode": "ec5b",
       "unicode_decimal": 60507
+    },
+    {
+      "icon_id": "12179144",
+      "name": "mind",
+      "font_class": "mind",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
     }
   ]
 }

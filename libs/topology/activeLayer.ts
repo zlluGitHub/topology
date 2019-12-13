@@ -135,6 +135,8 @@ export class ActiveLayer {
   clear() {
     this.lines = [];
     this.nodes = [];
+    this.sizeCPs = [];
+    this.rotateCPs = [];
     Store.set('LT:activeNode', null);
   }
 
@@ -301,24 +303,18 @@ export class ActiveLayer {
       nodes = this.nodes;
     }
     for (const line of this.data.lines) {
-      let found = false;
       for (const item of nodes) {
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
           line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
-          found = true;
         }
         if (line.to.id === item.id) {
           line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
-          found = true;
         }
         if (item.children) {
           this.updateLines(item.children);
         }
-      }
-      if (found) {
-        line.calcControlPoints();
       }
     }
   }
