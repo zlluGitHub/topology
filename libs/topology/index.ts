@@ -2,7 +2,7 @@ import { Store, Observer } from 'le5le-store';
 
 import { Options } from './options';
 import { Pen } from './models/pen';
-import { Node } from './models/node';
+import { Node, images } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
@@ -58,6 +58,8 @@ export class Topology {
   divLayer: DivLayer;
 
   private subcribe: Observer;
+  private subcribeImage: Observer;
+  private imageTimer: any;
   private subcribeAnimateEnd: Observer;
   private subcribeAnimateMoved: Observer;
   private subcribeMediaEnd: Observer;
@@ -67,7 +69,7 @@ export class Topology {
   lastHoverLine: Line;
   input = document.createElement('textarea');
   inputNode: Node;
-  mouseDown: { x: number; y: number };
+  mouseDown: { x: number; y: number; };
   lastTranlated = { x: 0, y: 0 };
   moveIn: {
     type: MoveInType;
@@ -162,6 +164,14 @@ export class Topology {
     this.subcribe = Store.subscribe('LT:render', () => {
       this.render();
     });
+    this.subcribeImage = Store.subscribe('LT:imageLoaded', () => {
+      if (this.imageTimer) {
+        clearTimeout(this.imageTimer);
+      }
+      this.imageTimer = setTimeout(() => {
+        this.render();
+      }, 100);
+    });
     this.subcribeAnimateMoved = Store.subscribe('nodeRectChanged', (e: any) => {
       this.activeLayer.updateLines(this.data.nodes);
       this.animateLayer.updateLines(this.data.nodes);
@@ -234,7 +244,7 @@ export class Topology {
     this.cache();
   }
 
-  resize(size?: { width: number; height: number }) {
+  resize(size?: { width: number; height: number; }) {
     this.canvas.resize(size);
     this.offscreen.resize(size);
     this.divLayer.resize(size);
@@ -366,39 +376,15 @@ export class Topology {
 
     this.offscreen.render();
     this.canvas.render();
-
-    if (!this.imagesLoaded()) {
-      this.checkImages();
-    }
-
-    setTimeout(() => {
-      this.offscreen.render();
-      this.canvas.render();
-    }, 500);
-  }
-
-  checkImages() {
-    setTimeout(() => {
-      if (this.imagesLoaded()) {
-        this.render();
-      } else {
-        this.checkImages();
-      }
-    }, 200);
-  }
-
-  imagesLoaded() {
-    for (const item of this.data.nodes) {
-      if (item.image && !item.imgLoaded) {
-        return false;
-      }
-    }
-    return true;
   }
 
   // open - redraw by the data
   open(data: any) {
     this.divLayer.clear();
+    // tslint:disable-next-line:forin
+    for (const key in images) {
+      delete images[key];
+    }
 
     this.animateLayer.nodes = [];
     this.animateLayer.lines = [];
@@ -844,7 +830,7 @@ export class Topology {
     }
   };
 
-  private clickText(node: Node, pos: Point): { node: Node; textRect: Rect } {
+  private clickText(node: Node, pos: Point): { node: Node; textRect: Rect; } {
     const textRect = node.getTextRect();
     if (textRect.hitRotate(pos, node.rotate, node.rect.center)) {
       return {
@@ -1896,7 +1882,7 @@ export class Topology {
 
 
 
-  private showTip(data: Pen, pos: { x: number, y: number }) {
+  private showTip(data: Pen, pos: { x: number, y: number; }) {
     if (!this.data.locked || !data || (!data.markdown && !data.elementId) || data.id === this.tip) {
       return;
     }
@@ -1985,6 +1971,7 @@ export class Topology {
 
   destroy() {
     this.subcribe.unsubscribe();
+    this.subcribeImage.unsubscribe();
     this.subcribeAnimateEnd.unsubscribe();
     this.subcribeAnimateMoved.unsubscribe();
     this.subcribeMediaEnd.unsubscribe();

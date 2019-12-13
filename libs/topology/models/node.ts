@@ -8,6 +8,8 @@ import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
 import { abs } from '../utils';
 
+export const images: { [key: string]: { img: HTMLImageElement; cnt: number; }; } = {};
+
 export class Node extends Pen {
   is3D = false;
   z: number;
@@ -101,7 +103,6 @@ export class Node extends Pen {
   // 外部dom是否已经渲染。当需要重绘时，设置为false（用于第三方库辅助变量）
   elementRendered: boolean;
 
-  imgLoaded = false;
   constructor(json: any) {
     super(json);
 
@@ -440,28 +441,39 @@ export class Node extends Pen {
       }
       ctx.drawImage(this.img, x, y, w, h);
       ctx.restore();
-
-      if (!this.imgLoaded) {
-        this.imgLoaded = true;
-      }
-
       return;
     }
 
     // Load image and draw it.
+    if (images[this.image]) {
+      this.img = images[this.image].img;
+      ++images[this.image].cnt;
+
+      this.lastImage = this.image;
+      this.imgNaturalWidth = this.img.naturalWidth;
+      this.imgNaturalHeight = this.img.naturalHeight;
+      this.drawImg(ctx);
+      return;
+    }
+
     this.img = new Image();
+    images[this.image] = {
+      img: this.img,
+      cnt: 1
+    };
     this.img.crossOrigin = 'anonymous';
     this.img.src = this.image;
     if (!this.gif && this.image.indexOf('.gif') > 0) {
       this.gif = true;
       Store.set('LT:addDiv', this);
     }
-    this.imgLoaded = false;
     this.img.onload = () => {
       this.lastImage = this.image;
       this.imgNaturalWidth = this.img.naturalWidth;
       this.imgNaturalHeight = this.img.naturalHeight;
-      this.drawImg(ctx);
+      // this.drawImg(ctx);
+
+      Store.set('LT:imageLoaded', true);
     };
   }
 
@@ -704,6 +716,4 @@ export class Node extends Pen {
       }
     }
   }
-
-
 }
