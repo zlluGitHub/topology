@@ -24,7 +24,7 @@ export class ActiveLayer {
   // 备份初始位置，方便移动事件处理
   initialSizeCPs: Point[] = [];
   nodeRects: Rect[] = [];
-  childrenRects: { [key: string]: Rect } = {};
+  childrenRects: { [key: string]: Rect; } = {};
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[] = [];
@@ -218,12 +218,14 @@ export class ActiveLayer {
 
       w = w > 5 ? w : 5;
       h = h > 5 ? h : 5;
+      const scaleX = w / (this.initialSizeCPs[2].x - this.initialSizeCPs[0].x);
+      const scaleY = h / (this.initialSizeCPs[2].y - this.initialSizeCPs[0].y);
       this.calcResizedPos(
         item.rect,
         this.nodeRects[i],
         pos,
-        w / (this.initialSizeCPs[2].x - this.initialSizeCPs[0].x),
-        h / (this.initialSizeCPs[2].y - this.initialSizeCPs[0].y)
+        scaleX,
+        scaleY
       );
       item.rect.floor();
       item.rect.calceCenter();
@@ -258,13 +260,9 @@ export class ActiveLayer {
       if (item.locked) {
         continue;
       }
-      item.rect.x = this.nodeRects[i].x + x;
-      item.rect.y = this.nodeRects[i].y + y;
-      item.rect.ex = item.rect.x + item.rect.width;
-      item.rect.ey = item.rect.y + item.rect.height;
-      item.rect.floor();
-      item.rect.calceCenter();
-      item.init();
+      const offsetX = this.nodeRects[i].x + x - item.rect.x;
+      const offsetY = this.nodeRects[i].y + y - item.rect.y;
+      item.translate(offsetX, offsetY);
       this.updateChildren(item);
 
       if (item.parentId && item.stand) {
@@ -425,7 +423,7 @@ export class ActiveLayer {
         tmp.lineWidth += 2;
         tmp.render(ctx);
 
-        tmp.strokeStyle = '#d4380d';
+        tmp.strokeStyle = this.options.activeColor;
         tmp.lineWidth -= 2;
       }
       tmp.render(ctx);
@@ -442,9 +440,9 @@ export class ActiveLayer {
         bk.strokeStyle = '#ffffff';
         bk.render(ctx);
       }
-      tmp.strokeStyle = '#d4380d';
-      tmp.fromArrowColor = '#d4380d';
-      tmp.toArrowColor = '#d4380d';
+      tmp.strokeStyle = this.options.activeColor;
+      tmp.fromArrowColor = this.options.activeColor;
+      tmp.toArrowColor = this.options.activeColor;
       tmp.render(ctx);
     }
 

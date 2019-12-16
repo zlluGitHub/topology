@@ -87,6 +87,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.canvasOptions.on = this.onMessage;
     this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any; }) => {
+      if (!this.canvas) {
+        return;
+      }
       switch (menu.event) {
         case 'new':
           this.onNew();
