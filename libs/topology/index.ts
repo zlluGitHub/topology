@@ -1807,6 +1807,7 @@ export class Topology {
     this.lastTranlated.y = y;
     this.overflow();
     this.render();
+    this.animateLayer.start();
     this.cache();
 
     if (this.options.on) {
@@ -1846,6 +1847,7 @@ export class Topology {
 
     this.overflow();
     this.render();
+    this.animateLayer.start();
     this.cache();
 
     if (this.options.on) {
