@@ -417,17 +417,6 @@ export class Topology {
     this.overflow();
     this.render(true);
 
-    const n = Date.now();
-    for (const item of this.data.nodes) {
-      if (item.animatePlay) {
-        item.animateStart = n;
-      }
-    }
-    for (const item of this.data.lines) {
-      if (item.animatePlay) {
-        item.animateStart = n;
-      }
-    }
     this.animate();
   }
 
@@ -1603,8 +1592,19 @@ export class Topology {
     }
   }
 
-  animate() {
-    this.animateLayer.start(false);
+  animate(play = true) {
+    const n = Date.now();
+    for (const item of this.data.nodes) {
+      if (item.animatePlay) {
+        item.animateStart = play ? n : 0;
+      }
+    }
+    for (const item of this.data.lines) {
+      if (item.animatePlay) {
+        item.animateStart = play ? n : 0;
+      }
+    }
+    this.animateLayer.start(!play);
   }
 
   updateProps(node?: Node) {
