@@ -1008,8 +1008,24 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
-      } else {
-        this.divLayer.canvas.style.cursor = 'move';
+        return true;
+      }
+      this.divLayer.canvas.style.cursor = 'move';
+
+      // Too small
+      if (node.rect.width < 20 || node.rect.height < 20) {
+        return true;
+      }
+
+      for (let j = 0; j < node.rotatedAnchors.length; ++j) {
+        if (node.rotatedAnchors[j].hit(pt, 5)) {
+          this.moveIn.hoverNode = node;
+          this.moveIn.type = MoveInType.HoverAnchors;
+          this.moveIn.hoverAnchorIndex = j;
+          this.hoverLayer.hoverAnchorIndex = j;
+          this.divLayer.canvas.style.cursor = 'crosshair';
+          return true;
+        }
       }
 
       return true;

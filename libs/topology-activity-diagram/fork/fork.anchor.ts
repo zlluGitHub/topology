@@ -11,9 +11,7 @@ export function forkHAnchors(node: Node) {
     const pt1 = new Point(node.rect.x + i, node.rect.y, Direction.Up);
     const pt2 = new Point(node.rect.x + i, node.rect.ey, Direction.Bottom);
     pt1.hidden = true;
-    pt1.out = true;
     pt2.hidden = true;
-    pt2.out = true;
     node.anchors.push(pt1);
     node.anchors.push(pt2);
   }
@@ -28,9 +26,7 @@ export function forkVAnchors(node: Node) {
     const pt1 = new Point(node.rect.x, node.rect.y + i, Direction.Left);
     const pt2 = new Point(node.rect.ex, node.rect.y + i, Direction.Right);
     pt1.hidden = true;
-    pt1.out = true;
     pt2.hidden = true;
-    pt2.out = true;
     node.anchors.push(pt1);
     node.anchors.push(pt2);
   }

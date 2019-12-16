@@ -8,7 +8,6 @@ export class Point {
   anchorIndex: number;
 
   hidden: boolean;
-  out: boolean;
   data: any;
   constructor(
     public x: number,
@@ -16,14 +15,12 @@ export class Point {
     direction?: Direction,
     anchorIndex?: number,
     id?: number | string,
-    hidden?: boolean,
-    out?: boolean
+    hidden?: boolean
   ) {
     this.direction = direction;
     this.anchorIndex = anchorIndex;
     this.id = id;
     this.hidden = hidden;
-    this.out = out;
   }
 
   floor() {
@@ -37,7 +34,7 @@ export class Point {
   }
 
   clone(): Point {
-    const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id, this.hidden, this.out);
+    const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id, this.hidden);
     if (this.data) {
       pt.data = this.data;
     }
@@ -48,7 +45,7 @@ export class Point {
     return pt.x > this.x - radius && pt.x < this.x + radius && pt.y > this.y - radius && pt.y < this.y + radius;
   }
 
-  rotate(angle: number, center: { x: number; y: number }): Point {
+  rotate(angle: number, center: { x: number; y: number; }): Point {
     if (!angle || angle === 360) {
       return this;
     }
