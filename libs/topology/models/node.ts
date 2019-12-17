@@ -179,6 +179,11 @@ export class Node extends Pen {
     }
     if (json.animateFrames) {
       this.animateFrames = json.animateFrames;
+      for (const item of this.animateFrames) {
+        if (!item.state.init) {
+          item.state = new Node(item.state);
+        }
+      }
     }
     if (json.animateDuration) {
       this.animateDuration = json.animateDuration;
