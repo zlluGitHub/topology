@@ -310,6 +310,7 @@ export class ActiveLayer {
           line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
         }
+        line.textRect = null;
         if (item.children) {
           this.updateLines(item.children);
         }
@@ -434,7 +435,6 @@ export class ActiveLayer {
       }
 
       const tmp = new Line(item);
-      tmp.text = '';
       if (tmp.lineWidth < 3) {
         const bk = new Line(item);
         bk.strokeStyle = '#ffffff';

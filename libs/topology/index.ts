@@ -1794,6 +1794,9 @@ export class Topology {
       item.from.y += offsetY;
       item.to.x += offsetX;
       item.to.y += offsetY;
+      if (item.text) {
+        item.textRect = null;
+      }
 
       for (const pt of item.controlPoints) {
         pt.x += offsetX;
@@ -1835,6 +1838,10 @@ export class Topology {
       item.from.y = center.y - (center.y - item.from.y) * scale;
       item.to.x = center.x - (center.x - item.to.x) * scale;
       item.to.y = center.y - (center.y - item.to.y) * scale;
+      if (item.text && item.font && item.font.fontSize) {
+        item.font.fontSize *= scale;
+        item.textRect = null;
+      }
 
       for (const pt of item.controlPoints) {
         pt.x = center.x - (center.x - pt.x) * scale;

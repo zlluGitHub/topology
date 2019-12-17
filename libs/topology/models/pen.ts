@@ -27,7 +27,8 @@ export abstract class Pen {
     fontStyle: 'normal',
     fontWeight: 'normal',
     textAlign: 'center',
-    textBaseline: 'middle'
+    textBaseline: 'middle',
+    background: ''
   };
 
   text: string;

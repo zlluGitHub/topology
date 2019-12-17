@@ -45,6 +45,38 @@ export function getLines(ctx: CanvasRenderingContext2D, words: string[], maxWidt
   return lines;
 }
 
+function textBk(ctx: CanvasRenderingContext2D, str: string, x: number,
+  y: number,
+  height: number, color?: string) {
+  if (!str || !color) {
+    return;
+  }
+  const w = ctx.measureText(str).width;
+
+  ctx.save();
+  ctx.fillStyle = color;
+  let l = x - w / 2;
+  let t = y - height / 2;
+  switch (ctx.textAlign) {
+    case 'left':
+      l = x;
+      break;
+    case 'right':
+      l = x - w;
+      break;
+  }
+  switch (ctx.textBaseline) {
+    case 'top':
+      t = y;
+      break;
+    case 'bottom':
+      t = y - height;
+      break;
+  }
+  ctx.fillRect(l, t, w, height);
+  ctx.restore();
+}
+
 export function fillText(
   ctx: CanvasRenderingContext2D,
   lines: string[],
@@ -53,7 +85,8 @@ export function fillText(
   width: number,
   height: number,
   lineHeight: number,
-  maxLineLen?: number
+  maxLineLen?: number,
+  bk?: string
 ) {
   if (!maxLineLen || maxLineLen > lines.length) {
     maxLineLen = lines.length;
@@ -62,18 +95,25 @@ export function fillText(
   }
 
   for (let i = 0; i < maxLineLen - 1; ++i) {
+    if (bk) {
+      textBk(ctx, lines[i], x, y + i * lineHeight, lineHeight, bk);
+    }
     ctx.fillText(lines[i], x, y + i * lineHeight);
   }
-  if (!maxLineLen) {
-    maxLineLen = 1;
-  }
+
   if (maxLineLen < lines.length) {
     let str = lines[maxLineLen - 1] + '...';
     if (ctx.measureText(str).width > width) {
       str = lines[maxLineLen - 1].substr(0, lines[maxLineLen - 1].length - 2) + '...';
     }
+    if (bk) {
+      textBk(ctx, str, x, y + (maxLineLen - 1) * lineHeight, lineHeight, bk);
+    }
     ctx.fillText(str, x, y + (maxLineLen - 1) * lineHeight);
   } else {
+    if (bk) {
+      textBk(ctx, lines[maxLineLen - 1], x, y + (maxLineLen - 1) * lineHeight, lineHeight, bk);
+    }
     ctx.fillText(lines[maxLineLen - 1], x, y + (maxLineLen - 1) * lineHeight);
   }
 }
@@ -137,7 +177,9 @@ export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
       y = textRect.ey - lineHeight * lines.length + lineHeight;
       break;
   }
-  fillText(ctx, lines, x + node.textOffsetX, y + node.textOffsetY, textRect.width, textRect.height, lineHeight, maxLineLen);
+  fillText(ctx, lines,
+    x + node.textOffsetX, y + node.textOffsetY, textRect.width, textRect.height, lineHeight, maxLineLen,
+    node.font.background);
   ctx.restore();
 }
 

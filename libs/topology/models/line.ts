@@ -31,7 +31,7 @@ export class Line extends Pen {
   animateFromSize = 0;
   animateToSize = 0;
 
-  animateDot: { x: number, y: number };
+  animateDot: { x: number, y: number; };
   animateDotSize = 3;
   constructor(json?: any) {
     super(json);
@@ -70,16 +70,21 @@ export class Line extends Pen {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
     }
+
+    const data = Store.get('topology-data');
+    this.font.background = data.bkColor || '#fff';
   }
 
   setFrom(from: Point, fromArrow: string = '') {
     this.from = from;
     this.fromArrow = fromArrow;
+    this.textRect = null;
   }
 
   setTo(to: Point, toArrow: string = 'triangleSolid') {
     this.to = to;
     this.toArrow = toArrow;
+    this.textRect = null;
   }
 
   calcControlPoints() {
