@@ -1908,7 +1908,13 @@ export class Topology {
 
 
   private showTip(data: Pen, pos: { x: number, y: number; }) {
-    if (!this.data.locked || !data || (!data.markdown && !data.elementId) || data.id === this.tip) {
+    if (!this.data.locked || !data || (!data.markdown && !data.elementId && !data.title) || data.id === this.tip) {
+      return;
+    }
+
+    if (data.title) {
+      this.divLayer.canvas.title = data.title;
+      this.tip = data.id;
       return;
     }
 
@@ -1978,6 +1984,7 @@ export class Topology {
       this.tipExternElem.style.zIndex = '-1';
       this.tipExternElem = null;
     }
+    this.divLayer.canvas.title = '';
 
     this.tip = '';
   }

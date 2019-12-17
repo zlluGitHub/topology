@@ -1291,16 +1291,23 @@
       </div>
       <div class="mt5">链接（只读模式下点击跳转）</div>
       <div>
-        <input name="link" class="input full" [(ngModel)]="props.data.link" (change)="onChangeProp()" [readonly]="readonly" uiIsUrl="true" />
+        <input name="link" class="input full" [(ngModel)]="props.data.link" (change)="onChangeProp()"
+          [readonly]="readonly" uiIsUrl="true" />
       </div>
       <div class="mt5">鼠标移动提示 - Markdown/html </div>
       <div>
         <textarea name="markdown" class="input full" [(ngModel)]="props.data.markdown" rows="3" [readonly]="readonly"
           (change)="onChangeProp()"></textarea>
       </div>
+      <div class="mt5">鼠标移动提示 - 原生title</div>
+      <div>
+        <textarea name="title" class="input full" [(ngModel)]="props.data.title" rows="3" [readonly]="readonly"
+          (change)="onChangeProp()"></textarea>
+      </div>
       <div class="mt5">鼠标移动提示 - HTMLElement ID</div>
       <div>
-        <input name="elementId" class="input full" [(ngModel)]="props.data.elementId" [readonly]="readonly" (change)="onChangeProp()" />
+        <input name="elementId" class="input full" [(ngModel)]="props.data.elementId" [readonly]="readonly"
+          (change)="onChangeProp()" />
       </div>
       <div class="mt5">自定义数据</div>
       <div>

@@ -53,6 +53,7 @@ export abstract class Pen {
   link: string;
   markdown: string;
   elementId: string;
+  title: string;
 
   // User data.
   data: any;
@@ -96,6 +97,7 @@ export abstract class Pen {
       this.link = json.link;
       this.markdown = json.markdown;
       this.elementId = json.elementId;
+      this.title = json.title;
     } else {
       this.id = s8();
       this.textOffsetX = 0;

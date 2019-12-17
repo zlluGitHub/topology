@@ -49,6 +49,7 @@ export interface Props {
     link?: string;
     markdown?: string;
     elementId?: string;
+    title?: string;
 
     // Node
     rect?: Rect;
