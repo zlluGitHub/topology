@@ -568,6 +568,9 @@ export class Topology {
           if (this.moveIn.hoverLine) {
             arrow = this.moveIn.hoverLine.toArrow;
           }
+          if (!this.activeLayer.lines.length && this.hoverLayer.line) {
+            this.activeLayer.lines = [this.hoverLayer.line];
+          }
           this.hoverLayer.lineTo(this.getLineDock(pos), arrow);
           this.animateLayer.start(true);
           break;

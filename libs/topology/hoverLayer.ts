@@ -67,7 +67,7 @@ export class HoverLayer {
     }
   }
 
-  lineMove(pt: Point, initPos: { x: number; y: number }) {
+  lineMove(pt: Point, initPos: { x: number; y: number; }) {
     if (this.line.locked) {
       return;
     }
@@ -120,16 +120,6 @@ export class HoverLayer {
         ctx.fill();
         ctx.stroke();
       }
-    }
-
-
-    const activeLine = Store.get('activeLine');
-    if (this.line && this.line.to && (!activeLine || this.line.id !== activeLine.id)) {
-      this.line.render(ctx);
-    }
-
-    if (activeLine) {
-      drawLineFns[activeLine.name].drawControlPointsFn(ctx, activeLine);
     }
 
     ctx.fillStyle = this.options.hoverColor;
