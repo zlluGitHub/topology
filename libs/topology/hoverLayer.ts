@@ -42,6 +42,7 @@ export class HoverLayer {
 
   setLine(from: Point, fromArrow = '', lineName = 'curve') {
     this.line = new Line();
+    this.line.strokeStyle = this.options.color;
     this.line.name = lineName;
     this.line.setFrom(from, fromArrow);
     this.data.lines.push(this.line);

@@ -113,7 +113,6 @@ export class Topology {
     if (!this.options.color) {
       this.options.color = '#222';
     }
-
     if (!this.options.rotateCursor) {
       this.options.rotateCursor = '/assets/img/rotate.cur';
     }
