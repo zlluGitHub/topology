@@ -51,7 +51,7 @@
           </div>
         </div>
         <div class="item line"></div>
-        <div [class.disabled]="!editMode">
+        <div [class.disabled]="!workspace">
           <div class="item">
             <a (click)="onMenu('save')">
               保存到云端
@@ -86,7 +86,7 @@
     </div>
     <div class="item">
       <a>编辑</a>
-      <div class="dropdown" [class.disabled]="!editMode">
+      <div class="dropdown" [class.disabled]="!workspace">
         <div class="item">
           <a (click)="onMenu('undo')">
             撤消
@@ -156,10 +156,14 @@
         </div>
         <div class="item line"></div>
         <div class="item">
-          <a *ngIf="file.id" (click)="onMenu('share')">
-            分享
+          <a href="https://www.yuque.com/alsmile/topology/use" target="_blank">
+            入门教程
           </a>
-          <div class="gray ml15" *ngIf="!file.id">分享</div>
+        </div>
+        <div class="item">
+          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">
+            微信交流群
+          </a>
         </div>
       </div>
     </div>
@@ -191,103 +195,13 @@
       </div>
     </div>
     <div class="full"></div>
-    <div class="flex">
+    <!-- <div class="flex">
       <div class="item mh5">
-        <a (click)="onMenu('fullscreen', 1)" style="padding-right: 0;">
-          全屏
-          <i class="iconfont icon-full-screen rel" style="top:1px; margin-left: 2px"></i>
-        </a>
-      </div>
-    </div>
-    <div class="flex" [class.disabled]="!editMode">
-      <div class="separator"></div>
-      <div class="item mh5">
-        视图：{{ scale | number: ".0-2" }}%
-        <a class="hover" *ngIf="scale !== 100" (click)="onMenu('scale', 1)" style="padding-right: 0;">
-          还原
-        </a>
-      </div>
-      <div class="separator"></div>
-      <div *ngIf="!locked" class="item" (click)="locked = !locked; onMenu('lock', 1)" title="锁定">
         <a>
-          <i class="iconfont icon-unlock"></i>
+          <i class="iconfont icon-notice"></i>
         </a>
       </div>
-      <div *ngIf="locked" class="item" (click)="locked = !locked; onMenu('lock', 0)" title="解锁">
-        <a>
-          <i class="iconfont icon-lock"></i>
-        </a>
-      </div>
-      <div class="separator"></div>
-      <div class="item lines">
-        <a>
-          <i class="iconfont icon-{{ lineName }}" style="position: relative;top: .06rem;"></i>
-        </a>
-        <div class="dropdown">
-          <div class="item">
-            默认连线类型：
-          </div>
-          <div class="item" *ngFor="let item of lineNames">
-            <a (click)="onSelLine(item.value)" style="justify-content:initial">
-              <span class="inline" style="width: .8rem;">{{item.name}}：</span>
-              <i class="iconfont icon-{{ item.value }}"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="item lines">
-        <a>
-          <i class="iconfont icon-from-{{ fromArrowType }}" style="position: relative;top: .06rem;"></i>
-        </a>
-        <div class="dropdown">
-          <div class="item">
-            默认起点箭头：
-          </div>
-          <div class="item" *ngFor="let item of arrowTypes">
-            <a (click)="onSelFromArrow(item)">
-              <i class="iconfont icon-from-{{ item }}"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="item lines">
-        <a>
-          <i class="iconfont icon-to-{{ toArrowType }}" style="position: relative;top: .06rem;"></i>
-        </a>
-        <div class="dropdown">
-          <div class="item">
-            默认终点箭头：
-          </div>
-          <div class="item" *ngFor="let item of arrowTypes">
-            <a (click)="onSelToArrow(item)">
-              <i class="iconfont icon-to-{{ item }}"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="separator"></div>
-      <div class="item" (click)="onMenu('save')" title="保存到云端">
-        <a>
-          <i class="iconfont icon-upload"></i>
-        </a>
-      </div>
-      <div class="item">
-        <a (click)="onMenu('down')" title="直接点击图标，保存json到本地">
-          <i class="iconfont icon-download"></i>
-        </a>
-        <div class="dropdown">
-          <div class="item">
-            <a (click)="onMenu('downZip')">打包下载Json和图片</a>
-          </div>
-        </div>
-      </div>
-      <div class="item" [class.disabled]="!file.id" [title]="file.id && file.shared ? '已分享，点击取消' : '分享'">
-        <a (click)="onMenu('share')">
-          <i class="iconfont icon-share" [class.primary]="file.id && file.shared"></i>
-        </a>
-      </div>
-    </div>
-    <div class="separator"></div>
+    </div> -->
     <div class="flex pr20" *ngIf="!user">
       <div class="item">
         <a (click)="onSignup()">注册</a>
@@ -351,17 +265,21 @@
       <i class="fr iconfont icon-close" (click)="showHelp = null"></i>
     </div>
     <div class="modal-body">
-      <li>个人开源不易，时间、各种资源都有限！</li>
       <li>
-        热烈欢迎和期待大家一起参与，联系：
+        我们致力于打造一个友好的图文编辑器，和一个轻松创造、创建、共享的开放平台。这离不开大家的支持！
+      </li>
+      <li>
+        欢迎大家一起参与编辑、创建和贡献，共建一个图文丰富的开放平台！
+      </li>
+      <li>
+        如果您有好的想法、建议，或参与开发，或合作，请联系：
         <div class="ml30">邮箱：alsmile123@qq.com</div>
         <div class="ml30">微信：alsmile123</div>
       </li>
       <li>
-        个人云服务器资源有限，在线用户将有限：
+        同时，我们也希望有收入支持做更好的产品。比如，购买云服务器，才能有更多人访问：
       </li>
       <div class="text-center mt10">
-        <div class="gray">赏五毛</div>
         <img class="mt5" src="/assets/img/wechatPay.png" width="120" />
       </div>
     </div>
@@ -380,17 +298,18 @@
       <i class="fr iconfont icon-close" (click)="showAbout = null"></i>
     </div>
     <div class="modal-body">
-      <p>
-        本产品目前虽然属于个人作品，但会一直继续完善，做的更好，欢迎加入或资助！
-      </p>
-      <p>欢迎有任何问题或建议请联系：</p>
+      <li>
+        这是一个集流程图、架构图、拓扑图、SCADA、UML图、脑图等多种图文于一体的编辑工具和共享社区。
+      </li>
+      <li>
+        我们致力于打造一个友好的图文编辑器，和一个轻松创造、创建、共享的开放平台！
+      </li>
+      <li>
+        这里有我们和大家一起贡献的丰富资源，也欢迎和期待您的加入！
+      </li>
+      <p class="mt10">欢迎请联系我们，提出您宝贵的想法和珍贵的建议：</p>
       <p>邮箱：alsmile123@qq.com</p>
       <p>微信：alsmile123</p>
-      <div class="text-center">
-        <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">
-          <img src="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" style="height: 3rem" />
-        </a>
-      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="button" (click)="showAbout = null">

@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'node_modules/le5le-ui/index';
+@import "variables";
+@import "node_modules/le5le-ui/index";
 
 .headline {
   font-size: 0.24rem;
@@ -224,58 +224,64 @@ a:hover {
   }
 }
 
-.topo {
-  position: relative;
-  width: calc(25% - 0.2rem);
-  height: 3rem;
-  margin: 0.1rem;
-  border-radius: 2px;
-  background-color: #fff;
+.topos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 
-  .image {
-    padding: 0.1rem 0.1rem 0.15rem 0.1rem;
-    text-align: center;
-    height: 1.85rem;
-    border-bottom: 1px solid #f7f7f7;
-    cursor: pointer;
+  .topo {
+    position: relative;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-bottom: 0.2rem;
+    border-radius: 2px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
 
-    img {
-      height: 100%;
+    .image {
+      padding: 0.1rem 0.1rem 0.15rem 0.1rem;
+      text-align: center;
+      height: 1.7rem;
+      border-bottom: 1px solid #f7f7f7;
+      cursor: pointer;
+
+      img {
+        height: 100%;
+      }
     }
-  }
 
-  .title {
-    font-size: 0.16rem;
-    line-height: 0.24rem;
-    height: 0.24rem;
-    cursor: pointer;
-  }
-
-  .desc {
-    font-size: 0.12rem;
-    line-height: 0.16rem;
-    height: 0.32rem;
-  }
-
-  .iconfont {
-    font-size: $font-size;
-  }
-
-  textarea {
-    &.input {
-      min-width: 0.3rem;
-      width: 100%;
-      max-width: 100%;
-      font-size: 0.1rem;
-      padding: 0.02rem 0.05rem;
-      resize: none;
+    .title {
+      font-size: 0.16rem;
+      line-height: 0.24rem;
+      height: 0.24rem;
+      cursor: pointer;
     }
-  }
 
-  .icon-delete {
-    position: absolute;
-    top: 0.05rem;
-    right: 0.1rem;
+    .iconfont {
+      font-size: $font-size;
+    }
+
+    .footer {
+      margin-top: 0.05rem;
+      color: #999;
+    }
+
+    textarea {
+      &.input {
+        min-width: 0.3rem;
+        width: 100%;
+        max-width: 100%;
+        font-size: 0.1rem;
+        padding: 0.02rem 0.05rem;
+        resize: none;
+      }
+    }
+
+    .icon-delete {
+      position: absolute;
+      top: 0.05rem;
+      right: 0.1rem;
+    }
   }
 }
 

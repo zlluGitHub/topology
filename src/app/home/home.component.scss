@@ -2,105 +2,134 @@
 @import "~le5le-ui/variables";
 
 $color-border: #ddd;
-$tools-width: 1.75rem;
-$props-width: 2.4rem;
 
 :host {
   display: block;
-  width: 100%;
-
+  background-color: #f5f5f5;
+  width: 100vw;
   height: 100%;
+  overflow: auto;
+}
 
-  & > .flex {
-    height: 100%;
+.section {
+  width: 12.8rem;
+  margin: auto;
+}
+
+.search {
+  position: fixed;
+  left: 3.2rem;
+  top: 0.05rem;
+  border: 1px solid $color-border;
+  background-color: #fff;
+  height: 0.3rem;
+  margin: auto;
+  line-height: 0.3rem;
+  border-radius: 0.3rem;
+  padding: 0 0.1rem;
+
+  input {
+    border: none;
+    min-height: 0.28rem;
+    line-height: 0.28rem;
+    height: 0.28rem;
+    vertical-align: top;
+    padding-left: 0.05rem;
+    width: 2rem;
+  }
+
+  i {
+    color: $color-border;
+    cursor: pointer;
   }
 }
 
-.tools {
-  flex-shrink: 0;
-  width: $tools-width;
-  background-color: #f8f8f8;
-  border-right: 1px solid $color-border;
-  overflow-y: auto;
-
-  .title {
-    padding: 0.05rem 0.1rem;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-
-    &:first-child {
-      border-top: none;
-    }
-  }
-
-  .buttons {
-    padding: 0.1rem 0;
-    a {
-      display: inline-block;
-      color: $color;
-      line-height: 1;
-      width: 0.4rem;
-      height: 0.4rem;
-      text-align: center;
-      text-decoration: none !important;
-
-      .iconfont {
-        font-size: 0.24rem;
-      }
-    }
-  }
-}
-
-.full {
-  flex: 1;
-  width: initial;
+.bars {
   position: relative;
+  article {
+    position: relative;
+    display: none;
+    height: 3rem;
+    color: #fff;
+    padding-left: 1rem;
 
-  .canvas {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background: #fff;
-  }
+    header {
+      font-size: 0.3rem;
+      padding-top: 0.5rem;
+    }
 
-  & > .flex {
-    position: fixed;
-    background: transparent;
-    top: $head-height;
-    left: $tools-width;
-    right: $props-width;
+    p {
+      margin-top: 0.1rem;
+      font-size: 0.16rem;
+      line-height: 0.26rem;
+      white-space: pre-line;
+    }
 
-    div {
+    .button {
+      font-size: 0.14rem;
+      color: #fff;
+      border-color: #fff;
       background: transparent;
-      pointer-events: none;
-      * {
-        pointer-events: initial;
+      padding: 0 0.3rem;
+      margin-top: 0.2rem;
+      &:hover {
+        color: #fff !important;
+        text-decoration: none;
       }
     }
 
-    .icon-edit {
-      font-size: 0.12rem;
-      margin-left: 0.05rem;
+    img {
+      position: absolute;
+      top: 0;
+      right: 1rem;
+      height: 3rem;
+    }
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .dots {
+    position: absolute;
+    bottom: 0.15rem;
+    width: 100%;
+    margin: auto;
+
+    i {
+      display: inline-block;
+      width: 16px;
+      height: 6px;
+      background-color: #fff;
+      opacity: 0.3;
+      margin: 0 0.03rem;
       cursor: pointer;
-      &:hover {
-        color: $color-primary;
+
+      &.active {
+        opacity: 1;
       }
     }
   }
 }
 
-.props {
-  flex-shrink: 0;
-  width: $props-width;
-  background-color: #f8f8f8;
-  border-left: 1px solid $color-border;
-  overflow-y: auto;
-  position: relative;
+.nav {
+  margin: 0.15rem 0;
+  label {
+    display: inline-block;
+    margin-right: 0.2rem;
+    font-size: 0.14rem;
+    line-height: 2;
+    padding: 0 0.1rem;
+    color: #181818;
+    cursor: pointer;
 
-  .title,
-  .popup-title {
-    padding: 0.05rem 0.15rem;
-    border-bottom: 1px solid #ccc;
-    display: flex;
+    &:hover {
+      color: $color-primary;
+    }
+
+    &.active {
+      background-color: $color-primary;
+      color: #fff;
+    }
   }
 }

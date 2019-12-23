@@ -13,53 +13,13 @@ import { environment } from 'src/environments/environment';
 export class AppComponent implements OnInit, OnDestroy {
   user: any;
   urls = environment.urls;
-  file = {
-    id: '',
-    version: '',
-    data: { nodes: [], lines: [] },
-    name: '',
-    desc: '',
-    image: '',
-    shared: false
-  };
   list = {
     recently: []
   };
-  lineName = 'curve';
-  fromArrowType = '';
-  toArrowType = 'triangleSolid';
-
-  lineNames = [{
-    name: '曲线',
-    value: 'curve'
-  }, {
-    name: '线段',
-    value: 'polyline'
-  }, {
-    name: '直线',
-    value: 'line'
-  }, {
-    name: '脑图曲线',
-    value: 'mind'
-  }];
-  arrowTypes = [
-    '',
-    'triangleSolid',
-    'triangle',
-    'diamondSolid',
-    'diamond',
-    'circleSolid',
-    'circle',
-    'line',
-    'lineUp',
-    'lineDown'
-  ];
 
   menuClicked = false;
   showFigure = false;
-  editMode = false;
-  locked = 0;
-  scale = 100;
+  workspace = false;
 
   showLicense = false;
   showHelp = false;
@@ -70,38 +30,6 @@ export class AppComponent implements OnInit, OnDestroy {
     Store.subscribe('user', (user: any) => {
       this.user = user;
       this.getRecently();
-    });
-
-    Store.subscribe('file', (file: any) => {
-      this.locked = 0;
-      if (file && file.data) {
-        this.locked = file.data.locked || 0;
-      }
-      this.file = file;
-    });
-
-    Store.subscribe('lineName', (lineName: string) => {
-      if (lineName) {
-        this.lineName = lineName;
-      }
-    });
-
-    Store.subscribe('fromArrowType', (fromArrowType: string) => {
-      this.fromArrowType = fromArrowType || '';
-    });
-
-    Store.subscribe('toArrowType', (toArrowType: string) => {
-      if (toArrowType !== undefined) {
-        this.toArrowType = toArrowType || '';
-      }
-    });
-
-    Store.subscribe('scale', (scale: number) => {
-      this.scale = scale * 100;
-    });
-
-    Store.subscribe('locked', (locked: number) => {
-      this.locked = locked;
     });
 
     Store.subscribe('recently', (item: any) => {
@@ -118,18 +46,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
       if ((event as NavigationEnd).url.indexOf('/workspace') === 0) {
-        this.editMode = true;
+        this.workspace = true;
       } else {
-        this.editMode = false;
-        this.file = {
-          id: '',
-          version: '',
-          data: { nodes: [], lines: [] },
-          name: '',
-          desc: '',
-          image: '',
-          shared: false
-        };
+        this.workspace = false;
       }
     });
   }
@@ -157,7 +76,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onMenu(menu: string, data?: any) {
     const isOpen = menu.indexOf('open') === 0;
-    if (!this.editMode && menu !== 'new' && !isOpen) {
+    if (!this.workspace && menu !== 'new' && !isOpen) {
       return;
     }
 
@@ -179,7 +98,7 @@ export class AppComponent implements OnInit, OnDestroy {
           data
         });
       },
-      this.editMode ? 0 : 300
+      this.workspace ? 0 : 300
     );
   }
 
@@ -220,45 +139,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onHome() {
     this.router.navigateByUrl('/');
-  }
-
-  onSelLine(line: string) {
-    this.lineName = line;
-    this.menuClicked = true;
-    setTimeout(() => {
-      this.menuClicked = false;
-    }, 500);
-
-    Store.set('clickMenu', {
-      event: 'lineName',
-      data: this.lineName
-    });
-  }
-
-  onSelFromArrow(arrow: string) {
-    this.fromArrowType = arrow;
-    this.menuClicked = true;
-    setTimeout(() => {
-      this.menuClicked = false;
-    }, 500);
-
-    Store.set('clickMenu', {
-      event: 'fromArrowType',
-      data: this.fromArrowType
-    });
-  }
-
-  onSelToArrow(arrow: string) {
-    this.toArrowType = arrow;
-    this.menuClicked = true;
-    setTimeout(() => {
-      this.menuClicked = false;
-    }, 500);
-
-    Store.set('clickMenu', {
-      event: 'toArrowType',
-      data: this.toArrowType
-    });
   }
 
   onSignup() {

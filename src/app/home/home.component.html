@@ -1,88 +1,84 @@
-<div class="flex">
-  <div class="tools">
-    <div *ngFor="let item of tools">
-      <div class="title">{{ item.group }}</div>
-      <div class="buttons">
-        <a *ngFor="let button of item.children" [title]="button.name" [draggable]="button.data"
-          (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
-          <i class="iconfont {{ button.icon }}"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="full">
-    <div class="canvas" #workspace (contextmenu)="onContextMenu($event)"></div>
-    <div class="flex ph15 pv5">
-      <div class="full flex">
-        文件名：
-        <label *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击编辑，点击空白保存">{{data.name}}</label>
-        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" [uiTouchForm]="myForm" title="双击编辑，点击空白保存">
-          <input name="filename" #filenameInput class="input" [(ngModel)]="data.name" (blur)="onSaveFilename()"
-            required />
-        </form>
-        <i class="iconfont icon-edit" *ngIf="!editFilename" (click)="onEditFile(filenameInput)" title="双击编辑，点击空白保存"></i>
-      </div>
-      <div *ngIf="data.id">
-        <a routerLink="/user/history" [queryParams]="{ id: data.id, name: data.name }">-> 文件历史</a>
-      </div>
-    </div>
-  </div>
-  <div class="props">
-    <div class="pv5">
-      <div *ngIf="!selected">
-        <div class="title">欢迎使用le5le-topology！</div>
-        <div class="ml30 mb20 mt10">
-          <a href="https://github.com/le5le-com/topology" target="_blank" class="block mt20 mb15"
-            style="color:#f60!important;text-decoration: underline;">喜欢，点击这里打个star吧</a>
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群（大群）</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">微信交流群2</a><br />
-          <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
-        </div>
-        <div class="title mt30">[Todo] 未来规划</div>
-        <ul class="ml30 mb20 mt10">
-          <li>Github issues</li>
-          <li>React demo</li>
-          <li>Vue3 demo</li>
-          <li>系列教程</li>
-        </ul>
-        <div class="abs" style="bottom:.2rem">
-          <div class="title mt30">
-            小提示
-          </div>
-          <ul class="ml30 mb20 mt10">
-            <li>方向键：控制节点移动5个像素</li>
-            <li>Ctrl + 方向键：控制节点移动1个像素</li>
-            <li>Ctrl + 鼠标移动：移动整个画布</li>
-            <li>Ctrl + 鼠标滚轮：缩放</li>
-            <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
-          </ul>
-        </div>
-      </div>
-      <div *ngIf="selected">
-        <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"
-          (animateChange)="onAnimateChange()"></app-props>
-      </div>
-    </div>
+<div class="search">
+  <input class="input" [(ngModel)]="search.text" placeholder="搜索" (keyup.enter)="onSearch(1)" />
+  <i class="iconfont icon-search" (click)="onSearch(1)"></i>
+</div>
+<div class="section bars mt15" *ngIf="!searched">
+  <article *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" [ngStyle]="item.styles"
+    (mouseenter)="onMouseEnter()" (mouseout)="onMouseOut()">
+    <header>{{item.title}}</header>
+    <p>{{item.desc}}</p>
+    <a class="button" *ngIf="item.url" [href]="item.url" target="_blank">{{item.button}}</a>
+    <a class="button" *ngIf="item.router" [routerLink]="item.router">{{item.button}}</a>
+    <img *ngIf="item.image" [src]="item.image" />
+  </article>
+  <div class="dots flex center">
+    <i *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" (mouseenter)="curBar = i"></i>
   </div>
 </div>
-<app-context-menu [contextmenu]="contextmenu" [canvas]="canvas" [selNodes]="selNodes" [selected]="selected"
-  [locked]="locked"></app-context-menu>
+<div class="section">
+  <div class="nav">
+    <label [class.active]="!search.class" (click)="onSearch(1, '')">全部</label>
+    <label *ngFor="let item of configs.classes" [class.active]="search.class===item"
+      (click)="onSearch(1, item)">{{item}}</label>
+  </div>
+</div>
+<div class="section">
+  <ui-loading *ngIf="data.count < 0" class="mt50" tip="正在加载中，请稍等..."></ui-loading>
 
-<div class="modal" *ngIf="divNode">
-  <div class="modal-content">
-    <div class="modal-header pointer" uiDivMove [isHead]="true">
-      <div class="caption">添加视频/网页</div>
-      <i class="fr iconfont icon-close" (click)="divNode = null"></i>
-    </div>
-    <div class="modal-body"></div>
-    <div class="modal-footer">
-      <button type="button" class="button mr10" (click)="divNode = null">
-        取消
-      </button>
-      <button type="button" class="button primary" (click)="divNode = null">
-        确定
-      </button>
+  <div class="topos" *ngIf="data.list">
+    <article class="topo" *ngFor="let item of data.list" [title]="item.desc" (click)="onOpen(item)" [title]="item.desc">
+      <div class="image">
+        <img [src]="item.image" />
+      </div>
+      <div class="ph15 pv10">
+        <header class="title line one" [title]="item.name">{{ item.name }}</header>
+        <div class="flex footer">
+          <div class="full">
+            {{ item.username }}
+          </div>
+          <div>
+            <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
+              <i class="iconfont " [class.icon-appreciate]="!item.stared" [class.icon-appreciatefill]="item.stared"></i>
+              <span class="ml5">{{ item.star || 0 }}</span>
+            </span>
+            <span class="hover pointer" title="收藏" (click)="onFavorite($event, item)">
+              <i class="iconfont" [class.icon-like]="!item.favorited" [class.icon-likefill]="item.favorited"></i>
+              <span class="ml5">{{ item.hot || 0 }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div *ngIf="!data.list.length && hots.list">
+    <div>没有查找到相关图文，下面是我们为您推荐的图文：</div>
+    <div class="topos mt10">
+      <article class="topo" *ngFor="let item of hots.list" [title]="item.desc" (click)="onOpen(item)"
+        [title]="item.desc">
+        <div class="image">
+          <img [src]="item.image" />
+        </div>
+        <div class="ph15 pv10">
+          <header class="title line one" [title]="item.name">{{ item.name }}</header>
+          <div class="flex footer">
+            <div class="full">
+              {{ item.username }}
+            </div>
+            <div>
+              <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
+                <i class="iconfont " [class.icon-appreciate]="!item.stared"
+                  [class.icon-appreciatefill]="item.stared"></i>
+                <span class="ml5">{{ item.star || 0 }}</span>
+              </span>
+              <span class="hover pointer" title="收藏" (click)="onFavorite($event, item)">
+                <i class="iconfont" [class.icon-like]="!item.favorited" [class.icon-likefill]="item.favorited"></i>
+                <span class="ml5">{{ item.hot || 0 }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 </div>
