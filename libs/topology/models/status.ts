@@ -3,3 +3,9 @@ export enum Lock {
   Readonly,
   NoEvent
 }
+
+export enum AnchorMode {
+  Default,
+  In,
+  Out
+}

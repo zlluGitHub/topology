@@ -1,4 +1,5 @@
 import { Direction } from './direction';
+import { AnchorMode } from './status';
 
 export class Point {
   // The id is nodeId while the point is from or to of a line.
@@ -8,6 +9,7 @@ export class Point {
   anchorIndex: number;
 
   hidden: boolean;
+  mode: AnchorMode;
   data: any;
   constructor(
     public x: number,
@@ -37,6 +39,9 @@ export class Point {
     const pt = new Point(this.x, this.y, this.direction, this.anchorIndex, this.id, this.hidden);
     if (this.data) {
       pt.data = this.data;
+    }
+    if (this.mode) {
+      pt.mode = this.mode;
     }
     return pt;
   }

@@ -6,7 +6,7 @@ import { Node, images } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
-import { Lock } from './models/status';
+import { Lock, AnchorMode } from './models/status';
 import { drawNodeFns, drawLineFns } from './middles/index';
 import { Offscreen } from './offscreen';
 import { RenderLayer } from './renderLayer';
@@ -43,7 +43,7 @@ const dockOffset = 10;
 export class Topology {
   data: TopologyData = new TopologyData();
   clipboard: TopologyData;
-  private caches: ICaches = {
+  caches: ICaches = {
     index: 0,
     list: []
   };
@@ -1021,6 +1021,9 @@ export class Topology {
 
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
         if (node.rotatedAnchors[j].hit(pt, 5)) {
+          if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
+            continue;
+          }
           this.moveIn.hoverNode = node;
           this.moveIn.type = MoveInType.HoverAnchors;
           this.moveIn.hoverAnchorIndex = j;
@@ -1042,6 +1045,9 @@ export class Topology {
       }
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
         if (node.rotatedAnchors[j].hit(pt, 5)) {
+          if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
+            continue;
+          }
           this.moveIn.hoverNode = node;
           this.moveIn.type = MoveInType.HoverAnchors;
           this.moveIn.hoverAnchorIndex = j;
@@ -1096,6 +1102,9 @@ export class Topology {
         this.hoverLayer.node = item;
       }
       for (let i = 0; i < item.rotatedAnchors.length; ++i) {
+        if (item.rotatedAnchors[i].mode && item.rotatedAnchors[i].mode !== AnchorMode.In) {
+          continue;
+        }
         if (item.rotatedAnchors[i].hit(point, 10)) {
           point.id = item.id;
           point.anchorIndex = i;
