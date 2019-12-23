@@ -561,6 +561,7 @@ export class Node extends Pen {
         this.lineWidth = item.state.lineWidth;
         this.rotate = item.state.rotate;
         this.globalAlpha = item.state.globalAlpha;
+        this.lineDashOffset = item.state.lineDashOffset || 0;
         if (item.state.rect && item.state.rect.width) {
           this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
           this.init();
@@ -632,11 +633,19 @@ export class Node extends Pen {
             this.globalAlpha =
               item.initState.globalAlpha + (item.state.globalAlpha - item.initState.globalAlpha) * rate;
           }
+          if (item.state.lineDashOffset) {
+            if (!this.lineDashOffset) {
+              this.lineDashOffset = item.state.lineDashOffset;
+            } else {
+              this.lineDashOffset += item.state.lineDashOffset;
+            }
+          }
         } else {
           this.rect = item.state.rect;
           this.lineWidth = item.state.lineWidth;
           this.rotate = item.state.rotate;
           this.globalAlpha = item.state.globalAlpha;
+          this.lineDashOffset = item.state.lineDashOffset;
         }
       }
     }
