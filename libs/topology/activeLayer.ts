@@ -311,6 +311,7 @@ export class ActiveLayer {
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
         }
         line.textRect = null;
+        Store.set('pts-' + line.id, null);
         if (item.children) {
           this.updateLines(item.children);
         }
