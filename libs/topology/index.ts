@@ -370,7 +370,6 @@ export class Topology {
       this.activeLayer.lines = [];
       this.hoverLayer.node = null;
       this.hoverLayer.line = null;
-      Store.set('activeLine', null);
     }
 
     this.offscreen.render();
@@ -620,7 +619,6 @@ export class Topology {
       return;
     }
     this.mouseDown = { x: e.offsetX, y: e.offsetY };
-    Store.set('activeLine', null);
 
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
@@ -645,7 +643,7 @@ export class Topology {
       case MoveInType.Line:
       case MoveInType.LineControlPoint:
         if (e.ctrlKey) {
-          this.activeLayer.lines.push(this.moveIn.hoverLine);
+          this.activeLayer.addLine(this.moveIn.hoverLine);
           if (this.options.on) {
             if (this.data.lines.length > 1 || this.data.nodes.length) {
               this.options.on('multi', {
@@ -666,7 +664,6 @@ export class Topology {
           this.link(this.moveIn.hoverLine);
         }
 
-        Store.set('activeLine', this.moveIn.hoverLine);
         break;
       case MoveInType.LineMove:
         this.hoverLayer.initLine = new Line(this.moveIn.hoverLine);
@@ -678,7 +675,6 @@ export class Topology {
         if (this.options.on) {
           this.options.on('line', this.moveIn.hoverLine);
         }
-        Store.set('activeLine', this.moveIn.hoverLine);
 
         this.hoverLayer.line = this.moveIn.hoverLine;
 
@@ -773,7 +769,6 @@ export class Topology {
 
             if (this.hoverLayer.line.to.id || !this.options.disableEmptyLine) {
               this.activeLayer.lines = [this.hoverLayer.line];
-              Store.set('activeLine', this.hoverLayer.line);
               if (this.options.on) {
                 this.options.on('addLine', this.hoverLayer.line);
               }
@@ -1156,7 +1151,7 @@ export class Topology {
     this.activeLayer.lines = [];
     for (const item of lines) {
       if (rect.hit(item.from) && rect.hit(item.to)) {
-        this.activeLayer.lines.push(item);
+        this.activeLayer.addLine(item);
       }
     }
   }
@@ -1584,7 +1579,7 @@ export class Topology {
       const line = new Line(item);
       line.controlPoints = controlPoints;
       this.data.lines.push(line);
-      this.activeLayer.lines.push(line);
+      this.activeLayer.addLine(line);
     }
 
     this.render();

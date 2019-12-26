@@ -16,6 +16,7 @@ export function polyline(ctx: CanvasRenderingContext2D, l: Line) {
 }
 
 export function polylineControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
+  ctx.save();
   ctx.fillStyle = '#fff';
   ctx.lineWidth = 2;
   for (const item of l.controlPoints) {
@@ -24,6 +25,7 @@ export function polylineControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
     ctx.stroke();
     ctx.fill();
   }
+  ctx.restore();
 }
 
 export function calcPolylineControlPoints(l: Line) {

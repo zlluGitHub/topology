@@ -21,6 +21,7 @@ export function curve(ctx: CanvasRenderingContext2D, l: Line) {
 }
 
 export function curveControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
+  ctx.save();
   ctx.fillStyle = ctx.strokeStyle + '80';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -41,6 +42,7 @@ export function curveControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
     ctx.stroke();
     ctx.fill();
   }
+  ctx.restore();
 }
 
 export function calcCurveControlPoints(l: Line) {

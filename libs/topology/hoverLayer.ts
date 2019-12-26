@@ -4,7 +4,6 @@ import { Point } from './models/point';
 import { Line } from './models/line';
 import { Node } from './models/node';
 import { Store } from 'le5le-store';
-import { drawLineFns } from './middles';
 import { Options } from './options';
 
 export class HoverLayer {
