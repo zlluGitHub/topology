@@ -1,5 +1,7 @@
 import { Store } from 'le5le-store';
 
+import { Options } from './options';
+
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { Rect } from './models/rect';
@@ -7,7 +9,7 @@ import { Point } from './models/point';
 import { TopologyData } from './models/data';
 import { Lock } from './models/status';
 
-import { Options } from './options';
+import { drawLineFns } from './middles';
 
 export class ActiveLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -392,6 +394,16 @@ export class ActiveLayer {
     this.lines = lines;
   }
 
+  addLine(line: Line) {
+    for (const item of this.lines) {
+      if (item.id === line.id) {
+        return;
+      }
+    }
+
+    this.lines.push(line);
+  }
+
   render(ctx: CanvasRenderingContext2D) {
     if (this.data.locked > Lock.Readonly) {
       return;
@@ -445,6 +457,8 @@ export class ActiveLayer {
       tmp.fromArrowColor = this.options.activeColor;
       tmp.toArrowColor = this.options.activeColor;
       tmp.render(ctx);
+
+      drawLineFns[item.name].drawControlPointsFn(ctx, item);
     }
 
     // This is diffence between single node and more.
