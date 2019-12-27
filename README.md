@@ -14,6 +14,11 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
+
+# VS Code extension
+[VS Code extension](https://marketplace.visualstudio.com/items?itemName=Alsmile.le5le-topology-plugin)
+
+
 # Why le5le-topology
 
 - Extensible - Developers are able to make own diagrams easily. You just have to focus on your core logic in the framework.
