@@ -6,6 +6,12 @@ export class Rect {
   ey: number;
   center: Point = new Point(0, 0);
   constructor(public x: number, public y: number, public width: number, public height: number) {
+    if (width < 0) {
+      width = 0;
+    }
+    if (height < 0) {
+      height = 0;
+    }
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
     this.calceCenter();
