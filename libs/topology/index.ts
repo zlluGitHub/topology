@@ -1435,6 +1435,7 @@ export class Topology {
       }
     }
 
+    this.animate(false);
     this.render(true);
     this.cache();
 
@@ -1614,19 +1615,19 @@ export class Topology {
     }
   }
 
-  animate(play = true) {
+  animate(autoplay = true) {
     const n = Date.now();
     for (const item of this.data.nodes) {
       if (item.animatePlay) {
-        item.animateStart = play ? n : 0;
+        item.animateStart = autoplay ? n : 0;
       }
     }
     for (const item of this.data.lines) {
       if (item.animatePlay) {
-        item.animateStart = play ? n : 0;
+        item.animateStart = autoplay ? n : 0;
       }
     }
-    this.animateLayer.start(!play);
+    this.animateLayer.start(!autoplay);
   }
 
   updateProps(node?: Node) {
