@@ -207,6 +207,11 @@ export class Topology {
     this.divLayer.canvas.ondblclick = this.ondblclick;
     this.divLayer.canvas.tabIndex = 0;
     this.divLayer.canvas.onkeydown = this.onkeydown;
+    this.divLayer.canvas.onblur = event => {
+      // this.moveIn.type = MoveInType.None;
+      this.mouseDown = null;
+      this.render(true);
+    };
     this.divLayer.canvas.onwheel = event => {
       if (!event.ctrlKey && !event.altKey) {
         return;
@@ -448,39 +453,47 @@ export class Topology {
         this.getMoveIn(pos);
 
         // Render hover anchors.
-        if (this.moveIn.hoverNode) {
-          this.hoverLayer.node = this.moveIn.hoverNode;
+        if (this.moveIn.hoverNode !== this.lastHoverNode) {
+          if (this.lastHoverNode) {
+            // Send a move event.
+            if (this.options.on) {
+              this.options.on('moveOutNode', this.lastHoverNode);
+            }
 
-          // Send a move event.
-          if (!this.lastHoverNode && this.options.on) {
-            this.options.on('moveInNode', this.moveIn.hoverNode);
+            this.hideTip();
+
+            // Clear hover anchors.
+            this.hoverLayer.node = null;
           }
 
-          this.showTip(this.moveIn.hoverNode, pos);
-        } else if (this.lastHoverNode) {
-          // Send a move event.
-          if (this.options.on) {
-            this.options.on('moveOutNode', this.moveIn.hoverNode);
+          if (this.moveIn.hoverNode) {
+            this.hoverLayer.node = this.moveIn.hoverNode;
+
+            // Send a move event.
+            if (this.options.on) {
+              this.options.on('moveInNode', this.moveIn.hoverNode);
+            }
+
+            this.showTip(this.moveIn.hoverNode, pos);
           }
-
-          this.hideTip();
-
-          // Clear hover anchors.
-          this.hoverLayer.node = null;
         }
 
-        if (this.moveIn.hoverLine) {
-          if (!this.lastHoverLine && this.options.on) {
-            this.options.on('moveInLine', this.moveIn.hoverLine);
+        if (this.moveIn.hoverLine !== this.lastHoverLine) {
+          if (this.lastHoverLine) {
+            if (this.options.on) {
+              this.options.on('moveOutLine', this.lastHoverLine);
+            }
+
+            this.hideTip();
           }
 
-          this.showTip(this.moveIn.hoverLine, pos);
-        } else if (this.lastHoverLine) {
-          if (this.options.on) {
-            this.options.on('moveOutLine', this.moveIn.hoverLine);
-          }
+          if (this.moveIn.hoverLine) {
+            if (this.options.on) {
+              this.options.on('moveInLine', this.moveIn.hoverLine);
+            }
 
-          this.hideTip();
+            this.showTip(this.moveIn.hoverLine, pos);
+          }
         }
 
         if (this.moveIn.type === MoveInType.LineControlPoint) {
