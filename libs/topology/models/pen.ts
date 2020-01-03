@@ -46,6 +46,7 @@ export abstract class Pen {
   animateCycle: number;
   animateCycleIndex = 0;
   nextAnimate: string;
+  // Auto-play
   animatePlay: boolean;
 
   locked = false;
