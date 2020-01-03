@@ -15,11 +15,10 @@ export class DivLayer {
   progress: HTMLElement;
   loop: HTMLElement;
   media: HTMLMediaElement;
-  videos: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement } } = {};
-  audios: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement } } = {};
-  iframes: { [key: string]: HTMLIFrameElement } = {};
-  elements: { [key: string]: HTMLElement } = {};
-  gifs: { [key: string]: HTMLImageElement } = {};
+  videos: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement; }; } = {};
+  audios: { [key: string]: { player: HTMLElement; current: HTMLElement; media: HTMLMediaElement; }; } = {};
+  iframes: { [key: string]: HTMLIFrameElement; } = {};
+  gifs: { [key: string]: HTMLImageElement; } = {};
 
   private subcribe: Observer;
   private subcribeNode: Observer;
@@ -108,24 +107,6 @@ export class DivLayer {
       this.setElemPosition(node, this.iframes[node.id] || this.addIframe(node));
     }
 
-    if (node.elementId) {
-      if (this.elements[node.id] && this.elements[node.id].id !== node.elementId) {
-        if (this.elements[node.id]) {
-          this.canvas.removeChild(this.elements[node.id]);
-          this.elements[node.id] = null;
-        }
-      }
-
-      if (!this.elements[node.id]) {
-        this.elements[node.id] = document.getElementById(node.elementId);
-
-        if (this.elements[node.id]) {
-          this.canvas.appendChild(this.elements[node.id]);
-        }
-      }
-
-      this.setElemPosition(node, this.elements[node.id]);
-    }
     if (node.gif) {
       if (node.image.indexOf('.gif') < 0) {
         node.gif = false;
@@ -389,10 +370,6 @@ export class DivLayer {
       this.canvas.removeChild(this.iframes[item.id]);
       this.iframes[item.id] = null;
     }
-    if (item.elementId) {
-      this.canvas.removeChild(this.elements[item.id]);
-      this.elements[item.id] = null;
-    }
     if (item.gif) {
       this.canvas.removeChild(this.gifs[item.id]);
       this.gifs[item.id] = null;
@@ -419,10 +396,6 @@ export class DivLayer {
         this.canvas.removeChild(this.iframes[item.id]);
         this.iframes[item.id] = null;
       }
-      if (item.elementId) {
-        this.canvas.removeChild(this.elements[item.id]);
-        this.elements[item.id] = null;
-      }
       if (item.gif) {
         this.canvas.removeChild(this.gifs[item.id]);
         this.gifs[item.id] = null;
@@ -448,7 +421,7 @@ export class DivLayer {
     return txt;
   }
 
-  resize(size?: { width: number; height: number }) {
+  resize(size?: { width: number; height: number; }) {
     if (size) {
       this.canvas.style.width = size.width + 'px';
       this.canvas.style.height = size.height + 'px';

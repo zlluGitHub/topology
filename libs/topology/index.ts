@@ -86,7 +86,7 @@ export class Topology {
       hoverLine: null,
       lineControlPoint: null
     };
-  nodesMoved = false;
+  needCache = false;
 
   private tip = '';
   tipElem: HTMLElement;
@@ -557,13 +557,13 @@ export class Topology {
             break;
           }
 
-          this.nodesMoved = true;
           const x = pos.x - this.mouseDown.x;
           const y = pos.y - this.mouseDown.y;
           if (x || y) {
             const offset = this.getDockPos(x, y);
             this.activeLayer.moveNodes(offset.x ? offset.x : x, offset.y ? offset.y : y);
             this.animateLayer.start(true);
+            this.needCache = true;
           }
           break;
         case MoveInType.ResizeCP:
@@ -572,6 +572,7 @@ export class Topology {
           if (this.options.on) {
             this.options.on('resizeNodes', this.activeLayer.nodes);
           }
+          this.needCache = true;
           break;
         case MoveInType.LineTo:
         case MoveInType.HoverAnchors:
@@ -584,13 +585,16 @@ export class Topology {
           }
           this.hoverLayer.lineTo(this.getLineDock(pos), arrow);
           this.animateLayer.start(true);
+          this.needCache = true;
           break;
         case MoveInType.LineFrom:
           this.hoverLayer.lineFrom(this.getLineDock(pos));
+          this.needCache = true;
           break;
         case MoveInType.LineMove:
           this.hoverLayer.lineMove(pos, this.mouseDown);
           this.animateLayer.start(true);
+          this.needCache = true;
           break;
         case MoveInType.LineControlPoint:
           this.moveIn.hoverLine.controlPoints[this.moveIn.lineControlPoint.id].x = pos.x;
@@ -603,6 +607,7 @@ export class Topology {
             );
           }
           this.animateLayer.start(true);
+          this.needCache = true;
           break;
         case MoveInType.Rotate:
           if (this.activeLayer.nodes.length) {
@@ -610,6 +615,7 @@ export class Topology {
             this.activeLayer.updateLines();
           }
           this.animateLayer.start(true);
+          this.needCache = true;
           break;
       }
 
@@ -750,9 +756,6 @@ export class Topology {
 
   private onmouseup = (e: MouseEvent) => {
     this.mouseDown = null;
-    if (this.lastTranlated.x) {
-      this.cache();
-    }
     this.lastTranlated.x = 0;
     this.lastTranlated.y = 0;
     this.hoverLayer.dockAnchor = null;
@@ -807,10 +810,10 @@ export class Topology {
     this.hoverLayer.dragRect = null;
     this.render();
 
-    if (this.nodesMoved || this.moveIn.type !== MoveInType.None) {
+    if (this.needCache) {
       this.cache();
     }
-    this.nodesMoved = false;
+    this.needCache = false;
   };
 
   private ondblclick = (e: MouseEvent) => {
@@ -1334,13 +1337,12 @@ export class Topology {
     return offset;
   }
 
-  private cache() {
-    const data = new TopologyData(this.data);
+  cache() {
     if (this.caches.index < this.caches.list.length - 1) {
-      this.caches.list.splice(this.caches.index + 1, this.caches.list.length - this.caches.index - 1, data);
-    } else {
-      this.caches.list.push(data);
+      this.caches.list.splice(this.caches.index + 1, this.caches.list.length - this.caches.index - 1);
     }
+    const data = new TopologyData(this.data);
+    this.caches.list.push(data);
 
     this.caches.index = this.caches.list.length - 1;
   }
@@ -1351,7 +1353,7 @@ export class Topology {
     }
 
     this.divLayer.clear();
-    const data = this.caches.list[--this.caches.index];
+    const data = new TopologyData(this.caches.list[--this.caches.index]);
     this.data.nodes.splice(0, this.data.nodes.length);
     this.data.lines.splice(0, this.data.lines.length);
     this.data.nodes.push.apply(this.data.nodes, data.nodes);
@@ -1367,7 +1369,7 @@ export class Topology {
       return;
     }
     this.divLayer.clear();
-    const data = this.caches.list[++this.caches.index];
+    const data = new TopologyData(this.caches.list[++this.caches.index]);
     this.data.nodes.splice(0, this.data.nodes.length);
     this.data.lines.splice(0, this.data.lines.length);
     this.data.nodes.push.apply(this.data.nodes, data.nodes);
