@@ -96,7 +96,7 @@ export class Node extends Pen {
   nextPlay: string;
 
   iframe: string;
-  // 加载外部dom id
+  // 和节点绑定的（多是临时生成）的dom元素
   elementId: string;
   // 外部dom是否完成初始化（用于第三方库辅助变量）
   elementLoaded: any;

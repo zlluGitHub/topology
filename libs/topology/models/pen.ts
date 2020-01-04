@@ -53,7 +53,8 @@ export abstract class Pen {
 
   link: string;
   markdown: string;
-  elementId: string;
+  // 外部用于提示的dom id
+  tipId: string;
   title: string;
 
   // User data.
@@ -97,7 +98,7 @@ export abstract class Pen {
       this.locked = json.locked;
       this.link = json.link;
       this.markdown = json.markdown;
-      this.elementId = json.elementId;
+      this.tipId = json.tipId;
       this.title = json.title;
     } else {
       this.id = s8();

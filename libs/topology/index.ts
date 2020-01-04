@@ -89,8 +89,8 @@ export class Topology {
   needCache = false;
 
   private tip = '';
+  tipMarkdown: HTMLElement;
   tipElem: HTMLElement;
-  private tipExternElem: HTMLElement;
 
   private scheduledAnimationFrame = false;
 
@@ -243,7 +243,7 @@ export class Topology {
     this.input.style.resize = 'none';
     this.parentElem.appendChild(this.input);
 
-    this.createTip();
+    this.createMarkdownTip();
 
     this.cache();
   }
@@ -1913,24 +1913,24 @@ export class Topology {
     }, 1000);
   }
 
-  private createTip() {
-    this.tipElem = document.createElement('div');
-    this.tipElem.style.position = 'absolute';
-    this.tipElem.style.zIndex = '-1';
-    this.tipElem.style.left = '-9999px';
-    this.tipElem.style.width = '500px';
-    this.tipElem.style.outline = 'none';
-    this.tipElem.style.border = '1px solid #d0d0d0';
-    this.tipElem.style.backgroundColor = '#fff';
-    this.tipElem.style.padding = '10px 15px';
-    this.tipElem.style.overflowY = 'auto';
-    document.body.appendChild(this.tipElem);
+  private createMarkdownTip() {
+    this.tipMarkdown = document.createElement('div');
+    this.tipMarkdown.style.position = 'absolute';
+    this.tipMarkdown.style.zIndex = '-1';
+    this.tipMarkdown.style.left = '-9999px';
+    this.tipMarkdown.style.width = '500px';
+    this.tipMarkdown.style.outline = 'none';
+    this.tipMarkdown.style.border = '1px solid #d0d0d0';
+    this.tipMarkdown.style.backgroundColor = '#fff';
+    this.tipMarkdown.style.padding = '10px 15px';
+    this.tipMarkdown.style.overflowY = 'auto';
+    document.body.appendChild(this.tipMarkdown);
   }
 
 
 
   private showTip(data: Pen, pos: { x: number, y: number; }) {
-    if (!this.data.locked || !data || (!data.markdown && !data.elementId && !data.title) || data.id === this.tip) {
+    if (!this.data.locked || !data || (!data.markdown && !data.tipId && !data.title) || data.id === this.tip) {
       return;
     }
 
@@ -1940,12 +1940,12 @@ export class Topology {
       return;
     }
 
-    if (data.elementId) {
-      this.tipExternElem = document.getElementById(data.elementId);
+    if (data.tipId) {
+      this.tipElem = document.getElementById(data.tipId);
     }
 
     const parentRect = this.parentElem.getBoundingClientRect();
-    const w = data.markdown ? 500 : (this.tipExternElem ? this.tipExternElem.getBoundingClientRect().width : 500);
+    const w = data.markdown ? 500 : (this.tipElem ? this.tipElem.getBoundingClientRect().width : 500);
     let x = pos.x + parentRect.left - w / 2;
     let y = pos.y + parentRect.top;
     if (data instanceof Node) {
@@ -1964,31 +1964,31 @@ export class Topology {
     }
 
     if (data.markdown) {
-      this.tipElem.style.height = '30px';
+      this.tipMarkdown.style.height = '30px';
       const marked = (window as any).marked;
       if (marked) {
-        this.tipElem.innerHTML = marked(data.markdown);
+        this.tipMarkdown.innerHTML = marked(data.markdown);
       } else {
-        this.tipElem.innerHTML = data.markdown;
+        this.tipMarkdown.innerHTML = data.markdown;
       }
 
-      if (this.tipElem.scrollHeight < 260) {
-        this.tipElem.style.height = this.tipElem.scrollHeight + 10 + 'px';
+      if (this.tipMarkdown.scrollHeight < 260) {
+        this.tipMarkdown.style.height = this.tipMarkdown.scrollHeight + 10 + 'px';
       } else {
-        this.tipElem.style.height = '260px';
+        this.tipMarkdown.style.height = '260px';
       }
-      const a = this.tipElem.getElementsByTagName('A');
+      const a = this.tipMarkdown.getElementsByTagName('A');
       for (let i = 0; i < a.length; ++i) {
         a[i].setAttribute('target', '_blank');
       }
 
+      this.tipMarkdown.style.left = x + 'px';
+      this.tipMarkdown.style.top = y + 'px';
+      this.tipMarkdown.style.zIndex = '100';
+    } else if (this.tipElem) {
       this.tipElem.style.left = x + 'px';
       this.tipElem.style.top = y + 'px';
       this.tipElem.style.zIndex = '100';
-    } else if (this.tipExternElem) {
-      this.tipExternElem.style.left = x + 'px';
-      this.tipExternElem.style.top = y + 'px';
-      this.tipExternElem.style.zIndex = '100';
     }
 
     this.tip = data.id;
@@ -1999,12 +1999,12 @@ export class Topology {
       return;
     }
 
-    this.tipElem.style.left = '-9999px';
-    this.tipElem.style.zIndex = '-1';
-    if (this.tipExternElem) {
-      this.tipExternElem.style.left = '-9999px';
-      this.tipExternElem.style.zIndex = '-1';
-      this.tipExternElem = null;
+    this.tipMarkdown.style.left = '-9999px';
+    this.tipMarkdown.style.zIndex = '-1';
+    if (this.tipElem) {
+      this.tipElem.style.left = '-9999px';
+      this.tipElem.style.zIndex = '-1';
+      this.tipElem = null;
     }
     this.divLayer.canvas.title = '';
 
