@@ -207,10 +207,8 @@ export class Topology {
     this.divLayer.canvas.ondblclick = this.ondblclick;
     this.divLayer.canvas.tabIndex = 0;
     this.divLayer.canvas.onkeydown = this.onkeydown;
-    this.divLayer.canvas.onblur = event => {
-      // this.moveIn.type = MoveInType.None;
+    this.divLayer.canvas.onblur = () => {
       this.mouseDown = null;
-      this.render(true);
     };
     this.divLayer.canvas.onwheel = event => {
       if (!event.ctrlKey && !event.altKey) {
