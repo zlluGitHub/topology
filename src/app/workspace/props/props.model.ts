@@ -48,7 +48,7 @@ export interface Props {
     locked?: boolean;
     link?: string;
     markdown?: string;
-    elementId?: string;
+    tipId?: string;
     title?: string;
 
     // Node
