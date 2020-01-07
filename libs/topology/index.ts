@@ -1436,7 +1436,6 @@ export class Topology {
       i = this.findLine(line);
       if (i > -1) {
         lines.push.apply(lines, this.data.lines.splice(i, 1));
-        break;
       }
     }
 
