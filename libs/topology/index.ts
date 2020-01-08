@@ -935,7 +935,7 @@ export class Topology {
     // In active line.
     for (const item of this.activeLayer.lines) {
       for (let i = 0; i < item.controlPoints.length; ++i) {
-        if (item.controlPoints[i].hit(pt, 10)) {
+        if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
           item.controlPoints[i].id = i;
           this.moveIn.type = MoveInType.LineControlPoint;
           this.moveIn.lineControlPoint = item.controlPoints[i];
@@ -952,12 +952,16 @@ export class Topology {
 
     this.divLayer.canvas.style.cursor = 'default';
 
-    if (this.inNodes(pt, this.activeLayer.nodes)) {
+    let node = this.inNodes(pt, this.activeLayer.nodes);
+    if (node && !node.childStand) {
       this.hoverLayer.nodeRect = null;
+
       return;
     }
 
-    if (this.inNodes(pt, this.data.nodes)) {
+    node = this.inNodes(pt, this.data.nodes);
+
+    if (node && !node.childStand) {
       return;
     }
 
@@ -977,17 +981,19 @@ export class Topology {
 
   inNodes(pt: Point, nodes: Node[]) {
     for (let i = nodes.length - 1; i > -1; --i) {
-      if (this.inNode(pt, nodes[i])) {
-        return true;
+      const node = this.inNode(pt, nodes[i]);
+      if (node) {
+        return node;
       }
     }
   }
 
   inNode(pt: Point, node: Node) {
     if (node.childStand && node.children && node.children.length) {
-      if (this.inNodes(pt, node.children)) {
+      const n = this.inNodes(pt, node.children);
+      if (n) {
         this.hoverLayer.nodeRect = node.rect;
-        return true;
+        return n;
       }
     }
 
@@ -999,13 +1005,13 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
-        return true;
+        return node;
       }
       this.divLayer.canvas.style.cursor = 'move';
 
       // Too small
       if (node.rect.width < 20 || node.rect.height < 20) {
-        return true;
+        return node;
       }
 
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
@@ -1018,11 +1024,11 @@ export class Topology {
           this.moveIn.hoverAnchorIndex = j;
           this.hoverLayer.hoverAnchorIndex = j;
           this.divLayer.canvas.style.cursor = 'crosshair';
-          return true;
+          return node;
         }
       }
 
-      return true;
+      return node;
     }
 
     if (node.hit(pt, 5)) {
@@ -1030,7 +1036,7 @@ export class Topology {
         this.hoverLayer.nodeRect = node.rect;
       }
       if (this.data.locked || node.locked) {
-        return true;
+        return node;
       }
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
         if (node.rotatedAnchors[j].hit(pt, 5)) {
@@ -1042,7 +1048,7 @@ export class Topology {
           this.moveIn.hoverAnchorIndex = j;
           this.hoverLayer.hoverAnchorIndex = j;
           this.divLayer.canvas.style.cursor = 'crosshair';
-          return true;
+          return node;
         }
       }
     }
@@ -1177,7 +1183,7 @@ export class Topology {
   }
 
   private showInput(item: Pen) {
-    if (this.data.locked || this.options.hideInput) {
+    if (this.data.locked || item.locked || this.options.hideInput) {
       return;
     }
 
@@ -1791,20 +1797,7 @@ export class Topology {
     }
 
     for (const item of this.data.lines) {
-      item.from.x += offsetX;
-      item.from.y += offsetY;
-      item.to.x += offsetX;
-      item.to.y += offsetY;
-      if (item.text) {
-        item.textRect = null;
-      }
-
-      for (const pt of item.controlPoints) {
-        pt.x += offsetX;
-        pt.y += offsetY;
-      }
-
-      Store.set('pts-' + item.id, null);
+      item.translate(offsetX, offsetY);
     }
 
     this.lastTranlated.x = x;

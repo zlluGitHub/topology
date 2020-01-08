@@ -365,4 +365,21 @@ export class Line extends Pen {
     this.from.round();
     this.to.round();
   }
+
+  translate(x: number, y: number) {
+    this.from.x += x;
+    this.from.y += y;
+    this.to.x += x;
+    this.to.y += y;
+    if (this.text) {
+      this.textRect = null;
+    }
+
+    for (const pt of this.controlPoints) {
+      pt.x += x;
+      pt.y += y;
+    }
+
+    Store.set('pts-' + this.id, null);
+  }
 }

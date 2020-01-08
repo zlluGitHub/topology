@@ -229,6 +229,9 @@ export class ActiveLayer {
         scaleX,
         scaleY
       );
+
+
+
       item.rect.floor();
       item.rect.calceCenter();
       item.init();
@@ -240,7 +243,7 @@ export class ActiveLayer {
     this.updateLines();
   }
 
-  // 当initialOccupy缩放为occupy后，计算node在occupy中的新位置
+  // 当initRect缩放为rect后，计算node在occupy中的新位置
   // initRect - node的原始位置
   // xScale - x坐标缩放比例
   // yScale - y坐标缩放比例
@@ -265,6 +268,10 @@ export class ActiveLayer {
       const offsetX = this.nodeRects[i].x + x - item.rect.x;
       const offsetY = this.nodeRects[i].y + y - item.rect.y;
       item.translate(offsetX, offsetY);
+      const lines = this.getLinesOfNode(item);
+      for (const line of lines) {
+        line.translate(offsetX, offsetY);
+      }
       this.updateChildren(item);
 
       if (item.parentId && item.stand) {
@@ -296,6 +303,45 @@ export class ActiveLayer {
       item.init();
       this.updateChildren(item);
     }
+  }
+
+  getAllChildren(result: Node[], node: Node) {
+    if (!node.children) {
+      return;
+    }
+
+    result.push.apply(result, node.children);
+
+    for (const n of node.children) {
+      result.push(n);
+      this.getAllChildren(result, n);
+    }
+  }
+
+  getLinesOfNode(node: Node) {
+    const result: Line[] = [];
+
+    const nodes: Node[] = [node];
+    this.getAllChildren(nodes, node);
+
+    for (const line of this.data.lines) {
+      let fromIn = false;
+      let toIn = false;
+      for (const item of nodes) {
+        if (line.from.id === item.id) {
+          fromIn = true;
+        }
+        if (line.to.id === item.id) {
+          toIn = true;
+        }
+      }
+
+      if (fromIn && toIn) {
+        result.push(line);
+      }
+    }
+
+    return result;
   }
 
   updateLines(nodes?: Node[]) {
@@ -442,6 +488,7 @@ export class ActiveLayer {
       }
       tmp.render(ctx);
     }
+
     for (const item of this.lines) {
       if (!item.to) {
         continue;
@@ -458,7 +505,9 @@ export class ActiveLayer {
       tmp.toArrowColor = this.options.activeColor;
       tmp.render(ctx);
 
-      drawLineFns[item.name].drawControlPointsFn(ctx, item);
+      if (!item.locked) {
+        drawLineFns[item.name].drawControlPointsFn(ctx, item);
+      }
     }
 
     // This is diffence between single node and more.
