@@ -909,6 +909,7 @@ export class Topology {
     if (moveX || moveY) {
       this.activeLayer.saveNodeRects();
       this.activeLayer.moveNodes(moveX, moveY);
+      this.overflow();
       this.animateLayer.start(true);
     }
 

@@ -400,28 +400,12 @@ export class DivLayer {
   }
 
   clear() {
-    for (const item of this.data.nodes) {
-      if (item.audio) {
-        this.canvas.removeChild(this.audios[item.id].player);
-        this.audios[item.id] = null;
-      }
-      if (item.video) {
-        this.canvas.removeChild(this.videos[item.id].player);
-        this.videos[item.id] = null;
-      }
-      if (item.iframe) {
-        this.canvas.removeChild(this.iframes[item.id]);
-        this.iframes[item.id] = null;
-      }
-      if (item.elementId) {
-        this.canvas.removeChild(this.elements[item.id]);
-        this.elements[item.id] = null;
-      }
-      if (item.gif) {
-        this.canvas.removeChild(this.gifs[item.id]);
-        this.gifs[item.id] = null;
-      }
-    }
+    this.canvas.innerHTML = '';
+    this.audios = {};
+    this.videos = {};
+    this.iframes = {};
+    this.elements = {};
+    this.gifs = {};
   }
 
   formatSeconds(seconds: number) {
