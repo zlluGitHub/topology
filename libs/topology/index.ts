@@ -68,7 +68,7 @@ export class Topology {
   lastHoverNode: Node;
   lastHoverLine: Line;
   input = document.createElement('textarea');
-  inputNode: Node;
+  inputObj: Pen;
   mouseDown: { x: number; y: number; };
   lastTranlated = { x: 0, y: 0 };
   moveIn: {
@@ -622,11 +622,11 @@ export class Topology {
   };
 
   private setNodeText() {
-    this.inputNode.text = this.input.value;
+    this.inputObj.text = this.input.value;
     this.input.style.zIndex = '-1';
     this.input.style.left = '-1000px';
     this.input.style.width = '0';
-    this.inputNode = null;
+    this.inputObj = null;
     this.cache();
     this.offscreen.render();
   }
@@ -641,7 +641,7 @@ export class Topology {
       this.divLayer.canvas.style.cursor = 'move';
     }
 
-    if (this.inputNode) {
+    if (this.inputObj) {
       this.setNodeText();
     }
 
@@ -815,43 +815,22 @@ export class Topology {
   };
 
   private ondblclick = (e: MouseEvent) => {
-    switch (this.moveIn.type) {
-      case MoveInType.Nodes:
-        if (this.moveIn.hoverNode) {
-          const textObj = this.clickText(this.moveIn.hoverNode, new Point(e.offsetX, e.offsetY));
-          if (textObj) {
-            this.showInput(textObj.node, textObj.textRect);
-          }
-          if (this.options.on) {
-            this.options.on('dblclick', this.moveIn.hoverNode);
-          }
-        }
-        break;
-    }
-  };
-
-  private clickText(node: Node, pos: Point): { node: Node; textRect: Rect; } {
-    const textRect = node.getTextRect();
-    if (textRect.hitRotate(pos, node.rotate, node.rect.center)) {
-      return {
-        node,
-        textRect
-      };
-    }
-
-    if (!node.children) {
-      return null;
-    }
-
-    for (const item of node.children) {
-      const rect = this.clickText(item, pos);
-      if (rect) {
-        return rect;
+    if (this.moveIn.hoverNode) {
+      this.showInput(this.moveIn.hoverNode);
+      if (this.options.on) {
+        this.options.on('dblclick', {
+          node: this.moveIn.hoverNode
+        });
+      }
+    } else if (this.moveIn.hoverLine) {
+      this.showInput(this.moveIn.hoverLine);
+      if (this.options.on) {
+        this.options.on('dblclick', {
+          line: this.moveIn.hoverLine
+        });
       }
     }
-
-    return null;
-  }
+  };
 
   private onkeydown = (key: KeyboardEvent) => {
     key.preventDefault();
@@ -1197,12 +1176,14 @@ export class Topology {
     return angle;
   }
 
-  private showInput(node: Node, textRect: Rect) {
+  private showInput(item: Pen) {
     if (this.data.locked || this.options.hideInput) {
       return;
     }
-    this.inputNode = node;
-    this.input.value = node.text;
+
+    this.inputObj = item;
+    const textRect = item.getTextRect();
+    this.input.value = item.text || '';
     this.input.style.left = textRect.x + 'px';
     this.input.style.top = textRect.y + 'px';
     this.input.style.width = textRect.width + 'px';

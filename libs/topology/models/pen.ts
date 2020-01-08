@@ -172,5 +172,6 @@ export abstract class Pen {
     return pointInRect(point, pts);
   }
 
+  abstract getTextRect(): Rect;
   abstract draw(ctx: CanvasRenderingContext2D): void;
 }

@@ -216,6 +216,9 @@ export class Line extends Pen {
   }
 
   getTextRect() {
+    if (!this.textRect) {
+      this.calcTextRect();
+    }
     return this.textRect;
   }
 
