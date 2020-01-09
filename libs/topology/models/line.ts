@@ -382,4 +382,22 @@ export class Line extends Pen {
 
     Store.set('pts-' + this.id, null);
   }
+
+  scale(scale: number, center: Point) {
+    this.from.x = center.x - (center.x - this.from.x) * scale;
+    this.from.y = center.y - (center.y - this.from.y) * scale;
+    this.to.x = center.x - (center.x - this.to.x) * scale;
+    this.to.y = center.y - (center.y - this.to.y) * scale;
+    if (this.text && this.font && this.font.fontSize) {
+      this.font.fontSize *= scale;
+      this.textRect = null;
+    }
+
+    for (const pt of this.controlPoints) {
+      pt.x = center.x - (center.x - pt.x) * scale;
+      pt.y = center.y - (center.y - pt.y) * scale;
+    }
+
+    Store.set('pts-' + this.id, null);
+  }
 }

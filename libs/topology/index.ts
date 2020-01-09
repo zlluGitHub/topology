@@ -1828,21 +1828,7 @@ export class Topology {
     }
 
     for (const item of this.data.lines) {
-      item.from.x = center.x - (center.x - item.from.x) * scale;
-      item.from.y = center.y - (center.y - item.from.y) * scale;
-      item.to.x = center.x - (center.x - item.to.x) * scale;
-      item.to.y = center.y - (center.y - item.to.y) * scale;
-      if (item.text && item.font && item.font.fontSize) {
-        item.font.fontSize *= scale;
-        item.textRect = null;
-      }
-
-      for (const pt of item.controlPoints) {
-        pt.x = center.x - (center.x - pt.x) * scale;
-        pt.y = center.y - (center.y - pt.y) * scale;
-      }
-
-      Store.set('pts-' + item.id, null);
+      item.scale(scale, center);
     }
     Store.set('LT:scale', this.data.scale);
 

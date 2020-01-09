@@ -230,13 +230,20 @@ export class ActiveLayer {
         scaleY
       );
 
-
-
+      const oldCenter = item.rect.center;
       item.rect.floor();
       item.rect.calceCenter();
       item.init();
       item.elementRendered = false;
       this.updateChildren(item);
+
+      const lines = this.getLinesOfNode(item);
+      for (const line of lines) {
+        for (const p of line.controlPoints) {
+          //
+        }
+      }
+
       ++i;
     }
 
