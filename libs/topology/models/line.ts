@@ -203,8 +203,8 @@ export class Line extends Pen {
   calcTextRect() {
     const center = this.getCenter();
     let width = Math.abs(this.from.x - this.to.x);
-    if (width < 200) {
-      width = 200;
+    if (width < 100) {
+      width = 100;
     }
     const height = this.font.lineHeight * this.font.fontSize * (this.textMaxLine || 1);
     this.textRect = new Rect(
@@ -230,29 +230,10 @@ export class Line extends Pen {
         break;
       case 'polyline':
         if (!this.controlPoints || !this.controlPoints.length) {
-          center = this.getLineCenter(this.from, this.to);
-          break;
+          this.calcControlPoints();
         }
-
-        let curPt = this.from;
-        let len = 0;
-        for (const pt of this.controlPoints) {
-          if (curPt.y === pt.y) {
-            const pos = Math.abs(curPt.x - pt.x);
-            if (pos > len) {
-              len = pos;
-              center = this.getLineCenter(curPt, pt);
-            }
-          }
-          curPt = pt;
-        }
-        if (curPt.y === this.to.y) {
-          const pos = Math.abs(curPt.x - this.to.x);
-          if (pos > len) {
-            len = pos;
-            center = this.getLineCenter(curPt, this.to);
-          }
-        }
+        const i = Math.floor(this.controlPoints.length / 2);
+        center = this.getLineCenter(this.controlPoints[i - 1], this.controlPoints[i]);
         break;
       case 'curve':
         center = getBezierPoint(0.5, this.to, this.controlPoints[1], this.controlPoints[0], this.from);

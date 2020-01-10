@@ -626,9 +626,14 @@ export class Topology {
     this.input.style.zIndex = '-1';
     this.input.style.left = '-1000px';
     this.input.style.width = '0';
-    this.inputObj = null;
     this.cache();
     this.offscreen.render();
+
+    if (this.options.on) {
+      this.options.on('setText', this.inputObj);
+    }
+
+    this.inputObj = null;
   }
 
   private onmousedown = (e: MouseEvent) => {
@@ -816,18 +821,24 @@ export class Topology {
 
   private ondblclick = (e: MouseEvent) => {
     if (this.moveIn.hoverNode) {
-      this.showInput(this.moveIn.hoverNode);
       if (this.options.on) {
         this.options.on('dblclick', {
           node: this.moveIn.hoverNode
         });
       }
+
+      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+        this.showInput(this.moveIn.hoverNode);
+      }
     } else if (this.moveIn.hoverLine) {
-      this.showInput(this.moveIn.hoverLine);
       if (this.options.on) {
         this.options.on('dblclick', {
           line: this.moveIn.hoverLine
         });
+      }
+
+      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+        this.showInput(this.moveIn.hoverLine);
       }
     }
   };
