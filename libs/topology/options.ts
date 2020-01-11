@@ -19,6 +19,7 @@ export interface Options {
   hideInput?: boolean;
   hideRotateCP?: boolean;
   disableEmptyLine?: boolean;
+  disableScale?: boolean;
   playIcon?: string;
   pauseIcon?: string;
   fullScreenIcon?: string;
