@@ -63,7 +63,9 @@ export class DivLayer {
       }
 
       this.curNode = node;
-      this.player.style.top = this.parentElem.offsetTop + this.parentElem.clientHeight - 40 + 'px';
+      this.player.style.top = this.parentElem.offsetTop + this.parentElem.clientHeight + 'px';
+      this.player.style.left = this.parentElem.getBoundingClientRect().left + 'px';
+      this.player.style.width = this.parentElem.clientWidth + 'px';
       this.getMediaCurrent();
       if (this.media.paused) {
         this.playBtn.className = this.options.playIcon;
@@ -143,9 +145,7 @@ export class DivLayer {
   createPlayer() {
     this.player.style.position = 'fixed';
     this.player.style.outline = 'none';
-    this.player.style.left = this.parentElem.offsetLeft + 'px';
     this.player.style.top = '-99999px';
-    this.player.style.width = this.parentElem.clientWidth + 'px';
     this.player.style.height = '40px';
     this.player.style.padding = '10px 15px';
     this.player.style.background = 'rgba(200,200,200,.1)';

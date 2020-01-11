@@ -932,7 +932,7 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
     }
 
-    if (!this.data.locked) {
+    if (!this.data.locked && !this.options.hideSizeCP) {
       for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
         if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
           this.moveIn.type = MoveInType.ResizeCP;

@@ -554,18 +554,20 @@ export class ActiveLayer {
     ctx.stroke();
 
     // Draw size control points.
-    ctx.lineWidth = 1;
-    for (const item of this.sizeCPs) {
-      ctx.save();
-      ctx.beginPath();
-      if (this.nodes.length === 1 && (this.nodes[0].rotate || this.rotate)) {
-        ctx.translate(item.x, item.y);
-        ctx.rotate(((this.nodes[0].rotate + this.rotate) * Math.PI) / 180);
-        ctx.translate(-item.x, -item.y);
+    if (!this.options.hideSizeCP) {
+      ctx.lineWidth = 1;
+      for (const item of this.sizeCPs) {
+        ctx.save();
+        ctx.beginPath();
+        if (this.nodes.length === 1 && (this.nodes[0].rotate || this.rotate)) {
+          ctx.translate(item.x, item.y);
+          ctx.rotate(((this.nodes[0].rotate + this.rotate) * Math.PI) / 180);
+          ctx.translate(-item.x, -item.y);
+        }
+        ctx.fillRect(item.x - 4.5, item.y - 4.5, 8, 8);
+        ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
+        ctx.restore();
       }
-      ctx.fillRect(item.x - 4.5, item.y - 4.5, 8, 8);
-      ctx.strokeRect(item.x - 5.5, item.y - 5.5, 10, 10);
-      ctx.restore();
     }
 
     ctx.restore();
