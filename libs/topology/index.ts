@@ -211,7 +211,7 @@ export class Topology {
       this.mouseDown = null;
     };
     this.divLayer.canvas.onwheel = event => {
-      if (!event.ctrlKey && !event.altKey) {
+      if (this.options.disableScale || (!event.ctrlKey && !event.altKey)) {
         return;
       }
       event.preventDefault();
@@ -1827,8 +1827,6 @@ export class Topology {
   //   > 1, expand
   //   < 1, reduce
   scale(scale: number) {
-    if (this.options.disableScale) return
-    
     if (this.data.scale * scale < 0.25) {
       return;
     }
