@@ -1827,6 +1827,8 @@ export class Topology {
   //   > 1, expand
   //   < 1, reduce
   scale(scale: number) {
+    if (this.options.disableScale) return
+    
     if (this.data.scale * scale < 0.25) {
       return;
     }
