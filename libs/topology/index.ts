@@ -68,7 +68,7 @@ export class Topology {
   lastHoverNode: Node;
   lastHoverLine: Line;
   input = document.createElement('textarea');
-  inputNode: Node;
+  inputObj: Pen;
   mouseDown: { x: number; y: number; };
   lastTranlated = { x: 0, y: 0 };
   moveIn: {
@@ -211,7 +211,7 @@ export class Topology {
       this.mouseDown = null;
     };
     this.divLayer.canvas.onwheel = event => {
-      if (!event.ctrlKey && !event.altKey) {
+      if (this.options.disableScale || (!event.ctrlKey && !event.altKey)) {
         return;
       }
       event.preventDefault();
@@ -622,13 +622,18 @@ export class Topology {
   };
 
   private setNodeText() {
-    this.inputNode.text = this.input.value;
+    this.inputObj.text = this.input.value;
     this.input.style.zIndex = '-1';
     this.input.style.left = '-1000px';
     this.input.style.width = '0';
-    this.inputNode = null;
     this.cache();
     this.offscreen.render();
+
+    if (this.options.on) {
+      this.options.on('setText', this.inputObj);
+    }
+
+    this.inputObj = null;
   }
 
   private onmousedown = (e: MouseEvent) => {
@@ -641,7 +646,7 @@ export class Topology {
       this.divLayer.canvas.style.cursor = 'move';
     }
 
-    if (this.inputNode) {
+    if (this.inputObj) {
       this.setNodeText();
     }
 
@@ -815,43 +820,28 @@ export class Topology {
   };
 
   private ondblclick = (e: MouseEvent) => {
-    switch (this.moveIn.type) {
-      case MoveInType.Nodes:
-        if (this.moveIn.hoverNode) {
-          const textObj = this.clickText(this.moveIn.hoverNode, new Point(e.offsetX, e.offsetY));
-          if (textObj) {
-            this.showInput(textObj.node, textObj.textRect);
-          }
-          if (this.options.on) {
-            this.options.on('dblclick', this.moveIn.hoverNode);
-          }
-        }
-        break;
-    }
-  };
+    if (this.moveIn.hoverNode) {
+      if (this.options.on) {
+        this.options.on('dblclick', {
+          node: this.moveIn.hoverNode
+        });
+      }
 
-  private clickText(node: Node, pos: Point): { node: Node; textRect: Rect; } {
-    const textRect = node.getTextRect();
-    if (textRect.hitRotate(pos, node.rotate, node.rect.center)) {
-      return {
-        node,
-        textRect
-      };
-    }
+      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+        this.showInput(this.moveIn.hoverNode);
+      }
+    } else if (this.moveIn.hoverLine) {
+      if (this.options.on) {
+        this.options.on('dblclick', {
+          line: this.moveIn.hoverLine
+        });
+      }
 
-    if (!node.children) {
-      return null;
-    }
-
-    for (const item of node.children) {
-      const rect = this.clickText(item, pos);
-      if (rect) {
-        return rect;
+      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+        this.showInput(this.moveIn.hoverLine);
       }
     }
-
-    return null;
-  }
+  };
 
   private onkeydown = (key: KeyboardEvent) => {
     key.preventDefault();
@@ -909,6 +899,7 @@ export class Topology {
     if (moveX || moveY) {
       this.activeLayer.saveNodeRects();
       this.activeLayer.moveNodes(moveX, moveY);
+      this.overflow();
       this.animateLayer.start(true);
     }
 
@@ -941,7 +932,7 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
     }
 
-    if (!this.data.locked) {
+    if (!this.data.locked && !this.options.hideSizeCP) {
       for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
         if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
           this.moveIn.type = MoveInType.ResizeCP;
@@ -955,7 +946,7 @@ export class Topology {
     // In active line.
     for (const item of this.activeLayer.lines) {
       for (let i = 0; i < item.controlPoints.length; ++i) {
-        if (item.controlPoints[i].hit(pt, 10)) {
+        if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
           item.controlPoints[i].id = i;
           this.moveIn.type = MoveInType.LineControlPoint;
           this.moveIn.lineControlPoint = item.controlPoints[i];
@@ -972,12 +963,16 @@ export class Topology {
 
     this.divLayer.canvas.style.cursor = 'default';
 
-    if (this.inNodes(pt, this.activeLayer.nodes)) {
+    let node = this.inNodes(pt, this.activeLayer.nodes);
+    if (node && !node.childStand) {
       this.hoverLayer.nodeRect = null;
+
       return;
     }
 
-    if (this.inNodes(pt, this.data.nodes)) {
+    node = this.inNodes(pt, this.data.nodes);
+
+    if (node && !node.childStand) {
       return;
     }
 
@@ -997,17 +992,19 @@ export class Topology {
 
   inNodes(pt: Point, nodes: Node[]) {
     for (let i = nodes.length - 1; i > -1; --i) {
-      if (this.inNode(pt, nodes[i])) {
-        return true;
+      const node = this.inNode(pt, nodes[i]);
+      if (node) {
+        return node;
       }
     }
   }
 
   inNode(pt: Point, node: Node) {
     if (node.childStand && node.children && node.children.length) {
-      if (this.inNodes(pt, node.children)) {
+      const n = this.inNodes(pt, node.children);
+      if (n) {
         this.hoverLayer.nodeRect = node.rect;
-        return true;
+        return n;
       }
     }
 
@@ -1019,13 +1016,13 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked || node.locked) {
         this.divLayer.canvas.style.cursor = 'pointer';
-        return true;
+        return node;
       }
       this.divLayer.canvas.style.cursor = 'move';
 
       // Too small
       if (node.rect.width < 20 || node.rect.height < 20) {
-        return true;
+        return node;
       }
 
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
@@ -1038,11 +1035,11 @@ export class Topology {
           this.moveIn.hoverAnchorIndex = j;
           this.hoverLayer.hoverAnchorIndex = j;
           this.divLayer.canvas.style.cursor = 'crosshair';
-          return true;
+          return node;
         }
       }
 
-      return true;
+      return node;
     }
 
     if (node.hit(pt, 5)) {
@@ -1050,7 +1047,7 @@ export class Topology {
         this.hoverLayer.nodeRect = node.rect;
       }
       if (this.data.locked || node.locked) {
-        return true;
+        return node;
       }
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
         if (node.rotatedAnchors[j].hit(pt, 5)) {
@@ -1062,7 +1059,7 @@ export class Topology {
           this.moveIn.hoverAnchorIndex = j;
           this.hoverLayer.hoverAnchorIndex = j;
           this.divLayer.canvas.style.cursor = 'crosshair';
-          return true;
+          return node;
         }
       }
     }
@@ -1196,12 +1193,14 @@ export class Topology {
     return angle;
   }
 
-  private showInput(node: Node, textRect: Rect) {
-    if (this.data.locked || this.options.hideInput) {
+  private showInput(item: Pen) {
+    if (this.data.locked || item.locked || this.options.hideInput) {
       return;
     }
-    this.inputNode = node;
-    this.input.value = node.text;
+
+    this.inputObj = item;
+    const textRect = item.getTextRect();
+    this.input.value = item.text || '';
     this.input.style.left = textRect.x + 'px';
     this.input.style.top = textRect.y + 'px';
     this.input.style.width = textRect.width + 'px';
@@ -1436,7 +1435,6 @@ export class Topology {
       i = this.findLine(line);
       if (i > -1) {
         lines.push.apply(lines, this.data.lines.splice(i, 1));
-        break;
       }
     }
 
@@ -1810,20 +1808,7 @@ export class Topology {
     }
 
     for (const item of this.data.lines) {
-      item.from.x += offsetX;
-      item.from.y += offsetY;
-      item.to.x += offsetX;
-      item.to.y += offsetY;
-      if (item.text) {
-        item.textRect = null;
-      }
-
-      for (const pt of item.controlPoints) {
-        pt.x += offsetX;
-        pt.y += offsetY;
-      }
-
-      Store.set('pts-' + item.id, null);
+      item.translate(offsetX, offsetY);
     }
 
     this.lastTranlated.x = x;
@@ -1854,21 +1839,7 @@ export class Topology {
     }
 
     for (const item of this.data.lines) {
-      item.from.x = center.x - (center.x - item.from.x) * scale;
-      item.from.y = center.y - (center.y - item.from.y) * scale;
-      item.to.x = center.x - (center.x - item.to.x) * scale;
-      item.to.y = center.y - (center.y - item.to.y) * scale;
-      if (item.text && item.font && item.font.fontSize) {
-        item.font.fontSize *= scale;
-        item.textRect = null;
-      }
-
-      for (const pt of item.controlPoints) {
-        pt.x = center.x - (center.x - pt.x) * scale;
-        pt.y = center.y - (center.y - pt.y) * scale;
-      }
-
-      Store.set('pts-' + item.id, null);
+      item.scale(scale, center);
     }
     Store.set('LT:scale', this.data.scale);
 

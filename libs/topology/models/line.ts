@@ -203,8 +203,8 @@ export class Line extends Pen {
   calcTextRect() {
     const center = this.getCenter();
     let width = Math.abs(this.from.x - this.to.x);
-    if (width < 200) {
-      width = 200;
+    if (width < 100) {
+      width = 100;
     }
     const height = this.font.lineHeight * this.font.fontSize * (this.textMaxLine || 1);
     this.textRect = new Rect(
@@ -216,6 +216,9 @@ export class Line extends Pen {
   }
 
   getTextRect() {
+    if (!this.textRect) {
+      this.calcTextRect();
+    }
     return this.textRect;
   }
 
@@ -227,29 +230,10 @@ export class Line extends Pen {
         break;
       case 'polyline':
         if (!this.controlPoints || !this.controlPoints.length) {
-          center = this.getLineCenter(this.from, this.to);
-          break;
+          this.calcControlPoints();
         }
-
-        let curPt = this.from;
-        let len = 0;
-        for (const pt of this.controlPoints) {
-          if (curPt.y === pt.y) {
-            const pos = Math.abs(curPt.x - pt.x);
-            if (pos > len) {
-              len = pos;
-              center = this.getLineCenter(curPt, pt);
-            }
-          }
-          curPt = pt;
-        }
-        if (curPt.y === this.to.y) {
-          const pos = Math.abs(curPt.x - this.to.x);
-          if (pos > len) {
-            len = pos;
-            center = this.getLineCenter(curPt, this.to);
-          }
-        }
+        const i = Math.floor(this.controlPoints.length / 2);
+        center = this.getLineCenter(this.controlPoints[i - 1], this.controlPoints[i]);
         break;
       case 'curve':
         center = getBezierPoint(0.5, this.to, this.controlPoints[1], this.controlPoints[0], this.from);
@@ -361,5 +345,40 @@ export class Line extends Pen {
   round() {
     this.from.round();
     this.to.round();
+  }
+
+  translate(x: number, y: number) {
+    this.from.x += x;
+    this.from.y += y;
+    this.to.x += x;
+    this.to.y += y;
+    if (this.text) {
+      this.textRect = null;
+    }
+
+    for (const pt of this.controlPoints) {
+      pt.x += x;
+      pt.y += y;
+    }
+
+    Store.set('pts-' + this.id, null);
+  }
+
+  scale(scale: number, center: Point) {
+    this.from.x = center.x - (center.x - this.from.x) * scale;
+    this.from.y = center.y - (center.y - this.from.y) * scale;
+    this.to.x = center.x - (center.x - this.to.x) * scale;
+    this.to.y = center.y - (center.y - this.to.y) * scale;
+    if (this.text && this.font && this.font.fontSize) {
+      this.font.fontSize *= scale;
+      this.textRect = null;
+    }
+
+    for (const pt of this.controlPoints) {
+      pt.x = center.x - (center.x - pt.x) * scale;
+      pt.y = center.y - (center.y - pt.y) * scale;
+    }
+
+    Store.set('pts-' + this.id, null);
   }
 }
