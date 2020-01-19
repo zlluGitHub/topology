@@ -685,6 +685,7 @@ export class Node extends Pen {
       }
     }
 
+    this.elementRendered = false;
     this.init();
 
     if (this.children) {

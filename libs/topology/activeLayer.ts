@@ -233,8 +233,8 @@ export class ActiveLayer {
       const oldCenter = item.rect.center;
       item.rect.floor();
       item.rect.calceCenter();
-      item.init();
       item.elementRendered = false;
+      item.init();
       this.updateChildren(item);
 
       const lines = this.getLinesOfNode(item);
