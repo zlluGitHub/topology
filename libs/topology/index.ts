@@ -895,6 +895,10 @@ export class Topology {
   };
 
   private onkeydown = (key: KeyboardEvent) => {
+    if (this.data.locked) {
+      return;
+    }
+
     key.preventDefault();
 
     let done = false;
