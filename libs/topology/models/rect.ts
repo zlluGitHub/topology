@@ -77,14 +77,19 @@ export class Rect {
     ];
   }
 
-  scale(scale: number, center?: Point) {
+  scale(scale: number, center?: Point, scaleY?: number) {
     if (!center) {
       center = this.center;
     }
+
+    if (scaleY === undefined) {
+      scaleY = scale;
+    }
+
     this.x = center.x - (center.x - this.x) * scale;
-    this.y = center.y - (center.y - this.y) * scale;
+    this.y = center.y - (center.y - this.y) * scaleY;
     this.width *= scale;
-    this.height *= scale;
+    this.height *= scaleY;
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
     this.calceCenter();

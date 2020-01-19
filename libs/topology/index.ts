@@ -1,6 +1,6 @@
 import { Store, Observer } from 'le5le-store';
 
-import { Options } from './options';
+import { Options, KeyType } from './options';
 import { Pen } from './models/pen';
 import { Node, images } from './models/node';
 import { Point } from './models/point';
@@ -211,8 +211,31 @@ export class Topology {
       this.mouseDown = null;
     };
     this.divLayer.canvas.onwheel = event => {
-      if (this.options.disableScale || (!event.ctrlKey && !event.altKey)) {
+      if (this.options.disableScale) {
         return;
+      }
+      switch (this.options.scaleKey) {
+        case KeyType.None:
+          break;
+        case KeyType.Ctrl:
+          if (!event.ctrlKey) {
+            return;
+          }
+          break;
+        case KeyType.Shift:
+          if (!event.shiftKey) {
+            return;
+          }
+          break;
+        case KeyType.Alt:
+          if (!event.altKey) {
+            return;
+          }
+          break;
+        default:
+          if (!event.ctrlKey && !event.altKey) {
+            return;
+          }
       }
       event.preventDefault();
 
@@ -433,8 +456,36 @@ export class Topology {
       return;
     }
 
-    if ((e.ctrlKey || e.altKey) && this.mouseDown) {
-      this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y, true);
+    if (this.mouseDown && this.moveIn.type === MoveInType.None) {
+      let b = false;
+      switch (this.options.translateKey) {
+        case KeyType.None:
+          b = true;
+          break;
+        case KeyType.Ctrl:
+          if (e.ctrlKey) {
+            b = true;
+          }
+          break;
+        case KeyType.Shift:
+          if (e.shiftKey) {
+            b = true;
+          }
+          break;
+        case KeyType.Alt:
+          if (e.altKey) {
+            b = true;
+          }
+          break;
+        default:
+          if (e.ctrlKey || e.altKey) {
+            b = true;
+          }
+      }
+      if (b) {
+        this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y, true);
+      }
+
       return false;
     }
 
@@ -1715,7 +1766,11 @@ export class Topology {
     }
   }
 
-  combine(nodes: Node[], stand?: boolean) {
+  combine(nodes?: Node[], stand?: boolean) {
+    if (!nodes) {
+      nodes = this.activeLayer.nodes;
+    }
+
     const rect = this.getNodesRect(nodes);
     for (const item of nodes) {
       const i = this.findNode(item);
@@ -1752,7 +1807,11 @@ export class Topology {
     this.cache();
   }
 
-  uncombine(node: Node) {
+  uncombine(node?: Node) {
+    if (!node) {
+      node = this.activeLayer.nodes[0];
+    }
+
     if (node.name !== 'combine') {
       return;
     }
