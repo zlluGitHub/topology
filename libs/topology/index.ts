@@ -484,9 +484,8 @@ export class Topology {
       }
       if (b) {
         this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y, true);
+        return false;
       }
-
-      return false;
     }
 
     if (this.data.locked && this.mouseDown && this.moveIn.type !== MoveInType.None) {
@@ -616,7 +615,7 @@ export class Topology {
           }
           break;
         case MoveInType.ResizeCP:
-          this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, pos);
+          this.activeLayer.resizeNodes(this.moveIn.activeAnchorIndex, this.mouseDown, pos);
           this.animateLayer.start(true);
           if (this.options.on) {
             this.options.on('resizeNodes', this.activeLayer.nodes);
@@ -970,7 +969,6 @@ export class Topology {
     this.moveIn.lineControlPoint = null;
     this.moveIn.hoverLine = null;
     this.hoverLayer.hoverAnchorIndex = -1;
-    this.hoverLayer.nodeRect = null;
 
     if (
       !this.data.locked &&
@@ -1020,8 +1018,6 @@ export class Topology {
 
     let node = this.inNodes(pt, this.activeLayer.nodes);
     if (node && !node.childStand) {
-      this.hoverLayer.nodeRect = null;
-
       return;
     }
 
@@ -1058,15 +1054,11 @@ export class Topology {
     if (node.childStand && node.children && node.children.length) {
       const n = this.inNodes(pt, node.children);
       if (n) {
-        this.hoverLayer.nodeRect = node.rect;
         return n;
       }
     }
 
     if (node.hit(pt)) {
-      if (!this.hoverLayer.nodeRect) {
-        this.hoverLayer.nodeRect = node.rect;
-      }
       this.moveIn.hoverNode = node;
       this.moveIn.type = MoveInType.Nodes;
       if (this.data.locked || node.locked) {
@@ -1098,9 +1090,6 @@ export class Topology {
     }
 
     if (node.hit(pt, 5)) {
-      if (this.hoverLayer.nodeRect) {
-        this.hoverLayer.nodeRect = node.rect;
-      }
       if (this.data.locked || node.locked) {
         return node;
       }
@@ -1796,8 +1785,8 @@ export class Topology {
     });
     node.children = [];
     for (const item of nodes) {
-      item.parentId = node.id;
       item.stand = stand;
+      item.parentId = node.id;
       item.calcRectInParent(node);
       node.children.push(item);
     }

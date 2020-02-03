@@ -77,6 +77,14 @@ export class Rect {
     ];
   }
 
+  translate(x: number, y: number) {
+    this.x += x;
+    this.y += y;
+    this.ex += x;
+    this.ey += y;
+    this.calceCenter();
+  }
+
   scale(scale: number, center?: Point, scaleY?: number) {
     if (!center) {
       center = this.center;

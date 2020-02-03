@@ -102,8 +102,8 @@ export function fillText(
   }
 
   if (maxLineLen < lines.length) {
-    let str = lines[maxLineLen - 1] + '...';
-    if (ctx.measureText(str).width > width) {
+    let str = (lines[maxLineLen - 1] || '') + '...';
+    if (lines[maxLineLen - 1] && ctx.measureText(str).width > width) {
       str = lines[maxLineLen - 1].substr(0, lines[maxLineLen - 1].length - 2) + '...';
     }
     if (bk) {
