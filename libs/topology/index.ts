@@ -2052,5 +2052,6 @@ export class Topology {
     this.subcribeMediaEnd.unsubscribe();
     this.animateLayer.destroy();
     this.divLayer.destroy();
+    document.body.removeChild(this.tipMarkdown);
   }
 }

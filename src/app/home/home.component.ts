@@ -446,7 +446,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     };
     input.click();
-  };
+  }
 
   save() {
     if (!this.canvas) {

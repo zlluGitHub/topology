@@ -175,10 +175,15 @@ export class ActiveLayer {
   // pt1 - the point of mouse down.
   // pt2 - the point of mouse move.
   resizeNodes(type: number, pt1: { x: number; y: number; }, pt2: { x: number; y: number; }) {
-    const centerIndex = (type + 2) % 4;
-    const center = this.initialSizeCPs[centerIndex];
-    let offsetX = pt2.x - pt1.x;
-    let offsetY = pt2.y - pt1.y;
+    const p1 = new Point(pt1.x, pt1.y);
+    const p2 = new Point(pt2.x, pt2.y);
+    if (this.nodes.length === 1 && this.nodes[0].rotate % 360) {
+      p1.rotate(-this.nodes[0].rotate, this.nodeRects[0].center);
+      p2.rotate(-this.nodes[0].rotate, this.nodeRects[0].center);
+    }
+
+    let offsetX = p2.x - p1.x;
+    let offsetY = p2.y - p1.y;
     const lines: Line[] = [];
 
     switch (type) {
@@ -196,18 +201,8 @@ export class ActiveLayer {
 
     let i = 0;
     for (const item of this.nodes) {
-      let rectPts1: Point[];
-      if (item.rotate % 360) {
-        rectPts1 = item.rect.toPoints();
-        rectPts1[centerIndex].rotate(-item.rotate, item.rect.center);
-      }
-
-      const x = offsetX / Math.cos(item.rotate);
-      const y = offsetY / Math.cos(item.rotate);
-      item.rect.width = this.nodeRects[i].width + x;
-      item.rect.height = this.nodeRects[i].height + y;
-
-      console.log(123123, x, y);
+      item.rect.width = this.nodeRects[i].width + offsetX;
+      item.rect.height = this.nodeRects[i].height + offsetY;
 
       if (item.rect.width < 10) {
         item.rect.width = 10;
@@ -234,26 +229,16 @@ export class ActiveLayer {
           item.rect.ey = item.rect.y + item.rect.height;
           break;
       }
-      if (item.rotate % 360) {
-        // const rectPts2 = item.rect.toPoints();
-        // rectPts2[centerIndex].rotate(-item.rotate, item.rect.center);
-        // const x = (rectPts1[centerIndex].x - rectPts2[centerIndex].x) / Math.cos(item.rotate);
-        // const y = (rectPts1[centerIndex].y - rectPts2[centerIndex].y) / Math.cos(item.rotate);
-        // item.rect.x += x;
-        // item.rect.ex += x;
-        // item.rect.y += y;
-        // item.rect.ey += y;
-      }
       item.rect.calceCenter();
       item.init();
       this.updateChildren(item);
 
-      this.getLinesOfNode(item);
-      for (const line of lines) {
-        for (const p of line.controlPoints) {
-          //
-        }
-      }
+      // this.getLinesOfNode(item);
+      // for (const line of lines) {
+      //   for (const p of line.controlPoints) {
+      //     //
+      //   }
+      // }
 
       ++i;
     }
@@ -355,13 +340,19 @@ export class ActiveLayer {
     }
     for (const line of this.data.lines) {
       for (const item of nodes) {
+        let cnt = 0;
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
           line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
+          ++cnt;
         }
         if (line.to.id === item.id) {
           line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
+          ++cnt;
+        }
+        if (cnt < 2) {
+          line.calcControlPoints();
         }
         line.textRect = null;
         Store.set('pts-' + line.id, null);
@@ -499,7 +490,6 @@ export class ActiveLayer {
       tmp.icon = '';
       tmp.image = '';
       tmp.text = '';
-      tmp.children = null;
       if (tmp.strokeStyle !== 'transparent') {
         tmp.strokeStyle = '#ffffff';
         tmp.lineWidth += 2;

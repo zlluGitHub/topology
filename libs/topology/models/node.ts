@@ -202,6 +202,8 @@ export class Node extends Pen {
 
     if (!noChild) {
       this.setChild(json.children);
+    } else {
+      this.children = null;
     }
   }
 
@@ -316,10 +318,9 @@ export class Node extends Pen {
       this.rectInParent.rect = this.rect.clone();
     }
 
-    const oldCenter = this.rectInParent.rect.center.clone();
-    const newCenter = this.rectInParent.rect.center.clone().rotate(offsetR, parent.rect.center);
-    this.rect.translate(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
-    // console.log('calcChildRect', offsetR, newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
+    // const oldCenter = this.rectInParent.rect.center.clone();
+    // const newCenter = this.rectInParent.rect.center.clone().rotate(offsetR, parent.rect.center);
+    // this.rect.translate(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
   }
 
   draw(ctx: CanvasRenderingContext2D) {
