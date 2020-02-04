@@ -25,7 +25,7 @@ export class HoverLayer {
   dockLineX = 0;
   dockLineY = 0;
 
-  nodeRect: Rect;
+  root: Node;
   dragRect: Rect;
   constructor(public options: Options = {}) {
     Store.set('LT:HoverLayer', this);
@@ -95,19 +95,17 @@ export class HoverLayer {
     ctx.fillStyle = '#fff';
     // anchors
     if (this.node && !this.data.locked) {
-      if (!this.nodeRect) {
-        this.nodeRect = this.getParentRect(this.node);
-      }
-      if (this.nodeRect) {
+      this.root = this.getRoot(this.node) || this.node;
+      if (this.root) {
         ctx.save();
         ctx.globalAlpha = 0.2;
-        if (this.node.rotate) {
-          ctx.translate(this.node.rect.center.x, this.node.rect.center.y);
-          ctx.rotate(((this.node.rotate + this.node.offsetRotate) * Math.PI) / 180);
-          ctx.translate(-this.node.rect.center.x, -this.node.rect.center.y);
+        if (this.root.rotate) {
+          ctx.translate(this.root.rect.center.x, this.root.rect.center.y);
+          ctx.rotate(((this.root.rotate + this.root.offsetRotate) * Math.PI) / 180);
+          ctx.translate(-this.root.rect.center.x, -this.root.rect.center.y);
         }
         ctx.beginPath();
-        ctx.strokeRect(this.nodeRect.x, this.nodeRect.y, this.nodeRect.width, this.nodeRect.height);
+        ctx.strokeRect(this.root.rect.x, this.root.rect.y, this.root.rect.width, this.root.rect.height);
         ctx.restore();
       }
 
@@ -166,15 +164,15 @@ export class HoverLayer {
     ctx.restore();
   }
 
-  getParentRect(node: Node) {
+  getRoot(node: Node) {
     if (!node.parentId) {
       return null;
     }
 
     for (const item of this.data.nodes) {
       if (item.id === node.parentId) {
-        const rect = this.getParentRect(item);
-        return rect ? rect : item.rect;
+        const n = this.getRoot(item);
+        return n ? n : item;
       }
     }
 

@@ -27,6 +27,7 @@ export class ActiveLayer {
   initialSizeCPs: Point[] = [];
   nodeRects: Rect[] = [];
   childrenRects: { [key: string]: Rect; } = {};
+  childrenRotate: { [key: string]: number; } = {};
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[] = [];
@@ -153,12 +154,7 @@ export class ActiveLayer {
 
     this.initialSizeCPs = [];
     for (const item of this.sizeCPs) {
-      const pt = item.clone();
-      // Cancel rotate while it is a single node. For yScale will < 0 and error.
-      if (this.nodes.length === 1 && this.nodes[0].rotate) {
-        pt.rotate(-this.nodes[0].rotate, this.nodes[0].rect.center);
-      }
-      this.initialSizeCPs.push(pt);
+      this.initialSizeCPs.push(item.clone());
     }
 
     this.getDockWatchers();
@@ -171,96 +167,83 @@ export class ActiveLayer {
 
     for (const item of node.children) {
       this.childrenRects[item.id] = new Rect(item.rect.x, item.rect.y, item.rect.width, item.rect.height);
+      this.childrenRotate[item.id] = item.rotate;
       this.saveChildrenRects(item);
     }
   }
 
-  resizeNodes(type: number, pt: Point) {
+  // pt1 - the point of mouse down.
+  // pt2 - the point of mouse move.
+  resizeNodes(type: number, pt1: { x: number; y: number; }, pt2: { x: number; y: number; }) {
+    const p1 = new Point(pt1.x, pt1.y);
+    const p2 = new Point(pt2.x, pt2.y);
+    if (this.nodes.length === 1 && this.nodes[0].rotate % 360) {
+      p1.rotate(-this.nodes[0].rotate, this.nodeRects[0].center);
+      p2.rotate(-this.nodes[0].rotate, this.nodeRects[0].center);
+    }
+
+    let offsetX = p2.x - p1.x;
+    let offsetY = p2.y - p1.y;
+    const lines: Line[] = [];
+
+    switch (type) {
+      case 0:
+        offsetX = -offsetX;
+        offsetY = -offsetY;
+        break;
+      case 1:
+        offsetY = -offsetY;
+        break;
+      case 3:
+        offsetX = -offsetX;
+        break;
+    }
+
     let i = 0;
-    const pos: Point = new Point(0, 0);
-    let x;
-    let y;
-    let w;
-    let h;
     for (const item of this.nodes) {
-      switch (type) {
-        // nw-resize
-        case 0:
-          x = pt.x;
-          y = pt.y;
-          w = this.initialSizeCPs[2].x - pt.x;
-          h = this.initialSizeCPs[2].y - pt.y;
-          pos.x = w > 5 ? x : this.initialSizeCPs[2].x - 5;
-          pos.y = h > 5 ? y : this.initialSizeCPs[2].y - 5;
-          break;
-        // ne-resize
-        case 1:
-          y = pt.y;
-          w = pt.x - this.initialSizeCPs[0].x;
-          h = this.initialSizeCPs[2].y - pt.y;
-          pos.x = this.initialSizeCPs[0].x;
-          pos.y = h > 5 ? y : this.initialSizeCPs[2].y - 5;
-          break;
-        // se-resize
-        case 2:
-          w = pt.x - this.initialSizeCPs[0].x;
-          h = pt.y - this.initialSizeCPs[0].y;
-          pos.x = this.initialSizeCPs[0].x;
-          pos.y = this.initialSizeCPs[0].y;
-          break;
-        // sw-resize
-        case 3:
-          x = pt.x;
-          w = this.initialSizeCPs[2].x - pt.x;
-          h = pt.y - this.initialSizeCPs[0].y;
-          pos.x = w > 5 ? x : this.initialSizeCPs[2].x - 5;
-          pos.y = this.initialSizeCPs[0].y;
-          break;
+      item.rect.width = this.nodeRects[i].width + offsetX;
+      item.rect.height = this.nodeRects[i].height + offsetY;
+
+      if (item.rect.width < 10) {
+        item.rect.width = 10;
+      }
+      if (item.rect.height < 10) {
+        item.rect.height = 10;
       }
 
-      w = w > 5 ? w : 5;
-      h = h > 5 ? h : 5;
-      const scaleX = w / (this.initialSizeCPs[2].x - this.initialSizeCPs[0].x);
-      const scaleY = h / (this.initialSizeCPs[2].y - this.initialSizeCPs[0].y);
-      this.calcResizedPos(
-        item.rect,
-        this.nodeRects[i],
-        pos,
-        scaleX,
-        scaleY
-      );
-
-      const oldCenter = item.rect.center;
-      item.rect.floor();
+      switch (type) {
+        case 0:
+          item.rect.x = item.rect.ex - item.rect.width;
+          item.rect.y = item.rect.ey - item.rect.height;
+          break;
+        case 1:
+          item.rect.ex = item.rect.x + item.rect.width;
+          item.rect.y = item.rect.ey - item.rect.height;
+          break;
+        case 2:
+          item.rect.ex = item.rect.x + item.rect.width;
+          item.rect.ey = item.rect.y + item.rect.height;
+          break;
+        case 3:
+          item.rect.x = item.rect.ex - item.rect.width;
+          item.rect.ey = item.rect.y + item.rect.height;
+          break;
+      }
       item.rect.calceCenter();
       item.init();
-      item.elementRendered = false;
       this.updateChildren(item);
 
-      const lines = this.getLinesOfNode(item);
-      for (const line of lines) {
-        for (const p of line.controlPoints) {
-          //
-        }
-      }
+      // this.getLinesOfNode(item);
+      // for (const line of lines) {
+      //   for (const p of line.controlPoints) {
+      //     //
+      //   }
+      // }
 
       ++i;
     }
 
     this.updateLines();
-  }
-
-  // 当initRect缩放为rect后，计算node在occupy中的新位置
-  // initRect - node的原始位置
-  // xScale - x坐标缩放比例
-  // yScale - y坐标缩放比例
-  calcResizedPos(rect: Rect, initRect: Rect, pos: Point, xScale: number, yScale: number) {
-    rect.x = pos.x + (initRect.x - this.initialSizeCPs[0].x) * xScale;
-    rect.y = pos.y + (initRect.y - this.initialSizeCPs[0].y) * yScale;
-    rect.width = initRect.width * xScale;
-    rect.height = initRect.height * yScale;
-    rect.ex = rect.x + rect.width;
-    rect.ey = rect.y + rect.height;
   }
 
   moveNodes(x: number, y: number) {
@@ -357,13 +340,19 @@ export class ActiveLayer {
     }
     for (const line of this.data.lines) {
       for (const item of nodes) {
+        let cnt = 0;
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
           line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
+          ++cnt;
         }
         if (line.to.id === item.id) {
           line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
+          ++cnt;
+        }
+        if (cnt < 2) {
+          line.calcControlPoints();
         }
         line.textRect = null;
         Store.set('pts-' + line.id, null);
@@ -396,13 +385,30 @@ export class ActiveLayer {
       item.init();
       item.offsetRotate = angle;
       item.calcRotateAnchors(item.rotate + item.offsetRotate);
-      this.updateChildren(item);
+      this.rotateChildren(item);
       ++i;
     }
     this.rotate = angle;
 
     if (this.options.on) {
       this.options.on('rotateNodes', this.nodes);
+    }
+  }
+
+  rotateChildren(node: Node) {
+    if (!node.children) {
+      return;
+    }
+
+    for (const item of node.children) {
+      const oldCenter = this.childrenRects[item.id].center.clone();
+      const newCenter = this.childrenRects[item.id].center.clone().rotate(this.rotate, this.rect.center);
+      const rect = this.childrenRects[item.id].clone();
+      rect.translate(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
+      item.rect = rect;
+      item.rotate = this.childrenRotate[item.id] + this.rotate;
+      item.init();
+      this.rotateChildren(item);
     }
   }
 
@@ -477,14 +483,13 @@ export class ActiveLayer {
     ctx.lineWidth = 1;
 
     for (const item of this.nodes) {
-      const tmp = new Node(item);
+      const tmp = new Node(item, true);
       tmp.data = null;
       tmp.fillStyle = null;
       tmp.bkType = 0;
       tmp.icon = '';
       tmp.image = '';
       tmp.text = '';
-      tmp.children = null;
       if (tmp.strokeStyle !== 'transparent') {
         tmp.strokeStyle = '#ffffff';
         tmp.lineWidth += 2;

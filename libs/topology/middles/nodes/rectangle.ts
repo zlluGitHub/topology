@@ -31,4 +31,19 @@ export function rectangle(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
+
+  // ctx.beginPath();
+  // ctx.save();
+  // ctx.strokeStyle = 'red';
+  // ctx.ellipse(
+  //   node.rect.center.x,
+  //   node.rect.center.y,
+  //   5, 5,
+  //   0,
+  //   0,
+  //   Math.PI * 2
+  // );
+  // ctx.fill();
+  // ctx.stroke();
+  // ctx.restore();
 }

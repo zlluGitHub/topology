@@ -94,18 +94,26 @@ export abstract class Pen {
       this.animateCycle = json.animateCycle;
       this.nextAnimate = json.nextAnimate;
       this.animatePlay = json.animatePlay;
-      this.data = json.data || '';
+
       this.locked = json.locked;
       this.link = json.link;
       this.markdown = json.markdown;
       this.tipId = json.tipId;
       this.title = json.title;
+
+      if (typeof json.data === 'object') {
+        this.data = JSON.parse(JSON.stringify(json.data));
+      } else {
+        this.data = json.data || '';
+      }
     } else {
       this.id = s8();
       this.textOffsetX = 0;
       this.textOffsetY = 0;
     }
   }
+
+
   render(ctx: CanvasRenderingContext2D) {
     ctx.save();
 
