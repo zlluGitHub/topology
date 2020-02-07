@@ -709,7 +709,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         Store.set('locked', data);
         break;
     }
-    // console.log('onMessage:', event, data, this.selected);
+    console.log('onMessage:', event, data, this.selected);
   };
 
   onChangeProps(props: any) {

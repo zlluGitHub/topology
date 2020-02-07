@@ -1,8 +1,4 @@
-<div class="search">
-  <input class="input" [(ngModel)]="search.text" placeholder="搜索" (keyup.enter)="onSearch(1)" />
-  <i class="iconfont icon-search" (click)="onSearch(1)"></i>
-</div>
-<div class="section bars mt15" *ngIf="!searched">
+<div class="bars">
   <article *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" [ngStyle]="item.styles"
     (mouseenter)="onMouseEnter()" (mouseout)="onMouseOut()">
     <header>{{item.title}}</header>
@@ -15,6 +11,11 @@
     <i *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" (mouseenter)="curBar = i"></i>
   </div>
 </div>
+
+<div class="header">
+  <app-home-header class="section"></app-home-header>
+</div>
+
 <div class="section">
   <div class="nav">
     <label [class.active]="!search.class" (click)="onSearch(1, '')">全部</label>

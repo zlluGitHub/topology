@@ -1,0 +1,36 @@
+<div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
+  <div class="item logo">
+    <a routerLink="/">
+      <img src="/assets/img/favicon.ico" />
+      Le5le Topology
+    </a>
+  </div>
+  <div class="item">
+    <a routerLink="/workspace">
+      开始设计
+    </a>
+  </div>
+  <div class="item">
+    <a routerLink="/search">
+      解决方案
+    </a>
+  </div>
+  <div class="item">
+    <a href="https://www.yuque.com/alsmile/topology/use" target="_blank">
+      入门教程
+    </a>
+  </div>
+  <div class="item">
+    <a href="https://www.yuque.com/alsmile/topology/aboutus" target="_blank">
+      帮助支持
+    </a>
+  </div>
+
+  <div class="item search">
+    <input class="input" [(ngModel)]="search" placeholder="搜索" (keyup.enter)="onSearch()" />
+    <i class="iconfont icon-search" (click)="onSearch()"></i>
+  </div>
+
+  <div class="full"></div>
+
+</div>

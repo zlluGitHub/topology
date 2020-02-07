@@ -10,16 +10,16 @@ export class HomeService {
   Configs() {
     const configs = {
       bars: [{
-        bkColor: '#2589ff',
+        bkColor: '#2f54eb',
         styles: null,
         image: '/assets/img/bar1.png',
         title: '高效的绘图工具',
-        desc: '在线制作、云存储、多端分享，丰富功能、舒适体验\n包含流程图、UML图、微服务架构图、拓扑图、SCADA、脑图等多场景支持',
+        desc: '在线制作、云存储、多端分享，丰富功能、舒适体验\n包含流程图、微服务架构图、拓扑图、SCADA、脑图等多场景支持',
         button: '免费使用',
         url: '',
         router: '/workspace',
       }, {
-        bkColor: '#3b6bee',
+        bkColor: '#1746d2',
         styles: null,
         image: '/assets/img/bar2.png',
         title: '丰富的资源图形库',
@@ -28,11 +28,11 @@ export class HomeService {
         url: '',
         router: '/workspace',
       }, {
-        bkColor: '#ff5870',
+        bkColor: '#f5222d',
         styles: null,
         image: '/assets/img/bar3.png',
         title: '开源共享',
-        desc: '开源精神，互惠共享\n组件式设计，插件式开发，欢迎一起共同创建一个强大、丰富的图库平台',
+        desc: '开源精神，互惠共享\n组件式设计，插件式开发，共同创建一个强大、丰富的图库平台',
         button: '开发文档',
         url: 'https://www.yuque.com/alsmile/topology',
         router: '',
