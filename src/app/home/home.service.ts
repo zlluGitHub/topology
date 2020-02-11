@@ -37,7 +37,48 @@ export class HomeService {
         url: 'https://www.yuque.com/alsmile/topology',
         router: '',
       }],
-      classes: ['架构图', 'UML图', '拓扑图', '物联网', '电力', '水利', '安防', '标识']
+      classes: [{
+        name: '架构图',
+        img: 'http://topology.le5le.com/image/topology/thumb_f6f5aef54fadb4d3.png'
+      }, {
+        name: 'UML图',
+        img: 'http://topology.le5le.com/image/topology/thumb_80f5ef23b0fc1355.png'
+      }, {
+        name: '拓扑图',
+        img: 'http://topology.le5le.com/image/topology/thumb_0e71694860744023.png'
+      }, {
+        name: '物联网',
+        img: 'http://topology.le5le.com/image/topology/thumb_6049786837119713.png'
+      }, {
+        name: '电力',
+        img: 'http://topology.le5le.com/image/topology/thumb_66264822c5cf4d3b.png'
+      }, {
+        name: '水利',
+        img: 'http://topology.le5le.com/image/topology/thumb_525583ee263a0552.png'
+      }, {
+        name: '安防',
+        img: 'http://topology.le5le.com/image/topology/thumb_b5a7470ec98316cd.png'
+      }, {
+        name: '标识',
+        img: 'http://topology.le5le.com/image/topology/thumb_9235e2d66589fad5.png'
+      }],
+      vision: [{
+        icon: 'iconfont icon-yangguang',
+        name: '开源、可扩展',
+        desc: '开源，基于MIT协议。\n支持以组件库的方式扩展，丰富产品功能。\n欢迎任何人扩展定制、并共享。'
+      }, {
+        icon: 'iconfont icon-paobu',
+        name: '流畅、高性能',
+        desc: '使用 canvas 和多个场景离屏，操作过程流畅；完全不用担心 SVG 方式 dom 元素过多，性能高效。'
+      }, {
+        icon: 'iconfont icon-huaxue',
+        name: '动画特效',
+        desc: '基于帧的节点动画，可以方便的以易于理解的方式，制作自己的节点动画；多种连线动画支持。'
+      }, {
+        icon: 'iconfont icon-app',
+        name: '外部组件支持',
+        desc: '以插件的方式开发，支持导入第三方图标库、图形库、视频等外部组件，避免重复造轮子。'
+      }]
     };
 
     for (const item of configs.bars) {

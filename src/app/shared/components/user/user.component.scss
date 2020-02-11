@@ -1,0 +1,20 @@
+.translate {
+  a {
+    &:hover {
+      color: #fff !important;
+    }
+  }
+
+  .button {
+    background-color: transparent;
+    border-color: #fff;
+    &:hover {
+      background-color: rgba($color: #fff, $alpha: 0.05);
+    }
+  }
+}
+
+ui-avatar {
+  position: relative;
+  top: 0.08rem;
+}

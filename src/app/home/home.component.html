@@ -15,71 +15,31 @@
 <div class="header">
   <app-home-header class="section"></app-home-header>
 </div>
-
-<div class="section">
-  <div class="nav">
-    <label [class.active]="!search.class" (click)="onSearch(1, '')">全部</label>
-    <label *ngFor="let item of configs.classes" [class.active]="search.class===item"
-      (click)="onSearch(1, item)">{{item}}</label>
+<section class="classes">
+  <h1>解决方案模板</h1>
+  <h2>丰富模板，帮助企业快速构建自己的图文设计</h2>
+  <div class="flex wrap section">
+    <a class="item" *ngFor="let item of configs.classes" routerLink="/search" [queryParams]="{c: item.name}">
+      <img [src]="item.img">
+      <label class="title">{{item.name}}</label>
+    </a>
   </div>
-</div>
-<div class="section">
-  <ui-loading *ngIf="data.count < 0" class="mt50" tip="正在加载中，请稍等..."></ui-loading>
-
-  <div class="topos" *ngIf="data.list">
-    <article class="topo" *ngFor="let item of data.list" [title]="item.desc" (click)="onOpen(item)" [title]="item.desc">
-      <div class="image">
-        <img [src]="item.image" />
-      </div>
-      <div class="ph15 pv10">
-        <header class="title line one" [title]="item.name">{{ item.name }}</header>
-        <div class="flex footer">
-          <div class="full">
-            {{ item.username }}
-          </div>
-          <div>
-            <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
-              <i class="iconfont " [class.icon-appreciate]="!item.stared" [class.icon-appreciatefill]="item.stared"></i>
-              <span class="ml5">{{ item.star || 0 }}</span>
-            </span>
-            <span class="hover pointer" title="收藏" (click)="onFavorite($event, item)">
-              <i class="iconfont" [class.icon-like]="!item.favorited" [class.icon-likefill]="item.favorited"></i>
-              <span class="ml5">{{ item.hot || 0 }}</span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </article>
+  <div class="mt30 text-center">秉承开源互惠精神，一起打造丰富的行业模板；共同创建一个强大、丰富的图库平台；还没有发现您想要的行业，
+    <a routerLink="/workspace">去创建</a>
   </div>
-
-  <div *ngIf="!data.list.length && hots.list">
-    <div>没有查找到相关图文，下面是我们为您推荐的图文：</div>
-    <div class="topos mt10">
-      <article class="topo" *ngFor="let item of hots.list" [title]="item.desc" (click)="onOpen(item)"
-        [title]="item.desc">
-        <div class="image">
-          <img [src]="item.image" />
-        </div>
-        <div class="ph15 pv10">
-          <header class="title line one" [title]="item.name">{{ item.name }}</header>
-          <div class="flex footer">
-            <div class="full">
-              {{ item.username }}
-            </div>
-            <div>
-              <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
-                <i class="iconfont " [class.icon-appreciate]="!item.stared"
-                  [class.icon-appreciatefill]="item.stared"></i>
-                <span class="ml5">{{ item.star || 0 }}</span>
-              </span>
-              <span class="hover pointer" title="收藏" (click)="onFavorite($event, item)">
-                <i class="iconfont" [class.icon-like]="!item.favorited" [class.icon-likefill]="item.favorited"></i>
-                <span class="ml5">{{ item.hot || 0 }}</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </article>
+</section>
+<section class="vision">
+  <h1>愿景</h1>
+  <h2>共同打造共赢生态，为企业可视化提供全方位服务</h2>
+  <div class="flex wrap section mt20" style="justify-content:space-between">
+    <div *ngFor="let item of configs.vision">
+      <div class="flex middle">
+        <i [class]="item.icon"></i>
+        <label class="title">{{item.name}}</label>
+      </div>
+      <div class="desc">{{item.desc}}</div>
     </div>
   </div>
-</div>
+</section>
+
+<app-home-footer></app-home-footer>

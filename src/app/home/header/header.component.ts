@@ -4,13 +4,18 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-home-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  host: {
+    '(document:onscroll)': 'onscroll($event)'
+  }
 })
 export class HeaderComponent implements OnInit {
-  menuClicked = false;
 
+  menuClicked = false;
   search = '';
-  constructor(private router: Router) { }
+
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
   }
@@ -51,5 +56,4 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
-
 }
