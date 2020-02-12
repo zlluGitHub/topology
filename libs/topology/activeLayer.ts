@@ -201,6 +201,9 @@ export class ActiveLayer {
 
     let i = 0;
     for (const item of this.nodes) {
+      if (item.locked) {
+        continue;
+      }
       item.rect.width = this.nodeRects[i].width + offsetX;
       item.rect.height = this.nodeRects[i].height + offsetY;
 
