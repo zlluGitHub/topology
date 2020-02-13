@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     q: ''
   };
   pageIndex = 1;
-  pageCount = 10;
+  pageCount = 15;
   next = false;
 
   data = {

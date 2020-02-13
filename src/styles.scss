@@ -246,7 +246,7 @@ a:hover {
   .topo {
     position: relative;
     width: 2.4rem;
-    height: 3.5rem;
+    height: 2.4rem;
     margin-bottom: 0.2rem;
     border-radius: 2px;
     background-color: #fff;
@@ -254,10 +254,12 @@ a:hover {
 
     .image {
       padding: 0.15rem;
-      height: 2.7rem;
+      height: 1.6rem;
       cursor: pointer;
       display: table-cell;
       vertical-align: middle;
+      text-align: center;
+      width: 2.4rem;
       margin: auto;
 
       img {
@@ -273,7 +275,7 @@ a:hover {
       line-height: 0.24rem;
       height: 0.24rem;
       cursor: pointer;
-      margin: 0.1rem;
+      margin: 0 0.1rem 0.1rem 0.1rem;
     }
 
     .border-top {
