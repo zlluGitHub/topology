@@ -166,6 +166,9 @@
 
     a {
       color: $color !important;
+      &:hover {
+        color: $color-primary !important;
+      }
     }
 
     .search {

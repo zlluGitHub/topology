@@ -4,11 +4,15 @@
 .default {
   a {
     color: $color !important;
+    &:hover {
+      color: $color-primary !important;
+    }
   }
 
   .button {
-    background-color: transparent;
-    border-color: #fff;
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: #fff !important;
     &:hover {
       background-color: rgba($color: #fff, $alpha: 0.05);
     }
