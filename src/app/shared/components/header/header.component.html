@@ -1,4 +1,4 @@
-<div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
+<div class="menus" [class.white]="theme" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
   <div class="item logo">
     <a routerLink="/">
       <img src="/assets/img/favicon.ico" />
@@ -33,5 +33,5 @@
 
   <div class="full"></div>
 
-  <app-user [translate]="true"></app-user>
+  <app-user [translate]="!theme"></app-user>
 </div>

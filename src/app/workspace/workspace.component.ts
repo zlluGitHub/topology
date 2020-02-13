@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { Topology } from 'topology-core';
 import { Options } from 'topology-core/options';
-import { s8 } from 'topology-core/uuid/uuid';
 
 import * as FileSaver from 'file-saver';
 import { Store } from 'le5le-store';

@@ -26,6 +26,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { HtmlPipe } from './pipes/html.pipe';
 import { ImageAuthDirective } from './directives/img.directive';
 import { UserComponent } from './components/user/user.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   imports: [
@@ -46,7 +48,13 @@ import { UserComponent } from './components/user/user.component';
     SliderModule,
     ColorPickerModule
   ],
-  declarations: [HtmlPipe, ImageAuthDirective, UserComponent],
+  declarations: [
+    HtmlPipe,
+    ImageAuthDirective,
+    UserComponent,
+    HeaderComponent,
+    FooterComponent
+  ],
   exports: [
     CommonModule,
     FormsModule,
@@ -55,6 +63,8 @@ import { UserComponent } from './components/user/user.component';
     HtmlPipe,
     ImageAuthDirective,
     UserComponent,
+    HeaderComponent,
+    FooterComponent,
     FormModule,
     AvatarModule,
     EscModule,

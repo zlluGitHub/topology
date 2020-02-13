@@ -9,7 +9,7 @@
 
   .logo {
     a {
-      font-size: 0.16rem;
+      font-size: 0.15rem;
       padding-left: 0;
       width: initial;
 
@@ -27,6 +27,7 @@
   a {
     color: #fff;
     padding: 0 0.2rem;
+    font-size: 0.14rem;
 
     .iconfont {
       font-size: 0.16rem;
@@ -139,11 +140,12 @@
       border: none;
       padding-right: 0.3rem;
       width: 2.6rem;
+      line-height: 0.26rem;
     }
 
     i {
       position: absolute;
-      right: 0.05rem;
+      right: 0.08rem;
       top: 0.02rem;
       color: $color-border;
       cursor: pointer;
@@ -157,5 +159,19 @@
   .full {
     flex-grow: 1;
     width: inherit !important;
+  }
+
+  &.white {
+    color: $color !important;
+
+    a {
+      color: $color !important;
+    }
+
+    .search {
+      .input {
+        background-color: #f5f5f5;
+      }
+    }
   }
 }

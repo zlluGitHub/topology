@@ -1,0 +1,57 @@
+@import "src/variables";
+@import "~le5le-ui/variables";
+
+$color-border: #ddd;
+
+header {
+  height: 1rem;
+  & > div {
+    position: fixed;
+    background-color: #fff;
+    width: 100vw;
+    z-index: 10;
+  }
+
+  .header {
+    position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  .classes {
+    line-height: 0.4rem;
+    border-bottom: 1px solid #eee;
+
+    a {
+      display: inline-block;
+      padding: 0 0.2rem;
+      color: $color;
+      text-decoration: none !important;
+
+      &.active {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+
+.topo-panel {
+  background-color: #f5f5f5;
+  padding: 0.3rem 0.1rem;
+
+  .section {
+    min-height: 5.2rem;
+  }
+}
+
+.line-bar {
+  display: flex;
+
+  & > div {
+    flex-grow: 1;
+    height: 1px;
+    position: relative;
+    bottom: -0.12rem;
+    background-color: #ddd;
+  }
+}

@@ -15,10 +15,10 @@
 .title {
   color: $color-title;
   font-weight: 600;
-}
 
-.title.success {
-  color: $color-success;
+  &.success {
+    color: $color-success;
+  }
 }
 
 .popup-title {
@@ -26,13 +26,15 @@
   font-weight: 700;
 }
 
-.notice .icon-close {
-  font-size: 0.1rem;
-  top: 0.08rem;
-}
+.notice {
+  .icon-close {
+    font-size: 0.1rem;
+    top: 0.08rem;
+  }
 
-.notice .body > .icon::before {
-  top: 0.02rem;
+  .body > .icon::before {
+    top: 0.02rem;
+  }
 }
 
 a:hover {
@@ -244,38 +246,43 @@ a:hover {
   .topo {
     position: relative;
     width: 2.4rem;
-    height: 2.4rem;
+    height: 3.5rem;
     margin-bottom: 0.2rem;
     border-radius: 2px;
     background-color: #fff;
     border: 1px solid #e8e8e8;
 
     .image {
-      padding: 0.1rem 0.1rem 0.15rem 0.1rem;
-      text-align: center;
-      height: 1.7rem;
-      border-bottom: 1px solid #f7f7f7;
+      padding: 0.15rem;
+      height: 2.7rem;
       cursor: pointer;
+      display: table-cell;
+      vertical-align: middle;
+      margin: auto;
 
       img {
-        height: 100%;
+        max-height: 100%;
       }
     }
 
-    .title {
-      font-size: 0.16rem;
+    header {
+      font-size: 0.14rem;
+      text-align: center;
+      color: #262626;
+      font-weight: 700;
       line-height: 0.24rem;
       height: 0.24rem;
       cursor: pointer;
+      margin: 0.1rem;
+    }
+
+    .border-top {
+      border-color: #f0f0f0;
+      padding: 0.04rem 0.1rem;
     }
 
     .iconfont {
       font-size: $font-size;
-    }
-
-    .footer {
-      margin-top: 0.05rem;
-      color: #999;
     }
 
     textarea {

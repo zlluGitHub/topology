@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home-header',
@@ -9,15 +9,20 @@ import { Router } from '@angular/router';
     '(document:onscroll)': 'onscroll($event)'
   }
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  @Input() theme = '';
 
   menuClicked = false;
   search = '';
 
-  constructor(private router: Router) {
+  subRoute: any;
+  constructor(private router: Router, private activateRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
+      this.search = params.get('q') || '';
+    });
   }
 
   onClickMenu(event: MouseEvent) {
@@ -52,8 +57,13 @@ export class HeaderComponent implements OnInit {
   onSearch() {
     this.router.navigate(['/', 'search'], {
       queryParams: {
-        q: this.search
+        q: this.search,
+        c: this.activateRoute.snapshot.queryParamMap.get('c')
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subRoute.unsubscribe();
   }
 }
