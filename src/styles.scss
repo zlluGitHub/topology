@@ -241,7 +241,6 @@ a:hover {
 .topos {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
 
   .topo {
     position: relative;
@@ -251,6 +250,10 @@ a:hover {
     border-radius: 2px;
     background-color: #fff;
     border: 1px solid #e8e8e8;
+
+    &:not(:nth-child(5n + 0)) {
+      margin-right: 0.2rem;
+    }
 
     .image {
       padding: 0.15rem;
@@ -302,6 +305,16 @@ a:hover {
       position: absolute;
       top: 0.05rem;
       right: 0.1rem;
+    }
+
+    &.add {
+      background-color: transparent;
+      border: 1px solid #bbb;
+      cursor: pointer;
+
+      &:hover {
+        border-color: $color-primary;
+      }
     }
   }
 }

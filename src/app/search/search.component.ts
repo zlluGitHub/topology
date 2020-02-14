@@ -25,9 +25,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   data = {
     list: [],
-    count: 0,
-    hots: []
+    count: 0
   };
+  hots: any[] = [];
   loading = true;
 
   subRoute: any;
@@ -48,6 +48,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
 
     this.classes = this.service.Classes();
+    this.getHots();
   }
 
   onScroll() {
@@ -76,10 +77,25 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  async getHots() {
+    this.hots = (await this.service.Topologies({
+      pageIndex: 1,
+      pageCount: 10
+    })).list;
+  }
+
   onOpen(item: any) {
     this.router.navigate(['/workspace'], {
       queryParams: {
         id: item.id
+      }
+    });
+  }
+
+  onAdd() {
+    this.router.navigate(['/workspace'], {
+      queryParams: {
+        c: this.search.c
       }
     });
   }
