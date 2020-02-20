@@ -2,8 +2,10 @@
 @import "~le5le-ui/variables";
 
 .menus {
-  height: 0.6rem;
-  line-height: 0.6rem;
+  height: 0.4rem;
+  line-height: 0.4rem;
+  background: #f8f8fa;
+  border-bottom: 1px solid $color-border;
   display: flex;
   font-size: 0.13rem;
 
@@ -25,9 +27,9 @@
   }
 
   a {
-    color: #fff;
-    padding: 0 0.2rem;
-    font-size: 0.14rem;
+    color: $color;
+    padding: 0 0.1rem;
+    font-size: 0.13rem;
 
     .iconfont {
       font-size: 0.16rem;
@@ -41,7 +43,6 @@
     }
 
     &:hover {
-      color: #fff !important;
       text-decoration: none;
     }
   }
@@ -132,30 +133,6 @@
     }
   }
 
-  .search {
-    position: relative;
-    margin-left: 0.5rem;
-
-    .input {
-      border: none;
-      padding-right: 0.3rem;
-      width: 2.6rem;
-      line-height: 0.26rem;
-    }
-
-    i {
-      position: absolute;
-      right: 0.08rem;
-      top: 0.02rem;
-      color: $color-border;
-      cursor: pointer;
-
-      &:hover {
-        color: $color-primary;
-      }
-    }
-  }
-
   .full {
     flex-grow: 1;
     width: inherit !important;
@@ -170,11 +147,48 @@
         color: $color-primary !important;
       }
     }
+  }
+}
 
-    .search {
-      .input {
-        background-color: #f6f6f9;
-      }
+figure {
+  padding: 0 0.25rem;
+  width: 7rem;
+
+  .topo {
+    position: relative;
+    margin: 0.1rem 0.1rem 0 0;
+    border: 1px solid $color-border !important;
+    cursor: pointer;
+    min-width: 1.2rem !important;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    padding: 0.1rem !important;
+
+    &:nth-child(5n + 0) {
+      margin-right: 0;
     }
+
+    &:hover {
+      border-color: $color-primary !important;
+    }
+
+    img {
+      margin: 0 !important;
+      width: 1rem !important;
+      height: 1rem !important;
+      pointer-events: none;
+    }
+
+    .icon-delete {
+      position: absolute;
+      top: 0.05rem;
+      right: 0.1rem;
+    }
+  }
+}
+
+.clicked {
+  .dropdown {
+    display: none !important;
   }
 }

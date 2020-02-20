@@ -17,9 +17,17 @@
       background-color: rgba($color: #fff, $alpha: 0.05);
     }
   }
+
+  .dropdown {
+    .item:hover {
+      a:hover {
+        color: #fff !important;
+      }
+    }
+  }
 }
 
-.translate {
+.transparent {
   a {
     &:hover {
       color: #fff !important;

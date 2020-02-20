@@ -10,7 +10,7 @@ export class HomeService {
   Configs() {
     const configs = {
       bars: [{
-        bkColor: '#2f54eb',
+        bkColor: 'linear-gradient(90deg,#2f54eb,#1d39c4)',
         styles: null,
         image: '/assets/img/bar1.png',
         title: '高效的绘图工具',
@@ -19,7 +19,7 @@ export class HomeService {
         url: '',
         router: '/workspace',
       }, {
-        bkColor: '#1746d2',
+        bkColor: 'linear-gradient(90deg,#1890ff,#2589ff)',
         styles: null,
         image: '/assets/img/bar2.png',
         title: '丰富的资源图形库',
@@ -28,7 +28,7 @@ export class HomeService {
         url: '',
         router: '/workspace',
       }, {
-        bkColor: '#f5222d',
+        bkColor: 'linear-gradient(90deg,#ff5870,#FF5722)',
         styles: null,
         image: '/assets/img/bar3.png',
         title: '开源共享',

@@ -1,0 +1,139 @@
+<div class="menus" [class.clicked]="menuClicked" (click)="onClickMenu($event)">
+  <a class="item" routerLink="/" style="padding: 0">
+    <img src="/assets/img/favicon.ico" />
+  </a>
+  <div class="item">
+    <a>
+      文件
+    </a>
+    <div class="dropdown">
+      <div class="item">
+        <a (click)="onMenu('new')">
+          新建文件
+          <span class="ml50">Ctrl + N</span>
+        </a>
+      </div>
+      <div class="item">
+        <a (click)="onMenu('open')">
+          打开文件...
+          <span class="ml50">Ctrl + O</span>
+        </a>
+      </div>
+      <div class="item">
+        <a (click)="onMenu('load')">
+          导入文件
+          <span class="ml50">Ctrl + I</span>
+        </a>
+      </div>
+      <div class="item" (mouseenter)="showFigure = true" (mouseleave)="onLeaveFigure()">
+        <a>
+          打开最近的文件
+          <i class="iconfont icon-angle-right"></i>
+        </a>
+        <div class="dropdown pt15" [class.block]="showFigure" style="top:-.85rem;min-width:7rem;min-height:7rem">
+          <figure>
+            <div *ngIf="recently.length" class="mb20">
+              <div class="flex wrap">
+                <a class="topo" *ngFor="let item of recently;let i=index" [title]="item.name" routerLink="/workspace"
+                  [queryParams]="{ id: item.id, version: item.version }" (click)="showFigure=false">
+                  <img [appImgAuthSrc]="item.image" />
+                  <i class="iconfont icon-delete" (click)="onRemoveRecently($event, i)"></i>
+                </a>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </div>
+      <div class="item line"></div>
+      <div>
+        <div class="item">
+          <a (click)="onMenu('save')">
+            保存
+            <span class="ml50">Ctrl + S</span>
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('saveAs')">
+            另存为...
+            <span class="ml50">Ctrl + Shift+ S</span>
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('downJson')">
+            下载JSON文件
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('down')">
+            下载zip打包文件
+          </a>
+        </div>
+        <div class="item line"></div>
+        <div class="item">
+          <a (click)="onMenu('downPng')">
+            下载为PNG
+          </a>
+        </div>
+        <div class="item">
+          <a (click)="onMenu('downSvg')">
+            下载为SVG
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="item">
+    <a>编辑</a>
+    <div class="dropdown">
+      <div class="item">
+        <a (click)="onMenu('undo')">
+          撤消
+          <span class="ml50">Ctrl + Z</span>
+        </a>
+      </div>
+      <div class="item">
+        <a (click)="onMenu('redo')">
+          恢复
+          <span class="ml50">Ctrl + Shift+ Z</span>
+        </a>
+      </div>
+      <div class="item line"></div>
+      <div class="item">
+        <a (click)="onMenu('cut')">
+          剪切
+          <span class="ml50">Ctrl + X</span>
+        </a>
+      </div>
+      <div class="item">
+        <a (click)="onMenu('copy')">
+          复制
+          <span class="ml50">Ctrl + C</span>
+        </a>
+      </div>
+      <div class="item">
+        <a (click)="onMenu('parse')">
+          粘贴
+          <span class="ml50">Ctrl + V</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="item" *ngFor="let item of menus">
+    <a>{{item.name}}</a>
+    <div class="dropdown">
+      <div class="item" *ngFor="let menu of item.children" [class.line]="!menu.name">
+        <a *ngIf="menu.router" [routerLink]="menu.router">
+          {{menu.name}}
+        </a>
+        <a *ngIf="menu.url" [href]="menu.url" target="_blank">
+          {{menu.name}}
+        </a>
+        <a *ngIf="menu.dialog" (click)="dialogs[menu.dialog]=true">
+          {{menu.name}}
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="full"></div>
+  <app-user class="header-small " [transparent]="false"></app-user>
+</div>

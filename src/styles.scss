@@ -113,6 +113,47 @@ a:hover {
   }
 }
 
+.header-small {
+  .item {
+    a {
+      padding: 0 0.2rem;
+      text-decoration: none;
+
+      ui-avatar {
+        top: 0;
+      }
+    }
+    .line {
+      background-color: transparent !important;
+      padding: 0;
+      margin: 0.05rem 0.1rem;
+      border-top: 1px solid $color-gray;
+    }
+  }
+
+  &:hover {
+    .dropdown {
+      padding: 0.1rem 0;
+      display: block;
+      right: 0.1rem;
+      min-width: 2rem;
+
+      &.right::before {
+        content: "";
+        font-family: "iconfont" !important;
+        font-size: 16px;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+        position: absolute;
+        top: -0.1rem;
+        right: 0.1rem;
+        line-height: 1;
+        color: #fff;
+      }
+    }
+  }
+}
+
 .page {
   color-picker {
     position: relative;
@@ -309,7 +350,7 @@ a:hover {
 
     &.add {
       background-color: transparent;
-      border: 1px solid #bbb;
+      border: 1px dashed #bbb;
       cursor: pointer;
 
       &:hover {

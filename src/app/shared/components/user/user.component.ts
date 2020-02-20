@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-  @Input() translate = false;
+  @Input() transparent = false;
 
   user: any;
   urls = environment.urls;

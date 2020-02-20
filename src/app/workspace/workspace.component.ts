@@ -75,7 +75,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.user = Store.get('user');
+    window.scrollTo(0, 0);
     this.subUser = Store.subscribe('user', (user: any) => {
       this.user = user;
       if (this.data && user && this.data.userId !== this.user.id) {
@@ -445,7 +445,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       }
     };
     input.click();
-  };
+  }
 
   save() {
     if (!this.canvas) {
