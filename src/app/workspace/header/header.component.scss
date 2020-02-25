@@ -192,3 +192,20 @@ figure {
     display: none !important;
   }
 }
+
+.nav-tab {
+  .item {
+    margin-left: 0.05rem;
+    background-color: transparent !important;
+    color: $color !important;
+    cursor: pointer;
+
+    &.active {
+      color: #222 !important;
+    }
+
+    &:hover {
+      color: $color-primary !important;
+    }
+  }
+}

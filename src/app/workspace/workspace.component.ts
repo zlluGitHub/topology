@@ -85,89 +85,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     });
 
     this.canvasOptions.on = this.onMessage;
-    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any; }) => {
-      if (!this.canvas) {
-        return;
-      }
-      switch (menu.event) {
-        case 'new':
-          this.onNew();
-          break;
-        case 'open':
-          setTimeout(() => {
-            this.selected = null;
-          });
-          if (!this.data.id) {
-            this.onNew();
-          }
-          this.onOpenLocal();
-          break;
-        case 'openZip':
-          this.onOpenZip();
-          break;
-        case 'save':
-          this.save();
-          break;
-        case 'saveAs':
-          this.data.id = '';
-          this.save();
-          break;
-        case 'down':
-          this.onSaveLocal();
-          break;
-        case 'downZip':
-          this.onSaveZip();
-          break;
-        case 'downPng':
-          this.onSavePng(menu.data);
-          break;
-        case 'downSvg':
-          this.toSVG();
-          break;
-        case 'undo':
-          this.canvas.undo();
-          break;
-        case 'redo':
-          this.canvas.redo();
-          break;
-        case 'cut':
-          this.canvas.cut();
-          break;
-        case 'copy':
-          this.canvas.copy();
-          break;
-        case 'parse':
-          this.canvas.parse();
-          break;
-        case 'share':
-          this.onShare();
-          break;
-        case 'lock':
-          this.readonly = menu.data;
-          this.canvas.lock(menu.data);
-          break;
-        case 'lineName':
-          this.canvas.data.lineName = menu.data;
-          break;
-        case 'fromArrowType':
-          this.canvas.data.fromArrowType = menu.data;
-          break;
-        case 'toArrowType':
-          this.canvas.data.toArrowType = menu.data;
-          break;
-        case 'scale':
-          this.canvas.scaleTo(menu.data);
-          break;
-        case 'fullscreen':
-          this.workspace.nativeElement.requestFullscreen();
-          setTimeout(() => {
-            this.canvas.resize();
-            this.canvas.overflow();
-          }, 500);
-          break;
-      }
-    });
-
     // Wait for parent dom render.
     setTimeout(() => {
       this.canvas = new Topology(this.workspace.nativeElement, this.canvasOptions);
@@ -201,6 +118,83 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   onTouchstart(item: any) {
     this.canvas.touchedNode = item.data;
+  }
+
+  onMenu(event: { name: string; data: any; }) {
+    if (!this.canvas) {
+      return;
+    }
+    switch (event.name) {
+      case 'new':
+        this.onNew();
+        break;
+      case 'open':
+        setTimeout(() => {
+          this.selected = null;
+        });
+        if (!this.data.id) {
+          this.onNew();
+        }
+        this.onOpenLocal();
+        break;
+      case 'load':
+        this.onOpenZip();
+        break;
+      case 'save':
+        this.save();
+        break;
+      case 'saveAs':
+        this.data.id = '';
+        this.save();
+        break;
+      case 'downJson':
+        this.onSaveLocal();
+        break;
+      case 'downZip':
+        this.onSaveZip();
+        break;
+      case 'downPng':
+        this.onSavePng();
+        break;
+      case 'downSvg':
+        this.toSVG();
+        break;
+      case 'undo':
+        this.canvas.undo();
+        break;
+      case 'redo':
+        this.canvas.redo();
+        break;
+      case 'cut':
+        this.canvas.cut();
+        break;
+      case 'copy':
+        this.canvas.copy();
+        break;
+      case 'paste':
+        this.canvas.parse();
+        break;
+      case 'share':
+        this.onShare();
+        break;
+      case 'render':
+        this.canvas.render();
+        break;
+      case 'scale':
+        this.canvas.scaleTo(event.data);
+        break;
+      case 'drawBk':
+        this.canvas.clearBkImg();
+        this.canvas.render();
+        break;
+      case 'fullscreen':
+        this.workspace.nativeElement.requestFullscreen();
+        setTimeout(() => {
+          this.canvas.resize();
+          this.canvas.overflow();
+        }, 500);
+        break;
+    }
   }
 
   onkeyDocument(key: KeyboardEvent) {

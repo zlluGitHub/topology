@@ -106,27 +106,14 @@
             <img *ngIf="props.data.image" [src]="props.data.image" style="height: .3rem" />
           </div>
         </div>
-        <div *ngIf="showDialog === 1" class="tools">
+        <div *ngIf="showDialog === 1" class="tools" style="width: 2.68rem">
           <div class="title flex middle">
             <label class="full">选择图片</label>
             <i class="iconfont icon-close hover" (click)="showDialog = 0"></i>
           </div>
-          <div class="ph20 mt20">
-            <button class="button primary mr20" (click)="onImageUpload()">
-              + 上传本地图片
-            </button>
-            <button class="button primary" (click)="onImageUrl()">
-              在线URL图片
-            </button>
-          </div>
-          <div class="body">
-            <div class="image blank" [class.active]="!props.data.image" (click)="onClickImage({})" title="空白"></div>
-            <div class="image" *ngFor="let item of images; let i = index"
-              [class.active]="item.image === props.data.image" (click)="onClickImage(item)">
-              <img [uiImageLazyLoad]="item.image" />
-              <i class="iconfont icon-close" title="从图片库中移除，但不删除图片" (click)="onRemoveImage($event, item, i)"></i>
-            </div>
-          </div>
+          <app-user-images class="block p10" [(image)]="props.data.image" (imageChange)="onChangeProp()"
+            style="height: calc(100% - .4rem);overflow: auto;">
+          </app-user-images>
         </div>
         <div class="flex grid mt5">
           <div>宽（px）</div>

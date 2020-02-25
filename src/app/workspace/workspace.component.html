@@ -1,4 +1,5 @@
-<app-workspace-header></app-workspace-header>
+<app-workspace-header *ngIf="canvas && data" [file]="data" [data]="canvas.data" (event)="onMenu($event)">
+</app-workspace-header>
 <div class="flex">
   <div class="tools">
     <div *ngFor="let item of tools">
@@ -11,23 +12,7 @@
       </div>
     </div>
   </div>
-  <div class="full">
-    <div class="canvas" #workspace (contextmenu)="onContextMenu($event)"></div>
-    <div class="flex ph15 pv5">
-      <div class="full flex">
-        文件名：
-        <label *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击编辑，点击空白保存">{{data.name}}</label>
-        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" [uiTouchForm]="myForm" title="双击编辑，点击空白保存">
-          <input name="filename" #filenameInput class="input" [(ngModel)]="data.name" (blur)="onSaveFilename()"
-            required />
-        </form>
-        <i class="iconfont icon-edit" *ngIf="!editFilename" (click)="onEditFile(filenameInput)" title="双击编辑，点击空白保存"></i>
-      </div>
-      <div *ngIf="data.id">
-        <a routerLink="/user/history" [queryParams]="{ id: data.id, name: data.name }">-> 文件历史</a>
-      </div>
-    </div>
-  </div>
+  <div class="full" #workspace (contextmenu)="onContextMenu($event)"></div>
   <div class="props">
     <div class="pv5">
       <div *ngIf="!selected">
@@ -61,7 +46,7 @@
         </div>
       </div>
       <div *ngIf="selected">
-        <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"
+        <app-props [props]="selected" [readonly]="canvas.data.locked" (ok)="onChangeProps($event)"
           (animateChange)="onAnimateChange()"></app-props>
       </div>
     </div>

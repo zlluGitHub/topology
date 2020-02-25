@@ -1,7 +1,5 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChange } from '@angular/core';
 
-import { NoticeService } from 'le5le-components/notice';
-
 import { Node } from 'topology-core/models/node';
 import { Props } from './props.model';
 import { PropsService } from './props.service';
@@ -134,7 +132,6 @@ export class PropsComponent implements OnInit, OnChanges {
   };
 
   showDialog = 0;
-  images: { id: string; image: string }[];
 
   cpPresetColors = [
     '#1890ff',
@@ -375,7 +372,6 @@ export class PropsComponent implements OnInit, OnChanges {
   ];
 
   constructor(private service: PropsService) {
-    this.getImages();
   }
 
   ngOnInit() {
@@ -422,11 +418,7 @@ export class PropsComponent implements OnInit, OnChanges {
     }
   }
 
-  async getImages() {
-    this.images = await this.service.GetImages();
-  }
-
-  ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+  ngOnChanges(changes: { [propertyName: string]: SimpleChange; }) {
     if (changes['props']) {
       this.ngOnInit();
     }
@@ -472,12 +464,6 @@ export class PropsComponent implements OnInit, OnChanges {
 
   onclickDocument() {
     this.drowdown = 0;
-  }
-
-  onClickImage(item: any) {
-    this.props.data.image = item.image;
-    this.onChangeProp();
-    this.showDialog = 0;
   }
 
   onClickIcon(item?: any) {
@@ -528,53 +514,6 @@ export class PropsComponent implements OnInit, OnChanges {
     }
 
     this.onChangeProp(invalid);
-  }
-
-  onImageUpload() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = async event => {
-      const elem: any = event.srcElement || event.target;
-      if (elem.files && elem.files[0]) {
-        const file = await this.service.Upload(elem.files[0], elem.files[0].name);
-        if (!file) {
-          return;
-        }
-        this.props.data.image = file.url;
-        this.onChangeProp();
-        const id = await this.service.AddImage(file.url);
-        this.images.unshift({ id, image: file.url });
-      }
-    };
-    input.click();
-  }
-
-  onImageUrl() {
-    const _noticeService: NoticeService = new NoticeService();
-    _noticeService.input({
-      title: '图片URL',
-      theme: 'default',
-      text: '',
-      label: '图片URL',
-      type: 'text',
-      callback: async (ret: string) => {
-        if (!ret) {
-          return;
-        }
-
-        this.props.data.image = ret;
-        this.onChangeProp();
-        const id = await this.service.AddImage(ret);
-        this.images.unshift({ id, image: ret });
-      }
-    });
-  }
-
-  async onRemoveImage(event: MouseEvent, item: any, i: number) {
-    event.stopPropagation();
-    if (await this.service.RemoveImage(item.id)) {
-      this.images.splice(i, 1);
-    }
   }
 
   onAnimate() {

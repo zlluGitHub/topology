@@ -28,6 +28,7 @@ import { ImageAuthDirective } from './directives/img.directive';
 import { UserComponent } from './components/user/user.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { UserImagesComponent } from './components/user/images/images.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { FooterComponent } from './components/footer/footer.component';
     ImageAuthDirective,
     UserComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    UserImagesComponent
   ],
   exports: [
     CommonModule,
@@ -65,6 +67,7 @@ import { FooterComponent } from './components/footer/footer.component';
     UserComponent,
     HeaderComponent,
     FooterComponent,
+    UserImagesComponent,
     FormModule,
     AvatarModule,
     EscModule,

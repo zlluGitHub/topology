@@ -1443,7 +1443,7 @@ export class Topology {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.drawImage(
-      this.offscreen.canvas,
+      this.canvas.canvas,
       srcRect.x,
       srcRect.y,
       srcRect.width,
@@ -2042,6 +2042,10 @@ export class Topology {
     setTimeout(() => {
       this.scrolling = false;
     }, 700);
+  }
+
+  clearBkImg() {
+    this.canvas.clearBkImg();
   }
 
   destroy() {
