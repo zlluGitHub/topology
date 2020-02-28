@@ -31,11 +31,11 @@ export class HoverLayer {
     Store.set('LT:HoverLayer', this);
 
     if (!this.options.hoverColor) {
-      this.options.hoverColor = '#d4380d';
+      this.options.hoverColor = '#fa541c';
     }
     // The backgournd color of selecting nodes by draging.
     if (!this.options.dragColor) {
-      this.options.dragColor = '#d4380d';
+      this.options.dragColor = '#1890ff';
     }
   }
 
@@ -44,7 +44,6 @@ export class HoverLayer {
     this.line.strokeStyle = this.options.color;
     this.line.name = lineName;
     this.line.setFrom(from, fromArrow);
-    this.data.lines.push(this.line);
   }
 
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
@@ -98,6 +97,7 @@ export class HoverLayer {
       this.root = this.getRoot(this.node) || this.node;
       if (this.root) {
         ctx.save();
+        ctx.strokeStyle = this.options.dragColor;
         ctx.globalAlpha = 0.2;
         if (this.root.rotate) {
           ctx.translate(this.root.rect.center.x, this.root.rect.center.y);
@@ -133,8 +133,7 @@ export class HoverLayer {
       ctx.fill();
     }
 
-    ctx.strokeStyle = this.options.dragColor + '50';
-    ctx.fillStyle = this.options.dragColor + '30';
+    ctx.strokeStyle = this.options.hoverColor + '80';
     ctx.lineWidth = 1;
 
     if (this.dockLineX > 0) {
@@ -155,6 +154,7 @@ export class HoverLayer {
 
     // Select nodes by drag.
     if (this.dragRect) {
+      ctx.fillStyle = this.options.dragColor + '30';
       ctx.strokeStyle = this.options.dragColor;
       ctx.beginPath();
       ctx.strokeRect(this.dragRect.x, this.dragRect.y, this.dragRect.width, this.dragRect.height);
@@ -169,8 +169,8 @@ export class HoverLayer {
       return null;
     }
 
-    for (const item of this.data.nodes) {
-      if (item.id === node.parentId) {
+    for (const item of this.data.pens) {
+      if (item instanceof Node && item.id === node.parentId) {
         const n = this.getRoot(item);
         return n ? n : item;
       }

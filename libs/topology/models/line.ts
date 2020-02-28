@@ -290,7 +290,7 @@ export class Line extends Pen {
     return new Point(x, y);
   }
 
-  animate() {
+  animate(now: number) {
     if (this.animateFromSize) {
       this.lineDashOffset = -this.animateFromSize;
     }
@@ -315,6 +315,7 @@ export class Line extends Pen {
         this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
         break;
     }
+
     if (this.animatePos > this.length + this.animateSpan - this.animateFromSize - this.animateToSize) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
@@ -327,6 +328,8 @@ export class Line extends Pen {
 
       this.animatePos = this.animateSpan;
     }
+
+    return '';
   }
 
   getBubbles() {

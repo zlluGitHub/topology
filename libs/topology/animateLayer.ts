@@ -1,5 +1,6 @@
 import { Store } from 'le5le-store';
 
+import { Pen } from './models/pen';
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
@@ -7,10 +8,10 @@ import { Options } from './options';
 
 export class AnimateLayer {
   protected data: TopologyData = Store.get('topology-data');
-  nodes: Node[] = [];
-  lines: Line[] = [];
+  pens: Pen[] = [];
 
   private timer: any;
+  private lastNow = 0;
   constructor(public options: Options = {}) {
     Store.set('LT:AnimateLayer', this);
 
@@ -19,153 +20,110 @@ export class AnimateLayer {
     }
   }
 
-  start(clear = true) {
-    if (this.timer) {
-      cancelAnimationFrame(this.timer);
+  getPens(nextPlay = '', pens: Pen[] = null) {
+    if (!pens) {
+      this.pens = [];
+      pens = this.data.pens;
     }
 
-    if (clear) {
-      this.nodes = [];
-      this.lines = [];
-    }
-
-    this.getNodes(this.data.nodes);
-    this.getLines();
-    this.animate();
-  }
-
-  getNodes(nodes: Node[], tag = '') {
-    if (!nodes) {
-      return;
-    }
-    for (const item of nodes) {
-      let found = false;
-      if (tag && item.tags.indexOf(tag) > -1) {
+    for (const item of pens) {
+      if (item instanceof Node && item.children) {
+        this.getPens(nextPlay, item.children);
+      }
+      if (nextPlay && item.tags.indexOf(nextPlay) > -1) {
         item.animateStart = Date.now();
       }
-      for (let i = 0; i < this.nodes.length; ++i) {
-        if (this.nodes[i].id === item.id) {
-          item.animateCycleIndex = 1;
-          found = true;
-          if (!item.animateStart) {
-            this.nodes.splice(i, 1);
-          }
-        }
-      }
 
-      if (!found && item.animateStart) {
-        item.updateAnimateProps();
-        this.nodes.push(item);
-        this.getNodes(item.children);
+      if (item.animateStart) {
+        if (item instanceof Node) {
+          item.initAnimateProps();
+          this.pens.push(item);
+        } else {
+          const l = new Line(item);
+          l.isAnimate = true;
+          if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
+            l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
+          }
+          if (l.toArrow && l.toArrow.indexOf('line') < 0) {
+            l.animateToSize = l.toArrowSize + l.lineWidth * 5;
+          }
+          l.animateStart = item.animateStart;
+          l.lineCap = 'round';
+          l.fillStyle = '#fff';
+          l.strokeStyle = l.animateColor || this.options.animateColor;
+          l.length = l.getLen();
+          if (!l.fromArrowColor) {
+            l.fromArrowColor = l.strokeStyle || '#222';
+          }
+          if (!l.toArrowColor) {
+            l.toArrowColor = l.strokeStyle || '#222';
+          }
+          this.pens.push(l);
+        }
       }
     }
   }
 
-  getLines(tag = '') {
-    for (const item of this.data.lines) {
-      let found = false;
-      if (tag && item.tags.indexOf(tag) > -1) {
+  findNext(nextPlay: string) {
+    const pens: Pen[] = [];
+    for (const item of this.data.pens) {
+      if (!item.animateStart && nextPlay && item.tags.indexOf(nextPlay) > -1) {
         item.animateStart = Date.now();
-      }
-      for (let i = 0; i < this.lines.length; ++i) {
-        if (this.lines[i].id === item.id) {
-          this.lines[i].animateCycle = item.animateCycle;
-          this.lines[i].animateCycleIndex = 1;
-          this.lines[i].animateColor = item.animateColor || this.options.animateColor;
-          this.lines[i].strokeStyle = item.animateColor || this.options.animateColor;
-          this.lines[i].animateSpan = item.animateSpan;
-          found = true;
-
-          if (item.animateStart) {
-            this.lines[i].animateStart = item.animateStart;
-          } else {
-            this.lines.splice(i, 1);
-          }
+        if (item instanceof Node) {
+          item.initAnimateProps();
         }
-      }
-
-      if (!found && item.animateStart) {
-        const l = new Line(item);
-        l.isAnimate = true;
-        if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
-          l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
-        }
-        if (l.toArrow && l.toArrow.indexOf('line') < 0) {
-          l.animateToSize = l.toArrowSize + l.lineWidth * 5;
-        }
-        l.animateStart = item.animateStart;
-        l.lineCap = 'round';
-        l.fillStyle = '#fff';
-        l.strokeStyle = l.animateColor || this.options.animateColor;
-        l.length = l.getLen();
-        if (!l.fromArrowColor) {
-          l.fromArrowColor = l.strokeStyle || '#222';
-        }
-        if (!l.toArrowColor) {
-          l.toArrowColor = l.strokeStyle || '#222';
-        }
-        this.lines.push(l);
+        pens.push(item);
       }
     }
+
+    return pens;
   }
 
   animate() {
-    if (!this.lines.length && !this.nodes.length) {
-      this.timer = null;
-      return;
+    if (this.timer) {
+      cancelAnimationFrame(this.timer);
     }
-
     this.timer = requestAnimationFrame(() => {
       const now = Date.now();
-      for (let i = 0; i < this.lines.length; ++i) {
-        if (this.lines[i].animateStart > now) {
+      if (now - this.lastNow < 30) {
+        this.animate();
+        return;
+      }
+      this.lastNow = now;
+      let animated = false;
+      for (let i = 0; i < this.pens.length; ++i) {
+        if (this.pens[i].animateStart > now) {
           continue;
         }
-        const next = this.lines[i].animate();
-        if (!this.lines[i].animateStart) {
-          for (const item of this.data.lines) {
-            if (this.lines[i].id === item.id) {
-              item.animateStart = 0;
-              break;
-            }
-          }
-        }
+        const next = this.pens[i].animate(now);
         if (next) {
-          this.lines.splice(i, 1);
-          this.getNodes(this.data.nodes, next);
-          this.getLines(next);
+          this.pens.splice(i, 1);
+          this.pens.push.apply(this.pens, this.findNext(next));
+        } else if (this.pens[i] && !this.pens[i].animateStart) {
+          this.pens.splice(i, 1);
         }
-
-        if (this.lines[i] && !this.lines[i].animateStart) {
-          this.lines.splice(i, 1);
-        }
+        animated = true;
       }
-      for (let i = 0; i < this.nodes.length; ++i) {
-        if (this.nodes[i].animateStart > now) {
-          continue;
-        }
-        if (this.nodes[i].animateDuration && this.nodes[i].animateStart) {
-          const next = this.nodes[i].animate(now);
-          if (next) {
-            this.getNodes(this.data.nodes, next);
-            this.getLines(next);
-          }
-        } else {
-          this.nodes.splice(i, 1);
-        }
+      if (animated) {
+        Store.set('LT:render', true);
+        this.animate();
       }
-      Store.set('LT:render', true);
-      this.animate();
     });
   }
 
-  updateLines(nodes?: Node[]) {
-    if (!nodes) {
-      nodes = this.nodes;
+  updateLines(pens?: Pen[]) {
+    if (!pens) {
+      pens = this.pens;
     }
-    for (const line of this.lines) {
+    for (const line of this.pens) {
+      if (!(line instanceof Line)) {
+        continue;
+      }
       let found = false;
-      for (const item of nodes) {
+      for (const item of pens) {
+        if (!(item instanceof Node)) {
+          continue;
+        }
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
           line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
@@ -188,12 +146,14 @@ export class AnimateLayer {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    for (const item of this.lines) {
-      item.render(ctx);
+    for (const item of this.pens) {
+      if (item instanceof Line) {
+        item.render(ctx);
+      }
     }
   }
 
-  destroy() {
+  stop() {
     if (this.timer) {
       cancelAnimationFrame(this.timer);
     }

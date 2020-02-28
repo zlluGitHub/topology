@@ -160,7 +160,6 @@ function init() {
   // Text
   drawNodeFns.text = text;
   iconRectFns.text = lineIconRect;
-  anchorsFns.text = (node: Rect) => { };
 
   // Line
   drawNodeFns.line = nodeLine;

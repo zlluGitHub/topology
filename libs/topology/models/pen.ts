@@ -50,6 +50,7 @@ export abstract class Pen {
   animatePlay: boolean;
 
   locked = false;
+  hideInput: boolean;
 
   link: string;
   markdown: string;
@@ -96,6 +97,7 @@ export abstract class Pen {
       this.animatePlay = json.animatePlay;
 
       this.locked = json.locked;
+      this.hideInput = json.hideInput;
       this.link = json.link;
       this.markdown = json.markdown;
       this.tipId = json.tipId;
@@ -115,6 +117,10 @@ export abstract class Pen {
 
 
   render(ctx: CanvasRenderingContext2D) {
+    if ((this as any).from && !(this as any).to) {
+      return;
+    }
+
     ctx.save();
 
     if (this.rotate || this.offsetRotate) {
@@ -182,4 +188,7 @@ export abstract class Pen {
 
   abstract getTextRect(): Rect;
   abstract draw(ctx: CanvasRenderingContext2D): void;
+  abstract animate(now: number): string;
+  abstract translate(x: number, y: number): void;
+  abstract scale(scale: number, center?: Point): void;
 }

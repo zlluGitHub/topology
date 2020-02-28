@@ -46,6 +46,15 @@ export function curveControlPoints(ctx: CanvasRenderingContext2D, l: Line) {
 }
 
 export function calcCurveControlPoints(l: Line) {
+  if (!l.from.direction) {
+    l.from.direction = Direction.Bottom;
+  }
+  if (!l.to.direction) {
+    l.to.direction = (l.from.direction + 2) % 4;
+    if (!l.to.direction) {
+      l.to.direction = Direction.Left;
+    }
+  }
   l.controlPoints = [getControlPt(l.from, l.to), getControlPt(l.to, l.from)];
   Store.set('pts-' + l.id, null);
 }

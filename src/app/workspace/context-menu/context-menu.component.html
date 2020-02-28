@@ -1,48 +1,33 @@
 <div class="context-menus" id="canvas-menus" [ngStyle]="contextmenu">
   <div>
-    <a [class.disabled]="!selNodes" (click)="onTop()">
+    <a (click)="onTop()">
       置顶
     </a>
   </div>
   <div>
-    <a [class.disabled]="!selNodes" (click)="onBottom()">
+    <a (click)="onBottom()">
       置底
     </a>
   </div>
   <div class="line"></div>
-  <div
-    *ngIf="!selNodes || selNodes.length > 1 || selNodes[0].name !== 'combine'"
-  >
-    <a
-      [class.disabled]="!selNodes || selNodes.length < 2"
-      (click)="onCombine()"
-    >
+  <div *ngIf="!selections || selections.length > 1 || !selections[0].children || !selections[0].children.length">
+    <a [class.disabled]=" !selections || selections.length < 2" (click)="onCombine()">
       组合
     </a>
-    <div>
-      <a
-        [class.disabled]="!selNodes || selNodes.length < 2"
-        (click)="onCombine(true)"
-      >
-        包含
-      </a>
-    </div>
   </div>
-  <div
-    *ngIf="selNodes && selNodes.length === 1 && selNodes[0].name === 'combine'"
-  >
+  <div *ngIf="selections && selections.length === 1 && selections[0].children && selections[0].children.length">
     <a (click)="onUncombine()">
-      取消组合/包含
+      取消组合
     </a>
   </div>
   <div>
-    <a [class.disabled]="!selNodes && !selected" (click)="onLock()">
+    <a [class.disabled]="!selections && !selected" (click)="onLock()">
       {{ locked ? '解锁' : '锁定' }}
     </a>
   </div>
   <div class="line"></div>
   <div>
-    <a [class.disabled]="!selNodes" (click)="onDel()">
+    <a [class.disabled]="!selections" (click)="onDel()">
       删除
     </a>
   </div>
@@ -80,11 +65,8 @@
   </div>
   <div class="line"></div>
   <div>
-    <a
-      [class.disabled]="!selNodes || selNodes.length > 1 || !selNodes[0].image"
-      (click)="onCopyImage()"
-      class="flex"
-    >
+    <a [class.disabled]="!selections || selections.length > 1 || !selections[0].image" (click)="onCopyImage()"
+      class="flex">
       <span class="full">复制节点图片地址</span>
     </a>
   </div>

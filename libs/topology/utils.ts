@@ -132,7 +132,7 @@ export function abs(num: number, percent: number | string): number {
 
   percent = (percent as string).substr(0, (percent as string).length - 1);
 
-  return Math.round((num * +percent) / 100);
+  return (num * +percent) / 100;
 }
 
 export function createDiv(node: Node) {

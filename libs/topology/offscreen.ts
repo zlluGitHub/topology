@@ -20,38 +20,14 @@ export class Offscreen extends Canvas {
     const ctx = this.canvas.getContext('2d');
     ctx.strokeStyle = this.options.color;
 
-    this.renderNodes();
-    this.renderLines();
+    for (const item of this.data.pens) {
+      item.render(ctx);
+    }
+
     this.activeLayer.render(ctx);
     this.animateLayer.render(ctx);
     this.hoverLayer.render(ctx);
   }
 
-  renderNodes() {
-    if (!this.data.nodes.length) {
-      return;
-    }
 
-    const ctx = this.canvas.getContext('2d');
-    for (const item of this.data.nodes) {
-      item.render(ctx);
-    }
-  }
-
-  renderLines() {
-    if (!this.data.lines.length) {
-      return;
-    }
-
-    const ctx = this.canvas.getContext('2d');
-    let i = 0;
-    for (const item of this.data.lines) {
-      if (!item.to) {
-        this.data.lines.splice(i++, 1);
-        continue;
-      }
-      item.render(ctx);
-      ++i;
-    }
-  }
 }

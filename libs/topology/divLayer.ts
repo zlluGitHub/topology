@@ -312,7 +312,10 @@ export class DivLayer {
       return;
     }
 
-    for (const item of this.data.nodes) {
+    for (const item of this.data.pens) {
+      if (!(item instanceof Node)) {
+        continue;
+      }
       if (item.tags.indexOf(next) > -1) {
         if (item.audio && this.audios[item.id] && this.audios[item.id].media && this.audios[item.id].media.paused) {
           this.audios[item.id].media.play();
@@ -445,8 +448,8 @@ export class DivLayer {
   }
 
   render() {
-    for (const item of this.data.nodes) {
-      this.addDiv(item);
+    for (const item of this.data.pens) {
+      this.addDiv(item as Node);
     }
   }
 

@@ -1,7 +1,7 @@
 import { Store } from 'le5le-store';
 
 import { Options } from './options';
-
+import { Pen } from './models/pen';
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { Rect } from './models/rect';
@@ -37,7 +37,7 @@ export class ActiveLayer {
   constructor(public options: Options = {}) {
     Store.set('LT:ActiveLayer', this);
     if (!this.options.activeColor) {
-      this.options.activeColor = '#d4380d';
+      this.options.activeColor = '#1890ff';
     }
   }
 
@@ -267,11 +267,11 @@ export class ActiveLayer {
       }
       this.updateChildren(item);
 
-      if (item.parentId && item.stand) {
+      if (item.parentId && !item.locked) {
         let parent: Node;
-        for (const n of this.data.nodes) {
+        for (const n of this.data.pens) {
           if (n.id === item.parentId) {
-            parent = n;
+            parent = n as Node;
             break;
           }
         }
@@ -317,7 +317,11 @@ export class ActiveLayer {
     const nodes: Node[] = [node];
     this.getAllChildren(nodes, node);
 
-    for (const line of this.data.lines) {
+    for (const pen of this.data.pens) {
+      if (!(pen instanceof Line)) {
+        continue;
+      }
+      const line = pen as Line;
       let fromIn = false;
       let toIn = false;
       for (const item of nodes) {
@@ -337,12 +341,19 @@ export class ActiveLayer {
     return result;
   }
 
-  updateLines(nodes?: Node[]) {
-    if (!nodes) {
-      nodes = this.nodes;
+  updateLines(pens?: Pen[]) {
+    if (!pens) {
+      pens = this.nodes;
     }
-    for (const line of this.data.lines) {
-      for (const item of nodes) {
+    for (const line of this.data.pens) {
+      if (!(line instanceof Line)) {
+        continue;
+      }
+      for (const item of pens) {
+        if (!(item instanceof Node)) {
+          continue;
+        }
+
         let cnt = 0;
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;

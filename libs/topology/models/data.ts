@@ -1,10 +1,10 @@
+import { Pen } from './pen';
 import { Node } from './node';
 import { Line } from './line';
 import { Lock } from './status';
 
 export class TopologyData {
-  nodes: Node[] = [];
-  lines: Line[] = [];
+  pens: Pen[] = [];
   lineName = 'curve';
   fromArrowType = '';
   toArrowType = 'triangleSolid';
@@ -14,13 +14,13 @@ export class TopologyData {
   bkColor: string;
   constructor(json?: any) {
     if (json) {
-      this.nodes = [];
-      for (const item of json.nodes) {
-        this.nodes.push(new Node(item));
-      }
-      this.lines = [];
-      for (const item of json.lines) {
-        this.lines.push(new Line(item));
+      this.pens = [];
+      for (const item of json.pens) {
+        if (item.from) {
+          this.pens.push(new Line(item));
+        } else {
+          this.pens.push(new Node(item));
+        }
       }
       this.lineName = json.lineName || 'curve';
       this.fromArrowType = json.fromArrowType || '';

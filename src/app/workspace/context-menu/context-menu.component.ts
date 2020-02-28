@@ -10,17 +10,11 @@ import { NoticeService } from 'le5le-components/notice';
   styleUrls: ['./context-menu.component.scss']
 })
 export class ContextMenuComponent implements OnInit {
-
-  @Input()
-  canvas: Topology;
-  @Input()
-  selected: Props;
-  @Input()
-  selNodes: any;
-  @Input()
-  locked = false;
-  @Input()
-  contextmenu: any;
+  @Input() canvas: Topology;
+  @Input() selected: Props;
+  @Input() selections: any;
+  @Input() locked = false;
+  @Input() contextmenu: any;
 
   constructor() { }
 
@@ -28,38 +22,38 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onTop() {
-    if (!this.selNodes) {
+    if (!this.selections) {
       return;
     }
-    for (const item of this.selNodes) {
+    for (const item of this.selections) {
       this.canvas.top(item);
     }
     this.canvas.render();
   }
 
   onBottom() {
-    if (!this.selNodes) {
+    if (!this.selections) {
       return;
     }
-    for (const item of this.selNodes) {
+    for (const item of this.selections) {
       this.canvas.bottom(item);
     }
     this.canvas.render();
   }
 
   onCombine(stand: boolean) {
-    if (!this.selNodes || this.selNodes.length < 2) {
+    if (!this.selections || this.selections.length < 2) {
       return;
     }
 
-    this.canvas.combine(this.selNodes, stand);
+    this.canvas.combine(this.selections, stand);
   }
 
   onUncombine() {
-    if (!this.selNodes || this.selNodes.length > 1) {
+    if (!this.selections || this.selections.length > 1) {
       return;
     }
-    this.canvas.uncombine(this.selNodes[0]);
+    this.canvas.uncombine(this.selections[0]);
     this.canvas.render();
   }
 
@@ -88,14 +82,14 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onCopyImage() {
-    if (!this.selNodes || this.selNodes.length > 1 || !this.selNodes[0].image) {
+    if (!this.selections || this.selections.length > 1 || !this.selections[0].image) {
       return;
     }
 
-    Clipboard.copy(this.selNodes[0].image);
+    Clipboard.copy(this.selections[0].image);
     const _noticeService: NoticeService = new NoticeService();
     _noticeService.notice({
-      body: `图片地址已复制：${this.selNodes[0].image}`,
+      body: `图片地址已复制：${this.selections[0].image}`,
       theme: 'success'
     });
   }

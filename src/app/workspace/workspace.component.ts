@@ -36,12 +36,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   canvas: Topology;
   canvasOptions: Options = {};
   selected: Props;
-  subMenu: any;
 
   data = {
     id: '',
     version: '',
-    data: { nodes: [], lines: [] },
+    data: { pens: [] },
     name: '空白文件',
     desc: '',
     image: '',
@@ -57,7 +56,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   mouseMoving = false;
 
   contextmenu: any;
-  selNodes: any;
+  selections: any;
   locked = false;
 
   editFilename = false;
@@ -95,7 +94,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.data = {
             id: '',
             version: '',
-            data: { nodes: [], lines: [] },
+            data: { pens: [] },
             name: '空白文件',
             desc: '',
             image: '',
@@ -172,7 +171,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         this.canvas.copy();
         break;
       case 'paste':
-        this.canvas.parse();
+        this.canvas.paste();
         break;
       case 'share':
         this.onShare();
@@ -236,17 +235,17 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         break;
       case 88:
         if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.onCut();
+          this.canvas.cut();
         }
         break;
       case 67:
         if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.onCopy();
+          this.canvas.copy();
         }
         break;
       case 86:
         if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.onParse();
+          this.canvas.paste();
         }
         break;
       case 89:
@@ -276,7 +275,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     this.data = {
       id: '',
       version: '',
-      data: { nodes: [], lines: [] },
+      data: { pens: [] },
       name: '空白文件',
       desc: '',
       image: '',
@@ -532,7 +531,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     const data = this.canvas.data;
     const zip = new JSZip();
     zip.file(`${this.data.name || 'le5le.topology'}.json`, JSON.stringify(data));
-    await this.zipImages(zip, data.nodes);
+    await this.zipImages(zip, data.pens);
 
     zip.generateAsync({ type: 'blob' }).then((blob: any) => {
       FileSaver.saveAs(blob, `${this.data.name || 'le5le.topology'}.zip`);
@@ -544,12 +543,12 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     });
   }
 
-  async zipImages(zip: any, nodes: any[]) {
-    if (!nodes) {
+  async zipImages(zip: any, pens: any[]) {
+    if (!pens) {
       return;
     }
 
-    for (const item of nodes) {
+    for (const item of pens) {
       if (item.image) {
         if (item.image.indexOf('/') === 0) {
           const res = await this.http.get(item.image, { responseType: 'blob' }).toPromise();
@@ -619,21 +618,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     Store.set('file', this.data);
   }
 
-  onCut() {
-    this.canvas.cut();
-  }
-  onCopy() {
-    this.canvas.copy();
-  }
-  onParse() {
-    this.canvas.parse();
-  }
-
   onMessage = (event: string, data: any) => {
     switch (event) {
       case 'node':
       case 'addNode':
-        this.selNodes = [data];
+        this.selections = [data];
         this.selected = {
           type: 'node',
           data
@@ -643,6 +632,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         break;
       case 'line':
       case 'addLine':
+        this.selections = [data];
         this.selected = {
           type: 'line',
           data
@@ -653,7 +643,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       case 'multi':
         this.locked = true;
         if (data.nodes && data.nodes.length) {
-          this.selNodes = data.nodes;
+          this.selections = data.nodes;
           for (const item of data.nodes) {
             if (!item.locked) {
               this.locked = false;
@@ -677,7 +667,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       case 'space':
         setTimeout(() => {
           this.selected = null;
-          this.selNodes = null;
+          this.selections = null;
         });
         break;
       case 'moveOut':
@@ -702,7 +692,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         Store.set('locked', data);
         break;
     }
-    console.log('onMessage:', event, data, this.selected);
+    // console.log('onMessage:', event, data, this.selected);
   };
 
   onChangeProps(props: any) {
@@ -759,11 +749,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   toSVG() {
     const ctx = new C2S(this.canvas.canvas.width + 200, this.canvas.canvas.height + 200);
-    for (const item of this.canvas.data.nodes) {
-      item.render(ctx);
-    }
-
-    for (const item of this.canvas.data.lines) {
+    for (const item of this.canvas.data.pens) {
       item.render(ctx);
     }
 
@@ -796,7 +782,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     (window as any).canvas = null;
-    this.subMenu.unsubscribe();
     this.subUser.unsubscribe();
     this.subRoute.unsubscribe();
     this.canvas.destroy();

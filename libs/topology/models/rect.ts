@@ -45,7 +45,7 @@ export class Rect {
     return pt.x > this.x - padding && pt.x < this.ex + padding && pt.y > this.y - padding && pt.y < this.ey + padding;
   }
 
-  hitRect(rect: Rect) {
+  hitByRect(rect: Rect) {
     return (
       (rect.x > this.x && rect.x < this.ex && rect.y > this.y && rect.y < this.ey) ||
       (rect.ex > this.x && rect.ex < this.ex && rect.y > this.y && rect.y < this.ey) ||

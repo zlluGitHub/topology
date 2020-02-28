@@ -69,11 +69,7 @@ export class Node extends Pen {
     rotate: number;
     rect?: Rect;
   };
-  // Can selected as child.
-  stand: boolean;
   children: Node[];
-  // Has stand children
-  childStand: boolean;
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
@@ -173,8 +169,6 @@ export class Node extends Pen {
       this.paddingLeft = json.parentRect.marginX;
       this.paddingRight = json.parentRect.marginX;
     }
-    this.childStand = json.childStand;
-    this.stand = json.stand;
     if (json.rectInParent) {
       this.rectInParent = json.rectInParent;
     }
@@ -280,48 +274,6 @@ export class Node extends Pen {
     }
   }
 
-  // 根据父节点rect计算自己（子节点）的rect
-  calcChildRect(parent: Node) {
-    if (!this.rectInParent) {
-      return;
-    }
-    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
-    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
-    let x =
-      parent.rect.x +
-      parent.paddingLeftNum +
-      abs(parentW, this.rectInParent.x) +
-      abs(parentW, this.rectInParent.marginLeft);
-    let y =
-      parent.rect.y +
-      parent.paddingTopNum +
-      abs(parentH, this.rectInParent.y) +
-      abs(parentW, this.rectInParent.marginTop);
-    const w = abs(parentW, this.rectInParent.width);
-    const h = abs(parentH, this.rectInParent.height);
-    if (this.rectInParent.marginLeft === undefined && this.rectInParent.marginRight) {
-      x -= abs(parentW, this.rectInParent.marginRight);
-    }
-    if (this.rectInParent.marginTop === undefined && this.rectInParent.marginBottom) {
-      y -= abs(parentW, this.rectInParent.marginBottom);
-    }
-    this.rect = new Rect(x, y, w, h);
-
-    if (!this.rectInParent.rotate) {
-      this.rectInParent.rotate = 0;
-    }
-
-    const offsetR = parent.rotate + parent.offsetRotate;
-    this.rotate = this.rectInParent.rotate + offsetR;
-
-    if (!this.rectInParent.rect) {
-      this.rectInParent.rect = this.rect.clone();
-    }
-
-    // const oldCenter = this.rectInParent.rect.center.clone();
-    // const newCenter = this.rectInParent.rect.center.clone().rotate(offsetR, parent.rect.center);
-    // this.rect.translate(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
-  }
 
   draw(ctx: CanvasRenderingContext2D) {
     if (!drawNodeFns[this.name]) {
@@ -536,12 +488,54 @@ export class Node extends Pen {
     return rect;
   }
 
+
+  // 根据父节点rect计算自己（子节点）的rect
+  calcChildRect(parent: Node) {
+    if (!this.rectInParent) {
+      return;
+    }
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    let x =
+      parent.rect.x +
+      parent.paddingLeftNum +
+      abs(parentW, this.rectInParent.x) +
+      abs(parentW, this.rectInParent.marginLeft);
+    let y =
+      parent.rect.y +
+      parent.paddingTopNum +
+      abs(parentH, this.rectInParent.y) +
+      abs(parentW, this.rectInParent.marginTop);
+    const w = abs(parentW, this.rectInParent.width);
+    const h = abs(parentH, this.rectInParent.height);
+    if (this.rectInParent.marginLeft === undefined && this.rectInParent.marginRight) {
+      x -= abs(parentW, this.rectInParent.marginRight);
+    }
+    if (this.rectInParent.marginTop === undefined && this.rectInParent.marginBottom) {
+      y -= abs(parentW, this.rectInParent.marginBottom);
+    }
+    this.rect = new Rect(x, y, w, h);
+
+    if (!this.rectInParent.rotate) {
+      this.rectInParent.rotate = 0;
+    }
+
+    const offsetR = parent.rotate + parent.offsetRotate;
+    this.rotate = this.rectInParent.rotate + offsetR;
+
+    if (!this.rectInParent.rect) {
+      this.rectInParent.rect = this.rect.clone();
+    }
+  }
+
   calcRectInParent(parent: Node) {
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
     this.rectInParent = {
-      x: ((this.rect.x - parent.rect.x) / parent.rect.width) * 100 + '%',
-      y: ((this.rect.y - parent.rect.y) / parent.rect.height) * 100 + '%',
-      width: (this.rect.width / parent.rect.width) * 100 + '%',
-      height: (this.rect.height / parent.rect.height) * 100 + '%',
+      x: ((this.rect.x - parent.rect.x - parent.paddingLeftNum) * 100 / parentW) + '%',
+      y: ((this.rect.y - parent.rect.y - parent.paddingTopNum) * 100 / parentH) + '%',
+      width: (this.rect.width * 100 / parentW) + '%',
+      height: (this.rect.height * 100 / parentH) + '%',
       rotate: this.rotate,
       rect: this.rect.clone()
     };
@@ -552,7 +546,7 @@ export class Node extends Pen {
     this.dockWatchers.unshift(this.rect.center);
   }
 
-  updateAnimateProps() {
+  initAnimateProps() {
     let passed = 0;
     for (let i = 0; i < this.animateFrames.length; ++i) {
       this.animateFrames[i].start = passed;
@@ -590,7 +584,6 @@ export class Node extends Pen {
       }
       this.animateStart = now;
       timeline = 0;
-      this.animateFrames[0].initState = Node.cloneState(this);
     }
 
     let rectChanged = false;
@@ -666,9 +659,11 @@ export class Node extends Pen {
       }
     }
     if (rectChanged) {
+
       this.init();
       Store.set('nodeRectChanged', this);
     }
+    return '';
   }
 
   scale(scale: number, center?: Point) {
