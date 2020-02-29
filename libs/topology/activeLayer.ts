@@ -10,6 +10,7 @@ import { TopologyData } from './models/data';
 import { Lock } from './models/status';
 
 import { drawLineFns } from './middles';
+import { flatNodes } from './middles/functions/node';
 
 export class ActiveLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -298,24 +299,10 @@ export class ActiveLayer {
     }
   }
 
-  getAllChildren(result: Node[], node: Node) {
-    if (!node.children) {
-      return;
-    }
-
-    result.push.apply(result, node.children);
-
-    for (const n of node.children) {
-      result.push(n);
-      this.getAllChildren(result, n);
-    }
-  }
-
   getLinesOfNode(node: Node) {
     const result: Line[] = [];
 
-    const nodes: Node[] = [node];
-    this.getAllChildren(nodes, node);
+    const nodes: Node[] = flatNodes([node]);
 
     for (const pen of this.data.pens) {
       if (!(pen instanceof Line)) {
@@ -345,15 +332,13 @@ export class ActiveLayer {
     if (!pens) {
       pens = this.nodes;
     }
+
+    const nodes = flatNodes(pens);
     for (const line of this.data.pens) {
       if (!(line instanceof Line)) {
         continue;
       }
-      for (const item of pens) {
-        if (!(item instanceof Node)) {
-          continue;
-        }
-
+      for (const item of nodes) {
         let cnt = 0;
         if (line.from.id === item.id) {
           line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
@@ -370,9 +355,6 @@ export class ActiveLayer {
         }
         line.textRect = null;
         Store.set('pts-' + line.id, null);
-        if (item.children) {
-          this.updateLines(item.children);
-        }
       }
     }
   }

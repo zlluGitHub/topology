@@ -35,5 +35,7 @@ export interface Options {
   loopIcon?: string;
   translateKey?: KeyType;
   scaleKey?: KeyType;
+  minScale?: number;
+  maxScale?: number;
   on?: (event: string, data: any) => void;
 }

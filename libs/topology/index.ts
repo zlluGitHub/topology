@@ -138,6 +138,12 @@ export class Topology {
     if (!this.options.font.textBaseline) {
       this.options.font.textBaseline = 'middle';
     }
+    if (!this.options.minScale) {
+      this.options.minScale = 0.25;
+    }
+    if (!this.options.maxScale) {
+      this.options.maxScale = 5;
+    }
 
     if (typeof parent === 'string') {
       this.parentElem = document.getElementById(parent);
@@ -507,8 +513,6 @@ export class Topology {
     this.scheduledAnimationFrame = true;
     const pos = new Point(e.offsetX, e.offsetY);
     requestAnimationFrame(() => {
-      this.scheduledAnimationFrame = false;
-
       if (!this.mouseDown) {
         this.getMoveIn(pos);
 
@@ -569,6 +573,8 @@ export class Topology {
           this.hoverLayer.lasthoverLineCP = this.hoverLayer.hoverLineCP;
           this.render();
         }
+
+        this.scheduledAnimationFrame = false;
         return;
       }
 
@@ -674,6 +680,7 @@ export class Topology {
       }
 
       this.render();
+      this.scheduledAnimationFrame = false;
     });
   };
 
@@ -1843,7 +1850,7 @@ export class Topology {
   //   > 1, expand
   //   < 1, reduce
   scale(scale: number) {
-    if (this.data.scale * scale < 0.25) {
+    if (this.data.scale * scale < this.options.minScale || this.data.scale * scale > this.options.maxScale) {
       return;
     }
 
