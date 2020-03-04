@@ -166,7 +166,7 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMenu(name: string, data: any) {
+  onMenu(name: string, data?: any) {
     this.event.emit({
       name,
       data

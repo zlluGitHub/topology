@@ -738,7 +738,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     } else {
       this.contextmenu = {
         left: event.clientX + 'px',
-        bottom: document.body.clientHeight - event.clientY + 'px'
+        bottom: '5px'
       };
     }
   }

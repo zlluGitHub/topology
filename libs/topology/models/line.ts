@@ -1,4 +1,4 @@
-import { Pen } from './pen';
+import { Pen, PenType } from './pen';
 import { Point } from './point';
 import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
@@ -36,6 +36,7 @@ export class Line extends Pen {
   constructor(json?: any) {
     super(json);
 
+    this.type = PenType.Line;
     if (json) {
       if (json.from) {
         this.from = new Point(json.from.x, json.from.y, json.from.direction, json.from.anchorIndex, json.from.id);

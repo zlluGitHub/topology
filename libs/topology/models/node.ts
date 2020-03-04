@@ -1,4 +1,4 @@
-import { Pen } from './pen';
+import { Pen, PenType } from './pen';
 import { Rect } from './rect';
 import { Point } from './point';
 import { anchorsFns, iconRectFns, textRectFns, drawNodeFns } from '../middles';
@@ -103,6 +103,7 @@ export class Node extends Pen {
   constructor(json: any, noChild = false) {
     super(json);
 
+    this.type = PenType.Node;
     this.is3D = json.is3D;
     this.z = json.z;
     this.zRotate = json.zRotate || 0;

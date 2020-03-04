@@ -3,8 +3,14 @@ import { Point } from './point';
 import { Rect } from './rect';
 import { pointInRect } from '../utils';
 
+export enum PenType {
+  Node,
+  Line,
+}
+
 export abstract class Pen {
   id = '';
+  type = PenType.Node;
   name = '';
   tags: string[] = [];
   rect: Rect = new Rect(0, 0, 0, 0);
