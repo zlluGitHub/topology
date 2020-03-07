@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { Store } from 'le5le-store';
 import { HomeService } from './home.service';
 
 @Component({
@@ -28,11 +29,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   inBar = false;
 
   timer: any;
+  subConfigs: any;
   constructor(private service: HomeService, private router: Router) { }
 
   async ngOnInit() {
 
     this.configs = this.service.Configs();
+    this.subConfigs = Store.subscribe('app-configs', () => {
+      this.configs.bars = Store.get('app-bars');
+      this.configs.classes = Store.get('app-classes');
+      this.configs.vision = Store.get('app-vision');
+
+      for (const item of this.configs.bars) {
+        item.styles = {
+          background: item.bkColor
+        };
+      }
+    });
 
     this.timer = setInterval(() => {
       if (this.configs.bars && this.configs.bars.length && !this.inBar) {
@@ -61,5 +74,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.timer);
+    this.subConfigs.unsubscribe();
   }
 }

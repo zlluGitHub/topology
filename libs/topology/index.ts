@@ -179,7 +179,6 @@ export class Topology {
     });
     this.subcribeAnimateMoved = Store.subscribe('nodeRectChanged', (e: any) => {
       this.activeLayer.updateLines(this.data.pens);
-      this.animateLayer.updateLines(this.data.pens);
     });
     this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
       if (node.nextPlay) {
@@ -339,8 +338,11 @@ export class Topology {
     if (!node.strokeStyle && this.options.color) {
       node.strokeStyle = this.options.color;
     }
-    if (!node.font.color) {
-      node.font = Object.assign(node.font, this.options.font);
+
+    for (const key in node.font) {
+      if (!node.font[key]) {
+        node.font[key] = this.options.font[key];
+      }
     }
 
     if (this.data.scale !== 1) {
@@ -669,6 +671,7 @@ export class Topology {
             );
           }
           this.needCache = true;
+          Store.set('LT:updateLines', [this.moveIn.hoverLine]);
           break;
         case MoveInType.Rotate:
           if (this.activeLayer.nodes.length) {
@@ -1028,7 +1031,19 @@ export class Topology {
 
       if (item instanceof Node) {
         this.inNode(pt, item);
-      } else if (item instanceof Line) {
+      }
+    }
+
+    if ((this.moveIn.type as any) === MoveInType.HoverAnchors) {
+      return;
+    }
+
+    for (const item of this.data.pens) {
+      if (item.locked) {
+        continue;
+      }
+
+      if (item instanceof Line) {
         this.inLine(pt, item);
       }
     }
@@ -2022,7 +2037,7 @@ export class Topology {
     this.subcribeAnimateEnd.unsubscribe();
     this.subcribeAnimateMoved.unsubscribe();
     this.subcribeMediaEnd.unsubscribe();
-    this.animateLayer.stop();
+    this.animateLayer.destroy();
     this.divLayer.destroy();
     document.body.removeChild(this.tipMarkdown);
   }

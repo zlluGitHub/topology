@@ -51,8 +51,9 @@ export class HoverLayer {
       return;
     }
     this.line.setTo(to, toArrow);
-    if (this.line.from.id || this.line.to.id) {
+    if (this.line.from || this.line.to) {
       this.line.calcControlPoints();
+      Store.set('LT:updateLines', [this.line]);
     }
   }
 
@@ -60,9 +61,11 @@ export class HoverLayer {
     if (this.line.locked) {
       return;
     }
+
     this.line.setFrom(from, this.line.fromArrow);
-    if (this.line.from.id || this.line.to.id) {
+    if (this.line.from || this.line.to) {
       this.line.calcControlPoints();
+      Store.set('LT:updateLines', [this.line]);
     }
   }
 
@@ -83,6 +86,8 @@ export class HoverLayer {
       }
       Store.set('pts-' + this.line.id, null);
     }
+
+    Store.set('LT:updateLines', [this.line]);
   }
 
   render(ctx: CanvasRenderingContext2D) {

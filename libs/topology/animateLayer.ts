@@ -12,12 +12,17 @@ export class AnimateLayer {
 
   private timer: any;
   private lastNow = 0;
+  private subcribeUpdate;
   constructor(public options: Options = {}) {
     Store.set('LT:AnimateLayer', this);
 
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
     }
+
+    this.subcribeUpdate = Store.subscribe('LT:updateLines', (lines: Line[]) => {
+      this.updateLines(lines);
+    });
   }
 
   getPens(nextPlay = '', pens: Pen[] = null) {
@@ -41,6 +46,7 @@ export class AnimateLayer {
         } else {
           const l = new Line(item);
           l.isAnimate = true;
+          l.toArrow = '';
           if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
             l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
           }
@@ -111,36 +117,19 @@ export class AnimateLayer {
     });
   }
 
-  updateLines(pens?: Pen[]) {
-    if (!pens) {
-      pens = this.pens;
-    }
+  updateLines(lines: Line[]) {
     for (const line of this.pens) {
       if (!(line instanceof Line)) {
         continue;
       }
-      let found = false;
-      for (const item of pens) {
-        if (!(item instanceof Node)) {
-          continue;
+
+      for (const item of lines) {
+        if (line.id === item.id) {
+          line.from = item.from;
+          line.to = item.to;
+          line.controlPoints = item.controlPoints;
+          line.length = line.getLen();
         }
-        if (line.from.id === item.id) {
-          line.from.x = item.rotatedAnchors[line.from.anchorIndex].x;
-          line.from.y = item.rotatedAnchors[line.from.anchorIndex].y;
-          found = true;
-        }
-        if (line.to.id === item.id) {
-          line.to.x = item.rotatedAnchors[line.to.anchorIndex].x;
-          line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
-          found = true;
-        }
-        if (item.children) {
-          this.updateLines(item.children);
-        }
-      }
-      if (found) {
-        line.calcControlPoints();
-        line.length = line.getLen();
       }
     }
   }
@@ -157,5 +146,10 @@ export class AnimateLayer {
     if (this.timer) {
       cancelAnimationFrame(this.timer);
     }
+  }
+
+  destroy() {
+    this.stop();
+    this.subcribeUpdate.unsubcribe();
   }
 }

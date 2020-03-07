@@ -334,6 +334,7 @@ export class ActiveLayer {
     }
 
     const nodes = flatNodes(pens);
+    const lines: Line[] = [];
     for (const line of this.data.pens) {
       if (!(line instanceof Line)) {
         continue;
@@ -355,8 +356,11 @@ export class ActiveLayer {
         }
         line.textRect = null;
         Store.set('pts-' + line.id, null);
+        lines.push(line);
       }
     }
+
+    Store.set('LT:updateLines', lines);
   }
 
   changeLineType() {
@@ -445,7 +449,6 @@ export class ActiveLayer {
   }
 
   setLines(lines: Line[]) {
-    this.nodes = [];
     this.lines = lines;
   }
 

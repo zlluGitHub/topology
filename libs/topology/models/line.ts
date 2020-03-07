@@ -33,6 +33,8 @@ export class Line extends Pen {
 
   animateDot: { x: number, y: number; };
   animateDotSize = 3;
+
+  manualCps: boolean;
   constructor(json?: any) {
     super(json);
 
@@ -44,9 +46,12 @@ export class Line extends Pen {
       if (json.to) {
         this.to = new Point(json.to.x, json.to.y, json.to.direction, json.to.anchorIndex, json.to.id);
       }
-      for (const item of json.controlPoints) {
-        this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
+      if (json.controlPoints) {
+        for (const item of json.controlPoints) {
+          this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
+        }
       }
+
       this.fromArrow = json.fromArrow || '';
       this.toArrow = json.toArrow || '';
       this.fromArrowSize = json.fromArrowSize || 5;
@@ -71,6 +76,7 @@ export class Line extends Pen {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
     }
+    this.manualCps = !!json.manualCps;
 
     const data = Store.get('topology-data');
     this.font.background = data.bkColor || '#fff';
@@ -88,7 +94,10 @@ export class Line extends Pen {
     this.textRect = null;
   }
 
-  calcControlPoints() {
+  calcControlPoints(force?: boolean) {
+    if (this.manualCps && !force) {
+      return;
+    }
     this.textRect = null;
     if (this.to && drawLineFns[this.name]) {
       drawLineFns[this.name].controlPointsFn(this);

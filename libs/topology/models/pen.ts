@@ -150,20 +150,20 @@ export abstract class Pen {
       ctx.globalAlpha = this.globalAlpha;
     }
 
-    switch (this.dash) {
-      case 1:
-        ctx.setLineDash([5, 5]);
-        break;
-      case 2:
-        ctx.setLineDash([10, 10]);
-        break;
-      case 3:
-        ctx.setLineDash([10, 10, 2, 10]);
-        break;
-    }
-
     if (this.lineDash) {
       ctx.setLineDash(this.lineDash);
+    } else {
+      switch (this.dash) {
+        case 1:
+          ctx.setLineDash([5, 5]);
+          break;
+        case 2:
+          ctx.setLineDash([10, 10]);
+          break;
+        case 3:
+          ctx.setLineDash([10, 10, 2, 10]);
+          break;
+      }
     }
     if (this.lineDashOffset) {
       ctx.lineDashOffset = this.lineDashOffset;

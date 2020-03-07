@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Store } from 'le5le-store';
+import { AppService } from './app.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  providers: [AppService],
 })
-export class AppComponent {
-  constructor() {
+export class AppComponent implements OnInit {
+  constructor(private service: AppService) {
     window.addEventListener(
       'message',
       (e: any) => {
@@ -18,7 +20,17 @@ export class AppComponent {
       });
   }
 
+  async ngOnInit() {
+    const data = await this.service.GetConfigs();
+    for (const item of data) {
+      Store.set('app-' + item.type, item.data.list);
+    }
+
+    Store.set('app-configs', 1);
+  }
+
   workspaceMenus(params: any) {
     Store.set('AppWorkspaceMenus', params);
   }
+
 }

@@ -1,0 +1,8 @@
+<div class="search">
+  <input class="input" [(ngModel)]="search" placeholder="搜索" (keyup)="search$.next($event.target.value)" />
+  <i class="iconfont icon-search" (click)="onSearch(search)"></i>
+</div>
+<div class="nav nav-tab">
+  <div class="item" [class.active]="tab===1" (click)="tab=1">系统组件</div>
+  <div class="item" [class.active]="tab===2" (click)="tab=2">我的组件</div>
+</div>
