@@ -13,7 +13,6 @@ import { WorkspaceService } from './workspace.service';
 import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
-import { TopologyService } from './topology.service';
 import { Tools } from './tools/config';
 
 declare var C2S: any;
@@ -66,7 +65,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   subRoute: any;
   constructor(
     private service: WorkspaceService,
-    private topologySrv: TopologyService,
     private coreService: CoreService,
     private router: Router,
     private activateRoute: ActivatedRoute,
@@ -108,16 +106,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       // End
     });
 
-    this.topologySrv.canvasRegister();
+    this.service.canvasRegister();
   }
 
-  onDrag(event: DragEvent, node: any) {
-    event.dataTransfer.setData('Text', JSON.stringify(node.data));
-  }
-
-  onTouchstart(item: any) {
-    this.canvas.touchedNode = item.data;
-  }
 
   onMenu(event: { name: string; data: any; }) {
     if (!this.canvas) {

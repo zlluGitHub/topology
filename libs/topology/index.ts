@@ -290,13 +290,27 @@ export class Topology {
     const json = JSON.parse(event.dataTransfer.getData('Text'));
     json.rect.x = (event.offsetX - json.rect.width / 2) << 0;
     json.rect.y = (event.offsetY - json.rect.height / 2) << 0;
-    const node = new Node(json);
-    this.addNode(node, true);
-    if (node.name === 'div') {
-      if (this.options.on) {
-        this.options.on('LT:addDiv', node);
+
+    if (json.name === 'lineAlone') {
+      this.addLineByPt(
+        this.data.lineName,
+        new Point(json.rect.x, json.rect.y),
+        this.data.fromArrowType,
+        new Point(json.rect.x + json.rect.width, json.rect.y + json.rect.height),
+        this.data.toArrowType,
+        this.options.color,
+        true
+      );
+    } else {
+      const node = new Node(json);
+      this.addNode(node, true);
+      if (node.name === 'div') {
+        if (this.options.on) {
+          this.options.on('LT:addDiv', node);
+        }
       }
     }
+
     this.divLayer.canvas.focus();
   }
 
@@ -376,7 +390,7 @@ export class Topology {
     }
 
     this.data.pens.push(line);
-    this.offscreen.render();
+    this.render();
 
     this.cache();
 
@@ -385,15 +399,19 @@ export class Topology {
     }
   }
 
-  addLineByPt(name: string, from: Point, fromArrow: string, to: Point, toArrow: string, focus = false) {
+  addLineByPt(name: string, from: Point, fromArrow: string, to: Point, toArrow: string, strokeStyle = this.options.color, focus = false) {
     const line = new Line({
       name,
       from,
       fromArrow,
       to,
-      toArrow
+      toArrow,
+      strokeStyle
     });
+    line.calcControlPoints(true);
     this.addLine(line, focus);
+
+    return line;
   }
 
   // Render or redraw
@@ -761,7 +779,8 @@ export class Topology {
 
         break;
       case MoveInType.HoverAnchors:
-        this.hoverLayer.setLine(
+        this.hoverLayer.line = this.addLineByPt(
+          this.data.lineName,
           new Point(
             this.moveIn.hoverNode.rotatedAnchors[this.moveIn.hoverAnchorIndex].x,
             this.moveIn.hoverNode.rotatedAnchors[this.moveIn.hoverAnchorIndex].y,
@@ -770,8 +789,13 @@ export class Topology {
             this.moveIn.hoverNode.id
           ),
           this.data.fromArrowType,
-          this.data.lineName
+          new Point(
+            this.moveIn.hoverNode.rotatedAnchors[this.moveIn.hoverAnchorIndex].x,
+            this.moveIn.hoverNode.rotatedAnchors[this.moveIn.hoverAnchorIndex].y,
+          ),
+          this.data.toArrowType
         );
+
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.Nodes:
         if (!e.ctrlKey) {
@@ -839,9 +863,7 @@ export class Topology {
         // Add the line.
         case MoveInType.HoverAnchors:
           // New active.
-          if (this.hoverLayer.line && this.hoverLayer.line.to) {
-            this.data.pens.push(this.hoverLayer.line);
-
+          if (this.hoverLayer.line) {
             // Deactive nodes.
             this.activeLayer.nodes = [];
 
@@ -1167,29 +1189,56 @@ export class Topology {
   private getLineDock(point: Point) {
     this.hoverLayer.dockAnchor = null;
     for (const item of this.data.pens) {
-      if (!(item instanceof Node)) {
-        continue;
-      }
-
-      if (item.rect.hit(point, 10)) {
-        this.hoverLayer.node = item;
-      }
-      for (let i = 0; i < item.rotatedAnchors.length; ++i) {
-        if (item.rotatedAnchors[i].mode && item.rotatedAnchors[i].mode !== AnchorMode.In) {
+      if (item instanceof Node) {
+        if (item.rect.hit(point, 10)) {
+          this.hoverLayer.node = item;
+        }
+        for (let i = 0; i < item.rotatedAnchors.length; ++i) {
+          if (item.rotatedAnchors[i].mode && item.rotatedAnchors[i].mode !== AnchorMode.In) {
+            continue;
+          }
+          if (item.rotatedAnchors[i].hit(point, 10)) {
+            point.id = item.id;
+            point.anchorIndex = i;
+            point.direction = item.rotatedAnchors[point.anchorIndex].direction;
+            point.x = item.rotatedAnchors[point.anchorIndex].x;
+            point.y = item.rotatedAnchors[point.anchorIndex].y;
+            this.hoverLayer.dockAnchor = item.rotatedAnchors[i];
+            break;
+          }
+        }
+      } else if (item instanceof Line) {
+        if (item.id === this.hoverLayer.line.id) {
           continue;
         }
-        if (item.rotatedAnchors[i].hit(point, 10)) {
-          point.id = item.id;
-          point.anchorIndex = i;
-          point.direction = item.rotatedAnchors[point.anchorIndex].direction;
-          point.x = item.rotatedAnchors[point.anchorIndex].x;
-          point.y = item.rotatedAnchors[point.anchorIndex].y;
-          this.hoverLayer.dockAnchor = item.rotatedAnchors[i];
+
+        if (item.from.hit(point, 10)) {
+          point.x = item.from.x;
+          point.y = item.from.y;
+          this.hoverLayer.dockAnchor = item.from;
           break;
+        }
+
+        if (item.to.hit(point, 10)) {
+          point.x = item.to.x;
+          point.y = item.to.y;
+          this.hoverLayer.dockAnchor = item.to;
+          break;
+        }
+
+        if (item.controlPoints) {
+          for (const cp of item.controlPoints) {
+            if (cp.hit(point, 10)) {
+              point.x = cp.x;
+              point.y = cp.y;
+              this.hoverLayer.dockAnchor = cp;
+              break;
+            }
+          }
         }
       }
 
-      if (point.id) {
+      if (this.hoverLayer.dockAnchor) {
         break;
       }
     }

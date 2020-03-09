@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChange } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 
 import { Node } from 'topology-core/models/node';
 import { Props } from './props.model';
@@ -418,8 +418,8 @@ export class PropsComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(changes: { [propertyName: string]: SimpleChange; }) {
-    if (changes['props']) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.props) {
       this.ngOnInit();
     }
   }

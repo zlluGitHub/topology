@@ -6,3 +6,37 @@
   <div class="item" [class.active]="tab===1" (click)="tab=1">系统组件</div>
   <div class="item" [class.active]="tab===2" (click)="tab=2">我的组件</div>
 </div>
+<div *ngIf="tab===1" class="tools">
+  <div *ngFor="let item of systemTools">
+    <div class="group" (click)="item.expand=!item.expand">
+      <i class="iconfont icon-cube mr5"></i>
+      <span class="full">{{ item.name }}</span>
+      <i *ngIf="item.expand" class="iconfont icon-angle-down"></i>
+      <i *ngIf="!item.expand" class="iconfont icon-angle-right"></i>
+    </div>
+    <div class="buttons" *ngIf="item.expand">
+      <ng-container *ngFor="let button of item.list">
+        <i *ngIf="!item.hidden" class="{{ button.icon }}" [title]="button.name" [draggable]="button.data"
+          (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
+        </i>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div *ngIf="tab===2" class="tools">
+  <div *ngFor="let item of userTools">
+    <div class="group" (click)="item.expand=!item.expand">
+      <i class="iconfont icon-cube mr5"></i>
+      <span class="full">{{ item.name }}</span>
+      <i *ngIf="item.expand" class="iconfont icon-angle-down"></i>
+      <i *ngIf="!item.expand" class="iconfont icon-angle-right"></i>
+    </div>
+    <div class="buttons" *ngIf="item.expand">
+      <ng-container *ngFor="let button of item.list">
+        <i *ngIf="!item.hidden" class="{{ button.icon }}" [title]="button.name" [draggable]="button.data"
+          (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
+        </i>
+      </ng-container>
+    </div>
+  </div>
+</div>

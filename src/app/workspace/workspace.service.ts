@@ -1,10 +1,23 @@
 import { Injectable } from '@angular/core';
+import { register as registerFlow } from 'topology-flow-diagram';
+import { register as registerActivity } from 'topology-activity-diagram';
+import { register as registerClass } from 'topology-class-diagram';
+import { register as registerSequence } from 'topology-sequence-diagram';
+import { register as registerChart } from 'topology-chart-diagram';
 
 import { HttpService } from 'src/app/http/http.service';
 
 @Injectable()
 export class WorkspaceService {
   constructor(protected http: HttpService) { }
+
+  canvasRegister() {
+    registerFlow();
+    registerActivity();
+    registerClass();
+    registerSequence();
+    registerChart();
+  }
 
   async Get(data: any) {
     const ret = await this.http.QueryString({ version: data.version }).Get('/api/topology/' + data.id);

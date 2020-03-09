@@ -39,22 +39,16 @@ export class HoverLayer {
     }
   }
 
-  setLine(from: Point, fromArrow = '', lineName = 'curve') {
-    this.line = new Line();
-    this.line.strokeStyle = this.options.color;
-    this.line.name = lineName;
-    this.line.setFrom(from, fromArrow);
-  }
-
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
     if (!this.line || this.line.locked) {
       return;
     }
     this.line.setTo(to, toArrow);
-    if (this.line.from || this.line.to) {
+    if (this.line.from.id || this.line.to.id) {
       this.line.calcControlPoints();
-      Store.set('LT:updateLines', [this.line]);
     }
+    Store.set('pts-' + this.line.id, null);
+    Store.set('LT:updateLines', [this.line]);
   }
 
   lineFrom(from: Point) {
@@ -63,10 +57,11 @@ export class HoverLayer {
     }
 
     this.line.setFrom(from, this.line.fromArrow);
-    if (this.line.from || this.line.to) {
+    if (this.line.from.id || this.line.to.id) {
       this.line.calcControlPoints();
-      Store.set('LT:updateLines', [this.line]);
     }
+    Store.set('pts-' + this.line.id, null);
+    Store.set('LT:updateLines', [this.line]);
   }
 
   lineMove(pt: Point, initPos: { x: number; y: number; }) {
@@ -77,16 +72,11 @@ export class HoverLayer {
     const y = pt.y - initPos.y;
     this.line.setTo(new Point(this.initLine.to.x + x, this.initLine.to.y + y), this.line.toArrow);
     this.line.setFrom(new Point(this.initLine.from.x + x, this.initLine.from.y + y), this.line.fromArrow);
-    if (this.line.from.id || this.line.to.id) {
-      this.line.calcControlPoints();
-    } else {
-      for (let i = 0; i < this.initLine.controlPoints.length; ++i) {
-        this.line.controlPoints[i].x = this.initLine.controlPoints[i].x + x;
-        this.line.controlPoints[i].y = this.initLine.controlPoints[i].y + y;
-      }
-      Store.set('pts-' + this.line.id, null);
+    for (let i = 0; i < this.initLine.controlPoints.length; ++i) {
+      this.line.controlPoints[i].x = this.initLine.controlPoints[i].x + x;
+      this.line.controlPoints[i].y = this.initLine.controlPoints[i].y + y;
     }
-
+    Store.set('pts-' + this.line.id, null);
     Store.set('LT:updateLines', [this.line]);
   }
 

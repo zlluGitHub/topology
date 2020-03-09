@@ -72,11 +72,11 @@ export class Line extends Pen {
         this.borderWidth = json.borderWidth;
       }
       this.animateDotSize = json.animateDotSize || 3;
+      this.manualCps = !!json.manualCps;
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
     }
-    this.manualCps = !!json.manualCps;
 
     const data = Store.get('topology-data');
     this.font.background = data.bkColor || '#fff';
@@ -99,7 +99,7 @@ export class Line extends Pen {
       return;
     }
     this.textRect = null;
-    if (this.to && drawLineFns[this.name]) {
+    if (this.from && this.to && drawLineFns[this.name]) {
       drawLineFns[this.name].controlPointsFn(this);
     }
   }
@@ -239,9 +239,6 @@ export class Line extends Pen {
         center = this.getLineCenter(this.from, this.to);
         break;
       case 'polyline':
-        if (!this.controlPoints || !this.controlPoints.length) {
-          this.calcControlPoints();
-        }
         const i = Math.floor(this.controlPoints.length / 2);
         center = this.getLineCenter(this.controlPoints[i - 1], this.controlPoints[i]);
         break;

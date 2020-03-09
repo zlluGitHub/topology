@@ -501,10 +501,6 @@ export class ActiveLayer {
     }
 
     for (const item of this.lines) {
-      if (!item.to) {
-        continue;
-      }
-
       const tmp = new Line(item);
       if (tmp.lineWidth < 3) {
         const bk = new Line(item);

@@ -60,6 +60,7 @@ import { cubeAnchors } from './nodes/cube.anchor';
 import { cubeIconRect, cubeTextRect } from './nodes/cube.rect';
 import { people } from './nodes/people';
 import { peopleIconRect, peopleTextRect } from './nodes/people.rect';
+import { rectangleIconRect, rectangleTextRect } from './nodes/rectangle.rect';
 
 // Functions of drawing a node.
 export const drawNodeFns: any = {};
@@ -86,8 +87,13 @@ function init() {
   // Div
   drawNodeFns.div = rectangle;
 
+  // Square
+  drawNodeFns.square = rectangle;
+
   // Rectangle
   drawNodeFns.rectangle = rectangle;
+  iconRectFns.rectangle = rectangleIconRect;
+  textRectFns.rectangle = rectangleTextRect;
 
   // Ciricle
   drawNodeFns.circle = circle;

@@ -5,12 +5,10 @@ import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { WorkspaceComponent } from './workspace.component';
 import { PropsComponent } from './props/props.component';
-import { TopologyService } from './topology.service';
 import { ToolsComponent } from './tools/tools.component';
 
 @NgModule({
   imports: [SharedModule, WorkspaceRoutingModule],
-  declarations: [WorkspaceHeaderComponent, WorkspaceComponent, PropsComponent, ContextMenuComponent, ToolsComponent],
-  providers: [TopologyService]
+  declarations: [WorkspaceHeaderComponent, WorkspaceComponent, PropsComponent, ContextMenuComponent, ToolsComponent]
 })
 export class WorkspaceModule { }
