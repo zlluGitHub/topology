@@ -224,35 +224,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           }
         }
         break;
-      case 88:
-        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.canvas.cut();
-        }
-        break;
-      case 67:
-        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.canvas.copy();
-        }
-        break;
-      case 86:
-        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.canvas.paste();
-        }
-        break;
-      case 89:
-        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          this.canvas.redo();
-        }
-        break;
-      case 90:
-        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
-          if (key.shiftKey) {
-            this.canvas.redo();
-          } else {
-            this.canvas.undo();
-          }
-        }
-        break;
     }
 
     if (key.ctrlKey && key.keyCode === 83) {
@@ -275,6 +246,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     };
     Store.set('file', this.data);
     this.canvas.open(this.data.data);
+    this.router.navigateByUrl('/workspace');
   }
 
   async onOpen(data: { id: string; version?: string; }) {

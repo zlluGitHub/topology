@@ -1,6 +1,6 @@
 import { Store, Observer } from 'le5le-store';
 
-import { Options, KeyType } from './options';
+import { Options, KeyType, KeydownType } from './options';
 import { Pen } from './models/pen';
 import { Node, images } from './models/node';
 import { Point } from './models/point';
@@ -145,6 +145,10 @@ export class Topology {
       this.options.maxScale = 5;
     }
 
+    if (!this.options.keydown) {
+      this.options.keydown = KeydownType.Document;
+    }
+
     if (typeof parent === 'string') {
       this.parentElem = document.getElementById(parent);
     } else {
@@ -210,7 +214,6 @@ export class Topology {
     this.divLayer.canvas.onmouseup = this.onmouseup;
     this.divLayer.canvas.ondblclick = this.ondblclick;
     this.divLayer.canvas.tabIndex = 0;
-    this.divLayer.canvas.onkeydown = this.onkeydown;
     this.divLayer.canvas.onblur = () => {
       this.mouseDown = null;
     };
@@ -257,6 +260,15 @@ export class Topology {
     this.divLayer.canvas.ontouchend = event => {
       this.ontouched(event);
     };
+
+    switch (this.options.keydown) {
+      case KeydownType.Document:
+        document.onkeydown = this.onkeydown;
+        break;
+      case KeydownType.Canvas:
+        this.divLayer.canvas.onkeydown = this.onkeydown;
+        break;
+    }
 
     this.input.style.position = 'absolute';
     this.input.style.zIndex = '-1';
@@ -925,7 +937,7 @@ export class Topology {
   };
 
   private onkeydown = (key: KeyboardEvent) => {
-    if (this.data.locked) {
+    if (this.data.locked || (key.target as HTMLElement).tagName === 'INPUT') {
       return;
     }
 
@@ -974,6 +986,33 @@ export class Topology {
           moveY = 1;
         }
         done = true;
+        break;
+      case 88:
+        if (key.ctrlKey) {
+          this.cut();
+        }
+        break;
+      case 67:
+        if (key.ctrlKey) {
+          this.copy();
+        }
+        break;
+      case 86:
+        if (key.ctrlKey) {
+          this.paste();
+        }
+        break;
+      case 89: // Y
+        if (key.ctrlKey) {
+          this.redo();
+        }
+        break;
+      case 90: // Z
+        if (key.shiftKey) {
+          this.redo();
+        } else {
+          this.undo();
+        }
         break;
     }
 
@@ -1266,10 +1305,8 @@ export class Topology {
         }
       }
       if (item instanceof Line) {
-        if (rect.hitByRect(item.rect)) {
-          if (rect.hit(item.from) && rect.hit(item.to)) {
-            this.activeLayer.addLine(item);
-          }
+        if (rect.hit(item.from) && rect.hit(item.to)) {
+          this.activeLayer.addLine(item);
         }
       }
     }

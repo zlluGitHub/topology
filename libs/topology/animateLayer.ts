@@ -12,7 +12,7 @@ export class AnimateLayer {
 
   private timer: any;
   private lastNow = 0;
-  private subcribeUpdate;
+  private subscribeUpdate: any;
   constructor(public options: Options = {}) {
     Store.set('LT:AnimateLayer', this);
 
@@ -20,7 +20,7 @@ export class AnimateLayer {
       this.options.animateColor = '#ff6600';
     }
 
-    this.subcribeUpdate = Store.subscribe('LT:updateLines', (lines: Line[]) => {
+    this.subscribeUpdate = Store.subscribe('LT:updateLines', (lines: Line[]) => {
       this.updateLines(lines);
     });
   }
@@ -150,6 +150,6 @@ export class AnimateLayer {
 
   destroy() {
     this.stop();
-    this.subcribeUpdate.unsubcribe();
+    this.subscribeUpdate.unsubscribe();
   }
 }

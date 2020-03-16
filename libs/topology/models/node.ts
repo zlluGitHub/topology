@@ -226,7 +226,7 @@ export class Node extends Pen {
     }
 
     this.calcAnchors();
-
+    this.elementRendered = false;
     this.addToDiv();
   }
 
@@ -417,8 +417,10 @@ export class Node extends Pen {
       return;
     }
 
+    const gif = this.image.indexOf('.gif') > 0;
+
     // Load image and draw it.
-    if (images[this.image]) {
+    if (!gif && images[this.image]) {
       this.img = images[this.image].img;
       ++images[this.image].cnt;
 
@@ -429,24 +431,23 @@ export class Node extends Pen {
       return;
     }
 
-    this.img = new Image();
-    images[this.image] = {
-      img: this.img,
-      cnt: 1
-    };
-    this.img.crossOrigin = 'anonymous';
-    this.img.src = this.image;
-    if (!this.gif && this.image.indexOf('.gif') > 0) {
-      this.gif = true;
-      Store.set('LT:addDiv', this);
-    }
-    this.img.onload = () => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = this.image;
+    img.onload = () => {
       this.lastImage = this.image;
-      this.imgNaturalWidth = this.img.naturalWidth;
-      this.imgNaturalHeight = this.img.naturalHeight;
-      // this.drawImg(ctx);
-
+      this.imgNaturalWidth = img.naturalWidth;
+      this.imgNaturalHeight = img.naturalHeight;
+      this.img = img;
+      images[this.image] = {
+        img,
+        cnt: 1
+      };
       Store.set('LT:imageLoaded', true);
+      if (!this.gif && gif) {
+        this.gif = true;
+        Store.set('LT:addDiv', this);
+      }
     };
   }
 

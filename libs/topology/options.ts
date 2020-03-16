@@ -1,9 +1,15 @@
 export enum KeyType {
+  None = -1,
   CtrlOrAlt,
-  None,
   Ctrl,
   Shift,
   Alt
+}
+
+export enum KeydownType {
+  None = -1,
+  Document,
+  Canvas,
 }
 
 export interface Options {
@@ -37,5 +43,6 @@ export interface Options {
   scaleKey?: KeyType;
   minScale?: number;
   maxScale?: number;
+  keydown?: KeydownType;
   on?: (event: string, data: any) => void;
 }
