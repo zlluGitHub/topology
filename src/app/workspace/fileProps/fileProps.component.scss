@@ -1,0 +1,23 @@
+@import "src/variables";
+@import "~le5le-ui/variables";
+
+.title,
+.popup-title {
+  padding: 0.05rem 0.15rem;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+
+  input {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    color: $color-title;
+    font-weight: 600;
+    font-size: $font-size;
+  }
+
+  i {
+    font-size: $font-size;
+    color: $color;
+  }
+}

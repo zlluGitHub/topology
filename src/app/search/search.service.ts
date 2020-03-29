@@ -9,7 +9,7 @@ export class SearchService {
 
   Classes() {
     return [{
-      name: '架构图',
+      name: '架构拓扑图',
     }, {
       name: 'UML图',
     }, {

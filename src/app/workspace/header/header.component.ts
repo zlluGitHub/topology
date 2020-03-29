@@ -79,7 +79,7 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
       url: 'https://github.com/le5le-com/topology/releases'
     }, {
       name: '技术交流群',
-      url: 'http://topology.le5le.com/assets/img/topology_wechat.jpg'
+      url: 'https://www.yuque.com/alsmile/topology/aboutus#FRK4N'
     }]
   }, {
     name: '帮助',
@@ -93,7 +93,7 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
       name: '许可与申明',
       dialog: 'license'
     }, {
-      name: '合作支持',
+      name: '服务与合作',
       url: 'https://www.yuque.com/alsmile/topology/aboutus#gWc5X'
     }, {}, {
       name: '关于我们',

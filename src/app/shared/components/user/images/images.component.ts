@@ -25,7 +25,7 @@ export class UserImagesComponent implements OnInit {
     const input = document.createElement('input');
     input.type = 'file';
     input.onchange = async event => {
-      const elem: any = event.srcElement || event.target;
+      const elem: any = event.target;
       if (elem.files && elem.files[0]) {
         const file = await this.service.Upload(elem.files[0], elem.files[0].name);
         if (!file) {

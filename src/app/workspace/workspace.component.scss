@@ -64,12 +64,24 @@ app-workspace-header {
 }
 
 .full {
+  position: relative;
   flex: 1;
   width: 100%;
   height: 100%;
   background: #fff;
   overflow-x: auto;
-  top: -2px;
+
+  & > div {
+    min-height: 100%;
+  }
+
+  svg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
 }
 
 .props {
@@ -79,15 +91,14 @@ app-workspace-header {
   position: relative;
   background-color: #f8f8fa;
   padding-right: 0.06rem;
+  overflow-x: hidden;
 
   & > div {
-    width: 2.33rem;
-  }
+    width: 2.35rem;
 
-  .title,
-  .popup-title {
-    padding: 0.05rem 0.15rem;
-    border-bottom: 1px solid #ccc;
-    display: flex;
+    & > * {
+      display: block;
+      width: 2.4rem;
+    }
   }
 }

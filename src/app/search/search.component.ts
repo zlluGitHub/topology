@@ -31,6 +31,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   loading = true;
 
   subRoute: any;
+  subConfigs: any;
   constructor(
     private service: SearchService,
     private router: Router,
@@ -46,6 +47,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.search.c = params.get('c') || '';
       this.search.q = params.get('q') || '';
       this.list(1);
+    });
+
+    this.subConfigs = Store.subscribe('app-configs', () => {
+      this.classes = Store.get('app-classes');
     });
 
     this.classes = this.service.Classes();
@@ -118,5 +123,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subRoute.unsubscribe();
+    this.subConfigs.unsubscribe();
   }
 }

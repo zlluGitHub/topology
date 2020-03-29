@@ -12,6 +12,10 @@ export class Rect {
     if (height < 0) {
       height = 0;
     }
+    this.init();
+  }
+
+  init() {
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
     this.calceCenter();
@@ -22,9 +26,7 @@ export class Rect {
     this.y |= 0;
     this.width |= 0;
     this.height |= 0;
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 
   round() {
@@ -32,9 +34,7 @@ export class Rect {
     this.y = Math.round(this.y);
     this.width = Math.round(this.width);
     this.height = Math.round(this.height);
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 
   clone(): Rect {
@@ -98,8 +98,6 @@ export class Rect {
     this.y = center.y - (center.y - this.y) * scaleY;
     this.width *= scale;
     this.height *= scaleY;
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 }

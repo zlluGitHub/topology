@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -14,6 +14,8 @@ import { ToolsService } from './tools.service';
   providers: [ToolsService]
 })
 export class ToolsComponent implements OnInit, OnDestroy {
+  @Output() edit = new EventEmitter<any>();
+
   search = '';
   tab = 1;
 
@@ -117,11 +119,20 @@ export class ToolsComponent implements OnInit, OnDestroy {
   }
 
   onDrag(event: DragEvent, node: any) {
-    event.dataTransfer.setData('Text', JSON.stringify(node.data));
+    if (node) {
+      event.dataTransfer.setData('Text', JSON.stringify(node.data));
+    }
   }
 
   onTouchstart(item: any) {
     // this.canvas.touchedNode = item.data;
+  }
+
+  onEditComponent(name: string, id: string = '') {
+    this.edit.emit({
+      id,
+      name
+    });
   }
 
   ngOnDestroy() {

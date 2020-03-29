@@ -14,7 +14,7 @@ export class ToolsService {
     }
 
     for (const item of ret) {
-      item.py = this.coreService.getPinyin(item.name);
+      item.py = this.coreService.getPinyin(item.name, true);
     }
 
     return ret;

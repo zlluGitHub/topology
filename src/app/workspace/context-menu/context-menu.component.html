@@ -10,24 +10,24 @@
     </a>
   </div>
   <div class="line"></div>
-  <div *ngIf="!selections || selections.length > 1 || !selections[0].children || !selections[0].children.length">
-    <a [class.disabled]=" !selections || selections.length < 2" (click)="onCombine()">
+  <div *ngIf="selection && selection.pens && selection.pens.length > 1">
+    <a (click)="onCombine()">
       组合
     </a>
   </div>
-  <div *ngIf="selections && selections.length === 1 && selections[0].children && selections[0].children.length">
+  <div *ngIf="selection && selection.pen && selection.pen.children">
     <a (click)="onUncombine()">
       取消组合
     </a>
   </div>
   <div>
-    <a [class.disabled]="!selections && !selected" (click)="onLock()">
+    <a [class.disabled]="!selection" (click)="onLock()">
       {{ locked ? '解锁' : '锁定' }}
     </a>
   </div>
   <div class="line"></div>
   <div>
-    <a [class.disabled]="!selections" (click)="onDel()">
+    <a [class.disabled]="!selection" (click)="onDel()">
       删除
     </a>
   </div>
@@ -40,7 +40,7 @@
   </div>
   <div>
     <a (click)="canvas.redo()">
-      恢复
+      重做
       <span class="ml50">Ctrl + Shift+ Z</span>
     </a>
   </div>
@@ -65,8 +65,7 @@
   </div>
   <div class="line"></div>
   <div>
-    <a [class.disabled]="!selections || selections.length > 1 || !selections[0].image" (click)="onCopyImage()"
-      class="flex">
+    <a [class.disabled]="!selection || !selection.pen || !selection.pen.image" (click)="onCopyImage()" class="flex">
       <span class="full">复制节点图片地址</span>
     </a>
   </div>

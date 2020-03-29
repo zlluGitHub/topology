@@ -474,7 +474,7 @@ export class CoreService {
     return n[1] ? n : '0' + n;
   }
 
-  getPinyin(chinese) {
+  getPinyin(chinese: string, short = false) {
     if (!chinese || /^ +$/g.test(chinese)) {
       return '';
     }
@@ -487,7 +487,11 @@ export class CoreService {
       if (pinyin) {
         // tslint:disable-next-line:no-unused-expression
         noChinese && (result.push(noChinese), (noChinese = ''));
-        result.push(pinyin);
+        if (short) {
+          result.push(pinyin[0]);
+        } else {
+          result.push(pinyin);
+        }
       } else if (!temp || /^ +$/g.test(temp)) {
         // tslint:disable-next-line:no-unused-expression
         noChinese && (result.push(noChinese), (noChinese = ''));
@@ -519,7 +523,7 @@ export class CoreService {
     return '';
   }
 
-  saveToken(data: { token: string }) {
+  saveToken(data: { token: string; }) {
     const options: any = {
       domain: document.domain
         .split('.')

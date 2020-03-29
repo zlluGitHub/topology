@@ -12,6 +12,9 @@ export class TopologyData {
   locked = Lock.None;
   bkImage: string;
   bkColor: string;
+  component: boolean;
+  class: string;
+  data?: any;
   constructor(json?: any) {
     if (json) {
       this.pens = [];

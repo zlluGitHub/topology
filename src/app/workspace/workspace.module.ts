@@ -4,11 +4,19 @@ import { WorkspaceHeaderComponent } from './header/header.component';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { WorkspaceComponent } from './workspace.component';
-import { PropsComponent } from './props/props.component';
+import { FilePropsComponent } from './fileProps/fileProps.component';
+import { PenPropsComponent } from './penProps/penProps.component';
 import { ToolsComponent } from './tools/tools.component';
 
 @NgModule({
   imports: [SharedModule, WorkspaceRoutingModule],
-  declarations: [WorkspaceHeaderComponent, WorkspaceComponent, PropsComponent, ContextMenuComponent, ToolsComponent]
+  declarations: [
+    WorkspaceHeaderComponent,
+    WorkspaceComponent,
+    FilePropsComponent,
+    PenPropsComponent,
+    ContextMenuComponent,
+    ToolsComponent,
+  ]
 })
 export class WorkspaceModule { }

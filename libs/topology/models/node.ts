@@ -268,7 +268,7 @@ export class Node extends Pen {
     for (let i = 0; i < children.length; ++i) {
       const child = new Node(children[i]);
       child.parentId = this.id;
-      child.calcChildRect(this);
+      child.calcRectByParent(this);
       child.init();
       child.setChild(children[i].children);
       this.children.push(child);
@@ -492,7 +492,7 @@ export class Node extends Pen {
 
 
   // 根据父节点rect计算自己（子节点）的rect
-  calcChildRect(parent: Node) {
+  calcRectByParent(parent: Node) {
     if (!this.rectInParent) {
       return;
     }
@@ -527,6 +527,17 @@ export class Node extends Pen {
 
     if (!this.rectInParent.rect) {
       this.rectInParent.rect = this.rect.clone();
+    }
+  }
+
+  clacChildrenRect() {
+    if (!this.children) {
+      return;
+    }
+    for (const item of this.children) {
+      item.calcRectByParent(this);
+      item.init();
+      item.clacChildrenRect();
     }
   }
 
@@ -731,6 +742,17 @@ export class Node extends Pen {
     if (this.children) {
       for (const item of this.children) {
         item.translate(x, y);
+      }
+    }
+  }
+
+  initRect() {
+    this.rect.init();
+    if (this.children) {
+      for (const item of this.children) {
+        if (item instanceof Node) {
+          item.initRect();
+        }
       }
     }
   }

@@ -7,7 +7,7 @@
   </button>
 </div>
 <div class="flex wrap">
-  <div class="image blank" [class.active]="!image" (click)="onClickImage({})" title="空白"></div>
+  <div class="image text" [class.active]="!image" (click)="onClickImage({})">空</div>
   <div class="image" *ngFor="let item of images; let i = index" [class.active]="item.image === image"
     (click)="onClickImage(item)">
     <img [uiImageLazyLoad]="item.image" [parentDom]="el.nativeElement" />

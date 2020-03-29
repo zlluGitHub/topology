@@ -273,6 +273,14 @@ color-picker {
   .input.color & {
     left: -0.43rem;
   }
+
+  .input.color.right & {
+    left: -1.5rem;
+  }
+
+  .input-line .input.color & {
+    left: -1.04rem;
+  }
 }
 
 .topos {

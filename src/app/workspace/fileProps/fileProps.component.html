@@ -1,0 +1,37 @@
+<div class="title">项目设置</div>
+<div class="ph15 pv10">
+  <div class="flex middle mb10">
+    <label>文件名称：</label>
+    <div class="full pr10">
+      <input class="input" style="width:1.5rem" [(ngModel)]="data.name">
+    </div>
+  </div>
+
+  <div class="flex middle mb10">
+    <label>文件类型：</label>
+    <span class="label" style="background-color: #f3f3f3;">{{data.component? '组件' : '图文'}}</span>
+  </div>
+</div>
+
+<div class="title mt10">布局</div>
+<div class="ph15 pv5">
+  <i class="iconfont icon-tiled hover pointer" title="自动布局"></i>
+</div>
+
+<div class="title mt20">网格</div>
+<div class="ph15 pv5">
+  <i class="iconfont icon-grid hover pointer" [class.primary]="gridSize" (click)="onGrid()" title="显示网格"></i>
+</div>
+
+<div class="abs" style="bottom:0">
+  <div class="title mt30">
+    小提示
+  </div>
+  <ul class="ml30 mb20 mt10">
+    <li>方向键：控制节点移动5个像素</li>
+    <li>Ctrl + 方向键：控制节点移动1个像素</li>
+    <li>Ctrl + 鼠标移动：移动整个画布</li>
+    <li>Ctrl + 鼠标滚轮：缩放</li>
+    <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
+  </ul>
+</div>

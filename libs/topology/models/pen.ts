@@ -181,7 +181,7 @@ export abstract class Pen {
   }
 
   hit(point: Point, padding = 0) {
-    if (!this.rotate) {
+    if (this.rotate % 360 === 0) {
       return this.rect.hit(point, padding);
     }
 

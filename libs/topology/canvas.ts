@@ -17,24 +17,14 @@ export class Canvas {
     this.canvas.style.outline = 'none';
 
     if (!Canvas.dpiRatio) {
-      const ctx = this.canvas.getContext('2d');
-      const bsr =
-        ctx['webkitBackingStorePixelRatio'] ||
-        ctx['mozBackingStorePixelRatio'] ||
-        ctx['msBackingStorePixelRatio'] ||
-        ctx['oBackingStorePixelRatio'] ||
-        ctx['backingStorePixelRatio'] ||
-        1;
-
       if (!options.extDpiRatio && options.extDpiRatio !== 0) {
         options.extDpiRatio = 0.25;
       }
-
-      Canvas.dpiRatio = window.devicePixelRatio / bsr + options.extDpiRatio;
+      Canvas.dpiRatio = window.devicePixelRatio + options.extDpiRatio;
     }
   }
 
-  resize(size?: { width: number; height: number }) {
+  resize(size?: { width: number; height: number; }) {
     if (size) {
       this.width = size.width | 0;
       this.height = size.height | 0;

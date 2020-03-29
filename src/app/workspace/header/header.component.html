@@ -173,7 +173,7 @@
           cpDialogDisplay="inline" cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
           (colorPickerChange)="onMenu('render')"></div>
         <app-user-images class="block p10" *ngIf="bkTab===2" [(image)]="data.bkImage" (imageChange)="onMenu('drawBk')"
-          style="width: 3.46rem;height: 4rem;overflow: auto;"></app-user-images>
+          style="width: 3.1rem;height: 4rem;overflow: auto;"></app-user-images>
       </div>
     </div>
     <div class="separator"></div>
@@ -236,7 +236,7 @@
     </div>
   </div>
   <div class="separator"></div>
-  <app-user class="header-small " [transparent]="false"></app-user>
+  <app-user class="header-small" [transparent]="false"></app-user>
 </div>
 <div class="modal" *ngIf="dialogs.license">
   <div class="modal-content">

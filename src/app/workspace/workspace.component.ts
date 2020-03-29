@@ -1,19 +1,20 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { Topology } from 'topology-core';
 import { Options } from 'topology-core/options';
 
+
+import { Pen } from 'topology-core/models/pen';
+
 import * as FileSaver from 'file-saver';
 import { Store } from 'le5le-store';
 import { NoticeService } from 'le5le-components/notice';
 
 import { WorkspaceService } from './workspace.service';
-import { Props } from './props/props.model';
 import { environment } from 'src/environments/environment';
 import { CoreService } from '../core/core.service';
-import { Tools } from './tools/config';
 
 declare var C2S: any;
 declare var JSZip: any;
@@ -22,21 +23,19 @@ declare var JSZip: any;
   selector: 'app-workspace',
   templateUrl: 'workspace.component.html',
   styleUrls: ['./workspace.component.scss'],
-  providers: [WorkspaceService],
-  // tslint:disable-next-line:use-host-property-decorator
-  host: {
-    '(document:keydown)': 'onkeyDocument($event)',
-    '(document:click)': 'onClickDocument($event)'
-  }
+  providers: [WorkspaceService]
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('workspace', { static: true }) workspace: ElementRef;
-  tools: any[] = Tools;
+  tools: any[] = [];
   canvas: Topology;
   canvasOptions: Options = {};
-  selected: Props;
+  selection: {
+    pen?: Pen;
+    pens?: Pen[];
+  };
 
-  data = {
+  data: any = {
     id: '',
     version: '',
     data: { pens: [] },
@@ -44,10 +43,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     desc: '',
     image: '',
     userId: '',
+    class: '',
+    component: false,
     shared: false
   };
   icons: { icon: string; iconFamily: string; }[] = [];
-  readonly = false;
 
   user: any;
   subUser: any;
@@ -55,12 +55,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   mouseMoving = false;
 
   contextmenu: any;
-  selections: any;
   locked = false;
 
   editFilename = false;
 
   divNode: any;
+
+  gridSize = 0;
+  canvasHeight = 0;
 
   subRoute: any;
   constructor(
@@ -97,10 +99,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
             desc: '',
             image: '',
             userId: '',
+            class: '',
+            component: false,
             shared: false
           };
         }
       });
+
+      this.canvasHeight = this.canvas.canvas.height;
       // For debug
       (window as any).canvas = this.canvas;
       // End
@@ -120,15 +126,13 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         break;
       case 'open':
         setTimeout(() => {
-          this.selected = null;
+          this.selection = null;
         });
-        if (!this.data.id) {
-          this.onNew();
-        }
-        this.onOpenLocal();
+        this.onNew();
+        this.onOpenFile();
         break;
       case 'load':
-        this.onOpenZip();
+        this.onOpenFile();
         break;
       case 'save':
         this.save();
@@ -138,7 +142,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         this.save();
         break;
       case 'downJson':
-        this.onSaveLocal();
+        this.onSaveJson();
         break;
       case 'downZip':
         this.onSaveZip();
@@ -187,50 +191,77 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('document:keydown', ['$event'])
   onkeyDocument(key: KeyboardEvent) {
-    switch (key.keyCode) {
-      case 79:
+    let prevent = false;
+    switch (key.key) {
+      case 'n':
+      case 'N':
         if (key.ctrlKey) {
           setTimeout(() => {
-            this.selected = null;
+            this.selection = null;
           });
-          if (!this.data.id) {
-            this.onNew();
-          }
-          this.onOpenLocal();
+          this.onNew();
         }
+        prevent = true;
         break;
-      case 73:
+      case 'o':
+      case 'O':
         if (key.ctrlKey) {
           setTimeout(() => {
-            this.selected = null;
+            this.selection = null;
           });
-          if (key.shiftKey) {
-            this.onOpenZip();
-          } else {
-            this.onOpenLocal();
-          }
+          this.onNew();
+          this.onOpenFile();
         }
+        prevent = true;
         break;
-      case 83:
+      case 'i':
+      case 'I':
+        if (key.ctrlKey) {
+          this.onOpenFile();
+        }
+        prevent = true;
+        break;
+      case 's':
+      case 'S':
         if (key.ctrlKey) {
           if (key.shiftKey) {
             this.data.id = '';
-            this.save();
-          } else if (key.altKey) {
-            this.onSaveLocal();
-          } else {
-            this.save();
           }
+          this.save();
         }
+        prevent = true;
         break;
     }
 
-    if (key.ctrlKey && key.keyCode === 83) {
+    if (prevent) {
       key.preventDefault();
       key.returnValue = false;
       return false;
     }
+  }
+
+  onEditTool(tool: { id?: string; name: string; }) {
+    console.log(tool);
+    this.data = {
+      id: '',
+      version: '',
+      data: { pens: [] },
+      name: '新组件',
+      desc: '',
+      image: '',
+      userId: '',
+      class: tool.name,
+      component: true,
+      shared: false
+    };
+    if (tool.id) {
+
+    }
+
+    this.canvas.open(this.data.data);
+    this.router.navigateByUrl(`/workspace?id=${this.data.id}&class=${tool.name}`);
   }
 
   onNew() {
@@ -242,6 +273,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       desc: '',
       image: '',
       userId: '',
+      class: '',
+      component: false,
       shared: false
     };
     Store.set('file', this.data);
@@ -278,47 +311,58 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     Store.set('file', this.data);
   }
 
-  onOpenLocal() {
+  onOpenFile() {
     const input = document.createElement('input');
     input.type = 'file';
     input.onchange = event => {
-      const elem: any = event.srcElement || event.target;
+      const elem: any = event.target;
       if (elem.files && elem.files[0]) {
-        const name = elem.files[0].name.replace('.json', '');
-        this.data.name = name;
-        Store.set('file', this.data);
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const text = e.target.result + '';
-          try {
-            const data = JSON.parse(text);
-            if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
-              Store.set('lineName', data.lineName);
-              Store.set('fromArrowType', data.fromArrowType);
-              Store.set('toArrowType', data.toArrowType);
-              this.data = {
-                id: '',
-                version: '',
-                data,
-                name: name,
-                desc: '',
-                image: '',
-                userId: '',
-                shared: false
-              };
-              this.canvas.open(data);
-            }
-          } catch (e) {
-            return false;
-          }
-        };
-        reader.readAsText(elem.files[0]);
+        if (elem.files[0].name.indexOf('.json') > 0) {
+          this.openJson(elem.files[0]);
+        } else {
+          this.openZip(elem.files[0]);
+        }
+
       }
     };
     input.click();
   }
 
-  onOpenZip() {
+  openJson(file: any) {
+    const name = file.name.replace('.json', '');
+    this.data.name = name;
+    Store.set('file', this.data);
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const text = e.target.result + '';
+      try {
+        const data = JSON.parse(text);
+        if (data && data.lineName) {
+          Store.set('lineName', data.lineName);
+          Store.set('fromArrowType', data.fromArrowType);
+          Store.set('toArrowType', data.toArrowType);
+          this.data = {
+            id: '',
+            version: '',
+            data,
+            name: name,
+            desc: '',
+            image: '',
+            userId: '',
+            class: '',
+            component: false,
+            shared: false
+          };
+          this.canvas.open(data);
+        }
+      } catch (e) {
+        return false;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  async openZip(file: any) {
     if (!this.user) {
       const _noticeService: NoticeService = new NoticeService();
       _noticeService.notice({
@@ -328,79 +372,73 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = async event => {
-      const elem: any = event.srcElement || event.target;
-      if (elem.files && elem.files[0]) {
-        const zip = new JSZip();
-        await zip.loadAsync(elem.files[0]);
+    const zip = new JSZip();
+    await zip.loadAsync(file);
 
-        let data: any = '';
-        let name = '';
-        for (const key in zip.files) {
-          if (zip.files[key].dir) {
-            continue;
-          }
-          const pos = key.indexOf('.json');
-          if (pos > 0) {
-            name = key;
-            name = name.replace('.json', '');
-            data = await zip.file(key).async('string');
-          }
+    let data: any = '';
+    let name = '';
+    for (const key in zip.files) {
+      if (zip.files[key].dir) {
+        continue;
+      }
+      const pos = key.indexOf('.json');
+      if (pos > 0) {
+        name = key;
+        name = name.replace('.json', '');
+        data = await zip.file(key).async('string');
+      }
+    }
+
+    if (!name || !data) {
+      return false;
+    }
+
+    for (const key in zip.files) {
+      if (zip.files[key].dir) {
+        continue;
+      }
+
+      const pos = key.indexOf('.json');
+      if (pos < 0) {
+        let filename = key.substr(key.lastIndexOf('/') + 1);
+        const extPos = filename.lastIndexOf('.');
+        let ext = '';
+        if (extPos > 0) {
+          ext = filename.substr(extPos);
         }
-
-        if (!name || !data) {
-          return false;
-        }
-
-        for (const key in zip.files) {
-          if (zip.files[key].dir) {
-            continue;
-          }
-
-          const pos = key.indexOf('.json');
-          if (pos < 0) {
-            let filename = key.substr(key.lastIndexOf('/') + 1);
-            const extPos = filename.lastIndexOf('.');
-            let ext = '';
-            if (extPos > 0) {
-              ext = filename.substr(extPos);
-            }
-            filename = filename.substring(0, extPos > 8 ? 8 : extPos);
-            const file = await this.service.Upload(await zip.file(key).async('blob'), true, filename + ext);
-            if (file) {
-              data = data.replace(new RegExp(key, 'gm'), file.url);
-              await this.service.AddImage(file.url);
-            }
-          }
-        }
-
-        try {
-          data = JSON.parse(data);
-          if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
-            Store.set('lineName', data.lineName);
-            Store.set('fromArrowType', data.fromArrowType);
-            Store.set('toArrowType', data.toArrowType);
-            this.data = {
-              id: '',
-              version: '',
-              data,
-              name: name,
-              desc: '',
-              image: '',
-              userId: '',
-              shared: false
-            };
-            this.canvas.open(data);
-            Store.set('file', this.data);
-          }
-        } catch (e) {
-          return false;
+        filename = filename.substring(0, extPos > 8 ? 8 : extPos);
+        const result = await this.service.Upload(await zip.file(key).async('blob'), true, filename + ext);
+        if (result) {
+          data = data.replace(new RegExp(key, 'gm'), result.url);
+          await this.service.AddImage(result.url);
         }
       }
-    };
-    input.click();
+    }
+
+    try {
+      data = JSON.parse(data);
+      if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
+        Store.set('lineName', data.lineName);
+        Store.set('fromArrowType', data.fromArrowType);
+        Store.set('toArrowType', data.toArrowType);
+        this.data = {
+          id: '',
+          version: '',
+          data,
+          name: name,
+          desc: '',
+          image: '',
+          userId: '',
+          class: '',
+          component: false,
+          shared: false
+        };
+        this.canvas.open(data);
+        Store.set('file', this.data);
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
   save() {
@@ -470,7 +508,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSaveLocal() {
+  onSaveJson() {
     if (!this.canvas) {
       return;
     }
@@ -585,59 +623,39 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     switch (event) {
       case 'node':
       case 'addNode':
-        this.selections = [data];
-        this.selected = {
-          type: 'node',
-          data
-        };
-        this.locked = data.locked;
-        this.readonly = this.locked || !!this.canvas.data.locked;
-        break;
       case 'line':
       case 'addLine':
-        this.selections = [data];
-        this.selected = {
-          type: 'line',
-          data
+        this.selection = {
+          pen: data
         };
         this.locked = data.locked;
-        this.readonly = this.locked || !!this.canvas.data.locked;
         break;
       case 'multi':
         this.locked = true;
-        if (data.nodes && data.nodes.length) {
-          this.selections = data.nodes;
-          for (const item of data.nodes) {
+        if (data && data.length) {
+          this.selection = {
+            pens: data
+          };
+          for (const item of data) {
             if (!item.locked) {
               this.locked = false;
               break;
             }
           }
         }
-        if (this.locked && data.lines) {
-          for (const item of data.lines) {
-            if (!item.locked) {
-              this.locked = false;
-              break;
-            }
-          }
-        }
-        this.selected = {
-          type: event,
-          data
-        };
         break;
       case 'space':
-        setTimeout(() => {
-          this.selected = null;
-          this.selections = null;
-        });
+        this.selection = null;
         break;
       case 'moveOut':
         this.workspace.nativeElement.scrollLeft += 10;
         this.workspace.nativeElement.scrollTop += 10;
         break;
       case 'resize':
+        if (data) {
+          this.canvasHeight = data.height;
+        }
+
         if (!this.mouseMoving) {
           this.mouseMoving = true;
           this.workspace.nativeElement.scrollLeft = this.workspace.nativeElement.scrollWidth;
@@ -655,31 +673,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         Store.set('locked', data);
         break;
     }
-    // console.log('onMessage:', event, data, this.selected);
+    // console.log('onMessage:', event, data, this.seected);
   };
-
-  onChangeProps(props: any) {
-    if (this.canvas.data.locked) {
-      return;
-    }
-    switch (props.type) {
-      case 'node':
-      case 'addNode':
-        this.canvas.updateProps(props.data);
-        break;
-      case 'line':
-      case 'addLine':
-        this.canvas.updateProps();
-        break;
-      case 'multi':
-        this.canvas.alignNodes(props.align);
-        break;
-    }
-  }
-
-  onAnimateChange() {
-    this.canvas.animate();
-  }
 
   onSignup() {
     location.href = `${environment.urls.account}?signup=true`;
@@ -706,6 +701,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('document:click', ['$event'])
   onClickDocument(event: MouseEvent) {
     this.contextmenu = null;
   }
