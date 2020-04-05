@@ -61,7 +61,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   divNode: any;
 
-  gridSize = 0;
   canvasHeight = 0;
 
   subRoute: any;
@@ -193,6 +192,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown', ['$event'])
   onkeyDocument(key: KeyboardEvent) {
+    if ((key.target as HTMLElement).tagName === 'INPUT' || (key.target as HTMLElement).tagName === 'TEXTAREA') {
+      return;
+    }
+
     let prevent = false;
     switch (key.key) {
       case 'n':
@@ -243,7 +246,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   onEditTool(tool: { id?: string; name: string; }) {
-    console.log(tool);
     this.data = {
       id: '',
       version: '',

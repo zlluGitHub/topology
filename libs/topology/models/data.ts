@@ -14,6 +14,7 @@ export class TopologyData {
   bkColor: string;
   component: boolean;
   class: string;
+  grid?: boolean;
   data?: any;
   constructor(json?: any) {
     if (json) {
@@ -32,6 +33,13 @@ export class TopologyData {
       this.locked = json.locked || Lock.None;
       this.bkImage = json.bkImage;
       this.bkColor = json.bkColor;
+      this.grid = json.grid;
+
+      if (typeof json.data === 'object') {
+        this.data = JSON.parse(JSON.stringify(json.data));
+      } else {
+        this.data = json.data || '';
+      }
     }
   }
 }

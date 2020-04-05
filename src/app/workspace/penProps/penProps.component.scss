@@ -191,8 +191,16 @@
       font-size: 0.3rem;
     }
   }
+
+  .group {
+    padding: 0 0 0.15rem 0;
+  }
 }
 
 .icon-help-circle {
   font-size: 0.14rem;
+}
+
+ui-switch {
+  height: 0.2rem;
 }

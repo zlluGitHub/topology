@@ -162,20 +162,6 @@
         <i class="iconfont icon-lock"></i>
       </a>
     </div>
-    <div class="item" (mouseenter)="showBk = true" title="背景" (mouseleave)="onLeaveBk()">
-      <a><i class="iconfont icon-bk-color"></i></a>
-      <div class="dropdown" [class.block]="showBk" (click)="$event.stopPropagation()" style="padding-bottom:0">
-        <div class="nav nav-tab">
-          <div class="item" [class.active]="bkTab===1" (click)="bkTab=1">颜色</div>
-          <div class="item" [class.active]="bkTab===2" (click)="bkTab=2">图片</div>
-        </div>
-        <div *ngIf="bkTab===1" [(colorPicker)]="data.bkColor" [style.background]="data.bkColor" [cpToggle]="true"
-          cpDialogDisplay="inline" cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-          (colorPickerChange)="onMenu('render')"></div>
-        <app-user-images class="block p10" *ngIf="bkTab===2" [(image)]="data.bkImage" (imageChange)="onMenu('drawBk')"
-          style="width: 3.1rem;height: 4rem;overflow: auto;"></app-user-images>
-      </div>
-    </div>
     <div class="separator"></div>
     <div class="item lines">
       <a>

@@ -18,7 +18,11 @@ export class Canvas {
 
     if (!Canvas.dpiRatio) {
       if (!options.extDpiRatio && options.extDpiRatio !== 0) {
-        options.extDpiRatio = 0.25;
+        if (window.devicePixelRatio > 1) {
+          options.extDpiRatio = 0.25;
+        } else {
+          options.extDpiRatio = 0;
+        }
       }
       Canvas.dpiRatio = window.devicePixelRatio + options.extDpiRatio;
     }
@@ -37,7 +41,7 @@ export class Canvas {
       if (this.options.height && this.options.height !== 'auto') {
         this.height = +this.options.height;
       } else {
-        this.height = this.parentElem.clientHeight - 8;
+        this.height = this.parentElem.clientHeight;
       }
     }
 

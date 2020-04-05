@@ -14,7 +14,7 @@ import { SelectModule } from 'le5le-components/select';
 import { PaginationModule } from 'le5le-components/pagination';
 import { ProgressModule } from 'le5le-components/progress';
 import { SliderModule } from 'le5le-components/slider';
-// import { SwitchModule } from 'le5le-components/switch';
+import { SwitchModule } from 'le5le-components/switch';
 // import { QrcodeModule } from 'le5le-components/qrcode';
 // import { WizardModule } from 'le5le-components/wizard';
 // import { DatetimeModule } from 'le5le-components/datetime';
@@ -47,7 +47,8 @@ import { UserImagesComponent } from './components/user/images/images.component';
     MoveModule,
     ProgressModule,
     SliderModule,
-    ColorPickerModule
+    ColorPickerModule,
+    SwitchModule
   ],
   declarations: [
     HtmlPipe,
@@ -79,7 +80,8 @@ import { UserImagesComponent } from './components/user/images/images.component';
     MoveModule,
     ProgressModule,
     SliderModule,
-    ColorPickerModule
+    ColorPickerModule,
+    SwitchModule
   ],
   providers: []
 })

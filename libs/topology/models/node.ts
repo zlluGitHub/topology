@@ -671,8 +671,8 @@ export class Node extends Pen {
         }
       }
     }
-    if (rectChanged) {
 
+    if (rectChanged) {
       this.init();
       Store.set('nodeRectChanged', this);
     }

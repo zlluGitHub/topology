@@ -2,6 +2,9 @@ import { s8 } from '../uuid/uuid';
 import { Point } from './point';
 import { Rect } from './rect';
 import { pointInRect } from '../utils';
+import { PenEvent, PenEventType } from './event';
+
+import { Store } from 'le5le-store';
 
 export enum PenType {
   Node,
@@ -47,7 +50,7 @@ export abstract class Pen {
   // animateType仅仅是辅助标识
   animateType: string;
   // Date.getTime
-  animateStart = 0;
+  animateStart: number;
   // Cycle count. Infinite if <= 0.
   animateCycle: number;
   animateCycleIndex = 0;
@@ -58,11 +61,13 @@ export abstract class Pen {
   locked = false;
   hideInput: boolean;
 
-  link: string;
   markdown: string;
   // 外部用于提示的dom id
   tipId: string;
   title: string;
+
+  events: { name: PenEvent; type: PenEventType; value: string; params: string; }[] = [];
+  private eventFns: string[] = ['link', 'doAnimate', 'doFn'];
 
   // User data.
   data: any;
@@ -72,7 +77,7 @@ export abstract class Pen {
     if (json) {
       this.id = json.id || s8();
       this.name = json.name || '';
-      this.tags = json.tags || [];
+      this.tags = Object.assign([], json.tags);
       if (json.rect) {
         this.rect = new Rect(json.rect.x, json.rect.y, json.rect.width, json.rect.height);
       }
@@ -104,7 +109,7 @@ export abstract class Pen {
 
       this.locked = json.locked;
       this.hideInput = json.hideInput;
-      this.link = json.link;
+      this.events = json.events || [];
       this.markdown = json.markdown;
       this.tipId = json.tipId;
       this.title = json.title;
@@ -190,6 +195,49 @@ export abstract class Pen {
       pt.rotate(this.rotate, this.rect.center);
     }
     return pointInRect(point, pts);
+  }
+
+  click() {
+    if (!this.events) {
+      return;
+    }
+
+    for (const item of this.events) {
+      if (item.name !== PenEvent.Click) {
+        continue;
+      }
+
+      this[this.eventFns[item.type]](item.value, item.params);
+    }
+  }
+
+  dblclick() {
+    if (!this.events) {
+      return;
+    }
+
+    for (const item of this.events) {
+      if (item.name !== PenEvent.DblClick) {
+        continue;
+      }
+
+      this[this.eventFns[item.type]](item.value, item.params);
+    }
+  }
+
+  private link(url: string, params: string) {
+    window.open(url, '_blank');
+  }
+
+  private doAnimate(tag: string, params: string) {
+    Store.set('LT:AnimatePlay', {
+      tag,
+      pen: this
+    });
+  }
+
+  private doFn(fn: string, params: string) {
+    (window as any)[fn](params, this);
   }
 
   abstract getTextRect(): Rect;

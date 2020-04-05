@@ -1,5 +1,11 @@
 <div class="title">项目设置</div>
 <div class="ph15 pv10">
+
+  <div class="flex middle mb10">
+    <label>文件类型：</label>
+    <span class="label" style="background-color: #f3f3f3;">{{data.component? '组件' : '图文'}}</span>
+  </div>
+
   <div class="flex middle mb10">
     <label>文件名称：</label>
     <div class="full pr10">
@@ -7,9 +13,42 @@
     </div>
   </div>
 
-  <div class="flex middle mb10">
-    <label>文件类型：</label>
-    <span class="label" style="background-color: #f3f3f3;">{{data.component? '组件' : '图文'}}</span>
+  <div *ngIf="canvas && !data.component">
+    <div class="flex middle mb10 input-line">
+      <label>背景颜色：</label>
+      <div class="input color" [class.readonly]="canvas.data.locked">
+        <i [(colorPicker)]="canvas.data.bkColor" [style.background]="canvas.data.bkColor" cpPosition="bottom"
+          cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
+          (colorPickerChange)="canvas.render()"></i>
+        <input [(ngModel)]="canvas.data.bkColor" [readonly]="canvas.data.locked" (change)="canvas.render()" />
+      </div>
+    </div>
+
+    <div class="flex middle mb10 input-line">
+      <label>背景图片：</label>
+      <div class="pointer icon" (click)="show.imageDlg = true">
+        <img *ngIf="canvas.data.bkImage" [src]="canvas.data.bkImage" style="height: .3rem" />
+        <div *ngIf="!canvas.data.bkImage" class="image-upload">
+          <i class="iconfont icon-add inline"></i>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="show.imageDlg" class="tools">
+      <div class="title flex">
+        <label class="full">选择图片</label>
+        <a (click)="show.imageDlg=false">返回</a>
+      </div>
+      <app-user-images class="block p10" [(image)]="canvas.data.bkImage" (imageChange)="onChangeBkImage()"
+        style="height: calc(100% - .4rem);overflow: auto;">
+      </app-user-images>
+    </div>
+  </div>
+
+  <div *ngIf="canvas" class="flex middle mb10">
+    <label>背景网格：</label>
+    <div (click)="onGrid()">
+      <ui-switch class="inline ml5" [(checked)]="canvas.data.grid" (change)="onGrid()"></ui-switch>
+    </div>
   </div>
 </div>
 
@@ -18,10 +57,6 @@
   <i class="iconfont icon-tiled hover pointer" title="自动布局"></i>
 </div>
 
-<div class="title mt20">网格</div>
-<div class="ph15 pv5">
-  <i class="iconfont icon-grid hover pointer" [class.primary]="gridSize" (click)="onGrid()" title="显示网格"></i>
-</div>
 
 <div class="abs" style="bottom:0">
   <div class="title mt30">

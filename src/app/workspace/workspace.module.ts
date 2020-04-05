@@ -7,6 +7,7 @@ import { WorkspaceComponent } from './workspace.component';
 import { FilePropsComponent } from './fileProps/fileProps.component';
 import { PenPropsComponent } from './penProps/penProps.component';
 import { ToolsComponent } from './tools/tools.component';
+import { PenTreeItemComponent } from './penProps/tree-item/tree-item.component';
 
 @NgModule({
   imports: [SharedModule, WorkspaceRoutingModule],
@@ -17,6 +18,7 @@ import { ToolsComponent } from './tools/tools.component';
     PenPropsComponent,
     ContextMenuComponent,
     ToolsComponent,
+    PenTreeItemComponent,
   ]
 })
 export class WorkspaceModule { }

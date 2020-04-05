@@ -1,8 +1,9 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, HostListener } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChanges, HostListener } from '@angular/core';
 
 import { Topology } from 'topology-core';
 import { Pen } from 'topology-core/models/pen';
 import { Node } from 'topology-core/models/node';
+import { PenEvent, PenEventType } from 'topology-core/models/event';
 import { alignNodes } from 'topology-layout';
 
 import { PenPropsService } from './penProps.service';
@@ -28,6 +29,8 @@ export class PenPropsComponent implements OnInit, OnChanges {
   drowdown = 0;
 
   tag = '';
+  data = '';
+  tree: any[] = [];
 
   fontStyleOptions = {
     id: 'id',
@@ -257,6 +260,42 @@ export class PenPropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
+  eventNames = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: 0,
+        name: '单击'
+      },
+      {
+        id: 1,
+        name: '双击'
+      }
+    ],
+    noDefaultOption: true
+  };
+
+  eventTypes = {
+    id: 'id',
+    name: 'name',
+    list: [
+      {
+        id: 0,
+        name: '打开链接'
+      },
+      {
+        id: 1,
+        name: '执行动画'
+      },
+      {
+        id: 2,
+        name: '执行自定义函数'
+      }
+    ],
+    noDefaultOption: true
+  };
+
   nodesAlgin = ['left', 'right', 'top', 'bottom', 'center', 'middle'];
 
   icons: any[] = [];
@@ -266,8 +305,14 @@ export class PenPropsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.show = {};
     if (this.selection.pen) {
       this.pen = this.selection.pen;
+      if (typeof this.pen.data === 'object') {
+        this.data = JSON.stringify(this.pen.data, null, 2);
+      } else {
+        this.data = this.pen.data + '';
+      }
     } else {
       this.pen = {};
     }
@@ -340,6 +385,16 @@ export class PenPropsComponent implements OnInit, OnChanges {
         item.textMaxLine = this.pen.textMaxLine;
         item.textOffsetX = this.pen.textOffsetX;
         item.textOffsetY = this.pen.textOffsetY;
+      }
+    }
+
+    if (this.selection.pen && this.data) {
+      let obj: any;
+      try {
+        obj = JSON.parse(this.data);
+      } catch (e) { }
+      if (obj) {
+        this.pen.data = obj;
       }
     }
     this.canvas.updateProps();
@@ -676,5 +731,14 @@ export class PenPropsComponent implements OnInit, OnChanges {
   onNodesAlign(align: string) {
     alignNodes(this.canvas.activeLayer.pens, this.canvas.activeLayer.rect, align);
     this.canvas.render();
+    this.canvas.cache();
+  }
+
+  onAddEvent() {
+    this.pen.events.push({
+      name: PenEvent.Click,
+      type: PenEventType.Link,
+      value: ''
+    });
   }
 }

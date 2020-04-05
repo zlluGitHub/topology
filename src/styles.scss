@@ -156,6 +156,7 @@ a:hover {
 
 color-picker {
   position: relative;
+  display: block;
 
   .color-picker {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -269,18 +270,18 @@ color-picker {
     left: -1.5rem;
     top: 0;
   }
+}
 
-  .input.color & {
-    left: -0.43rem;
-  }
+.input.color color-picker {
+  left: -0.43rem;
+}
 
-  .input.color.right & {
-    left: -1.5rem;
-  }
+.input.color.right color-picker {
+  left: -1.5rem;
+}
 
-  .input-line .input.color & {
-    left: -1.04rem;
-  }
+.input-line .input.color color-picker {
+  left: -1.04rem;
 }
 
 .topos {

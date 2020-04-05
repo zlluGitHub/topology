@@ -40,9 +40,6 @@ export class ActiveLayer {
 
   constructor(public options: Options = {}) {
     Store.set('LT:ActiveLayer', this);
-    if (!this.options.activeColor) {
-      this.options.activeColor = '#1890ff';
-    }
   }
 
   calcControlPoints() {

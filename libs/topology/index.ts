@@ -1,6 +1,6 @@
 import { Store, Observer } from 'le5le-store';
 
-import { Options, KeyType, KeydownType } from './options';
+import { Options, KeyType, KeydownType, DefalutOptions } from './options';
 import { Pen, PenType } from './models/pen';
 import { Node, images } from './models/node';
 import { Point } from './models/point';
@@ -97,57 +97,13 @@ export class Topology {
   private scrolling = false;
   constructor(parent: string | HTMLElement, options?: Options) {
     Store.set('topology-data', this.data);
-    this.options = options || {};
 
-    if (!this.options.font) {
-      this.options.font = {
-        color: '#222',
-        fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
-        fontSize: 12,
-        lineHeight: 1.5,
-        textAlign: 'center',
-        textBaseline: 'middle'
-      };
+    if (!options) {
+      options = {};
     }
-
-    if (!this.options.color) {
-      this.options.color = '#222';
-    }
-    if (!this.options.rotateCursor) {
-      this.options.rotateCursor = '/assets/img/rotate.cur';
-    }
-
-    if (!this.options.font.fontFamily) {
-      this.options.font.fontFamily = '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial';
-    }
-
-    if (!this.options.font.color) {
-      this.options.font.color = '#222';
-    }
-    if (!this.options.font.fontSize) {
-      // px
-      this.options.font.fontSize = 12;
-    }
-    if (!this.options.font.lineHeight) {
-      // number
-      this.options.font.lineHeight = 1.5;
-    }
-    if (!this.options.font.textAlign) {
-      this.options.font.textAlign = 'center';
-    }
-    if (!this.options.font.textBaseline) {
-      this.options.font.textBaseline = 'middle';
-    }
-    if (!this.options.minScale) {
-      this.options.minScale = 0.25;
-    }
-    if (!this.options.maxScale) {
-      this.options.maxScale = 5;
-    }
-
-    if (!this.options.keydown) {
-      this.options.keydown = KeydownType.Document;
-    }
+    const font = Object.assign({}, DefalutOptions.font, options.font);
+    options.font = font;
+    this.options = Object.assign({}, DefalutOptions, options);
 
     if (typeof parent === 'string') {
       this.parentElem = document.getElementById(parent);
@@ -186,7 +142,7 @@ export class Topology {
     });
     this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
       if (node.nextPlay) {
-        this.animateLayer.pens.push.apply(this.animateLayer.pens, this.animateLayer.findNext(node.nextPlay));
+        this.animateLayer.pens.push.apply(this.animateLayer.pens, this.animateLayer.readyPlay(node.nextPlay));
         this.animateLayer.animate();
       }
 
@@ -500,9 +456,31 @@ export class Topology {
 
   overflow() {
     const rect = this.getRect();
-    if (rect.ex > this.canvas.width || rect.ey > this.canvas.height) {
-      this.resize({ width: rect.ex + 200, height: rect.ey + 200 });
+    let { width, height } = this.canvas;
+    const { ex, ey } = rect;
+    if (ex > width) {
+      width = ex + 200;
     }
+    if (ey > height) {
+      height = ey + 200;
+    }
+    this.resize({ width, height });
+  }
+
+
+  private setNodeText() {
+    this.inputObj.text = this.input.value;
+    this.input.style.zIndex = '-1';
+    this.input.style.left = '-1000px';
+    this.input.style.width = '0';
+    this.cache();
+    this.offscreen.render();
+
+    if (this.options.on) {
+      this.options.on('setText', this.inputObj);
+    }
+
+    this.inputObj = null;
   }
 
   private onMouseMove = (e: MouseEvent) => {
@@ -721,21 +699,6 @@ export class Topology {
     });
   };
 
-  private setNodeText() {
-    this.inputObj.text = this.input.value;
-    this.input.style.zIndex = '-1';
-    this.input.style.left = '-1000px';
-    this.input.style.width = '0';
-    this.cache();
-    this.offscreen.render();
-
-    if (this.options.on) {
-      this.options.on('setText', this.inputObj);
-    }
-
-    this.inputObj = null;
-  }
-
   private onmousedown = (e: MouseEvent) => {
     this.mouseDown = { x: e.offsetX, y: e.offsetY };
 
@@ -771,8 +734,10 @@ export class Topology {
           if (this.options.on) {
             this.options.on('line', this.moveIn.hoverLine);
           }
+        }
 
-          this.link(this.moveIn.hoverLine);
+        if (this.data.locked) {
+          this.moveIn.hoverLine.click();
         }
 
         break;
@@ -809,9 +774,6 @@ export class Topology {
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.Nodes:
-        if (!e.ctrlKey) {
-          this.link(this.moveIn.hoverNode);
-        }
         if (!this.moveIn.hoverNode) {
           break;
         }
@@ -835,6 +797,10 @@ export class Topology {
           if (this.options.on) {
             this.options.on('node', this.moveIn.hoverNode);
           }
+        }
+
+        if (this.data.locked) {
+          this.moveIn.hoverNode.click();
         }
 
         break;
@@ -913,6 +879,10 @@ export class Topology {
       if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
         this.showInput(this.moveIn.hoverNode);
       }
+
+      if (this.data.locked) {
+        this.moveIn.hoverNode.dblclick();
+      }
     } else if (this.moveIn.hoverLine) {
       if (this.options.on) {
         this.options.on('dblclick', {
@@ -922,6 +892,10 @@ export class Topology {
 
       if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
         this.showInput(this.moveIn.hoverLine);
+      }
+
+      if (this.data.locked) {
+        this.moveIn.hoverNode.dblclick();
       }
     }
   };
@@ -1139,7 +1113,7 @@ export class Topology {
       this.divLayer.canvas.style.cursor = 'move';
 
       // Too small
-      if (node.rect.width < 20 || node.rect.height < 20) {
+      if (this.options.hideAnchor || node.rect.width < 20 || node.rect.height < 20) {
         return node;
       }
 
@@ -1160,10 +1134,11 @@ export class Topology {
       return node;
     }
 
+    if (this.options.hideAnchor || this.data.locked || node.locked) {
+      return null;
+    }
+
     if (node.hit(pt, 5)) {
-      if (this.data.locked || node.locked) {
-        return node;
-      }
       for (let j = 0; j < node.rotatedAnchors.length; ++j) {
         if (node.rotatedAnchors[j].hit(pt, 5)) {
           if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
@@ -1484,12 +1459,20 @@ export class Topology {
     this.options.on('redo', this.data);
   }
 
-  toImage(type?: string, quality?: any, callback?: any): string {
+  toImage(type?: string, quality?: any, callback?: any, padding?: { left: number; top: number; right: number; bottom: number; }): string {
     const rect = this.getRect();
-    rect.x -= 10;
-    rect.y -= 10;
-    rect.width += 20;
-    rect.height += 20;
+    if (!padding) {
+      padding = {
+        left: 10,
+        top: 10,
+        right: 10,
+        bottom: 10
+      };
+    }
+    rect.x -= padding.left;
+    rect.y -= padding.top;
+    rect.width += padding.left + padding.right;
+    rect.height += padding.top + padding.bottom;
     rect.round();
     const srcRect = rect.clone();
     srcRect.scale(this.offscreen.getDpiRatio(), new Point(0, 0));
@@ -1712,16 +1695,8 @@ export class Topology {
     }
   }
 
-  animate(autoplay = true) {
-    const n = Date.now();
-    for (const item of this.data.pens) {
-      if (item.animatePlay) {
-        item.animateStart = autoplay ? n : 0;
-      }
-    }
-    if (autoplay) {
-      this.animateLayer.getPens();
-    }
+  animate(autoplay = false) {
+    this.animateLayer.readyPlay(null, autoplay);
     this.animateLayer.animate();
   }
 
@@ -1939,19 +1914,6 @@ export class Topology {
         item.round();
       }
     }
-  }
-
-  private link(data: Pen) {
-    if (!data || !data.link || !this.data.locked) {
-      return;
-    }
-
-    window.open(data.link, '_blank');
-
-    this.mouseDown = null;
-    setTimeout(() => {
-      this.divLayer.canvas.focus();
-    }, 1000);
   }
 
   private createMarkdownTip() {

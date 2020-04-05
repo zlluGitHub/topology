@@ -33,6 +33,7 @@ export interface Options {
   hideInput?: boolean;
   hideRotateCP?: boolean;
   hideSizeCP?: boolean;
+  hideAnchor?: boolean;
   disableEmptyLine?: boolean;
   disableScale?: boolean;
   playIcon?: string;
@@ -46,3 +47,22 @@ export interface Options {
   keydown?: KeydownType;
   on?: (event: string, data: any) => void;
 }
+
+export const DefalutOptions: Options = {
+  font: {
+    color: '#222',
+    fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
+    fontSize: 12,
+    lineHeight: 1.5,
+    textAlign: 'center',
+    textBaseline: 'middle'
+  },
+  color: '#222',
+  hoverColor: '#fa541c',
+  dragColor: '#1890ff',
+  activeColor: '#1890ff',
+  rotateCursor: '/assets/img/rotate.cur',
+  minScale: 0.25,
+  maxScale: 5,
+  keydown: KeydownType.Document
+};

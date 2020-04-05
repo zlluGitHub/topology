@@ -22,7 +22,6 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
 
   menuClicked = false;
   showFigure = false;
-  showBk = false;
   bkTab = 1;
   recently: any[] = [];
 
@@ -205,12 +204,6 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showFigure = false;
     }, 1000);
-  }
-
-  onLeaveBk() {
-    setTimeout(() => {
-      this.showBk = false;
-    }, 500);
   }
 
   ngOnDestroy() {

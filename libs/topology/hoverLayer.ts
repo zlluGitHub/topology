@@ -29,14 +29,6 @@ export class HoverLayer {
   dragRect: Rect;
   constructor(public options: Options = {}) {
     Store.set('LT:HoverLayer', this);
-
-    if (!this.options.hoverColor) {
-      this.options.hoverColor = '#fa541c';
-    }
-    // The backgournd color of selecting nodes by draging.
-    if (!this.options.dragColor) {
-      this.options.dragColor = '#1890ff';
-    }
   }
 
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
@@ -104,14 +96,16 @@ export class HoverLayer {
         ctx.restore();
       }
 
-      for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
-        if (this.node.locked || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
-          continue;
+      if (!this.options.hideAnchor) {
+        for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
+          if (this.node.locked || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(this.node.rotatedAnchors[i].x, this.node.rotatedAnchors[i].y, this.anchorRadius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
         }
-        ctx.beginPath();
-        ctx.arc(this.node.rotatedAnchors[i].x, this.node.rotatedAnchors[i].y, this.anchorRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
       }
     }
 
