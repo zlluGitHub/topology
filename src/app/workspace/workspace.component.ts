@@ -45,6 +45,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     userId: '',
     class: '',
     component: false,
+    grid: false,
     shared: false
   };
   icons: { icon: string; iconFamily: string; }[] = [];
@@ -256,6 +257,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       userId: '',
       class: tool.name,
       component: true,
+      grid: false,
       shared: false
     };
     if (tool.id) {
@@ -277,6 +279,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       userId: '',
       class: '',
       component: false,
+      grid: false,
       shared: false
     };
     Store.set('file', this.data);
@@ -353,6 +356,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
             userId: '',
             class: '',
             component: false,
+            grid: false,
             shared: false
           };
           this.canvas.open(data);

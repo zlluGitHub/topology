@@ -88,3 +88,15 @@
 ui-switch {
   height: initial;
 }
+
+.flex {
+  & > label {
+    width: 0.6rem;
+  }
+
+  .full {
+    & > .input {
+      width: 1.5rem;
+    }
+  }
+}

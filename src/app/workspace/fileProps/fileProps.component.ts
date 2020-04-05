@@ -13,6 +13,15 @@ export class FilePropsComponent implements OnInit {
 
   @Output() gridChange = new EventEmitter<any>();
 
+  layout = {
+    maxWidth: 1000,
+    nodeWidth: 0,
+    nodeHeight: 0,
+    maxCount: 0,
+    spaceWidth: 30,
+    spaceHeight: 30
+  };
+
   show: any = {};
   cpPresetColors = [
     '#1890ff',
@@ -38,7 +47,6 @@ export class FilePropsComponent implements OnInit {
   }
 
   onGrid() {
-    this.canvas.data.grid = !this.canvas.data.grid;
     this.gridChange.emit(this.canvas.data.grid);
   }
 

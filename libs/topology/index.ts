@@ -443,7 +443,12 @@ export class Topology {
       }
     }
 
-    this.data.data = data.data || {};
+    this.data.grid = data.grid;
+    if (typeof data.data === 'object') {
+      this.data.data = JSON.parse(JSON.stringify(data.data));
+    } else {
+      this.data.data = data.data || '';
+    }
 
     this.caches.list = [];
     this.cache();
@@ -1459,8 +1464,17 @@ export class Topology {
     this.options.on('redo', this.data);
   }
 
-  toImage(type?: string, quality?: any, callback?: any, padding?: { left: number; top: number; right: number; bottom: number; }): string {
-    const rect = this.getRect();
+  toImage(
+    type?: string,
+    quality?: any,
+    callback?: any,
+    padding?: { left: number; top: number; right: number; bottom: number; },
+    thumbnail = true
+  ): string {
+    let rect = new Rect(0, 0, this.canvas.width, this.canvas.height);
+    if (thumbnail) {
+      rect = this.getRect();
+    }
     if (!padding) {
       padding = {
         left: 10,
@@ -1508,10 +1522,16 @@ export class Topology {
     return canvas.toDataURL(type, quality);
   }
 
-  saveAsImage(name?: string, type?: string, quality?: any) {
+  saveAsImage(
+    name?: string,
+    type?: string,
+    quality?: any,
+    padding?: { left: number; top: number; right: number; bottom: number; },
+    thumbnail = true
+  ) {
     const a = document.createElement('a');
     a.setAttribute('download', name || 'le5le.topology.png');
-    a.setAttribute('href', this.toImage(type, quality));
+    a.setAttribute('href', this.toImage(type, quality, null, padding, thumbnail));
     const evt = document.createEvent('MouseEvents');
     evt.initEvent('click', true, true);
     a.dispatchEvent(evt);
