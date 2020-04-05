@@ -1431,6 +1431,31 @@ export class Topology {
     this.caches.index = this.caches.list.length - 1;
   }
 
+  _cache(pens: Pen[]) {
+    if (pens && pens.length) {
+      const needPenMap = {};
+      for (let i = 0, len = pens.length; i < len; i++) {
+        const pen = pens[i];
+        const id = pen.id;
+        if (pen instanceof Node) {
+          needPenMap[id] = new Node(pen);
+        } else if (pen instanceof Line) {
+          needPenMap[id] = new Line(pen);
+        }
+      }
+      const cacheListData: TopologyData = this.caches.list[0];
+      if (!cacheListData) {
+        return;
+      }
+      for (let i = 0, len = cacheListData.pens.length; i < len; i++) {
+        const id = cacheListData.pens[i].id;
+        if (needPenMap[id]) {
+          cacheListData.pens[i] = needPenMap[id];
+        }
+      }
+    }
+  }
+
   undo(noRedo = false) {
     if (this.data.locked || this.caches.index < 1) {
       return;
@@ -1731,13 +1756,13 @@ export class Topology {
       }
     }
 
-    this.activeLayer.updateLines(pens);
+    const needUpdateLines = this.activeLayer.updateLines(pens);
     this.activeLayer.calcControlPoints();
     this.activeLayer.saveNodeRects();
     this.activeLayer.changeLineType();
 
     this.render();
-    this.cache();
+    this._cache(pens.concat(needUpdateLines));
   }
 
   lock(lock: number) {
