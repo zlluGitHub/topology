@@ -1378,6 +1378,9 @@ export class Topology {
     }
     const data = new TopologyData(this.data);
     this.caches.list.push(data);
+    if (this.caches.list.length > this.options.cacheLen) {
+      this.caches.list.shift();
+    }
 
     this.caches.index = this.caches.list.length - 1;
   }

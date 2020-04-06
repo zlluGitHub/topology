@@ -13,6 +13,7 @@ export enum KeydownType {
 }
 
 export interface Options {
+  cacheLen?: number;
   extDpiRatio?: number;
   width?: string | number;
   height?: string | number;
@@ -49,6 +50,7 @@ export interface Options {
 }
 
 export const DefalutOptions: Options = {
+  cacheLen: 30,
   font: {
     color: '#222',
     fontFamily: '"Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial',
