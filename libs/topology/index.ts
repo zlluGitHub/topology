@@ -1431,6 +1431,31 @@ export class Topology {
     this.caches.index = this.caches.list.length - 1;
   }
 
+  _cache(pens: Pen[]) {
+    if (pens && pens.length) {
+      const needPenMap = {};
+      for (let i = 0, len = pens.length; i < len; i++) {
+        const pen = pens[i];
+        const id = pen.id;
+        if (pen instanceof Node) {
+          needPenMap[id] = new Node(pen);
+        } else if (pen instanceof Line) {
+          needPenMap[id] = new Line(pen);
+        }
+      }
+      const cacheListData: TopologyData = this.caches.list[0];
+      if (!cacheListData) {
+        return;
+      }
+      for (let i = 0, len = cacheListData.pens.length; i < len; i++) {
+        const id = cacheListData.pens[i].id;
+        if (needPenMap[id]) {
+          cacheListData.pens[i] = needPenMap[id];
+        }
+      }
+    }
+  }
+
   undo(noRedo = false) {
     if (this.data.locked || this.caches.index < 1) {
       return;
@@ -1598,16 +1623,11 @@ export class Topology {
     this.clipboard = new TopologyData({
       pens: []
     });
-    for (const item of this.activeLayer.pens) {
-      if (item.type === PenType.Node) {
-        this.clipboard.pens.push(new Node(item));
-      } else {
-        this.clipboard.pens.push(new Line(item));
-      }
-
-      const i = this.find(item);
+    for (const pen of this.activeLayer.pens) {
+      this.clipboard.pens.push(pen.clone());
+      const i = this.find(pen);
       if (i > -1) {
-        if (item.type === PenType.Node) {
+        if (pen.type === PenType.Node) {
           this.divLayer.removeDiv(this.data.pens[i] as Node);
         }
         this.data.pens.splice(i, 1);
@@ -1634,12 +1654,8 @@ export class Topology {
     this.clipboard = new TopologyData({
       pens: []
     });
-    for (const item of this.activeLayer.pens) {
-      if (item.type === PenType.Node) {
-        this.clipboard.pens.push(new Node(item));
-      } else {
-        this.clipboard.pens.push(new Line(item));
-      }
+    for (const pen of this.activeLayer.pens) {
+      this.clipboard.pens.push(pen.clone());
     }
   }
 
@@ -1654,37 +1670,36 @@ export class Topology {
     this.activeLayer.pens = [];
 
     const idMaps: any = {};
-    for (const item of this.clipboard.pens) {
-      if (item.type === PenType.Node) {
-        this.newId(item, idMaps);
-        item.rect.x += 20;
-        item.rect.ex += 20;
-        item.rect.y += 20;
-        item.rect.ey += 20;
+    for (const pen of this.clipboard.pens) {
+      if (pen.type === PenType.Node) {
+        this.newId(pen, idMaps);
+        pen.rect.x += 20;
+        pen.rect.ex += 20;
+        pen.rect.y += 20;
+        pen.rect.ey += 20;
 
-        const node = new Node(item);
-        this.data.pens.push(node);
-        this.activeLayer.pens.push(node);
+        // const node = new Node(pen);
+        this.data.pens.push(pen);
+        this.activeLayer.pens.push(pen);
       }
-      if (item instanceof Line) {
-        item.id = s8();
-        item.from = new Point(
-          item.from.x + 20,
-          item.from.y + 20,
-          item.from.direction,
-          item.from.anchorIndex,
-          idMaps[item.from.id]
+      if (pen instanceof Line) {
+        pen.id = s8();
+        pen.from = new Point(
+          pen.from.x + 20,
+          pen.from.y + 20,
+          pen.from.direction,
+          pen.from.anchorIndex,
+          idMaps[pen.from.id]
         );
-        item.to = new Point(item.to.x + 20, item.to.y + 20, item.to.direction, item.to.anchorIndex, idMaps[item.to.id]);
+        pen.to = new Point(pen.to.x + 20, pen.to.y + 20, pen.to.direction, pen.to.anchorIndex, idMaps[pen.to.id]);
         const controlPoints = [];
-        for (const pt of item.controlPoints) {
+        for (const pt of pen.controlPoints) {
           controlPoints.push(new Point(pt.x + 20, pt.y + 20));
         }
 
-        const line = new Line(item);
-        line.controlPoints = controlPoints;
-        this.data.pens.push(line);
-        this.activeLayer.add(line);
+        pen.controlPoints = controlPoints;
+        this.data.pens.push(pen);
+        this.activeLayer.add(pen);
       }
     }
 
@@ -1724,20 +1739,20 @@ export class Topology {
     if (!pens) {
       pens = this.activeLayer.pens;
     }
-    for (const item of pens) {
-      if (item instanceof Node) {
-        item.init();
-        item.initRect();
+    for (const pen of pens) {
+      if (pen instanceof Node) {
+        pen.init();
+        pen.initRect();
       }
     }
 
-    this.activeLayer.updateLines(pens);
+    const needUpdateLines = this.activeLayer.updateLines(pens);
     this.activeLayer.calcControlPoints();
     this.activeLayer.saveNodeRects();
     this.activeLayer.changeLineType();
 
     this.render();
-    this.cache();
+    this._cache(pens.concat(needUpdateLines));
   }
 
   lock(lock: number) {

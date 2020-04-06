@@ -391,4 +391,8 @@ export class Line extends Pen {
 
     Store.set('pts-' + this.id, null);
   }
+
+  clone() {
+    return new Line(this.cloneOptions());
+  }
 }
