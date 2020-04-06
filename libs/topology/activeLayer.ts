@@ -334,7 +334,6 @@ export class ActiveLayer {
 
     const nodes = flatNodes(pens);
     const lines: Line[] = [];
-    const needUpdateLines: Line[] = [];
     for (const line of this.data.pens) {
       if (!(line instanceof Line)) {
         continue;
@@ -354,9 +353,6 @@ export class ActiveLayer {
         if (cnt < 2) {
           line.calcControlPoints();
         }
-        if (cnt > 0) {
-          needUpdateLines.push(line);
-        }
         line.textRect = null;
         Store.set('pts-' + line.id, null);
         lines.push(line);
@@ -364,7 +360,6 @@ export class ActiveLayer {
     }
 
     Store.set('LT:updateLines', lines);
-    return needUpdateLines;
   }
 
   changeLineType() {

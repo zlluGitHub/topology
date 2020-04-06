@@ -1431,7 +1431,7 @@ export class Topology {
     this.caches.index = this.caches.list.length - 1;
   }
 
-  _cache(pens: Pen[]) {
+  cacheReplace(pens: Pen[]) {
     if (pens && pens.length) {
       const needPenMap = {};
       for (let i = 0, len = pens.length; i < len; i++) {
@@ -1677,10 +1677,7 @@ export class Topology {
         pen.rect.ex += 20;
         pen.rect.y += 20;
         pen.rect.ey += 20;
-
-        // const node = new Node(pen);
-        this.data.pens.push(pen);
-        this.activeLayer.pens.push(pen);
+        (pen as Node).init();
       }
       if (pen instanceof Line) {
         pen.id = s8();
@@ -1696,15 +1693,16 @@ export class Topology {
         for (const pt of pen.controlPoints) {
           controlPoints.push(new Point(pt.x + 20, pt.y + 20));
         }
-
         pen.controlPoints = controlPoints;
-        this.data.pens.push(pen);
-        this.activeLayer.add(pen);
       }
+      this.data.pens.push(pen);
+      this.activeLayer.add(pen);
     }
 
     this.render();
     this.cache();
+
+    this.copy();
 
     if (this.options.on) {
       if (this.clipboard.pens.length > 1) {
@@ -1735,7 +1733,7 @@ export class Topology {
     this.animateLayer.animate();
   }
 
-  updateProps(pens?: Pen[]) {
+  updateProps(cache: boolean = true, pens?: Pen[]) {
     if (!pens) {
       pens = this.activeLayer.pens;
     }
@@ -1746,13 +1744,14 @@ export class Topology {
       }
     }
 
-    const needUpdateLines = this.activeLayer.updateLines(pens);
+    this.activeLayer.updateLines(pens);
     this.activeLayer.calcControlPoints();
     this.activeLayer.saveNodeRects();
     this.activeLayer.changeLineType();
 
     this.render();
-    this._cache(pens.concat(needUpdateLines));
+    // tslint:disable-next-line: no-unused-expression
+    cache && this.cache();
   }
 
   lock(lock: number) {

@@ -225,37 +225,6 @@ export abstract class Pen {
     }
   }
 
-  cloneValue(value: any): any {
-    if (!value) {
-      return value;
-    }
-    if (value instanceof Point) {
-      return value.clone();
-    }
-    if (value instanceof Rect) {
-      return value.clone();
-    }
-    if (typeof value === 'object') {
-      return Object.assign({}, value);
-    }
-    return value;
-  }
-
-  cloneOptions(): { [key: string]: any } {
-    const options: { [key: string]: any } = {};
-    for (const key in this) {
-      const value = this[key];
-      if (Array.isArray(value)) {
-        options[key] = value.map(v => {
-          return this.cloneValue(v);
-        });
-      } else {
-        options[key] = this.cloneValue(value);
-      }
-    }
-    return options;
-  }
-
   private link(url: string, params: string) {
     window.open(url, '_blank');
   }

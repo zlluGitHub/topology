@@ -193,6 +193,11 @@ export class Node extends Pen {
     this.play = json.play;
     this.nextPlay = json.nextPlay;
 
+    if (json.elementLoaded !== undefined) {
+      this.elementId = null;
+      this.elementLoaded = false;
+    }
+
     this.init();
 
     if (!noChild) {
@@ -767,6 +772,6 @@ export class Node extends Pen {
   }
 
   clone() {
-    return new Node(this.cloneOptions());
+    return new Node(this);
   }
 }

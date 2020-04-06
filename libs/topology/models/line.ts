@@ -393,6 +393,6 @@ export class Line extends Pen {
   }
 
   clone() {
-    return new Line(this.cloneOptions());
+    return new Line(this);
   }
 }
