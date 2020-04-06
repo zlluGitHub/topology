@@ -765,4 +765,8 @@ export class Node extends Pen {
       }
     }
   }
+
+  clone() {
+    return new Node(this.cloneOptions());
+  }
 }
