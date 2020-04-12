@@ -1,6 +1,6 @@
 import { Point } from '../../models/point';
 import { Rect } from '../../models/rect';
-import { pSBC } from '../../utils';
+import { pSBC } from '../../utils/math';
 
 export class Surface {
   points: Point[] = [];

@@ -1,5 +1,5 @@
 import { registerNode } from 'topology-core/middles';
-import { loadJS } from 'topology-core/utils';
+import { loadJS } from 'topology-core/utils/dom';
 import {
   echarts
 } from './echarts';

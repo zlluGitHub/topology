@@ -1,50 +1,3 @@
-import { Store } from 'le5le-store';
-
-import { Point } from './models/point';
-import { Node } from './models/node';
-
-export function pointInRect(point: Point, vertices: Point[]): boolean {
-  if (vertices.length < 3) {
-    return false;
-  }
-  let isIn = false;
-
-  let last = vertices[vertices.length - 1];
-  for (const item of vertices) {
-    if ((item.y < point.y && last.y >= point.y) || (item.y >= point.y && last.y < point.y)) {
-      if (item.x + ((point.y - item.y) * (last.x - item.x)) / (last.y - item.y) > point.x) {
-        isIn = !isIn;
-      }
-    }
-
-    last = item;
-  }
-
-  return isIn;
-}
-
-export function pointInLine(point: Point, from: Point, to: Point): boolean {
-  const points: Point[] = [
-    new Point(from.x - 8, from.y - 8),
-    new Point(to.x - 8, to.y - 8),
-    new Point(to.x + 8, to.y + 8),
-    new Point(from.x + 8, from.y + 8)
-  ];
-
-  return pointInRect(point, points);
-}
-
-export function lineLen(from: Point, to: Point): number {
-  const len = Math.sqrt(Math.pow(Math.abs(from.x - to.x), 2) + Math.pow(Math.abs(from.y - to.y), 2));
-  return len | 0;
-}
-
-export function curveLen(from: Point, cp1: Point, cp2: Point, to: Point): number {
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  path.setAttribute('d', `M${from.x} ${from.y} C${cp1.x} ${cp1.y} ${cp2.x} ${cp2.y} ${to.x} ${to.y}`);
-  return path.getTotalLength() | 0;
-}
-
 // https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
 // Version 4.0
 export function pSBC(p: any, c0: any, c1?: any, l?: any) {
@@ -133,35 +86,4 @@ export function abs(num: number, percent: number | string): number {
   percent = (percent as string).substr(0, (percent as string).length - 1);
 
   return (num * +percent) / 100;
-}
-
-export function createDiv(node: Node) {
-  const div = document.createElement('div');
-  div.style.position = 'absolute';
-  div.style.outline = 'none';
-  div.style.left = '-9999px';
-  div.style.bottom = '-9999px';
-  div.style.width = node.rect.width + 'px';
-  div.style.height = node.rect.height + '2px';
-  if (node.elementId) {
-    div.id = node.elementId;
-  }
-
-  return div;
-}
-
-export function loadJS(url: string, callback?: () => void, render?: boolean) {
-  const loaderScript = document.createElement('script');
-  loaderScript.type = 'text/javascript';
-  loaderScript.src = url;
-  loaderScript.addEventListener('load', () => {
-    if (callback) {
-      callback();
-    }
-    if (render) {
-      Store.set('LT:render', true);
-    }
-  });
-
-  document.body.appendChild(loaderScript);
 }

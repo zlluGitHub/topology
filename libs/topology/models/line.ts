@@ -3,7 +3,7 @@ import { Point } from './point';
 import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
 import { Store } from 'le5le-store';
-import { lineLen, curveLen } from '../utils';
+import { lineLen, curveLen } from '../utils/canvas';
 import { text } from '../middles/nodes/text';
 import { Rect } from './rect';
 

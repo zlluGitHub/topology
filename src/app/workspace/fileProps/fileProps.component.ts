@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Topology } from 'topology-core';
+import { layout } from 'topology-layout';
 
 @Component({
   selector: 'app-file-props',
@@ -53,5 +54,10 @@ export class FilePropsComponent implements OnInit {
   onChangeBkImage() {
     this.canvas.clearBkImg();
     this.canvas.render();
+  }
+
+  onLayout() {
+    layout(this.canvas.data.pens, this.layout);
+    this.canvas.updateProps(true, this.canvas.data.pens);
   }
 }

@@ -1,7 +1,7 @@
 import { Node } from 'topology-core/models/node';
 import { rectangle } from 'topology-core/middles/nodes/rectangle';
-import { s8 } from 'topology-core/uuid/uuid';
-import { createDiv } from 'topology-core/utils';
+import { s8 } from 'topology-core/utils/uuid';
+import { createDiv } from 'topology-core/utils/dom';
 
 const echartsData: any = {};
 

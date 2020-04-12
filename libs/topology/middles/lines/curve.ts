@@ -2,7 +2,7 @@ import { Point } from '../../models/point';
 import { Line } from '../../models/line';
 import { Direction } from '../../models/direction';
 import { Store } from 'le5le-store';
-import { pointInLine } from '../../utils';
+import { pointInLine } from '../../utils/canvas';
 
 const distance = 80;
 

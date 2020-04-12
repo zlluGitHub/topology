@@ -12,8 +12,6 @@ export class TopologyData {
   locked = Lock.None;
   bkImage: string;
   bkColor: string;
-  component: boolean;
-  class: string;
   grid?: boolean;
   data?: any;
   constructor(json?: any) {

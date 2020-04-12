@@ -45,7 +45,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     userId: '',
     class: '',
     component: false,
-    grid: false,
     shared: false
   };
   icons: { icon: string; iconFamily: string; }[] = [];
@@ -100,7 +99,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
             image: '',
             userId: '',
             class: '',
-            component: false,
+            component: params.get('c') || false,
             shared: false
           };
         }
@@ -247,25 +246,27 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   onEditTool(tool: { id?: string; name: string; }) {
-    this.data = {
-      id: '',
-      version: '',
-      data: { pens: [] },
-      name: '新组件',
-      desc: '',
-      image: '',
-      userId: '',
-      class: tool.name,
-      component: true,
-      grid: false,
-      shared: false
-    };
-    if (tool.id) {
+    this.router.navigateByUrl(`/workspace?c=true&class=${tool.name}`);
+    setTimeout(() => {
+      this.data = {
+        id: '',
+        version: '',
+        data: { pens: [] },
+        name: '新组件',
+        desc: '',
+        image: '',
+        userId: '',
+        class: tool.name,
+        component: true,
+        shared: false
+      };
+      if (tool.id) {
+        this.onOpen({ id: tool.id });
+        return;
+      }
 
-    }
-
-    this.canvas.open(this.data.data);
-    this.router.navigateByUrl(`/workspace?id=${this.data.id}&class=${tool.name}`);
+      this.canvas.open(this.data.data);
+    });
   }
 
   onNew() {
@@ -279,7 +280,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       userId: '',
       class: '',
       component: false,
-      grid: false,
       shared: false
     };
     Store.set('file', this.data);
@@ -356,7 +356,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
             userId: '',
             class: '',
             component: false,
-            grid: false,
             shared: false
           };
           this.canvas.open(data);

@@ -1,7 +1,7 @@
-import { s8 } from '../uuid/uuid';
+import { s8 } from '../utils/uuid';
 import { Point } from './point';
 import { Rect } from './rect';
-import { pointInRect } from '../utils';
+import { pointInRect } from '../utils/canvas';
 import { PenEvent, PenEventType } from './event';
 
 import { Store } from 'le5le-store';

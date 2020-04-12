@@ -15,9 +15,9 @@ import { ActiveLayer } from './activeLayer';
 import { AnimateLayer } from './animateLayer';
 import { DivLayer } from './divLayer';
 import { Rect } from './models/rect';
-import { s8 } from './uuid/uuid';
-import { getBezierPoint } from './middles/lines/curve';
-import { pointInRect } from './utils';
+import { s8 } from './utils/uuid';
+import { pointInRect } from './utils/canvas';
+import { getRect } from './utils/rect';
 
 const resizeCursors = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize'];
 enum MoveInType {
@@ -1282,49 +1282,7 @@ export class Topology {
       pens = this.data.pens;
     }
 
-    let x1 = 99999;
-    let y1 = 99999;
-    let x2 = -99999;
-    let y2 = -99999;
-
-    const points: Point[] = [];
-    for (const item of pens) {
-      if (item instanceof Node) {
-        const pts = item.rect.toPoints();
-        if (item.rotate) {
-          for (const pt of pts) {
-            pt.rotate(item.rotate, item.rect.center);
-          }
-        }
-        points.push.apply(points, pts);
-      } else if (item instanceof Line) {
-        points.push(item.from);
-        points.push(item.to);
-        if (item.name === 'curve') {
-          for (let i = 0.01; i < 1; i += 0.02) {
-            points.push(getBezierPoint(i, item.from, item.controlPoints[0], item.controlPoints[1], item.to));
-          }
-        }
-      }
-
-    }
-
-    for (const item of points) {
-      if (x1 > item.x) {
-        x1 = item.x;
-      }
-      if (y1 > item.y) {
-        y1 = item.y;
-      }
-      if (x2 < item.x) {
-        x2 = item.x;
-      }
-      if (y2 < item.y) {
-        y2 = item.y;
-      }
-    }
-
-    return new Rect(x1, y1, x2 - x1, y2 - y1);
+    return getRect(pens);
   }
 
   // Get a dock rect for moving nodes.

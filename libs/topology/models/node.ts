@@ -6,7 +6,7 @@ import { defaultAnchors } from '../middles/default.anchor';
 import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
-import { abs } from '../utils';
+import { abs } from '../utils/math';
 
 export const images: { [key: string]: { img: HTMLImageElement; cnt: number; }; } = {};
 

@@ -4,9 +4,10 @@ import { Topology } from 'topology-core';
 import { Pen } from 'topology-core/models/pen';
 import { Node } from 'topology-core/models/node';
 import { PenEvent, PenEventType } from 'topology-core/models/event';
-import { alignNodes } from 'topology-layout';
+import { alignNodes, spaceBetween, layout } from 'topology-layout';
 
 import { PenPropsService } from './penProps.service';
+import { getRect } from 'topology-core/utils/rect';
 
 @Component({
   selector: 'app-pen-props',
@@ -300,6 +301,15 @@ export class PenPropsComponent implements OnInit, OnChanges {
 
   icons: any[] = [];
 
+  layout = {
+    maxWidth: 1000,
+    nodeWidth: 0,
+    nodeHeight: 0,
+    maxCount: 0,
+    spaceWidth: 30,
+    spaceHeight: 30
+  };
+
   show: any = {};
   constructor(private service: PenPropsService) {
   }
@@ -360,6 +370,9 @@ export class PenPropsComponent implements OnInit, OnChanges {
     }
 
     this.icons = this.service.GetIcons();
+
+    const rect = getRect(this.canvas.activeLayer.pens);
+    this.layout.maxWidth = rect.width;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -730,8 +743,17 @@ export class PenPropsComponent implements OnInit, OnChanges {
 
   onNodesAlign(align: string) {
     alignNodes(this.canvas.activeLayer.pens, this.canvas.activeLayer.rect, align);
-    this.canvas.render();
-    this.canvas.cache();
+    this.canvas.updateProps();
+  }
+
+  onSpaceBetween() {
+    spaceBetween(this.canvas.activeLayer.pens, this.canvas.activeLayer.rect.width);
+    this.canvas.updateProps();
+  }
+
+  onLayout() {
+    layout(this.canvas.activeLayer.pens, this.layout);
+    this.canvas.updateProps();
   }
 
   onAddEvent() {

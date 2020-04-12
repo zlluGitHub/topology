@@ -13,6 +13,158 @@
       <label class="hover pointer mr10" *ngFor="let item of nodesAlgin">
         <i class="iconfont icon-align-{{ item }} " (click)="onNodesAlign(item)"></i>
       </label>
+      <label class="hover pointer mr10">
+        <i class="iconfont icon-horizontal-between" (click)="onSpaceBetween()"></i>
+      </label>
+    </div>
+  </div>
+
+  <div class="group layout" *ngIf="selection.pens">
+    <div class="title">
+      <div class="full">排版</div>
+      <i *ngIf="show.layout !== false" class="hover iconfont icon-angle-down" (click)="show.layout = false"></i>
+      <i *ngIf="show.layout === false" class="hover iconfont icon-angle-right" (click)="show.layout = true"></i>
+    </div>
+    <div class="mt10" *ngIf="show.layout !== false">
+      <div class="flex middle mb10">
+        <label>最大宽度：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.maxWidth" title="超出最大宽度换行">
+        </div>
+      </div>
+      <div class="flex middle mb10">
+        <label>节点宽度：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.nodeWidth" title="固定每个节点的宽度">
+        </div>
+      </div>
+      <div class="flex middle mb10">
+        <label>节点高度：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.nodeHeight" title="固定每个节点的高度">
+        </div>
+      </div>
+      <div class="flex middle mb10">
+        <label>水平个数：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.maxCount" title="超出最大个数，将自动计算水平间距（下面水平间距设置将无效）">
+        </div>
+      </div>
+      <div class="flex middle mb10">
+        <label>水平间距：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.spaceWidth" title="节点之间水平间距（px）">
+        </div>
+      </div>
+      <div class="flex middle mb10">
+        <label>垂直间距：</label>
+        <div class="full pr10">
+          <input type="number" class="input" [(ngModel)]="layout.spaceHeight" title="节点之间垂直间距（px）">
+        </div>
+      </div>
+      <div class="flex middle">
+        <label></label>
+        <div class="full pr10">
+          <button class="button primary" (click)="onLayout()">开始排版</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="group" *ngIf="selection.pen && !selection.pen.type">
+    <div class="title">
+      <div class="full">位置和大小</div>
+      <i *ngIf="show.pos !== false" class="hover iconfont icon-angle-down" (click)="show.pos = false"></i>
+      <i *ngIf="show.pos === false" class="hover iconfont icon-angle-right" (click)="show.pos = true"></i>
+    </div>
+    <div *ngIf="show.pos !== false">
+      <div class="flex grid">
+        <div>X（px）</div>
+        <div>Y（px）</div>
+      </div>
+      <div class="flex grid mt5">
+        <div class="mr5">
+          <input type="number" name="x" class="input" [(ngModel)]="pen.rect.x" [uiMin]="0" [uiMax]="5000"
+            [readonly]="readonly" required (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input type="number" name="y" class="input" [(ngModel)]="pen.rect.y" [uiMin]="0" [uiMax]="5000"
+            [readonly]="readonly" required (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div>宽（px）</div>
+        <div>高（px）</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input type="number" name="width" class="input" [(ngModel)]="pen.rect.width" [uiMin]="0" [uiMax]="5000"
+            [readonly]="readonly" required (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input type="number" name="height" class="input" [(ngModel)]="pen.rect.height" [uiMin]="0" [uiMax]="5000"
+            [readonly]="readonly" required (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div *ngIf="pen.is3D">
+        <div class="flex grid mt5">
+          <div>Z（px）</div>
+          <div></div>
+        </div>
+        <div class="flex grid">
+          <div class="mr5">
+            <input type="number" name="z" class="input" [(ngModel)]="pen.z" [uiMin]="0" [uiMax]="5000"
+              [readonly]="readonly" (change)="onChangeProp()" />
+          </div>
+          <div></div>
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div title="百分比%对应的小数值">圆角（0 - 1）</div>
+        <div>旋转（°）</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input type="number" name="borderRadius" class="input" [(ngModel)]="pen.borderRadius" [uiMin]="0" [uiMax]="1"
+            [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input type="number" name="rotate" class="input" [(ngModel)]="pen.rotate" [uiMin]="0" [uiMax]="360"
+            [readonly]="readonly" (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div title="padding-left">内边距-左</div>
+        <div title="padding-right">内边距-右</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input name="paddingLeft" class="input" [(ngModel)]="pen.paddingLeft" [readonly]="readonly" required
+            (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input name="paddingRight" class="input" [(ngModel)]="pen.paddingRight" [readonly]="readonly" required
+            (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="flex grid mt5">
+        <div title="padding-top">内边距-上</div>
+        <div title="padding-bottom">内边距-下</div>
+      </div>
+      <div class="flex grid">
+        <div class="mr5">
+          <input name="paddingTop" class="input" [(ngModel)]="pen.paddingTop" [readonly]="readonly" required
+            (change)="onChangeProp()" />
+        </div>
+        <div>
+          <input name="paddingBottom" class="input" [(ngModel)]="pen.paddingBottom" [readonly]="readonly" required
+            (change)="onChangeProp()" />
+        </div>
+      </div>
+      <div class="mt5 gray" style="line-height: 1.5">
+        内边距：输入数字表示像素；输入%表示百分比
+      </div>
     </div>
   </div>
 
@@ -881,101 +1033,6 @@
     </div>
   </div>
 
-  <div class="group" *ngIf="selection.pen && !selection.pen.type">
-    <div class="title">
-      <div class="full">位置和大小</div>
-      <i *ngIf="show.pos !== false" class="hover iconfont icon-angle-down" (click)="show.pos = false"></i>
-      <i *ngIf="show.pos === false" class="hover iconfont icon-angle-right" (click)="show.pos = true"></i>
-    </div>
-    <div *ngIf="show.pos !== false">
-      <div class="flex grid">
-        <div>X（px）</div>
-        <div>Y（px）</div>
-      </div>
-      <div class="flex grid mt5">
-        <div class="mr5">
-          <input type="number" name="x" class="input" [(ngModel)]="pen.rect.x" [uiMin]="0" [uiMax]="5000"
-            [readonly]="readonly" required (change)="onChangeProp()" />
-        </div>
-        <div>
-          <input type="number" name="y" class="input" [(ngModel)]="pen.rect.y" [uiMin]="0" [uiMax]="5000"
-            [readonly]="readonly" required (change)="onChangeProp()" />
-        </div>
-      </div>
-      <div class="flex grid mt5">
-        <div>宽（px）</div>
-        <div>高（px）</div>
-      </div>
-      <div class="flex grid">
-        <div class="mr5">
-          <input type="number" name="width" class="input" [(ngModel)]="pen.rect.width" [uiMin]="0" [uiMax]="5000"
-            [readonly]="readonly" required (change)="onChangeProp()" />
-        </div>
-        <div>
-          <input type="number" name="height" class="input" [(ngModel)]="pen.rect.height" [uiMin]="0" [uiMax]="5000"
-            [readonly]="readonly" required (change)="onChangeProp()" />
-        </div>
-      </div>
-      <div *ngIf="pen.is3D">
-        <div class="flex grid mt5">
-          <div>Z（px）</div>
-          <div></div>
-        </div>
-        <div class="flex grid">
-          <div class="mr5">
-            <input type="number" name="z" class="input" [(ngModel)]="pen.z" [uiMin]="0" [uiMax]="5000"
-              [readonly]="readonly" (change)="onChangeProp()" />
-          </div>
-          <div></div>
-        </div>
-      </div>
-      <div class="flex grid mt5">
-        <div title="百分比%对应的小数值">圆角（0 - 1）</div>
-        <div>旋转（°）</div>
-      </div>
-      <div class="flex grid">
-        <div class="mr5">
-          <input type="number" name="borderRadius" class="input" [(ngModel)]="pen.borderRadius" [uiMin]="0" [uiMax]="1"
-            [readonly]="readonly" (change)="onChangeProp()" />
-        </div>
-        <div>
-          <input type="number" name="rotate" class="input" [(ngModel)]="pen.rotate" [uiMin]="0" [uiMax]="360"
-            [readonly]="readonly" (change)="onChangeProp()" />
-        </div>
-      </div>
-      <div class="flex grid mt5">
-        <div title="padding-left">内边距-左</div>
-        <div title="padding-right">内边距-右</div>
-      </div>
-      <div class="flex grid">
-        <div class="mr5">
-          <input name="paddingLeft" class="input" [(ngModel)]="pen.paddingLeft" [readonly]="readonly" required
-            (change)="onChangeProp()" />
-        </div>
-        <div>
-          <input name="paddingRight" class="input" [(ngModel)]="pen.paddingRight" [readonly]="readonly" required
-            (change)="onChangeProp()" />
-        </div>
-      </div>
-      <div class="flex grid mt5">
-        <div title="padding-top">内边距-上</div>
-        <div title="padding-bottom">内边距-下</div>
-      </div>
-      <div class="flex grid">
-        <div class="mr5">
-          <input name="paddingTop" class="input" [(ngModel)]="pen.paddingTop" [readonly]="readonly" required
-            (change)="onChangeProp()" />
-        </div>
-        <div>
-          <input name="paddingBottom" class="input" [(ngModel)]="pen.paddingBottom" [readonly]="readonly" required
-            (change)="onChangeProp()" />
-        </div>
-      </div>
-      <div class="mt5 gray" style="line-height: 1.5">
-        内边距：输入数字表示像素；输入%表示百分比
-      </div>
-    </div>
-  </div>
 </div>
 <div *ngIf="tab===2">
   <div class="p10">

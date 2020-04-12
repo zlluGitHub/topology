@@ -34,3 +34,35 @@ export function alignNodes(pens: Pen[], rect: Rect, align: string) {
     item.clacChildrenRect();
   }
 }
+
+export function spaceBetween(pens: Pen[], width: number) {
+  let space = 0;
+  let cnt = 0;
+  for (const item of pens) {
+    if (!(item instanceof Node)) {
+      continue;
+    }
+
+    space += item.rect.width;
+    ++cnt;
+  }
+  space = (width - space) / (cnt - 1);
+
+  let left = 0;
+  for (const item of pens) {
+    if (!(item instanceof Node)) {
+      continue;
+    }
+
+    if (!left) {
+      left = item.rect.x;
+    }
+    item.rect.x = left;
+    left += item.rect.width + space;
+
+    item.rect.floor();
+    item.rect.calceCenter();
+    item.init();
+    item.clacChildrenRect();
+  }
+}

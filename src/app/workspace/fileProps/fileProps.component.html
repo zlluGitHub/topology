@@ -3,7 +3,8 @@
 
   <div class="flex middle mb10">
     <label>文件类型：</label>
-    <span class="label" style="background-color: #f3f3f3;">{{data.component? '组件' : '图文'}}</span>
+    <span class="label" [style.background-color]="data.component? '#1890ff' : '#f3f3f3'"
+      [style.color]="data.component? '#fff' : ''">{{data.component? '组件' : '图文'}}</span>
   </div>
 
   <div class="flex middle mb10">
@@ -52,9 +53,8 @@
   </div>
 </div>
 
-<div class="title">布局</div>
+<div class="title">排版</div>
 <div class="ph15 pv5">
-  <!-- <i class="iconfont icon-tiled hover pointer" title="自动布局"></i> -->
   <div class="flex middle mb10">
     <label>最大宽度：</label>
     <div class="full pr10">
@@ -94,7 +94,7 @@
   <div class="flex middle">
     <label></label>
     <div class="full pr10">
-      <button class="button primary">自动布局</button>
+      <button class="button primary" (click)="onLayout()">开始排版</button>
     </div>
   </div>
 </div>

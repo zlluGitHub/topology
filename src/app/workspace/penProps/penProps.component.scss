@@ -204,3 +204,15 @@
 ui-switch {
   height: 0.2rem;
 }
+
+.layout .flex {
+  & > label {
+    width: 0.6rem;
+  }
+
+  .full {
+    & > .input {
+      width: 1.5rem;
+    }
+  }
+}

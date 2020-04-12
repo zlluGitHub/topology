@@ -1,6 +1,6 @@
 {
   "name": "topology-layout",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A layout tool for le5le-topology.",
   "main": "index.js",
   "scripts": {
