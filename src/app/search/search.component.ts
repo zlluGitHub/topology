@@ -52,8 +52,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.subConfigs = Store.subscribe('app-configs', () => {
       this.classes = Store.get('app-classes');
     });
-
-    this.classes = this.service.Classes();
     this.getHots();
   }
 

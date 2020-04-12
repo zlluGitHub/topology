@@ -20,7 +20,8 @@ export class ToolsComponent implements OnInit, OnDestroy {
   tab = 1;
 
   classes: any[];
-  tools: any[];
+  sysTools: any[];
+  topoTools: any[];
 
   systemTools: any[] = [];
   userTools: any[] = [];
@@ -46,15 +47,16 @@ export class ToolsComponent implements OnInit, OnDestroy {
 
     this.classes$ = Store.subscribe('app-classes', (classes: any) => {
       this.classes = classes;
-      this.getTools();
+      this.classifyTools();
     });
 
-    this.tools = await this.service.Get();
-    this.getTools();
+    this.sysTools = await this.service.GetSystemTools();
+    this.topoTools = await this.service.GetUserTools();
+    this.classifyTools();
   }
 
-  getTools() {
-    if (!this.classes || !this.tools) {
+  classifyTools() {
+    if (!this.classes || !this.sysTools) {
       return;
     }
 
@@ -72,15 +74,15 @@ export class ToolsComponent implements OnInit, OnDestroy {
         list: [],
         expand: true
       };
-      for (const item of this.tools) {
+      for (const item of this.sysTools) {
         if (item.class === c.name) {
-          if (item.shared) {
-            system.list.push(item);
-          }
+          system.list.push(item);
+        }
+      }
 
-          if (item.editorId === this.user.id || item.userId === this.user.id) {
-            userTools.list.push(item);
-          }
+      for (const item of this.topoTools) {
+        if (item.class === c.name) {
+          userTools.list.push(item);
         }
       }
 
@@ -120,7 +122,7 @@ export class ToolsComponent implements OnInit, OnDestroy {
 
   onDrag(event: DragEvent, node: any) {
     if (node) {
-      event.dataTransfer.setData('Text', JSON.stringify(node.data));
+      event.dataTransfer.setData('Text', JSON.stringify(node.componentData || node.data));
     }
   }
 

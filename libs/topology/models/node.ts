@@ -679,7 +679,7 @@ export class Node extends Pen {
 
     if (rectChanged) {
       this.init();
-      Store.set('nodeRectChanged', this);
+      Store.set('LT:rectChanged', this);
     }
     return '';
   }

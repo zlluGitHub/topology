@@ -38,7 +38,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   data: any = {
     id: '',
     version: '',
-    data: { pens: [] },
     name: '空白文件',
     desc: '',
     image: '',
@@ -93,7 +92,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.data = {
             id: '',
             version: '',
-            data: { pens: [] },
             name: '空白文件',
             desc: '',
             image: '',
@@ -246,12 +244,16 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   onEditTool(tool: { id?: string; name: string; }) {
+    if (tool.id) {
+      this.router.navigateByUrl(`/workspace?id=${tool.id}`);
+      return;
+    }
+
     this.router.navigateByUrl(`/workspace?c=true&class=${tool.name}`);
     setTimeout(() => {
       this.data = {
         id: '',
         version: '',
-        data: { pens: [] },
         name: '新组件',
         desc: '',
         image: '',
@@ -260,11 +262,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         component: true,
         shared: false
       };
-      if (tool.id) {
-        this.onOpen({ id: tool.id });
-        return;
-      }
-
       this.canvas.open(this.data.data);
     });
   }
@@ -273,7 +270,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     this.data = {
       id: '',
       version: '',
-      data: { pens: [] },
       name: '空白文件',
       desc: '',
       image: '',
@@ -463,6 +459,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         return;
       }
       this.data.image = file.url;
+
+      if (this.data.component) {
+        this.data.componentData = this.canvas.toComponent();
+      }
 
       const ret = await this.service.Save(this.data);
       if (ret) {

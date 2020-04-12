@@ -22,14 +22,10 @@
           (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
         </i>
       </ng-container>
-      <span class="add" title="我来添加组件" draggable="true" (dragend)="onEditComponent(item.name)"
-        (click)="onEditComponent(item.name)">
-        <i class="iconfont icon-add"></i>
-      </span>
     </div>
   </div>
 </div>
-<div *ngIf="tab===2" class="tools">
+<div *ngIf="tab===2" class="tools big">
   <div *ngFor="let item of userTools">
     <div class="group" (click)="item.expand=!item.expand">
       <i class="iconfont icon-cube mr5"></i>
@@ -39,10 +35,9 @@
     </div>
     <div class="buttons" *ngIf="item.expand">
       <ng-container *ngFor="let button of item.list">
-        <i *ngIf="!button.hidden" class="{{ button.icon }}" [title]="button.name" [draggable]="button.data"
+        <img *ngIf="!button.hidden" [appImgAuthSrc]="button.image" [title]="button.name" draggable="true"
           (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)"
-          (dblclick)="onEditComponent(item.name, item.id)">
-        </i>
+          (dblclick)="onEditComponent(button.name, button.id)">
       </ng-container>
       <span class="add" title="我来添加组件" draggable="true" (dragend)="onEditComponent(item.name)"
         (click)="onEditComponent(item.name)">

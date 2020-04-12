@@ -137,7 +137,7 @@ export class Topology {
         this.render();
       }, 100);
     });
-    this.subcribeAnimateMoved = Store.subscribe('nodeRectChanged', (e: any) => {
+    this.subcribeAnimateMoved = Store.subscribe('LT:rectChanged', (e: any) => {
       this.activeLayer.updateLines(this.data.pens);
     });
     this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
@@ -234,6 +234,17 @@ export class Topology {
     this.createMarkdownTip();
 
     this.cache();
+
+    let timer: any;
+    window.onresize = () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        this.resize();
+        this.overflow();
+      }, 100);
+    };
   }
 
   resize(size?: { width: number; height: number; }) {
@@ -381,7 +392,10 @@ export class Topology {
   }
 
   // open - redraw by the data
-  open(data: any) {
+  open(data?: any) {
+    if (!data) {
+      data = { pens: [] };
+    }
     this.divLayer.clear();
     // tslint:disable-next-line:forin
     for (const key in images) {
@@ -1963,8 +1977,54 @@ export class Topology {
     }, 700);
   }
 
+  toComponent(pens?: Pen[]) {
+    if (!pens) {
+      pens = this.data.pens;
+    }
+
+    const rect = this.getRect(pens);
+    let node = new Node({
+      name: 'combine',
+      rect: new Rect(rect.x, rect.y, rect.width, rect.height),
+      text: '',
+      paddingLeft: 0,
+      paddingRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      strokeStyle: 'transparent',
+      children: []
+    });
+
+    for (const item of pens) {
+      if (item.type === PenType.Node && rect.width === item.rect.width && rect.height === item.rect.height) {
+        node = item as Node;
+        if (!node.children) {
+          node.children = [];
+        }
+        break;
+      }
+    }
+
+    for (const item of pens) {
+      if (item instanceof Node && item !== node) {
+        item.parentId = node.id;
+        item.calcRectInParent(node);
+
+        node.children.push(item);
+      }
+    }
+
+    return node;
+  }
+
   clearBkImg() {
     this.canvas.clearBkImg();
+  }
+
+  dispatch(event: string, data: any) {
+    if (this.options.on) {
+      this.options.on(event, data);
+    }
   }
 
   destroy() {
@@ -1976,11 +2036,5 @@ export class Topology {
     this.animateLayer.destroy();
     this.divLayer.destroy();
     document.body.removeChild(this.tipMarkdown);
-  }
-
-  dispatch(event: string, data: any) {
-    if (this.options.on) {
-      this.options.on(event, data);
-    }
   }
 }

@@ -7,27 +7,6 @@ import { CoreService } from '../core/core.service';
 export class SearchService {
   constructor(protected http: HttpService, protected coreService: CoreService) { }
 
-  Classes() {
-    return [{
-      name: '架构拓扑图',
-    }, {
-      name: 'UML图',
-    }, {
-      name: '拓扑图',
-    }, {
-      name: '物联网',
-    }, {
-      name: '电力',
-    }, {
-      name: '水利',
-    }, {
-      name: '安防',
-    }, {
-      name: '标识',
-    }];
-  }
-
-
   async Topologies(params: any) {
     const ret = await this.http.QueryString(params).Get('/api/topologies');
     if (ret.error || !ret.list) {
