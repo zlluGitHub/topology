@@ -763,4 +763,9 @@ export class PenPropsComponent implements OnInit, OnChanges {
       value: ''
     });
   }
+
+  onSelect(pen: Pen) {
+    this.canvas.activeLayer.pens = [pen];
+    this.canvas.render();
+  }
 }

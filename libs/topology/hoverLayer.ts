@@ -5,6 +5,7 @@ import { Line } from './models/line';
 import { Node } from './models/node';
 import { Store } from 'le5le-store';
 import { Options } from './options';
+import { Lock } from './models/status';
 
 export class HoverLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -73,7 +74,7 @@ export class HoverLayer {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    if (this.data.locked) {
+    if (this.data.locked === Lock.NoEvent) {
       return;
     }
     ctx.save();
@@ -98,7 +99,7 @@ export class HoverLayer {
 
       if (!this.options.hideAnchor) {
         for (let i = 0; i < this.node.rotatedAnchors.length; ++i) {
-          if (this.node.locked || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
+          if (this.node.locked || this.node.hideAnchor || (this.node.rotatedAnchors[i].hidden && this.hoverAnchorIndex !== i)) {
             continue;
           }
           ctx.beginPath();

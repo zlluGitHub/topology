@@ -60,6 +60,9 @@ export abstract class Pen {
 
   locked = false;
   hideInput: boolean;
+  hideRotateCP: boolean;
+  hideSizeCP: boolean;
+  hideAnchor: boolean;
 
   markdown: string;
   // 外部用于提示的dom id
@@ -68,6 +71,25 @@ export abstract class Pen {
 
   events: { name: PenEvent; type: PenEventType; value: string; params: string; }[] = [];
   private eventFns: string[] = ['link', 'doAnimate', 'doFn'];
+
+  parentId: string;
+  rectInParent: {
+    x: number | string;
+    y: number | string;
+    width: number | string;
+    height: number | string;
+    marginTop?: number | string;
+    marginRight?: number | string;
+    marginBottom?: number | string;
+    marginLeft?: number | string;
+    rotate: number;
+    rect?: Rect;
+  };
+
+  paddingTopNum: number;
+  paddingBottomNum: number;
+  paddingLeftNum: number;
+  paddingRightNum: number;
 
   // User data.
   data: any;
@@ -109,10 +131,17 @@ export abstract class Pen {
 
       this.locked = json.locked;
       this.hideInput = json.hideInput;
+      this.hideRotateCP = json.hideRotateCP;
+      this.hideSizeCP = json.hideSizeCP;
+      this.hideAnchor = json.hideAnchor;
       this.events = json.events || [];
       this.markdown = json.markdown;
       this.tipId = json.tipId;
       this.title = json.title;
+
+      if (json.rectInParent) {
+        this.rectInParent = json.rectInParent;
+      }
 
       if (typeof json.data === 'object') {
         this.data = JSON.parse(JSON.stringify(json.data));
@@ -125,7 +154,6 @@ export abstract class Pen {
       this.textOffsetY = 0;
     }
   }
-
 
   render(ctx: CanvasRenderingContext2D) {
     if ((this as any).from && !(this as any).to) {
@@ -241,6 +269,8 @@ export abstract class Pen {
   }
 
   abstract getTextRect(): Rect;
+  abstract calcRectInParent(parent: Pen): void;
+  abstract calcRectByParent(parent: Pen): void;
   abstract draw(ctx: CanvasRenderingContext2D): void;
   abstract animate(now: number): string;
   abstract translate(x: number, y: number): void;

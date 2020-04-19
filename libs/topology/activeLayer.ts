@@ -70,7 +70,7 @@ export class ActiveLayer {
         }
       }
 
-      if (this.options.hideRotateCP) {
+      if (this.options.hideRotateCP || this.pens[0].hideRotateCP) {
         this.rotateCPs = [new Point(-1000, -1000), new Point(-1000, -1000)];
       }
 
@@ -205,47 +205,47 @@ export class ActiveLayer {
 
     let i = 0;
     for (const item of this.pens) {
-      if (item.locked || !(item instanceof Node)) {
+      if (item.locked) {
         continue;
       }
-      item.rect.width = this.nodeRects[i].width + offsetX;
-      item.rect.height = this.nodeRects[i].height + offsetY;
 
-      if (item.rect.width < 10) {
-        item.rect.width = 10;
-      }
-      if (item.rect.height < 10) {
-        item.rect.height = 10;
-      }
+      switch (item.type) {
+        case PenType.Line:
+          break;
+        default:
+          item.rect.width = this.nodeRects[i].width + offsetX;
+          item.rect.height = this.nodeRects[i].height + offsetY;
 
-      switch (type) {
-        case 0:
-          item.rect.x = item.rect.ex - item.rect.width;
-          item.rect.y = item.rect.ey - item.rect.height;
-          break;
-        case 1:
-          item.rect.ex = item.rect.x + item.rect.width;
-          item.rect.y = item.rect.ey - item.rect.height;
-          break;
-        case 2:
-          item.rect.ex = item.rect.x + item.rect.width;
-          item.rect.ey = item.rect.y + item.rect.height;
-          break;
-        case 3:
-          item.rect.x = item.rect.ex - item.rect.width;
-          item.rect.ey = item.rect.y + item.rect.height;
+          if (item.rect.width < 10) {
+            item.rect.width = 10;
+          }
+          if (item.rect.height < 10) {
+            item.rect.height = 10;
+          }
+
+          switch (type) {
+            case 0:
+              item.rect.x = item.rect.ex - item.rect.width;
+              item.rect.y = item.rect.ey - item.rect.height;
+              break;
+            case 1:
+              item.rect.ex = item.rect.x + item.rect.width;
+              item.rect.y = item.rect.ey - item.rect.height;
+              break;
+            case 2:
+              item.rect.ex = item.rect.x + item.rect.width;
+              item.rect.ey = item.rect.y + item.rect.height;
+              break;
+            case 3:
+              item.rect.x = item.rect.ex - item.rect.width;
+              item.rect.ey = item.rect.y + item.rect.height;
+              break;
+          }
+          item.rect.calceCenter();
+          (item as Node).init();
+          (item as Node).clacChildrenRect();
           break;
       }
-      item.rect.calceCenter();
-      item.init();
-      item.clacChildrenRect();
-
-      // this.getLinesOfNode(item);
-      // for (const line of lines) {
-      //   for (const p of line.controlPoints) {
-      //     //
-      //   }
-      // }
 
       ++i;
     }
@@ -399,19 +399,22 @@ export class ActiveLayer {
     }
   }
 
-  rotateChildren(node: Node) {
-    if (!node.children) {
+  rotateChildren(node: Pen) {
+    if (node.type !== PenType.Node || !(node as Node).children) {
       return;
     }
 
-    for (const item of node.children) {
+    for (const item of (node as Node).children) {
+      if (item.type !== PenType.Node) {
+        continue;
+      }
       const oldCenter = this.childrenRects[item.id].center.clone();
       const newCenter = this.childrenRects[item.id].center.clone().rotate(this.rotate, this.rect.center);
       const rect = this.childrenRects[item.id].clone();
       rect.translate(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
       item.rect = rect;
       item.rotate = this.childrenRotate[item.id] + this.rotate;
-      item.init();
+      (item as Node).init();
       this.rotateChildren(item);
     }
   }
@@ -447,6 +450,25 @@ export class ActiveLayer {
     for (const item of this.pens) {
       if (item.id === pen.id) {
         return true;
+      }
+    }
+  }
+
+  hasInAll(pen: Pen, pens?: Pen[]) {
+    if (!pens) {
+      pens = this.pens;
+    }
+
+    for (const item of pens) {
+      if (item.id === pen.id) {
+        return true;
+      }
+
+      if ((item as any).children) {
+        const has = this.hasInAll(pen, (item as any).children);
+        if (has) {
+          return true;
+        }
       }
     }
   }
@@ -549,7 +571,7 @@ export class ActiveLayer {
     ctx.stroke();
 
     // Draw size control points.
-    if (!this.options.hideSizeCP) {
+    if (!this.options.hideSizeCP && (this.pens.length > 1 || !this.pens[0].hideSizeCP)) {
       ctx.lineWidth = 1;
       for (const item of this.sizeCPs) {
         ctx.save();

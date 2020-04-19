@@ -142,6 +142,11 @@ isarray@~1.0.0:
   resolved "https://registry.npm.taobao.org/isarray/download/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
   integrity sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
 
+le5le-store@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.npm.taobao.org/le5le-store/download/le5le-store-1.0.4.tgz#1cbf124ec8950bb07d9f2c40c672c07ad7093f6f"
+  integrity sha1-HL8STsiVC7B9nyxAxnLAetcJP28=
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/locate-path/download/locate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"
@@ -296,6 +301,13 @@ through2@^2.0.1:
   dependencies:
     readable-stream "~2.3.6"
     xtend "~4.0.1"
+
+topology-core@^0.2.5-dev:
+  version "0.2.5-dev"
+  resolved "https://registry.npm.taobao.org/topology-core/download/topology-core-0.2.5-dev.tgz#4f0df76b48dc0af87cca58ceb456debfc51ace6c"
+  integrity sha1-Tw33a0jcCvh8yljOtFbev8Uazmw=
+  dependencies:
+    le5le-store "^1.0.2"
 
 typescript@~3.4.3:
   version "3.4.5"

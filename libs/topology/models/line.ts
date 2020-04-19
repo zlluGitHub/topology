@@ -6,6 +6,7 @@ import { Store } from 'le5le-store';
 import { lineLen, curveLen } from '../utils/canvas';
 import { text } from '../middles/nodes/text';
 import { Rect } from './rect';
+import { abs } from '../utils/math';
 
 export class Line extends Pen {
   from: Point;
@@ -295,6 +296,46 @@ export class Line extends Pen {
     x = from.x + (to.x - from.x) * (pos / length);
     y = from.y + (to.y - from.y) * (pos / length);
     return new Point(x, y);
+  }
+
+  calcRectInParent(parent: Pen) {
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    this.rectInParent = {
+      x: ((this.from.x - parent.rect.x - parent.paddingLeftNum) * 100 / parentW) + '%',
+      y: ((this.from.y - parent.rect.y - parent.paddingTopNum) * 100 / parentH) + '%',
+      width: 0,
+      height: 0,
+      rotate: 0,
+    };
+  }
+
+  // 根据父节点rect计算自己（子节点）的rect
+  calcRectByParent(parent: Pen) {
+    if (!this.rectInParent) {
+      return;
+    }
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    let x =
+      parent.rect.x +
+      parent.paddingLeftNum +
+      abs(parentW, this.rectInParent.x) +
+      abs(parentW, this.rectInParent.marginLeft);
+    let y =
+      parent.rect.y +
+      parent.paddingTopNum +
+      abs(parentH, this.rectInParent.y) +
+      abs(parentW, this.rectInParent.marginTop);
+
+    if (this.rectInParent.marginLeft === undefined && this.rectInParent.marginRight) {
+      x -= abs(parentW, this.rectInParent.marginRight);
+    }
+    if (this.rectInParent.marginTop === undefined && this.rectInParent.marginBottom) {
+      y -= abs(parentW, this.rectInParent.marginBottom);
+    }
+
+    this.translate(x - this.from.x, y - this.from.y);
   }
 
   animate(now: number) {

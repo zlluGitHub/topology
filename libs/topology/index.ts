@@ -77,6 +77,7 @@ export class Topology {
     hoverAnchorIndex: number;
     hoverNode: Node;
     hoverLine: Line;
+    activeNode: Node;
     lineControlPoint: Point;
   } = {
       type: MoveInType.None,
@@ -84,6 +85,7 @@ export class Topology {
       hoverAnchorIndex: 0,
       hoverNode: null,
       hoverLine: null,
+      activeNode: null,
       lineControlPoint: null
     };
   needCache = false;
@@ -750,31 +752,32 @@ export class Topology {
 
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.Nodes:
-        if (!this.moveIn.hoverNode) {
-          break;
-        }
-
-        if ((e.button || e.ctrlKey) && this.activeLayer.has(this.moveIn.hoverNode)) {
+        if (!this.moveIn.activeNode) {
           break;
         }
 
         if (e.ctrlKey) {
-          this.activeLayer.add(this.moveIn.hoverNode);
-
-
-          if (this.activeLayer.pens.length > 1) {
-            this.dispatch('multi', this.activeLayer.pens);
-          } else {
+          if (this.activeLayer.hasInAll(this.moveIn.hoverNode)) {
+            this.activeLayer.setPens([this.moveIn.hoverNode]);
             this.dispatch('node', this.moveIn.hoverNode);
+          } else if (!this.activeLayer.has(this.moveIn.activeNode)) {
+            this.activeLayer.add(this.moveIn.activeNode);
+            if (this.activeLayer.pens.length > 1) {
+              this.dispatch('multi', this.activeLayer.pens);
+            } else {
+              this.dispatch('node', this.moveIn.activeNode);
+            }
           }
-
-        } else {
+        } else if (e.shiftKey) {
           this.activeLayer.setPens([this.moveIn.hoverNode]);
           this.dispatch('node', this.moveIn.hoverNode);
+        } else {
+          this.activeLayer.setPens([this.moveIn.activeNode]);
+          this.dispatch('node', this.moveIn.activeNode);
         }
 
         if (this.data.locked) {
-          this.moveIn.hoverNode.click();
+          this.moveIn.activeNode.click();
         }
 
         break;
@@ -990,12 +993,14 @@ export class Topology {
     }
 
     if (!this.data.locked && !this.activeLayer.locked() && !this.options.hideSizeCP) {
-      for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
-        if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
-          this.moveIn.type = MoveInType.ResizeCP;
-          this.moveIn.activeAnchorIndex = i;
-          this.divLayer.canvas.style.cursor = resizeCursors[i];
-          return;
+      if (this.activeLayer.pens.length > 1 || (!this.activeLayer.pens[0].type && !this.activeLayer.pens[0].hideSizeCP)) {
+        for (let i = 0; i < this.activeLayer.sizeCPs.length; ++i) {
+          if (this.activeLayer.sizeCPs[i].hit(pt, 10)) {
+            this.moveIn.type = MoveInType.ResizeCP;
+            this.moveIn.activeAnchorIndex = i;
+            this.divLayer.canvas.style.cursor = resizeCursors[i];
+            return;
+          }
         }
       }
     }
@@ -1023,10 +1028,6 @@ export class Topology {
 
     this.divLayer.canvas.style.cursor = 'default';
     for (const item of this.data.pens) {
-      if (item.locked) {
-        continue;
-      }
-
       if (item instanceof Node) {
         this.inNode(pt, item);
       }
@@ -1037,28 +1038,27 @@ export class Topology {
     }
 
     for (const item of this.data.pens) {
-      if (item.locked) {
-        continue;
-      }
-
       if (item instanceof Line) {
         this.inLine(pt, item);
       }
     }
   }
 
-  inChildNode(pt: Point, children: Node[]) {
+  inChildNode(pt: Point, children: Pen[]) {
     if (!children) {
       return null;
     }
 
     for (const item of children) {
-      let node = this.inChildNode(pt, item.children);
+      if (item.type === PenType.Line) {
+        continue;
+      }
+      let node = this.inChildNode(pt, (item as Node).children);
       if (node) {
         return node;
       }
 
-      node = this.inNode(pt, item);
+      node = this.inNode(pt, item as Node, true);
       if (node) {
         return node;
       }
@@ -1067,8 +1067,8 @@ export class Topology {
     return null;
   }
 
-  inNode(pt: Point, node: Node) {
-    if (this.data.locked && node.locked) {
+  inNode(pt: Point, node: Node, inChild = false) {
+    if (this.data.locked === Lock.NoEvent) {
       return null;
     }
 
@@ -1083,28 +1083,29 @@ export class Topology {
       this.divLayer.canvas.style.cursor = 'move';
 
       // Too small
-      if (this.options.hideAnchor || node.rect.width < 20 || node.rect.height < 20) {
-        return node;
+      if (!(this.options.hideAnchor || node.hideAnchor || node.rect.width < 20 || node.rect.height < 20)) {
+        for (let j = 0; j < node.rotatedAnchors.length; ++j) {
+          if (node.rotatedAnchors[j].hit(pt, 5)) {
+            if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
+              continue;
+            }
+            this.moveIn.type = MoveInType.HoverAnchors;
+            this.moveIn.hoverAnchorIndex = j;
+            this.hoverLayer.hoverAnchorIndex = j;
+            this.divLayer.canvas.style.cursor = 'crosshair';
+            break;
+          }
+        }
       }
 
-      for (let j = 0; j < node.rotatedAnchors.length; ++j) {
-        if (node.rotatedAnchors[j].hit(pt, 5)) {
-          if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
-            continue;
-          }
-          this.moveIn.hoverNode = node;
-          this.moveIn.type = MoveInType.HoverAnchors;
-          this.moveIn.hoverAnchorIndex = j;
-          this.hoverLayer.hoverAnchorIndex = j;
-          this.divLayer.canvas.style.cursor = 'crosshair';
-          return node;
-        }
+      if (!inChild) {
+        this.moveIn.activeNode = this.moveIn.hoverNode;
       }
 
       return node;
     }
 
-    if (this.options.hideAnchor || this.data.locked || node.locked) {
+    if (this.options.hideAnchor || node.hideAnchor || this.data.locked || node.locked) {
       return null;
     }
 
@@ -1119,6 +1120,11 @@ export class Topology {
           this.moveIn.hoverAnchorIndex = j;
           this.hoverLayer.hoverAnchorIndex = j;
           this.divLayer.canvas.style.cursor = 'crosshair';
+
+          if (!inChild) {
+            this.moveIn.activeNode = node;
+          }
+
           return node;
         }
       }
@@ -1752,12 +1758,9 @@ export class Topology {
 
     for (const item of pens) {
       item.locked = lockChildren;
-      if (item instanceof Node) {
-        item.parentId = node.id;
-        item.calcRectInParent(node);
-
-        node.children.push(item);
-      }
+      item.parentId = node.id;
+      item.calcRectInParent(node);
+      node.children.push(item);
     }
     this.data.pens.push(node);
 
@@ -2006,10 +2009,9 @@ export class Topology {
     }
 
     for (const item of pens) {
-      if (item instanceof Node && item !== node) {
+      if (item !== node) {
         item.parentId = node.id;
         item.calcRectInParent(node);
-
         node.children.push(item);
       }
     }

@@ -7,6 +7,7 @@ import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
 import { abs } from '../utils/math';
+import { Line } from './line';
 
 export const images: { [key: string]: { img: HTMLImageElement; cnt: number; }; } = {};
 
@@ -46,30 +47,13 @@ export class Node extends Pen {
   paddingLeft: number | string;
   paddingRight: number | string;
 
-  paddingTopNum: number;
-  paddingBottomNum: number;
-  paddingLeftNum: number;
-  paddingRightNum: number;
-
   iconRect: Rect;
   fullIconRect: Rect;
 
   anchors: Point[] = [];
   rotatedAnchors: Point[] = [];
-  parentId: string;
-  rectInParent: {
-    x: number | string;
-    y: number | string;
-    width: number | string;
-    height: number | string;
-    marginTop?: number | string;
-    marginRight?: number | string;
-    marginBottom?: number | string;
-    marginLeft?: number | string;
-    rotate: number;
-    rect?: Rect;
-  };
-  children: Node[];
+
+  children: Pen[];
 
   // nodes移动时，停靠点的参考位置
   dockWatchers: Point[];
@@ -83,6 +67,7 @@ export class Node extends Pen {
     linear: boolean;
     state: Node;
   }[] = [];
+  animateAlone: boolean;
 
   gif: boolean;
   video: string;
@@ -145,7 +130,7 @@ export class Node extends Pen {
     this.paddingLeft = json.paddingLeft || 0;
     this.paddingRight = json.paddingRight || 0;
 
-
+    // 兼容老数据
     if (json.children && json.children[0] && json.children[0].parentRect) {
       this.paddingLeft = json.children[0].parentRect.offsetX;
       this.paddingRight = 0;
@@ -170,9 +155,8 @@ export class Node extends Pen {
       this.paddingLeft = json.parentRect.marginX;
       this.paddingRight = json.parentRect.marginX;
     }
-    if (json.rectInParent) {
-      this.rectInParent = json.rectInParent;
-    }
+    // 兼容老数据 end
+
     if (json.animateFrames) {
       this.animateFrames = json.animateFrames;
       for (const item of this.animateFrames) {
@@ -185,6 +169,7 @@ export class Node extends Pen {
       this.animateDuration = json.animateDuration;
     }
     this.animateType = json.animateType ? json.animateType : json.animateDuration ? 'custom' : '';
+    this.animateAlone = json.animateAlone;
 
     this.iframe = json.iframe;
     this.elementId = json.elementId;
@@ -248,7 +233,7 @@ export class Node extends Pen {
 
     if (this.children) {
       for (const item of this.children) {
-        if (item.hasGif()) {
+        if (item.type === PenType.Node && (item as Node).hasGif()) {
           return true;
         }
       }
@@ -270,12 +255,21 @@ export class Node extends Pen {
     }
 
     this.children = [];
-    for (let i = 0; i < children.length; ++i) {
-      const child = new Node(children[i]);
-      child.parentId = this.id;
-      child.calcRectByParent(this);
-      child.init();
-      child.setChild(children[i].children);
+    for (const item of children) {
+      let child: Pen;
+      switch (item.type) {
+        case PenType.Line:
+          child = new Line(item);
+          child.calcRectByParent(this);
+          break;
+        default:
+          child = new Node(item);
+          child.parentId = this.id;
+          child.calcRectByParent(this);
+          (child as Node).init();
+          (child as Node).setChild(item.children);
+          break;
+      }
       this.children.push(child);
     }
   }
@@ -323,7 +317,19 @@ export class Node extends Pen {
   drawBkLinearGradient(ctx: CanvasRenderingContext2D) {
     const from = new Point(this.rect.x, this.rect.center.y);
     const to = new Point(this.rect.ex, this.rect.center.y);
-    if (this.gradientAngle) {
+    if (this.gradientAngle % 90 === 0 && this.gradientAngle % 180) {
+      if (this.gradientAngle % 270) {
+        from.x = this.rect.center.x;
+        from.y = this.rect.y;
+        to.x = this.rect.center.x;
+        to.y = this.rect.ey;
+      } else {
+        from.x = this.rect.center.x;
+        from.y = this.rect.ey;
+        to.x = this.rect.center.x;
+        to.y = this.rect.y;
+      }
+    } else if (this.gradientAngle) {
       from.rotate(this.gradientAngle, this.rect.center);
       to.rotate(this.gradientAngle, this.rect.center);
     }
@@ -497,7 +503,7 @@ export class Node extends Pen {
 
 
   // 根据父节点rect计算自己（子节点）的rect
-  calcRectByParent(parent: Node) {
+  calcRectByParent(parent: Pen) {
     if (!this.rectInParent) {
       return;
     }
@@ -540,13 +546,20 @@ export class Node extends Pen {
       return;
     }
     for (const item of this.children) {
-      item.calcRectByParent(this);
-      item.init();
-      item.clacChildrenRect();
+      switch (item.type) {
+        case PenType.Line:
+          item.calcRectByParent(this);
+          break;
+        default:
+          item.calcRectByParent(this);
+          (item as Node).init();
+          (item as Node).clacChildrenRect();
+          break;
+      }
     }
   }
 
-  calcRectInParent(parent: Node) {
+  calcRectInParent(parent: Pen) {
     const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
     const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
     this.rectInParent = {
@@ -679,7 +692,9 @@ export class Node extends Pen {
 
     if (rectChanged) {
       this.init();
-      Store.set('LT:rectChanged', this);
+      if (!this.animateAlone) {
+        Store.set('LT:rectChanged', this);
+      }
     }
     return '';
   }

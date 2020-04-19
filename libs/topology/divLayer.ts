@@ -3,6 +3,7 @@ import { Options } from './options';
 import { Node } from './models/node';
 import { TopologyData } from './models/data';
 import { Lock } from './models/status';
+import { PenType } from './models/pen';
 
 export class DivLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -137,7 +138,10 @@ export class DivLayer {
 
     if (node.children) {
       for (const child of node.children) {
-        this.addDiv(child);
+        if (child.type === PenType.Line) {
+          continue;
+        }
+        this.addDiv(child as Node);
       }
     }
   };
@@ -397,7 +401,10 @@ export class DivLayer {
 
     if (item.children) {
       for (const child of item.children) {
-        this.removeDiv(child);
+        if (child.type === PenType.Line) {
+          continue;
+        }
+        this.removeDiv(child as Node);
       }
     }
   }
