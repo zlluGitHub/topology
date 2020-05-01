@@ -5,8 +5,9 @@
   </div>
 </div>
 <div class="nav nav-tab">
-  <div class="item" [class.active]="tab===1" (click)="tab=1">系统组件</div>
+  <div class="item ml10" [class.active]="tab===1" (click)="tab=1">系统组件</div>
   <div class="item" [class.active]="tab===2" (click)="tab=2">我的组件</div>
+  <div class="item" [class.active]="tab===3" (click)="tab=3">我的图片</div>
 </div>
 <div *ngIf="tab===1" class="tools">
   <div *ngFor="let item of systemTools">
@@ -45,4 +46,8 @@
       </span>
     </div>
   </div>
+</div>
+
+<div *ngIf="tab===3" class="tools">
+  <app-user-images class="block mt20" [tool]="true"></app-user-images>
 </div>

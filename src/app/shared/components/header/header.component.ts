@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -11,6 +13,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   menuClicked = false;
   search = '';
+  search$ = new Subject<string>();
 
   subRoute: any;
   constructor(private router: Router, private activateRoute: ActivatedRoute) {
@@ -20,6 +23,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.search = params.get('q') || '';
     });
+
+    this.search$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(text => {
+        this.onSearch(text);
+      });
   }
 
   onClickMenu(event: MouseEvent) {
@@ -51,16 +60,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSearch() {
+  onSearch(text: string) {
     this.router.navigate(['/', 'search'], {
       queryParams: {
-        q: this.search,
+        q: text,
         c: this.activateRoute.snapshot.queryParamMap.get('c')
       }
     });
   }
 
   ngOnDestroy() {
+    this.search$.unsubscribe();
     this.subRoute.unsubscribe();
   }
 }

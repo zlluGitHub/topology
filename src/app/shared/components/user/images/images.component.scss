@@ -29,12 +29,11 @@
   }
 
   .image {
-    margin: 0.1rem 0.05rem 0 0.05rem;
+    margin: 0.2rem 0.05rem 0;
     width: 0.6rem;
     height: 0.6rem;
     display: inline-block;
     text-align: center;
-    border: 1px solid #f0f0f0;
     position: relative;
 
     &.text {
@@ -69,5 +68,19 @@
   .active {
     border: 1px solid $color-primary;
     color: #fff;
+  }
+
+  &.small {
+    min-width: 1.8rem;
+
+    .image {
+      width: 0.5rem;
+      height: 0.5rem;
+      cursor: pointer;
+
+      &.text {
+        line-height: 0.5rem;
+      }
+    }
   }
 }

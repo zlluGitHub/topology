@@ -1,7 +1,7 @@
 <app-workspace-header *ngIf="canvas && data" [file]="data" [data]="canvas.data" (event)="onMenu($event)">
 </app-workspace-header>
 <div class="flex">
-  <div class="tools">
+  <div id="tools" class="tools">
     <app-tools (edit)="onEditTool($event)"></app-tools>
   </div>
   <div class="full" (contextmenu)="onContextMenu($event)">

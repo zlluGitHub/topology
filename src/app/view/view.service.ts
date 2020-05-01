@@ -8,7 +8,7 @@ export class ViewService {
   constructor(protected http: HttpService, protected coreService: CoreService) { }
 
   async Get(data: any) {
-    const ret = await this.http.QueryString({ version: data.version }).Get('/api/topology/' + data.id);
+    const ret = await this.http.QueryString({ version: data.version, view: 1 }).Get('/api/topology/' + data.id);
     if (ret.error) {
       return null;
     }

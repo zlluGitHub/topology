@@ -30,6 +30,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   hots: any[] = [];
   loading = true;
 
+  stars: any = {};
+
   subRoute: any;
   subConfigs: any;
   constructor(
@@ -74,7 +76,21 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.pageIndex === 1) {
       this.data.list = [];
     }
-    this.data.list.push.apply(this.data.list, data.list);
+
+    const ids: string[] = [];
+    for (const item of data.list) {
+      this.data.list.push(item);
+      ids.push(item.id);
+    }
+
+    const user = Store.get('user');
+    if (user) {
+      const idList = await this.service.StarIds({ ids });
+      for (const item of idList) {
+        this.stars[item.id] = true;
+      }
+    }
+
     this.data.count = data.count;
     this.loading = false;
   }
@@ -102,7 +118,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  onStar(event: MouseEvent, item: any) {
+  async onStar(event: MouseEvent, item: any) {
     event.stopPropagation();
 
     if (!Store.get('user')) {
@@ -114,7 +130,15 @@ export class SearchComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.service.Star(item);
+    if (await this.service.Star(item.id, !this.stars[item.id])) {
+      if (this.stars[item.id]) {
+        this.stars[item.id] = false;
+        --item.star;
+      } else {
+        this.stars[item.id] = true;
+        ++item.star;
+      }
+    }
   }
 
   ngOnDestroy() {

@@ -13,8 +13,10 @@ export class UserImagesComponent implements OnInit {
   @Input() image = '';
   @Output() imageChange = new EventEmitter<string>();
 
+  @Input() tool = false;
+
   images: { id: string; image: string; }[];
-  constructor(private service: UserImagesService, private el: ElementRef) {
+  constructor(private service: UserImagesService, public el: ElementRef) {
   }
 
   async ngOnInit() {
@@ -71,5 +73,22 @@ export class UserImagesComponent implements OnInit {
   onClickImage(item: any) {
     this.image = item.image;
     this.imageChange.emit(this.image);
+  }
+
+  onDrag(event: DragEvent, image: any) {
+    if (image) {
+      event.dataTransfer.setData('Text', JSON.stringify({
+        name: 'image',
+        rect: {
+          width: 100,
+          height: 100
+        },
+        image: image.image
+      }));
+    }
+  }
+
+  onTouchstart(item: any) {
+    // this.canvas.touchedNode = item.data;
   }
 }

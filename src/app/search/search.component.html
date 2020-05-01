@@ -35,7 +35,7 @@
           </div>
           <div>
             <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
-              <i class="iconfont " [class.icon-like]="!item.stared" [class.icon-likefill]="item.stared"></i>
+              <i class="iconfont icon-like" [class.primary]="stars[item.id]"></i>
               <span class="ml5">{{ item.star || 0 }}</span>
             </span>
             <span title="浏览">
