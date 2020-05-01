@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Store } from 'le5le-store';
@@ -36,9 +36,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     private service: SearchService,
     private router: Router,
     private activateRoute: ActivatedRoute) {
-    window.onscroll = () => {
-      this.onScroll();
-    };
   }
 
   ngOnInit() {
@@ -55,6 +52,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.getHots();
   }
 
+  @HostListener('window:scroll', ['$event'])
   onScroll() {
     if (!this.loading && this.next && window.pageYOffset + window.innerHeight + 300 > document.body.clientHeight) {
       ++this.pageIndex;

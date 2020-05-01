@@ -4,7 +4,7 @@ import { Clipboard } from 'ts-clipboard';
 import { NoticeService } from 'le5le-components/notice';
 
 import { Topology } from 'topology-core';
-import { Pen } from 'topology-core/models/pen';
+import { Pen } from 'topology-core';
 
 @Component({
   selector: 'app-context-menu',
@@ -14,7 +14,7 @@ import { Pen } from 'topology-core/models/pen';
 export class ContextMenuComponent implements OnInit {
   @Input() canvas: Topology;
   @Input() selection: {
-    pen?: Pen;
+    pen?: any;
     pens?: Pen[];
   };
   @Input() locked = false;
@@ -90,14 +90,14 @@ export class ContextMenuComponent implements OnInit {
   }
 
   onCopyImage() {
-    if (!this.selection.pen || !(this.selection.pen as any).image) {
+    if (!this.selection.pen || !this.selection.pen.image) {
       return;
     }
 
-    Clipboard.copy((this.selection.pen as any).image);
+    Clipboard.copy(this.selection.pen.image);
     const _noticeService: NoticeService = new NoticeService();
     _noticeService.notice({
-      body: `图片地址已复制：${(this.selection.pen as any).image}`,
+      body: `图片地址已复制：${this.selection.pen.image}`,
       theme: 'success'
     });
   }

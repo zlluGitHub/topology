@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Store } from 'le5le-store';
-import { NoticeService } from 'le5le-components/notice';
 
 import { UserFavoriteService } from './favorite.service';
 
@@ -14,8 +13,6 @@ import { UserFavoriteService } from './favorite.service';
 })
 export class UserFavoriteComponent implements OnInit, OnDestroy {
   search = {
-    desc: '',
-    user: '',
     pageIndex: 1,
     pageCount: 8
   };
@@ -26,7 +23,7 @@ export class UserFavoriteComponent implements OnInit, OnDestroy {
   loading = true;
 
   subRoute: any;
-  constructor(private service: UserFavoriteService, private router: Router, private activateRoute: ActivatedRoute) {}
+  constructor(private service: UserFavoriteService, private router: Router, private activateRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
@@ -44,6 +41,8 @@ export class UserFavoriteComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.data = await this.service.Topologies(this.search);
     this.loading = false;
+
+    Store.set('user-statistics', { star: this.data.count });
   }
 
   onOpen(item: any) {
@@ -57,16 +56,9 @@ export class UserFavoriteComponent implements OnInit, OnDestroy {
   async onFavorite(event: MouseEvent, item: any) {
     event.stopPropagation();
 
-    item.favorited = true;
-    if (await this.service.Favorite(item)) {
+    if (await this.service.Remove(item)) {
       this.list();
     }
-  }
-
-  onStar(event: MouseEvent, item: any) {
-    event.stopPropagation();
-
-    this.service.Star(item);
   }
 
   ngOnDestroy() {

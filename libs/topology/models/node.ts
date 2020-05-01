@@ -541,7 +541,7 @@ export class Node extends Pen {
     }
   }
 
-  clacChildrenRect() {
+  calcChildrenRect() {
     if (!this.children) {
       return;
     }
@@ -553,7 +553,7 @@ export class Node extends Pen {
         default:
           item.calcRectByParent(this);
           (item as Node).init();
-          (item as Node).clacChildrenRect();
+          (item as Node).calcChildrenRect();
           break;
       }
     }
@@ -648,7 +648,7 @@ export class Node extends Pen {
           }
           this.rect.ex = this.rect.x + this.rect.width;
           this.rect.ey = this.rect.y + this.rect.height;
-          this.rect.calceCenter();
+          this.rect.calcCenter();
 
           if (item.initState.z !== undefined && item.state.z !== item.initState.z) {
             this.z = item.initState.z + (item.state.z - item.initState.z) * rate;
@@ -718,7 +718,7 @@ export class Node extends Pen {
     }
     this.font.fontSize *= scale;
     this.iconSize *= scale;
-    this.rect.calceCenter();
+    this.rect.calcCenter();
 
     if (this.animateFrames) {
       for (const item of this.animateFrames) {
@@ -744,7 +744,7 @@ export class Node extends Pen {
     this.rect.y += y;
     this.rect.ex = this.rect.x + this.rect.width;
     this.rect.ey = this.rect.y + this.rect.height;
-    this.rect.calceCenter();
+    this.rect.calcCenter();
 
     if (this.animateFrames) {
       for (const frame of this.animateFrames) {
@@ -769,6 +769,7 @@ export class Node extends Pen {
   initRect() {
     this.rect.init();
     if (this.children) {
+      this.calcChildrenRect();
       for (const item of this.children) {
         if (item instanceof Node) {
           item.initRect();

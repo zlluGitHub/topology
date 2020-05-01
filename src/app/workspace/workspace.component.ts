@@ -178,12 +178,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         this.canvas.clearBkImg();
         this.canvas.render();
         break;
-      case 'fullscreen':
-        this.workspace.nativeElement.requestFullscreen();
-        setTimeout(() => {
-          this.canvas.resize();
-          this.canvas.overflow();
-        }, 500);
+      case 'view':
+        this.router.navigateByUrl(`/view?id=${this.data.id}${this.data.version ? '&version=' + this.data.version : ''}&r=1`);
         break;
     }
   }
@@ -293,8 +289,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       id: ret.id,
       version: ret.version,
       image: ret.image,
-      name: ret.name,
-      desc: ret.desc
+      name: ret.name
     });
 
     if (this.user && ret.userId !== this.user.id) {
@@ -678,7 +673,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         Store.set('locked', data);
         break;
     }
-    // console.log('onMessage:', event, data, this.seected);
+    // console.log('onMessage:', event, data);
   };
 
   onSignup() {

@@ -106,7 +106,9 @@ export abstract class Pen {
       this.dash = json.dash || 0;
       this.lineDash = json.lineDash;
       this.lineDashOffset = json.lineDashOffset || 0;
-      this.lineWidth = json.lineWidth || 1;
+      if (json.lineWidth || json.lineWidth === 0) {
+        this.lineWidth = json.lineWidth;
+      }
       this.strokeStyle = json.strokeStyle || '';
       this.fillStyle = json.fillStyle || '';
       this.lineCap = json.lineCap;

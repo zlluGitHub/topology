@@ -29,9 +29,9 @@ export function alignNodes(pens: Pen[], rect: Rect, align: string) {
     }
 
     item.rect.floor();
-    item.rect.calceCenter();
+    item.rect.calcCenter();
     item.init();
-    item.clacChildrenRect();
+    item.calcChildrenRect();
   }
 }
 
@@ -61,8 +61,8 @@ export function spaceBetween(pens: Pen[], width: number) {
     left += item.rect.width + space;
 
     item.rect.floor();
-    item.rect.calceCenter();
+    item.rect.calcCenter();
     item.init();
-    item.clacChildrenRect();
+    item.calcChildrenRect();
   }
 }

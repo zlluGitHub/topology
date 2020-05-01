@@ -18,7 +18,7 @@ export class Rect {
   init() {
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
-    this.calceCenter();
+    this.calcCenter();
   }
 
   floor() {
@@ -63,7 +63,7 @@ export class Rect {
     return pointInRect(point, pts);
   }
 
-  calceCenter() {
+  calcCenter() {
     this.center.x = this.x + this.width / 2;
     this.center.y = this.y + this.height / 2;
   }
@@ -82,7 +82,7 @@ export class Rect {
     this.y += y;
     this.ex += x;
     this.ey += y;
-    this.calceCenter();
+    this.calcCenter();
   }
 
   scale(scale: number, center?: Point, scaleY?: number) {

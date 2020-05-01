@@ -42,8 +42,15 @@ a:hover {
 }
 
 .section {
-  width: 12.8rem;
+  display: block;
+  width: 13rem;
+  max-width: 100%;
+  padding: 0 0.1rem;
   margin: auto;
+
+  &.flex {
+    display: flex;
+  }
 }
 
 .nav a {
@@ -305,11 +312,7 @@ color-picker {
       padding: 0.15rem;
       height: 1.7rem;
       cursor: pointer;
-      display: table-caption;
-      vertical-align: middle;
-      text-align: center;
-      width: 2.4rem;
-      margin: auto;
+      width: 100%;
 
       img {
         max-height: 100%;
@@ -363,6 +366,19 @@ color-picker {
       }
     }
   }
+
+  &.col-4 {
+    .topo {
+      margin-bottom: 0.1rem;
+      margin-right: 0;
+
+      width: calc(25% - 0.08rem);
+
+      &:not(:nth-child(4n + 0)) {
+        margin-right: 0.1rem;
+      }
+    }
+  }
 }
 
 .label {
@@ -373,6 +389,24 @@ color-picker {
   .iconfont {
     font-size: 0.12rem;
     color: #777;
+  }
+}
+
+.nav-tab {
+  a {
+    color: $color;
+  }
+
+  .active {
+    a {
+      color: $color-primary;
+    }
+  }
+
+  &.big {
+    a {
+      font-size: 0.14rem;
+    }
   }
 }
 

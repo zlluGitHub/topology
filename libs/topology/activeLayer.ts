@@ -241,9 +241,9 @@ export class ActiveLayer {
               item.rect.ey = item.rect.y + item.rect.height;
               break;
           }
-          item.rect.calceCenter();
+          item.rect.calcCenter();
           (item as Node).init();
-          (item as Node).clacChildrenRect();
+          (item as Node).calcChildrenRect();
           break;
       }
 
@@ -270,7 +270,7 @@ export class ActiveLayer {
         for (const line of lines) {
           line.translate(offsetX, offsetY);
         }
-        item.clacChildrenRect();
+        item.calcChildrenRect();
 
         if (item.parentId && !item.locked) {
           let parent: Node;
@@ -350,7 +350,7 @@ export class ActiveLayer {
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
           ++cnt;
         }
-        if (cnt < 2) {
+        if (cnt) {
           line.calcControlPoints();
         }
         line.textRect = null;
@@ -385,7 +385,7 @@ export class ActiveLayer {
       item.rect.y = center.y - item.rect.height / 2;
       item.rect.ex = item.rect.x + item.rect.width;
       item.rect.ey = item.rect.y + item.rect.height;
-      item.rect.calceCenter();
+      item.rect.calcCenter();
       item.init();
       item.offsetRotate = angle;
       item.calcRotateAnchors(item.rotate + item.offsetRotate);

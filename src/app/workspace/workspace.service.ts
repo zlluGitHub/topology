@@ -20,7 +20,7 @@ export class WorkspaceService {
   }
 
   async Get(data: any) {
-    const ret = await this.http.QueryString({ version: data.version }).Get('/api/topology/' + data.id);
+    const ret = await this.http.QueryString({ version: data.version, view: 1 }).Get('/api/topology/' + data.id);
     if (ret.error) {
       return null;
     }
@@ -69,9 +69,6 @@ export class WorkspaceService {
     let ret: any;
     if (!data.name) {
       data.name = `Created at ${new Date().toLocaleString()}`;
-    }
-    if (!data.desc) {
-      data.desc = data.name;
     }
     if (data.id) {
       ret = await this.http.Put('/api/user/topology', data);

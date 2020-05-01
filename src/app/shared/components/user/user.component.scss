@@ -4,6 +4,8 @@
 .default {
   a {
     color: $color !important;
+
+    text-decoration: none;
     &:hover {
       color: $color-primary !important;
     }
@@ -41,9 +43,4 @@
       background-color: rgba($color: #fff, $alpha: 0.05);
     }
   }
-}
-
-ui-avatar {
-  position: relative;
-  top: 0.1rem;
 }
