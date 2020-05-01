@@ -8,6 +8,7 @@ import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
 import { abs } from '../utils/math';
 import { Line } from './line';
+import { s8 } from '../utils';
 
 export const images: { [key: string]: { img: HTMLImageElement; cnt: number; }; } = {};
 
@@ -270,6 +271,7 @@ export class Node extends Pen {
           (child as Node).setChild(item.children);
           break;
       }
+      child.id = s8();
       this.children.push(child);
     }
   }

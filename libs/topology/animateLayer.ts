@@ -1,6 +1,6 @@
 import { Store } from 'le5le-store';
 
-import { Pen } from './models/pen';
+import { Pen, PenType } from './models/pen';
 import { Node } from './models/node';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
@@ -45,6 +45,14 @@ export class AnimateLayer {
     for (const item of this.pens) {
       if (item.id === pen.id) {
         return item;
+      }
+    }
+  }
+
+  remove(pen: Pen) {
+    for (let i = 0; i < this.pens.length; i++) {
+      if (this.pens[i].id === pen.id) {
+        this.pens.splice(i, 1);
       }
     }
   }
@@ -99,6 +107,10 @@ export class AnimateLayer {
         if (pen) {
           pen.animateStart = 0;
         }
+      }
+
+      if (item.type === PenType.Node) {
+        this.readyPlay(tag, auto, (item as Node).children || []);
       }
     }
   }

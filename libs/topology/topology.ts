@@ -1516,17 +1516,18 @@ export class Topology {
   delete() {
     const pens: Pen[] = [];
     let i = 0;
-    for (const line of this.activeLayer.pens) {
-      i = this.find(line);
+    for (const pen of this.activeLayer.pens) {
+      i = this.find(pen);
       if (i > -1) {
         if (this.data.pens[i].type === PenType.Node) {
           this.divLayer.removeDiv(this.data.pens[i] as Node);
         }
         pens.push.apply(pens, this.data.pens.splice(i, 1));
       }
+
+      this.animateLayer.remove(pen);
     }
 
-    this.animate(false);
     this.render(true);
     this.cache();
 
