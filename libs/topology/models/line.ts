@@ -80,7 +80,9 @@ export class Line extends Pen {
     }
 
     const data = Store.get('topology-data');
-    this.font.background = data.bkColor || '#fff';
+    if (!this.font.background) {
+      this.font.background = data.bkColor || '#fff';
+    }
   }
 
   setFrom(from: Point, fromArrow: string = '') {

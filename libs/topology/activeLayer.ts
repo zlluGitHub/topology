@@ -362,14 +362,6 @@ export class ActiveLayer {
     Store.set('LT:updateLines', lines);
   }
 
-  changeLineType() {
-    for (const item of this.pens) {
-      if (item instanceof Line) {
-        item.calcControlPoints();
-      }
-    }
-  }
-
   offsetRotate(angle: number) {
     this.rotating = true;
     let i = 0;

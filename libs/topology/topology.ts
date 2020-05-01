@@ -684,7 +684,6 @@ export class Topology {
 
   private onmousedown = (e: MouseEvent) => {
     this.mouseDown = { x: e.offsetX, y: e.offsetY };
-
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
     }
@@ -703,6 +702,7 @@ export class Topology {
       // Click a line.
       case MoveInType.Line:
       case MoveInType.LineControlPoint:
+        console.log(212312);
         if (e.ctrlKey) {
           this.activeLayer.add(this.moveIn.hoverLine);
           this.dispatch('multi', this.activeLayer.pens);
@@ -753,7 +753,7 @@ export class Topology {
         }
 
         if (e.ctrlKey) {
-          if (this.activeLayer.hasInAll(this.moveIn.hoverNode)) {
+          if (this.moveIn.hoverNode && this.activeLayer.hasInAll(this.moveIn.hoverNode)) {
             this.activeLayer.setPens([this.moveIn.hoverNode]);
             this.dispatch('node', this.moveIn.hoverNode);
           } else if (!this.activeLayer.has(this.moveIn.activeNode)) {
@@ -765,8 +765,13 @@ export class Topology {
             }
           }
         } else if (e.shiftKey) {
-          this.activeLayer.setPens([this.moveIn.hoverNode]);
-          this.dispatch('node', this.moveIn.hoverNode);
+          if (this.moveIn.hoverNode) {
+            this.activeLayer.setPens([this.moveIn.hoverNode]);
+            this.dispatch('node', this.moveIn.hoverNode);
+          } else if (this.moveIn.hoverLine) {
+            this.activeLayer.setPens([this.moveIn.hoverLine]);
+            this.dispatch('line', this.moveIn.hoverLine);
+          }
         } else if (this.activeLayer.pens.length < 2) {
           this.activeLayer.setPens([this.moveIn.activeNode]);
           this.dispatch('node', this.moveIn.activeNode);
@@ -877,70 +882,79 @@ export class Topology {
     let done = false;
     let moveX = 0;
     let moveY = 0;
-    switch (key.keyCode) {
-      // Delete
-      case 8:
-      case 46:
+    switch (key.key) {
+      case 'a':
+      case 'A':
         if (
           (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
-          && (this.activeLayer.pens.length)
+        ) {
+          this.activeLayer.setPens(this.data.pens);
+          done = true;
+        }
+        break;
+      case 'Delete':
+      case 'Backspace':
+        if (
+          (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
+          && this.activeLayer.pens.length && !this.activeLayer.locked()
         ) {
           this.delete();
         }
         break;
-      // Left
-      case 37:
+      case 'ArrowLeft':
         moveX = -5;
         if (key.ctrlKey) {
           moveX = -1;
         }
         done = true;
         break;
-      // Top
-      case 38:
+      case 'ArrowUp':
         moveY = -5;
         if (key.ctrlKey) {
           moveY = -1;
         }
         done = true;
         break;
-      // Right
-      case 39:
+      case 'ArrowRight':
         moveX = 5;
         if (key.ctrlKey) {
           moveX = 1;
         }
         done = true;
         break;
-      // Down
-      case 40:
+      case 'ArrowDown':
         moveY = 5;
         if (key.ctrlKey) {
           moveY = 1;
         }
         done = true;
         break;
-      case 88:
+      case 'x':
+      case 'X':
         if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
           this.cut();
         }
         break;
-      case 67:
+      case 'c':
+      case 'C':
         if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
           this.copy();
         }
         break;
-      case 86:
+      case 'v':
+      case 'V':
         if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
           this.paste();
         }
         break;
-      case 89: // Y
+      case 'y':
+      case 'Y':
         if (key.ctrlKey) {
           this.redo();
         }
         break;
-      case 90: // Z
+      case 'z':
+      case 'Z':
         if (key.shiftKey) {
           this.redo();
         } else {
@@ -952,6 +966,8 @@ export class Topology {
     if (!done) {
       return;
     }
+
+    key.preventDefault();
 
     if (moveX || moveY) {
       this.activeLayer.saveNodeRects();
@@ -1047,6 +1063,9 @@ export class Topology {
 
     for (const item of children) {
       if (item.type === PenType.Line) {
+        if (this.inLine(pt, item as Line)) {
+          return item;
+        }
         continue;
       }
       let node = this.inChildNode(pt, (item as Node).children);
@@ -1070,6 +1089,10 @@ export class Topology {
 
     const child = this.inChildNode(pt, node.children);
     if (child) {
+      if (child.type === PenType.Line) {
+        this.moveIn.activeNode = node;
+        this.moveIn.type = MoveInType.Nodes;
+      }
       return child;
     }
 
@@ -1668,7 +1691,6 @@ export class Topology {
     this.activeLayer.updateLines(pens);
     this.activeLayer.calcControlPoints();
     this.activeLayer.saveNodeRects();
-    this.activeLayer.changeLineType();
 
     this.render();
     // tslint:disable-next-line: no-unused-expression

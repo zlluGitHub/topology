@@ -47,6 +47,11 @@ export abstract class Pen {
   textOffsetX: number;
   textOffsetY: number;
 
+  shadowColor: string;
+  shadowBlur: number;
+  shadowOffsetX: number;
+  shadowOffsetY: number;
+
   // animateType仅仅是辅助标识
   animateType: string;
   // Date.getTime
@@ -125,6 +130,10 @@ export abstract class Pen {
       this.textOffsetX = json.textOffsetX || 0;
       this.textOffsetY = json.textOffsetY || 0;
 
+      this.shadowColor = json.shadowColor;
+      this.shadowBlur = json.shadowBlur;
+      this.shadowOffsetX = json.shadowOffsetX;
+      this.shadowOffsetY = json.shadowOffsetY;
 
       this.animateType = json.animateType;
       this.animateCycle = json.animateCycle;
@@ -202,6 +211,13 @@ export abstract class Pen {
     }
     if (this.lineDashOffset) {
       ctx.lineDashOffset = this.lineDashOffset;
+    }
+
+    if (this.shadowColor) {
+      ctx.shadowColor = this.shadowColor;
+      ctx.shadowOffsetX = this.shadowOffsetX;
+      ctx.shadowOffsetY = this.shadowOffsetY;
+      ctx.shadowBlur = this.shadowBlur;
     }
 
     this.draw(ctx);
