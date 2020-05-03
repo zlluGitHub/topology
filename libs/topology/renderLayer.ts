@@ -23,6 +23,7 @@ export class RenderLayer extends Canvas {
     }
 
     this.bkImg = new Image();
+    this.bkImg.setAttribute('crossOrigin', 'anonymous');
     this.bkImg.src = this.data.bkImage;
     this.bkImg.onload = () => {
       this.bkImgRect = this.coverRect(this.canvas.width, this.canvas.height, this.bkImg.width, this.bkImg.height);
