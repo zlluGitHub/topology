@@ -18,6 +18,7 @@ import { Rect } from './models/rect';
 import { s8 } from './utils/uuid';
 import { pointInRect } from './utils/canvas';
 import { getRect } from './utils/rect';
+import { Socket } from './socket';
 
 const resizeCursors = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize'];
 enum MoveInType {
@@ -95,6 +96,8 @@ export class Topology {
   tipElem: HTMLElement;
 
   private scheduledAnimationFrame = false;
+
+  private socket: Socket;
 
   private scrolling = false;
   constructor(parent: string | HTMLElement, options?: Options) {
@@ -449,6 +452,13 @@ export class Topology {
     this.render(true);
 
     this.animate();
+
+    if (this.socket) {
+      this.socket.close();
+    }
+    if (this.data.websocket) {
+      this.socket = new Socket(this.data.websocket, this.data.pens);
+    }
   }
 
   overflow() {
@@ -702,7 +712,6 @@ export class Topology {
       // Click a line.
       case MoveInType.Line:
       case MoveInType.LineControlPoint:
-        console.log(212312);
         if (e.ctrlKey) {
           this.activeLayer.add(this.moveIn.hoverLine);
           this.dispatch('multi', this.activeLayer.pens);
@@ -879,27 +888,24 @@ export class Topology {
       return;
     }
 
+    if (
+      (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
+    ) {
+      return;
+    }
+
     let done = false;
     let moveX = 0;
     let moveY = 0;
     switch (key.key) {
       case 'a':
       case 'A':
-        if (
-          (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
-        ) {
-          this.activeLayer.setPens(this.data.pens);
-          done = true;
-        }
+        this.activeLayer.setPens(this.data.pens);
+        done = true;
         break;
       case 'Delete':
       case 'Backspace':
-        if (
-          (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
-          && this.activeLayer.pens.length && !this.activeLayer.locked()
-        ) {
-          this.delete();
-        }
+        this.delete();
         break;
       case 'ArrowLeft':
         moveX = -5;
@@ -931,21 +937,15 @@ export class Topology {
         break;
       case 'x':
       case 'X':
-        if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
-          this.cut();
-        }
+        this.cut();
         break;
       case 'c':
       case 'C':
-        if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
-          this.copy();
-        }
+        this.copy();
         break;
       case 'v':
       case 'V':
-        if (key.ctrlKey && (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA') {
-          this.paste();
-        }
+        this.paste();
         break;
       case 'y':
       case 'Y':
@@ -2058,5 +2058,8 @@ export class Topology {
     this.divLayer.destroy();
     document.body.removeChild(this.tipMarkdown);
     window.removeEventListener('resize', this.winResize);
+    if (this.socket) {
+      this.socket.close();
+    }
   }
 }

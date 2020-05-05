@@ -3,7 +3,7 @@ import { Component, OnInit, OnChanges, Input, SimpleChanges, HostListener } from
 import { Topology } from 'topology-core';
 import { Pen } from 'topology-core/models/pen';
 import { Node } from 'topology-core/models/node';
-import { PenEvent, PenEventType } from 'topology-core/models/event';
+import { EventType, EventAction } from 'topology-core/models/event';
 import { alignNodes, spaceBetween, layout } from 'topology-layout';
 
 import { PenPropsService } from './penProps.service';
@@ -261,7 +261,7 @@ export class PenPropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
-  eventNames = {
+  eventTypes = {
     id: 'id',
     name: 'name',
     list: [
@@ -272,12 +272,16 @@ export class PenPropsComponent implements OnInit, OnChanges {
       {
         id: 1,
         name: '双击'
+      },
+      {
+        id: 2,
+        name: 'Websocket事件'
       }
     ],
     noDefaultOption: true
   };
 
-  eventTypes = {
+  eventActions = {
     id: 'id',
     name: 'name',
     list: [
@@ -292,6 +296,10 @@ export class PenPropsComponent implements OnInit, OnChanges {
       {
         id: 2,
         name: '执行自定义函数'
+      },
+      {
+        id: 3,
+        name: '执行window函数'
       }
     ],
     noDefaultOption: true
@@ -758,8 +766,8 @@ export class PenPropsComponent implements OnInit, OnChanges {
 
   onAddEvent() {
     this.pen.events.push({
-      name: PenEvent.Click,
-      type: PenEventType.Link,
+      type: EventType.Click,
+      action: EventAction.Link,
       value: ''
     });
   }

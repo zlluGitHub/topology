@@ -179,7 +179,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         this.canvas.render();
         break;
       case 'view':
-        this.router.navigateByUrl(`/view?id=${this.data.id}${this.data.version ? '&version=' + this.data.version : ''}&r=1`);
+        if (this.data.id) {
+          this.router.navigateByUrl(`/view?id=${this.data.id}${this.data.version ? '&version=' + this.data.version : ''}&r=1`);
+        }
         break;
     }
   }

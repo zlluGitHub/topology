@@ -13,6 +13,7 @@ export class TopologyData {
   bkImage: string;
   bkColor: string;
   grid?: boolean;
+  websocket?: string;
   data?: any;
   constructor(json?: any) {
     if (json) {

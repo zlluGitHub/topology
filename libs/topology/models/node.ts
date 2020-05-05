@@ -1,14 +1,14 @@
 import { Pen, PenType } from './pen';
 import { Rect } from './rect';
 import { Point } from './point';
+import { Line } from './line';
 import { anchorsFns, iconRectFns, textRectFns, drawNodeFns } from '../middles';
 import { defaultAnchors } from '../middles/default.anchor';
 import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
 import { abs } from '../utils/math';
-import { Line } from './line';
-import { s8 } from '../utils';
+import { s8 } from '../utils/uuid';
 
 export const images: { [key: string]: { img: HTMLImageElement; cnt: number; }; } = {};
 

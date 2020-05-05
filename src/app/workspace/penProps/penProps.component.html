@@ -1065,30 +1065,40 @@
     </div>
     <div *ngIf="show['event-' + i] !== false" class="mt10">
       <div class="flex middle input-line mv10 pt10">
-        <label>事件名称</label>
-        <div>
-          <ui-select [(ngModel)]="item.name" [options]="eventNames" [multi]="false" [readonly]="readonly"
-            style="width: 1.5rem"></ui-select>
-        </div>
-      </div>
-      <div class="flex middle input-line mv10">
-        <label>事件行为</label>
+        <label>事件类型</label>
         <div>
           <ui-select [(ngModel)]="item.type" [options]="eventTypes" [multi]="false" [readonly]="readonly"
             style="width: 1.5rem"></ui-select>
         </div>
       </div>
-      <div class="flex middle input-line mv10 pt10">
-        <label *ngIf="item.type === 0">链接地址</label>
-        <label *ngIf="item.type === 1">动画标签</label>
-        <label *ngIf="item.type === 2">事件名称</label>
+      <div class="flex middle input-line mv10" *ngIf="item.type === 2">
+        <label>消息名称</label>
         <div>
-          <input *ngIf="item.type !== 1" class="input" [(ngModel)]="item.value" />
-          <input *ngIf="item.type === 1" class="input" [(ngModel)]="item.value" placeholder="缺省执行自身动画" />
+          <input class="input" [(ngModel)]="item.name" placeholder="websocket消息名" title="websocket中json格式下的event值" />
         </div>
       </div>
-      <div class="flex middle input-line mv10 pt10" *ngIf="item.type !== 1">
-        <label>事件参数</label>
+      <div class="flex middle input-line mv10">
+        <label>事件行为</label>
+        <div>
+          <ui-select [(ngModel)]="item.action" [options]="eventActions" [multi]="false" [readonly]="readonly"
+            style="width: 1.5rem"></ui-select>
+        </div>
+      </div>
+      <div class="flex input-line mv10 pt10">
+        <label *ngIf="item.action === 0" class="mt3">链接地址</label>
+        <label *ngIf="item.action === 1" class="mt3">动画标签</label>
+        <label *ngIf="item.action === 2" class="mt3">函数代码</label>
+        <label *ngIf="item.action === 3" class="mt3">函数名称</label>
+        <div>
+          <input *ngIf="item.action === 0 || item.action === 3" class="input" [(ngModel)]="item.value" />
+          <input *ngIf="item.action === 1" class="input" [(ngModel)]="item.value" placeholder="缺省执行自身动画" />
+          <textarea *ngIf="item.action === 2" class="input full" [(ngModel)]="item.value" rows="25"
+            [readonly]="readonly"
+            placeholder="可用参数：pen - 画笔数据。&#10;&#10;如果是websocket事件，params - websocket中json格式下的data"></textarea>
+        </div>
+      </div>
+      <div class="flex middle input-line mv10 pt10" *ngIf="item.action === 3">
+        <label>函数参数</label>
         <div>
           <input class="input" [(ngModel)]="item.params" />
         </div>

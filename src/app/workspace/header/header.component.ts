@@ -118,6 +118,9 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
     '#314659',
     '#777777'
   ];
+
+  id: string;
+  subRoute: any;
   constructor(private router: Router, private activateRoute: ActivatedRoute) {
   }
 
@@ -142,6 +145,10 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
     this.subUser = Store.subscribe('user', (user: any) => {
       this.user = user;
       this.getRecently();
+    });
+
+    this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
+      this.id = params.get('id');
     });
   }
 
@@ -207,5 +214,7 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.subUser.unsubscribe();
+    this.subRoute.unsubscribe();
   }
 }

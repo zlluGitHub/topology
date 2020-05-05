@@ -136,7 +136,7 @@
   </div>
   <div class="full"></div>
   <div class="flex">
-    <div class="item mh5">
+    <div class="item mh5" [class.disabled]="!id" title="仅可预览已保存的图文">
       <a (click)="onMenu('view')" style="padding-right: 0;">
         <i class="iconfont icon-attention rel" style="top:1px; margin-right: 2px"></i>
         预览

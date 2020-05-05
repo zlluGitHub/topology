@@ -1,10 +1,12 @@
-export enum PenEvent {
+export enum EventType {
   Click,
-  DblClick
+  DblClick,
+  WebSocket
 }
 
-export enum PenEventType {
+export enum EventAction {
   Link,
   Animate,
-  Function
+  Function,
+  WindowFn
 }

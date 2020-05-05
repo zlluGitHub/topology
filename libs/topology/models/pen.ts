@@ -2,7 +2,7 @@ import { s8 } from '../utils/uuid';
 import { Point } from './point';
 import { Rect } from './rect';
 import { pointInRect } from '../utils/canvas';
-import { PenEvent, PenEventType } from './event';
+import { EventType, EventAction } from './event';
 
 import { Store } from 'le5le-store';
 
@@ -74,8 +74,8 @@ export abstract class Pen {
   tipId: string;
   title: string;
 
-  events: { name: PenEvent; type: PenEventType; value: string; params: string; }[] = [];
-  private eventFns: string[] = ['link', 'doAnimate', 'doFn'];
+  events: { type: EventType; action: EventAction; value: string; params: string; name?: string; }[] = [];
+  private eventFns: string[] = ['link', 'doAnimate', 'doFn', 'doWindowFn'];
 
   parentId: string;
   rectInParent: {
@@ -249,11 +249,11 @@ export abstract class Pen {
     }
 
     for (const item of this.events) {
-      if (item.name !== PenEvent.Click) {
+      if (item.type !== EventType.Click) {
         continue;
       }
 
-      this[this.eventFns[item.type]](item.value, item.params);
+      this[this.eventFns[item.action]](item.value, item.params);
     }
   }
 
@@ -263,11 +263,19 @@ export abstract class Pen {
     }
 
     for (const item of this.events) {
-      if (item.name !== PenEvent.DblClick) {
+      if (item.type !== EventType.DblClick) {
         continue;
       }
 
-      this[this.eventFns[item.type]](item.value, item.params);
+      this[this.eventFns[item.action]](item.value, item.params);
+    }
+  }
+
+  doSocket(item: { type: EventType; action: EventAction; value: string; params: string; name?: string; }, msg: any) {
+    if (item.action < EventAction.Function) {
+      this[this.eventFns[event.type]](msg.value || msg || item.value, msg.params || item.params);
+    } else {
+      this[this.eventFns[event.type]](item.value, msg || item.params);
     }
   }
 
@@ -283,6 +291,11 @@ export abstract class Pen {
   }
 
   private doFn(fn: string, params: string) {
+    const func = new Function('pen', 'params', fn);
+    func(this, params);
+  }
+
+  private doWindowFn(fn: string, params: string) {
     (window as any)[fn](params, this);
   }
 

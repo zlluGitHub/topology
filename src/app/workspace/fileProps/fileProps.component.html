@@ -53,6 +53,16 @@
   </div>
 </div>
 
+<div *ngIf="canvas && !data.component">
+  <div class="title">Websocket地址</div>
+  <div class="ph15 pv10">
+    <input class="input full" [(ngModel)]="canvas.data.websocket" placeholder="websocket url地址">
+    <div class="gray mt5" style="line-height: 1.5;">
+      用于Pen“事件”中的websocket使用。消息格式为json字符串：{{'{event, data}'}}
+    </div>
+  </div>
+</div>
+
 <div class="title">排版</div>
 <div class="ph15 pv5">
   <div class="flex middle mb10">
