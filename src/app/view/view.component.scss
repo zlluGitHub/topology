@@ -1,0 +1,21 @@
+@import "src/variables";
+@import "~le5le-ui/variables";
+
+.view {
+  height: 100vh;
+  overflow: auto;
+
+  .tools {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.1rem 0.15rem;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+#topology-canvas {
+  min-height: 100%;
+}

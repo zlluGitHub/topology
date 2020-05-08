@@ -1,11 +1,12 @@
-import { Pen } from './pen';
+import { Pen, PenType } from './pen';
 import { Point } from './point';
 import { drawLineFns, drawArrowFns } from '../middles';
 import { getBezierPoint } from '../middles/lines/curve';
 import { Store } from 'le5le-store';
-import { lineLen, curveLen } from '../utils';
+import { lineLen, curveLen } from '../utils/canvas';
 import { text } from '../middles/nodes/text';
 import { Rect } from './rect';
+import { abs } from '../utils/math';
 
 export class Line extends Pen {
   from: Point;
@@ -33,9 +34,12 @@ export class Line extends Pen {
 
   animateDot: { x: number, y: number; };
   animateDotSize = 3;
+
+  manualCps: boolean;
   constructor(json?: any) {
     super(json);
 
+    this.type = PenType.Line;
     if (json) {
       if (json.from) {
         this.from = new Point(json.from.x, json.from.y, json.from.direction, json.from.anchorIndex, json.from.id);
@@ -43,9 +47,12 @@ export class Line extends Pen {
       if (json.to) {
         this.to = new Point(json.to.x, json.to.y, json.to.direction, json.to.anchorIndex, json.to.id);
       }
-      for (const item of json.controlPoints) {
-        this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
+      if (json.controlPoints) {
+        for (const item of json.controlPoints) {
+          this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
+        }
       }
+
       this.fromArrow = json.fromArrow || '';
       this.toArrow = json.toArrow || '';
       this.fromArrowSize = json.fromArrowSize || 5;
@@ -66,13 +73,16 @@ export class Line extends Pen {
         this.borderWidth = json.borderWidth;
       }
       this.animateDotSize = json.animateDotSize || 3;
+      this.manualCps = !!json.manualCps;
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
     }
 
     const data = Store.get('topology-data');
-    this.font.background = data.bkColor || '#fff';
+    if (!this.font.background) {
+      this.font.background = data.bkColor || '#fff';
+    }
   }
 
   setFrom(from: Point, fromArrow: string = '') {
@@ -87,9 +97,12 @@ export class Line extends Pen {
     this.textRect = null;
   }
 
-  calcControlPoints() {
+  calcControlPoints(force?: boolean) {
+    if (this.manualCps && !force) {
+      return;
+    }
     this.textRect = null;
-    if (this.to && drawLineFns[this.name]) {
+    if (this.from && this.to && drawLineFns[this.name]) {
       drawLineFns[this.name].controlPointsFn(this);
     }
   }
@@ -229,9 +242,6 @@ export class Line extends Pen {
         center = this.getLineCenter(this.from, this.to);
         break;
       case 'polyline':
-        if (!this.controlPoints || !this.controlPoints.length) {
-          this.calcControlPoints();
-        }
         const i = Math.floor(this.controlPoints.length / 2);
         center = this.getLineCenter(this.controlPoints[i - 1], this.controlPoints[i]);
         break;
@@ -290,7 +300,47 @@ export class Line extends Pen {
     return new Point(x, y);
   }
 
-  animate() {
+  calcRectInParent(parent: Pen) {
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    this.rectInParent = {
+      x: ((this.from.x - parent.rect.x - parent.paddingLeftNum) * 100 / parentW) + '%',
+      y: ((this.from.y - parent.rect.y - parent.paddingTopNum) * 100 / parentH) + '%',
+      width: 0,
+      height: 0,
+      rotate: 0,
+    };
+  }
+
+  // 根据父节点rect计算自己（子节点）的rect
+  calcRectByParent(parent: Pen) {
+    if (!this.rectInParent) {
+      return;
+    }
+    const parentW = parent.rect.width - parent.paddingLeftNum - parent.paddingRightNum;
+    const parentH = parent.rect.height - parent.paddingTopNum - parent.paddingBottomNum;
+    let x =
+      parent.rect.x +
+      parent.paddingLeftNum +
+      abs(parentW, this.rectInParent.x) +
+      abs(parentW, this.rectInParent.marginLeft);
+    let y =
+      parent.rect.y +
+      parent.paddingTopNum +
+      abs(parentH, this.rectInParent.y) +
+      abs(parentW, this.rectInParent.marginTop);
+
+    if (this.rectInParent.marginLeft === undefined && this.rectInParent.marginRight) {
+      x -= abs(parentW, this.rectInParent.marginRight);
+    }
+    if (this.rectInParent.marginTop === undefined && this.rectInParent.marginBottom) {
+      y -= abs(parentW, this.rectInParent.marginBottom);
+    }
+
+    this.translate(x - this.from.x, y - this.from.y);
+  }
+
+  animate(now: number) {
     if (this.animateFromSize) {
       this.lineDashOffset = -this.animateFromSize;
     }
@@ -315,6 +365,7 @@ export class Line extends Pen {
         this.lineDash = [this.animatePos, this.length - this.animatePos + 1];
         break;
     }
+
     if (this.animatePos > this.length + this.animateSpan - this.animateFromSize - this.animateToSize) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
@@ -327,6 +378,8 @@ export class Line extends Pen {
 
       this.animatePos = this.animateSpan;
     }
+
+    return '';
   }
 
   getBubbles() {
@@ -380,5 +433,9 @@ export class Line extends Pen {
     }
 
     Store.set('pts-' + this.id, null);
+  }
+
+  clone() {
+    return new Line(this);
   }
 }

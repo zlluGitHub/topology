@@ -17,24 +17,18 @@ export class Canvas {
     this.canvas.style.outline = 'none';
 
     if (!Canvas.dpiRatio) {
-      const ctx = this.canvas.getContext('2d');
-      const bsr =
-        ctx['webkitBackingStorePixelRatio'] ||
-        ctx['mozBackingStorePixelRatio'] ||
-        ctx['msBackingStorePixelRatio'] ||
-        ctx['oBackingStorePixelRatio'] ||
-        ctx['backingStorePixelRatio'] ||
-        1;
-
       if (!options.extDpiRatio && options.extDpiRatio !== 0) {
-        options.extDpiRatio = 0.25;
+        if (window.devicePixelRatio > 1) {
+          options.extDpiRatio = 0.25;
+        } else {
+          options.extDpiRatio = 0;
+        }
       }
-
-      Canvas.dpiRatio = window.devicePixelRatio / bsr + options.extDpiRatio;
+      Canvas.dpiRatio = window.devicePixelRatio + options.extDpiRatio;
     }
   }
 
-  resize(size?: { width: number; height: number }) {
+  resize(size?: { width: number; height: number; }) {
     if (size) {
       this.width = size.width | 0;
       this.height = size.height | 0;
@@ -47,7 +41,7 @@ export class Canvas {
       if (this.options.height && this.options.height !== 'auto') {
         this.height = +this.options.height;
       } else {
-        this.height = this.parentElem.clientHeight - 8;
+        this.height = this.parentElem.clientHeight;
       }
     }
 

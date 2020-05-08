@@ -1,2 +1,50 @@
-@import 'src/variables';
-@import '~le5le-ui/variables';
+@import "src/variables";
+@import "~le5le-ui/variables";
+
+header {
+  height: 0.6rem;
+  border-bottom: 1px solid #eee;
+}
+
+.user-panel {
+  background-color: #f6f6f9;
+  padding: 0.6rem 0.3rem 0.3rem;
+  min-height: 100%;
+
+  & > .flex {
+    display: flex;
+  }
+
+  .menus {
+    width: 2.4rem;
+    flex-shrink: 0;
+
+    .avatar {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-color: $color-primary;
+    }
+
+    .user {
+      font-size: 0.18rem;
+    }
+
+    .text-left {
+      font-size: 0.14rem;
+    }
+  }
+}
+
+.panel {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 0;
+
+  &.full {
+    min-height: calc(100vh - 1.2rem);
+  }
+}
+
+.text {
+  color: $color;
+}

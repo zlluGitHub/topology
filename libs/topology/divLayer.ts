@@ -3,6 +3,7 @@ import { Options } from './options';
 import { Node } from './models/node';
 import { TopologyData } from './models/data';
 import { Lock } from './models/status';
+import { PenType } from './models/pen';
 
 export class DivLayer {
   protected data: TopologyData = Store.get('topology-data');
@@ -137,7 +138,10 @@ export class DivLayer {
 
     if (node.children) {
       for (const child of node.children) {
-        this.addDiv(child);
+        if (child.type === PenType.Line) {
+          continue;
+        }
+        this.addDiv(child as Node);
       }
     }
   };
@@ -312,7 +316,10 @@ export class DivLayer {
       return;
     }
 
-    for (const item of this.data.nodes) {
+    for (const item of this.data.pens) {
+      if (!(item instanceof Node)) {
+        continue;
+      }
       if (item.tags.indexOf(next) > -1) {
         if (item.audio && this.audios[item.id] && this.audios[item.id].media && this.audios[item.id].media.paused) {
           this.audios[item.id].media.play();
@@ -394,7 +401,10 @@ export class DivLayer {
 
     if (item.children) {
       for (const child of item.children) {
-        this.removeDiv(child);
+        if (child.type === PenType.Line) {
+          continue;
+        }
+        this.removeDiv(child as Node);
       }
     }
   }
@@ -445,8 +455,8 @@ export class DivLayer {
   }
 
   render() {
-    for (const item of this.data.nodes) {
-      this.addDiv(item);
+    for (const item of this.data.pens) {
+      this.addDiv(item as Node);
     }
   }
 

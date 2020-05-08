@@ -1,88 +1,45 @@
-<div class="flex">
-  <div class="tools">
-    <div *ngFor="let item of tools">
-      <div class="title">{{ item.group }}</div>
-      <div class="buttons">
-        <a *ngFor="let button of item.children" [title]="button.name" [draggable]="button.data"
-          (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
-          <i class="iconfont {{ button.icon }}"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="full">
-    <div class="canvas" #workspace (contextmenu)="onContextMenu($event)"></div>
-    <div class="flex ph15 pv5">
-      <div class="full flex">
-        文件名：
-        <label *ngIf="!editFilename" (dblclick)="onEditFile(filenameInput)" title="双击编辑，点击空白保存">{{data.name}}</label>
-        <form class="inline" [class.hidden]="!editFilename" #myForm="ngForm" [uiTouchForm]="myForm" title="双击编辑，点击空白保存">
-          <input name="filename" #filenameInput class="input" [(ngModel)]="data.name" (blur)="onSaveFilename()"
-            required />
-        </form>
-        <i class="iconfont icon-edit" *ngIf="!editFilename" (click)="onEditFile(filenameInput)" title="双击编辑，点击空白保存"></i>
-      </div>
-      <div *ngIf="data.id">
-        <a routerLink="/user/history" [queryParams]="{ id: data.id, name: data.name }">-> 文件历史</a>
-      </div>
-    </div>
-  </div>
-  <div class="props">
-    <div class="pv5">
-      <div *ngIf="!selected">
-        <div class="title">欢迎使用le5le-topology！</div>
-        <div class="ml30 mb20 mt10">
-          <a href="https://github.com/le5le-com/topology" target="_blank" class="block mt20 mb15"
-            style="color:#f60!important;text-decoration: underline;">喜欢，点击这里打个star吧</a>
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群（大群）</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">微信交流群2</a><br />
-          <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
-        </div>
-        <div class="title mt30">[Todo] 未来规划</div>
-        <ul class="ml30 mb20 mt10">
-          <li>Github issues</li>
-          <li>React demo</li>
-          <li>Vue3 demo</li>
-          <li>系列教程</li>
-        </ul>
-        <div class="abs" style="bottom:.2rem">
-          <div class="title mt30">
-            小提示
-          </div>
-          <ul class="ml30 mb20 mt10">
-            <li>方向键：控制节点移动5个像素</li>
-            <li>Ctrl + 方向键：控制节点移动1个像素</li>
-            <li>Ctrl + 鼠标移动：移动整个画布</li>
-            <li>Ctrl + 鼠标滚轮：缩放</li>
-            <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
-          </ul>
-        </div>
-      </div>
-      <div *ngIf="selected">
-        <app-props [props]="selected" [readonly]="readonly" (ok)="onChangeProps($event)"
-          (animateChange)="onAnimateChange()"></app-props>
-      </div>
-    </div>
+<div class="bars">
+  <article *ngFor="let item of cms.bars;let i=index" [class.active]="curBar === i" [ngStyle]="item.styles"
+    (mouseenter)="onMouseEnter()" (mouseout)="onMouseOut()">
+    <header>{{item.title}}</header>
+    <p>{{item.desc}}</p>
+    <a class="button" *ngIf="item.url" [href]="item.url" target="_blank">{{item.button}}</a>
+    <a class="button" *ngIf="item.router" [routerLink]="item.router">{{item.button}}</a>
+    <img *ngIf="item.image" [src]="item.image" />
+  </article>
+  <div class="dots flex center">
+    <i *ngFor="let item of cms.bars;let i=index" [class.active]="curBar === i" (mouseenter)="curBar = i"></i>
   </div>
 </div>
-<app-context-menu [contextmenu]="contextmenu" [canvas]="canvas" [selNodes]="selNodes" [selected]="selected"
-  [locked]="locked"></app-context-menu>
 
-<div class="modal" *ngIf="divNode">
-  <div class="modal-content">
-    <div class="modal-header pointer" uiDivMove [isHead]="true">
-      <div class="caption">添加视频/网页</div>
-      <i class="fr iconfont icon-close" (click)="divNode = null"></i>
-    </div>
-    <div class="modal-body"></div>
-    <div class="modal-footer">
-      <button type="button" class="button mr10" (click)="divNode = null">
-        取消
-      </button>
-      <button type="button" class="button primary" (click)="divNode = null">
-        确定
-      </button>
+<div class="header">
+  <app-header class="section"></app-header>
+</div>
+<section class="classes">
+  <h1>解决方案模板</h1>
+  <h2>丰富模板，帮助企业快速构建自己的图文设计</h2>
+  <div class="flex wrap section">
+    <a class="item" *ngFor="let item of cms.classes" routerLink="/search" [queryParams]="{c: item.name}">
+      <img [src]="item.img">
+      <label class="title">{{item.name}}</label>
+    </a>
+  </div>
+  <div class="mt30 text-center">秉承开源互惠精神，一起打造丰富的行业模板；共同创建一个强大、丰富的图库平台；还没有发现您想要的行业图文，
+    <a routerLink="/workspace">去创建</a>
+  </div>
+</section>
+<section class="vision">
+  <h1>愿景</h1>
+  <h2>共同打造共赢生态，为企业可视化提供全方位服务</h2>
+  <div class="flex wrap section mt20" style="justify-content:space-between">
+    <div *ngFor="let item of cms.vision">
+      <div class="flex middle">
+        <i [class]="item.icon"></i>
+        <label class="title">{{item.name}}</label>
+      </div>
+      <div class="desc">{{item.desc}}</div>
     </div>
   </div>
-</div>
+</section>
+
+<app-footer></app-footer>

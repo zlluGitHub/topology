@@ -65,7 +65,7 @@ export class CoreModule {
     Store.set('socket', this.socket);
     Store.set('socketCallback', this.socketCallback);
     this.socket.onmessage = (e: any) => {
-      if (!e.data) {
+      if (!e || !e.data) {
         return;
       }
 

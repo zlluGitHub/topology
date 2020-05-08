@@ -1,7 +1,7 @@
 import { Point } from '../../models/point';
 import { Line } from '../../models/line';
 import { Direction } from '../../models/direction';
-import { pointInLine } from '../../utils';
+import { pointInLine } from '../../utils/canvas';
 
 const minDistance = 50;
 

@@ -5,6 +5,9 @@ import { Line } from '../../models/line';
 export function getWords(txt: string) {
   const words = [];
   let word = '';
+  if (!txt) {
+    txt = '';
+  }
   for (let i = 0; i < txt.length; ++i) {
     const ch = txt.charCodeAt(i);
     if (ch < 33 || ch > 126) {

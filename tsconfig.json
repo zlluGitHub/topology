@@ -22,7 +22,8 @@
       "topology-activity-diagram": ["libs/topology-activity-diagram"],
       "topology-class-diagram": ["libs/topology-class-diagram"],
       "topology-sequence-diagram": ["libs/topology-sequence-diagram"],
-      "topology-chart-diagram": ["libs/topology-chart-diagram"]
+      "topology-chart-diagram": ["libs/topology-chart-diagram"],
+      "topology-layout": ["libs/topology-layout"]
     }
   }
 }

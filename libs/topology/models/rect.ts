@@ -1,5 +1,5 @@
 import { Point } from './point';
-import { pointInRect } from '../utils';
+import { pointInRect } from '../utils/canvas';
 
 export class Rect {
   ex: number;
@@ -12,9 +12,13 @@ export class Rect {
     if (height < 0) {
       height = 0;
     }
+    this.init();
+  }
+
+  init() {
     this.ex = this.x + this.width;
     this.ey = this.y + this.height;
-    this.calceCenter();
+    this.calcCenter();
   }
 
   floor() {
@@ -22,9 +26,7 @@ export class Rect {
     this.y |= 0;
     this.width |= 0;
     this.height |= 0;
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 
   round() {
@@ -32,9 +34,7 @@ export class Rect {
     this.y = Math.round(this.y);
     this.width = Math.round(this.width);
     this.height = Math.round(this.height);
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 
   clone(): Rect {
@@ -45,7 +45,7 @@ export class Rect {
     return pt.x > this.x - padding && pt.x < this.ex + padding && pt.y > this.y - padding && pt.y < this.ey + padding;
   }
 
-  hitRect(rect: Rect) {
+  hitByRect(rect: Rect) {
     return (
       (rect.x > this.x && rect.x < this.ex && rect.y > this.y && rect.y < this.ey) ||
       (rect.ex > this.x && rect.ex < this.ex && rect.y > this.y && rect.y < this.ey) ||
@@ -63,7 +63,7 @@ export class Rect {
     return pointInRect(point, pts);
   }
 
-  calceCenter() {
+  calcCenter() {
     this.center.x = this.x + this.width / 2;
     this.center.y = this.y + this.height / 2;
   }
@@ -82,7 +82,7 @@ export class Rect {
     this.y += y;
     this.ex += x;
     this.ey += y;
-    this.calceCenter();
+    this.calcCenter();
   }
 
   scale(scale: number, center?: Point, scaleY?: number) {
@@ -98,8 +98,6 @@ export class Rect {
     this.y = center.y - (center.y - this.y) * scaleY;
     this.width *= scale;
     this.height *= scaleY;
-    this.ex = this.x + this.width;
-    this.ey = this.y + this.height;
-    this.calceCenter();
+    this.init();
   }
 }

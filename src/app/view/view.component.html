@@ -1,0 +1,18 @@
+<div class="view rel">
+  <div id="topology-canvas"></div>
+  <div class="tools" *ngIf="hideTool">
+    <button class="button primary" (click)="onBack()" *ngIf="back">
+      <i class="iconfont icon-angle-left"></i> 返回
+    </button>
+    <div>
+      <button class="button primary" (click)="onSizeWindow()">
+        <i class="iconfont icon-full-screen"></i>
+        适合窗口大小
+      </button>
+      <button class="button primary ml20" (click)="onSizeOri()">
+        <i class="iconfont icon-rect"></i>
+        实际大小
+      </button>
+    </div>
+  </div>
+</div>

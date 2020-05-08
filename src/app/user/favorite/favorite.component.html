@@ -1,57 +1,52 @@
 <div>
-  <div class="nav">
-    <a routerLink="/">首页</a>
-    <label>我的收藏</label>
+  <div class="nav nav-tab big pt5">
+    <div class="item mh15">
+      <a routerLink="/user/home">我的图文</a>
+    </div>
+    <div class="item mh15">
+      <a routerLink="/user/home" [queryParams]="{component: 1}">我的组件</a>
+    </div>
+    <div class="item mh15 active">
+      <a routerLink="/user/favorite">我的收藏</a>
+    </div>
   </div>
   <div *ngIf="!loading">
-    <div class="flex wrap">
+    <div class="topos col-4 p15">
       <div class="topo" *ngFor="let item of data.list" [title]="item.desc" (click)="onOpen(item)">
         <div class="image">
           <img [appImgAuthSrc]="item.image" />
         </div>
         <div class="ph15 pv10">
+          <i class="iconfont icon-delete hover" (click)="onFavorite($event,item)" title="取消收藏"></i>
           <div class="title line one" [title]="item.name">{{ item.name }}</div>
-          <div class="desc line two mt5" [title]="item.desc">{{ item.desc }}</div>
           <div class="flex mt5">
             <div class="full">
-              <ui-avatar [letters]="item.usernamePinyin" [img]="item.avatarUrl" [colors]="['#1890ff']"></ui-avatar>
+              <i class="iconfont icon-user"></i>
               {{ item.username }}
             </div>
             <div>
-              <span class="hover pointer mr15" title="赞" (click)="onStar($event, item)">
-                <i
-                  class="iconfont "
-                  [class.icon-appreciate]="!item.stared"
-                  [class.icon-appreciatefill]="item.stared"
-                ></i>
-                <span class="ml5">{{ item.star || 0 }}</span>
+              <span class="ml15" title="浏览次数">
+                <i class="iconfont icon-attention"></i>
+                <span class="ml5">{{ item.view || 0 }}</span>
               </span>
-              <span class="hover pointer" title="点击取消收藏" (click)="onFavorite($event, item)">
-                <i class="iconfont icon-likefill"></i>
-                <span class="ml5">{{ item.hot || 0 }}</span>
+              <span class="ml15" title="收藏人数">
+                <i class="iconfont icon-like"></i>
+                <span class="ml5">{{ item.star || 0 }}</span>
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="p10 mb30" *ngIf="data.count">
-      <ui-pagination
-        [(pageIndex)]="search.pageIndex"
-        [(pageCount)]="search.pageCount"
-        [pageTotal]="data.count"
-        [options]="{ pageCount: false }"
-      ></ui-pagination>
+    <div class="ph15 mb20" *ngIf="data.count">
+      <ui-pagination [(pageIndex)]="search.pageIndex" [(pageCount)]="search.pageCount" [pageTotal]="data.count"
+        [options]="{ pageCount: false }"></ui-pagination>
     </div>
 
     <div *ngIf="!data.count" class="text-center gray mt50">
       您还没有任何收藏！
-      <a class="hover" routerLink="/hot">去热门图文看看</a>
+      <a class="hover" routerLink="/search">去热门图文看看</a>
     </div>
   </div>
-  <ui-loading
-    *ngIf="loading"
-    class="mt50"
-    tip="正在加载，请稍等（个人云服务器资源小，人多可能慢，欢迎资助）..."
-  ></ui-loading>
+  <ui-loading *ngIf="loading" class="mt50" tip="正在加载，请稍等..."></ui-loading>
 </div>

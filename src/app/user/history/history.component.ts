@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { Store } from 'le5le-store';
 import { NoticeService } from 'le5le-components/notice';
@@ -11,23 +11,21 @@ import { CoreService } from 'src/app/core/core.service';
   selector: 'app-user-history',
   templateUrl: 'history.component.html',
   styleUrls: ['./history.component.scss'],
-  providers: [UserHistoryService],
-  host: {
-    '(document:mousedown)': 'onclickDocument()'
-  }
+  providers: [UserHistoryService]
 })
 export class UserHistoryComponent implements OnInit, OnDestroy {
   name = '';
   search = {
     id: '',
     pageIndex: 1,
-    pageCount: 5
+    pageCount: 10
   };
   data = {
     list: [],
     count: 0
   };
   loading = true;
+  next = false;
 
   user: any;
   subUser: any;
@@ -40,7 +38,6 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
   subRoute: any;
   constructor(
     private service: UserHistoryService,
-    private router: Router,
     private activateRoute: ActivatedRoute,
     private coreService: CoreService
   ) { }
@@ -57,8 +54,6 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.name = params.get('name');
       this.search.id = params.get('id');
-      this.search.pageIndex = +params.get('pageIndex') || 1;
-      this.search.pageCount = +params.get('pageCount') || 5;
       this.list();
     });
   }
@@ -69,16 +64,19 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.data = await this.service.List(this.search);
+    const data = await this.service.List(this.search);
+    this.next = data.list.length === this.search.pageCount;
+    this.data.list.push.apply(this.data.list, data.list);
+    this.data.count = data.count;
     this.loading = false;
   }
 
-  onOpen(item: any) {
-    this.router.navigate(['/workspace'], {
-      queryParams: {
-        id: item.id
-      }
-    });
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    if (!this.loading && this.next && window.pageYOffset + window.innerHeight + 300 > document.body.clientHeight) {
+      ++this.search.pageIndex;
+      this.list();
+    }
   }
 
   onEditDesc(event: MouseEvent, item: any) {
@@ -89,28 +87,15 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.edited = item;
   }
 
-  onclickDocument() {
+  @HostListener('document:click', ['$event'])
+  onclickDocument(event: MouseEvent) {
+    if ((event.target as any).nodeName === 'TEXTAREA') {
+      return;
+    }
     this.edited.edited = false;
   }
 
-  onEnterDesc(e: KeyboardEvent) {
-    e.stopPropagation();
-    if (e.keyCode !== 13) {
-      return;
-    }
-    if (e.ctrlKey) {
-      this.desc += '\n';
-      return;
-    }
-
-    this.onSubmitDesc(!this.desc);
-  }
-
-  async onSubmitDesc(invalid: boolean) {
-    if (invalid) {
-      return;
-    }
-
+  async onSubmitDesc() {
     if (
       !(await this.service.Patch({
         id: this.edited.id,
@@ -141,6 +126,10 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  onBack() {
+    history.back();
   }
 
   ngOnDestroy() {

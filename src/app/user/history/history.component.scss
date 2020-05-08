@@ -1,20 +1,5 @@
-@import 'src/variables';
-@import '~le5le-ui/variables';
-
-$color-border: #ddd;
-
-:host {
-  display: block;
-  background-color: #e7e7e7;
-  width: 100vw;
-  height: 100%;
-  padding: 0 0.3rem;
-  overflow: auto;
-}
-
-.nav {
-  margin: 0.2rem 0 0.15rem 0;
-}
+@import "src/variables";
+@import "~le5le-ui/variables";
 
 .gray {
   color: #aaa;
@@ -33,5 +18,13 @@ textarea {
     max-width: 100%;
     padding: 0.02rem 0.05rem;
     resize: vertical;
+  }
+}
+
+table {
+  border: none;
+
+  th {
+    background-color: #fafafa;
   }
 }
