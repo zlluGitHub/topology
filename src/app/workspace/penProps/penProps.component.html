@@ -10,11 +10,11 @@
   <div class="group" *ngIf="selection.pens">
     <div class="title">对齐</div>
     <div>
-      <label class="hover pointer mr10" *ngFor="let item of nodesAlgin">
-        <i class="iconfont icon-align-{{ item }} " (click)="onNodesAlign(item)"></i>
+      <label class="hover pointer mr10" *ngFor="let item of nodesAlgin" [title]="item.desc">
+        <i class="iconfont icon-align-{{ item.value }} " (click)="onNodesAlign(item.value)"></i>
       </label>
       <label class="hover pointer mr10">
-        <i class="iconfont icon-horizontal-between" (click)="onSpaceBetween()"></i>
+        <i class="iconfont icon-horizontal-between" (click)="onSpaceBetween()" title="等距分布，两端对齐，节点之间的间隔都相等"></i>
       </label>
     </div>
   </div>

@@ -408,6 +408,8 @@ export class Topology {
     if (data.lineName) {
       this.data.lineName = data.lineName;
     }
+    this.data.fromArrowType = data.fromArrowType;
+    this.data.toArrowType = data.toArrowType;
 
     this.data.scale = data.scale || 1;
     Store.set('LT:scale', this.data.scale);
@@ -701,7 +703,6 @@ export class Topology {
     if (this.inputObj) {
       this.setNodeText();
     }
-
     switch (this.moveIn.type) {
       // Click the space.
       case MoveInType.None:
@@ -720,13 +721,10 @@ export class Topology {
           this.dispatch('line', this.moveIn.hoverLine);
         }
 
-        if (this.data.locked) {
-          this.moveIn.hoverLine.click();
-        }
-
         break;
       case MoveInType.LineMove:
         this.hoverLayer.initLine = new Line(this.moveIn.hoverLine);
+        this.moveIn.hoverLine.click();
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.LineFrom:
       case MoveInType.LineTo:
@@ -786,9 +784,7 @@ export class Topology {
           this.dispatch('node', this.moveIn.activeNode);
         }
 
-        if (this.data.locked) {
-          this.moveIn.activeNode.click();
-        }
+        this.moveIn.activeNode.click();
 
         break;
     }
@@ -865,9 +861,7 @@ export class Topology {
         this.showInput(this.moveIn.hoverNode);
       }
 
-      if (this.data.locked) {
-        this.moveIn.hoverNode.dblclick();
-      }
+      this.moveIn.hoverNode.dblclick();
     } else if (this.moveIn.hoverLine) {
       this.dispatch('dblclick', {
         line: this.moveIn.hoverLine
@@ -877,20 +871,12 @@ export class Topology {
         this.showInput(this.moveIn.hoverLine);
       }
 
-      if (this.data.locked) {
-        this.moveIn.hoverNode.dblclick();
-      }
+      this.moveIn.hoverLine.dblclick();
     }
   };
 
   private onkeydown = (key: KeyboardEvent) => {
-    if (this.data.locked) {
-      return;
-    }
-
-    if (
-      (key.target as HTMLElement).tagName !== 'INPUT' && (key.target as HTMLElement).tagName !== 'TEXTAREA'
-    ) {
+    if (this.data.locked || (key.target as HTMLElement).tagName === 'INPUT' || (key.target as HTMLElement).tagName === 'TEXTAREA') {
       return;
     }
 
@@ -1091,6 +1077,9 @@ export class Topology {
     if (child) {
       if (child.type === PenType.Line) {
         this.moveIn.activeNode = node;
+        this.moveIn.type = MoveInType.Nodes;
+      } else if (child.stand) {
+        this.moveIn.activeNode = child;
         this.moveIn.type = MoveInType.Nodes;
       }
       return child;
@@ -1513,10 +1502,14 @@ export class Topology {
     a.dispatchEvent(evt);
   }
 
-  delete() {
+  delete(force?: boolean) {
     const pens: Pen[] = [];
     let i = 0;
     for (const pen of this.activeLayer.pens) {
+      if (!force && pen.locked) {
+        continue;
+      }
+
       i = this.find(pen);
       if (i > -1) {
         if (this.data.pens[i].type === PenType.Node) {
@@ -1526,6 +1519,10 @@ export class Topology {
       }
 
       this.animateLayer.remove(pen);
+    }
+
+    if (!pens.length) {
+      return;
     }
 
     this.render(true);

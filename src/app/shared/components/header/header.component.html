@@ -10,19 +10,12 @@
       <span class="btn">开始设计</span>
     </a>
   </div>
-  <div class="item">
-    <a routerLink="/search">
-      解决方案
+  <div class="item" *ngFor="let item of menus">
+    <a *ngIf="item.router" [routerLink]="item.router">
+      {{item.name}}
     </a>
-  </div>
-  <div class="item">
-    <a href="https://www.yuque.com/alsmile/topology/use" target="_blank">
-      入门教程
-    </a>
-  </div>
-  <div class="item">
-    <a href="https://www.yuque.com/alsmile/topology/aboutus" target="_blank">
-      服务与支持
+    <a *ngIf="item.url" [href]="item.url" target="_blank">
+      {{item.name}}
     </a>
   </div>
 

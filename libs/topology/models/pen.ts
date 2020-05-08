@@ -63,7 +63,9 @@ export abstract class Pen {
   // Auto-play
   animatePlay: boolean;
 
-  locked = false;
+  locked: boolean;
+  // 作为子节点，是否可以直接点击选中
+  stand: boolean;
   hideInput: boolean;
   hideRotateCP: boolean;
   hideSizeCP: boolean;
@@ -141,6 +143,7 @@ export abstract class Pen {
       this.animatePlay = json.animatePlay;
 
       this.locked = json.locked;
+      this.stand = json.stand;
       this.hideInput = json.hideInput;
       this.hideRotateCP = json.hideRotateCP;
       this.hideSizeCP = json.hideSizeCP;
@@ -253,7 +256,7 @@ export abstract class Pen {
         continue;
       }
 
-      this[this.eventFns[item.action]](item.value, item.params);
+      this[this.eventFns[item.action]] && this[this.eventFns[item.action]](item.value, item.params);
     }
   }
 
@@ -267,15 +270,15 @@ export abstract class Pen {
         continue;
       }
 
-      this[this.eventFns[item.action]](item.value, item.params);
+      this[this.eventFns[item.action]] && this[this.eventFns[item.action]](item.value, item.params);
     }
   }
 
-  doSocket(item: { type: EventType; action: EventAction; value: string; params: string; name?: string; }, msg: any) {
+  doSocket(item: { type: EventType; action: EventAction; value: string; params: string; name?: string; }, msg: any, socket: WebSocket) {
     if (item.action < EventAction.Function) {
-      this[this.eventFns[event.type]](msg.value || msg || item.value, msg.params || item.params);
+      this[this.eventFns[event.type]](msg.value || msg || item.value, msg.params || item.params, socket);
     } else {
-      this[this.eventFns[event.type]](item.value, msg || item.params);
+      this[this.eventFns[event.type]](item.value, msg || item.params, socket);
     }
   }
 
@@ -290,13 +293,18 @@ export abstract class Pen {
     });
   }
 
-  private doFn(fn: string, params: string) {
-    const func = new Function('pen', 'params', fn);
-    func(this, params);
+  private doFn(fn: string, params: string, socket?: WebSocket) {
+    let func: Function;
+    if (socket) {
+      func = new Function('pen', 'params', 'websocket', fn);
+    } else {
+      func = new Function('pen', 'params', fn);
+    }
+    func(this, params, socket);
   }
 
-  private doWindowFn(fn: string, params: string) {
-    (window as any)[fn](params, this);
+  private doWindowFn(fn: string, params: string, socket?: WebSocket) {
+    (window as any)[fn](this, params, socket);
   }
 
   abstract getTextRect(): Rect;

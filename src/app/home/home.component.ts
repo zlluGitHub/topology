@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   pageCount = 10;
   searched = false;
 
-  configs = {
+  cms = {
     bars: [],
     classes: [],
     vision: []
@@ -29,18 +29,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   inBar = false;
 
   timer: any;
+  subCms: any;
   subConfigs: any;
-  constructor(private service: HomeService, private router: Router) { }
+  constructor(private service: HomeService, private router: Router) {
+  }
 
   async ngOnInit() {
+    this.subConfigs = Store.subscribe('app-configs', (configs: any) => {
+      if (configs && configs.homeUrl) {
+        this.router.navigateByUrl(configs.homeUrl);
+      }
+    });
 
-    this.configs = this.service.Configs();
-    this.subConfigs = Store.subscribe('app-configs', () => {
-      this.configs.bars = Store.get('app-bars');
-      this.configs.classes = Store.get('app-classes');
-      this.configs.vision = Store.get('app-vision');
+    this.cms = this.service.Configs();
+    this.subCms = Store.subscribe('app-cms-loaded', () => {
+      this.cms.bars = Store.get('app-bars');
+      this.cms.classes = Store.get('app-classes');
+      this.cms.vision = Store.get('app-vision');
 
-      for (const item of this.configs.bars) {
+      for (const item of this.cms.bars) {
         item.styles = {
           background: item.bkColor
         };
@@ -48,8 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.timer = setInterval(() => {
-      if (this.configs.bars && this.configs.bars.length && !this.inBar) {
-        this.curBar = (this.curBar + 1) % this.configs.bars.length;
+      if (this.cms.bars && this.cms.bars.length && !this.inBar) {
+        this.curBar = (this.curBar + 1) % this.cms.bars.length;
       }
     }, 10000);
   }
@@ -74,6 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.timer);
+    this.subCms.unsubscribe();
     this.subConfigs.unsubscribe();
   }
 }

@@ -121,16 +121,19 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
 
   id: string;
   subRoute: any;
+  subConfigs: any;
+  subRecently: any;
   constructor(private router: Router, private activateRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    const menus = Store.get('AppWorkspaceMenus');
-    if (menus) {
-      this.menus = menus;
-    }
+    this.subConfigs = Store.subscribe('app-configs', (configs: any) => {
+      if (configs && configs.workspaceMenus) {
+        this.menus = configs.workspaceMenus;
+      }
+    });
 
-    Store.subscribe('recently', (item: any) => {
+    this.subRecently = Store.subscribe('recently', (item: any) => {
       for (let i = 0; i < this.recently.length; ++i) {
         if (this.recently[i].id === item.id || i > 19) {
           this.recently.splice(i, 1);
@@ -216,5 +219,7 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subUser.unsubscribe();
     this.subRoute.unsubscribe();
+    this.subConfigs.unsubscribe();
+    this.subRecently.unsubscribe();
   }
 }

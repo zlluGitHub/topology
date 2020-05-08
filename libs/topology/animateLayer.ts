@@ -195,6 +195,8 @@ export class AnimateLayer {
   }
 
   stop() {
+    this.readyPens = null;
+    this.pens = [];
     if (this.timer) {
       cancelAnimationFrame(this.timer);
     }

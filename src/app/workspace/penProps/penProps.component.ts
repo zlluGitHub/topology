@@ -305,8 +305,25 @@ export class PenPropsComponent implements OnInit, OnChanges {
     noDefaultOption: true
   };
 
-  nodesAlgin = ['left', 'right', 'top', 'bottom', 'center', 'middle'];
-
+  nodesAlgin = [{
+    value: 'left',
+    desc: '左对齐'
+  }, {
+    value: 'right',
+    desc: '右对齐'
+  }, {
+    value: 'top',
+    desc: '顶部对齐'
+  }, {
+    value: 'bottom',
+    desc: '底部对齐'
+  }, {
+    value: 'center',
+    desc: '垂直居中'
+  }, {
+    value: 'middle',
+    desc: '水平居中'
+  }];
   icons: any[] = [];
 
   layout = {

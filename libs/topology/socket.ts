@@ -26,7 +26,7 @@ export class Socket {
       for (const item of this.pens) {
         for (const event of item.events) {
           if (event.type === EventType.WebSocket && event.name === msg.event) {
-            item.doSocket(event, msg.data);
+            item.doSocket(event, msg.data, this.socket);
           }
         }
       }

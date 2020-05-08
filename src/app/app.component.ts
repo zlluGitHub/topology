@@ -14,10 +14,13 @@ export class AppComponent implements OnInit {
     window.addEventListener(
       'message',
       (e: any) => {
+        // console.log('addEventListener', e.data);
         if (this[e.data.event]) {
-          this[e.data.event](e.data.params);
+          this[e.data.event](e.data.data);
         }
       });
+
+    parent && parent.postMessage({ loaded: true }, '*');
   }
 
   async ngOnInit() {
@@ -26,11 +29,10 @@ export class AppComponent implements OnInit {
       Store.set('app-' + item.type, item.data.list);
     }
 
-    Store.set('app-configs', 1);
+    Store.set('app-cms-loaded', 1);
   }
 
-  workspaceMenus(params: any) {
-    Store.set('AppWorkspaceMenus', params);
+  configs(configs: any) {
+    Store.set('app-configs', configs);
   }
-
 }

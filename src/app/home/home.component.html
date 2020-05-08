@@ -1,5 +1,5 @@
 <div class="bars">
-  <article *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" [ngStyle]="item.styles"
+  <article *ngFor="let item of cms.bars;let i=index" [class.active]="curBar === i" [ngStyle]="item.styles"
     (mouseenter)="onMouseEnter()" (mouseout)="onMouseOut()">
     <header>{{item.title}}</header>
     <p>{{item.desc}}</p>
@@ -8,7 +8,7 @@
     <img *ngIf="item.image" [src]="item.image" />
   </article>
   <div class="dots flex center">
-    <i *ngFor="let item of configs.bars;let i=index" [class.active]="curBar === i" (mouseenter)="curBar = i"></i>
+    <i *ngFor="let item of cms.bars;let i=index" [class.active]="curBar === i" (mouseenter)="curBar = i"></i>
   </div>
 </div>
 
@@ -19,7 +19,7 @@
   <h1>解决方案模板</h1>
   <h2>丰富模板，帮助企业快速构建自己的图文设计</h2>
   <div class="flex wrap section">
-    <a class="item" *ngFor="let item of configs.classes" routerLink="/search" [queryParams]="{c: item.name}">
+    <a class="item" *ngFor="let item of cms.classes" routerLink="/search" [queryParams]="{c: item.name}">
       <img [src]="item.img">
       <label class="title">{{item.name}}</label>
     </a>
@@ -32,7 +32,7 @@
   <h1>愿景</h1>
   <h2>共同打造共赢生态，为企业可视化提供全方位服务</h2>
   <div class="flex wrap section mt20" style="justify-content:space-between">
-    <div *ngFor="let item of configs.vision">
+    <div *ngFor="let item of cms.vision">
       <div class="flex middle">
         <i [class]="item.icon"></i>
         <label class="title">{{item.name}}</label>

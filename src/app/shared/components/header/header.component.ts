@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { Store } from 'le5le-store';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -15,11 +17,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
   search = '';
   search$ = new Subject<string>();
 
+  menus: any[] = [{
+    name: '解决方案',
+    router: '/search'
+  }, {
+    name: '入门教程',
+    url: 'https://www.yuque.com/alsmile/topology/use'
+  }, {
+    name: '服务与支持',
+    url: 'https://www.yuque.com/alsmile/topology/aboutus'
+  }];
+
   subRoute: any;
+  subConfigs: any;
   constructor(private router: Router, private activateRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.subConfigs = Store.subscribe('app-configs', (configs: any) => {
+      if (configs && configs.menus) {
+        this.menus = configs.menus;
+      }
+    });
+
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.search = params.get('q') || '';
     });
@@ -72,5 +92,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.search$.unsubscribe();
     this.subRoute.unsubscribe();
+    this.subConfigs.unsubscribe();
   }
 }
