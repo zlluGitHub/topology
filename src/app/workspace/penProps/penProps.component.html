@@ -1031,7 +1031,7 @@
           <div class="input color right" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.iconColor" [style.background]="pen.iconColor" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-              (colorPickerChange)="onChangeProp(false)"></i>
+              (colorPickerChange)="onChangeProp()"></i>
             <input name="iconColor" [(ngModel)]="pen.iconColor" [readonly]="readonly" (change)="onChangeProp()" />
           </div>
         </div>
