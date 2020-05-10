@@ -315,7 +315,7 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.strokeStyle" [style.background]="pen.strokeStyle" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-              (colorPickerChange)="onChangeProp(false)"></i>
+              (colorPickerChange)="onChangeProp()"></i>
             <input name="strokeStyle" [(ngModel)]="pen.strokeStyle" [readonly]="readonly" (change)="onChangeProp()" />
           </div>
         </div>
@@ -334,7 +334,7 @@
             <div class="input color" [class.readonly]="readonly">
               <i [(colorPicker)]="pen.borderColor" [style.background]="pen.borderColor" cpPosition="bottom"
                 cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-                (colorPickerChange)="onChangeProp(false)"></i>
+                (colorPickerChange)="onChangeProp()"></i>
               <input name="borderColor" [(ngModel)]="pen.borderColor" [readonly]="readonly" (change)="onChangeProp()" />
             </div>
           </div>
@@ -359,7 +359,7 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.fillStyle" [style.background]="pen.fillStyle" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-              (colorPickerChange)="onChangeProp(false)"></i>
+              (colorPickerChange)="onChangeProp()"></i>
             <input name="fillStyle" [(ngModel)]="pen.fillStyle" [readonly]="readonly" (change)="onChangeProp()" />
           </div>
         </div>
@@ -373,7 +373,7 @@
               <div class="input color" [class.readonly]="readonly">
                 <i [(colorPicker)]="pen.gradientFromColor" [style.background]="pen.gradientFromColor"
                   cpPosition="bottom" cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-                  (colorPickerChange)="onChangeProp(false)"></i>
+                  (colorPickerChange)="onChangeProp()"></i>
                 <input name="gradientFromColor" [(ngModel)]="pen.gradientFromColor" [readonly]="readonly"
                   (change)="onChangeProp()" />
               </div>
@@ -382,7 +382,7 @@
               <div class="input color grid-right" [class.readonly]="readonly">
                 <i [(colorPicker)]="pen.gradientToColor" [style.background]="pen.gradientToColor" cpPosition="bottom"
                   cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-                  (colorPickerChange)="onChangeProp(false)"></i>
+                  (colorPickerChange)="onChangeProp()"></i>
                 <input name="gradientToColor" [(ngModel)]="pen.gradientToColor" [readonly]="readonly"
                   (change)="onChangeProp()" />
               </div>
@@ -800,14 +800,14 @@
         <div class="input color mr5" [class.readonly]="readonly">
           <i [(colorPicker)]="pen.fromArrowColor" [style.background]="pen.fromArrowColor" cpPosition="bottom"
             cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-            (colorPickerChange)="onChangeProp(false)"></i>
+            (colorPickerChange)="onChangeProp()"></i>
           <input name="fromArrowColor" [(ngModel)]="pen.fromArrowColor" [readonly]="readonly"
             (change)="onChangeProp()" />
         </div>
         <div class="input color right" [class.readonly]="readonly">
           <i [(colorPicker)]="pen.toArrowColor" [style.background]="pen.toArrowColor" cpPosition="bottom"
             cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-            (colorPickerChange)="onChangeProp(false)"></i>
+            (colorPickerChange)="onChangeProp()"></i>
           <input name="toArrowColor" [(ngModel)]="pen.toArrowColor" [readonly]="readonly" (change)="onChangeProp()" />
         </div>
       </div>
@@ -861,7 +861,7 @@
           <div class="input color right" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.font.color" [style.background]="pen.font.color" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-              (colorPickerChange)="onChangeProp(false)"></i>
+              (colorPickerChange)="onChangeProp()"></i>
             <input name="fontColor" [(ngModel)]="pen.font.color" [readonly]="readonly" (change)="onChangeProp()" />
           </div>
         </div>
@@ -869,7 +869,7 @@
           <div class="input color" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.font.background" [style.background]="pen.font.background" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
-              (colorPickerChange)="onChangeProp(false)"></i>
+              (colorPickerChange)="onChangeProp()"></i>
             <input name="fontColor" [(ngModel)]="pen.font.background" [readonly]="readonly" (change)="onChangeProp()" />
           </div>
         </div>

@@ -1736,7 +1736,7 @@ export class Topology {
     }
   }
 
-  combine(pens?: Pen[], lockChildren = false) {
+  combine(pens?: Pen[], stand = false) {
     if (!pens) {
       pens = this.activeLayer.pens;
     }
@@ -1773,7 +1773,7 @@ export class Topology {
     }
 
     for (const item of pens) {
-      item.locked = lockChildren;
+      item.stand = stand;
       item.parentId = node.id;
       item.calcRectInParent(node);
       node.children.push(item);

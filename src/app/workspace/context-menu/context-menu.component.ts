@@ -56,7 +56,7 @@ export class ContextMenuComponent implements OnInit {
     this.canvas.render();
   }
 
-  onCombine(stand: boolean) {
+  onCombine(stand: boolean = false) {
     if (!this.selection || !this.selection.pens || this.selection.pens.length < 2) {
       return;
     }
