@@ -98,6 +98,9 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
       name: '关于我们',
       url: 'https://www.yuque.com/alsmile/topology/aboutus'
     }]
+  }, {
+    name: '技术交流群',
+    url: 'https://www.yuque.com/alsmile/topology/aboutus#FRK4N'
   }];
 
   cpPresetColors = [

@@ -119,8 +119,14 @@
     </div>
   </div>
   <div class="item" *ngFor="let item of menus">
-    <a>{{item.name}}</a>
-    <div class="dropdown">
+    <a *ngIf="!item.route && !item.url">{{item.name}}</a>
+    <a *ngIf="item.router" [routerLink]="item.router">
+      {{item.name}}
+    </a>
+    <a *ngIf="item.url" [href]="item.url" target="_blank">
+      {{item.name}}
+    </a>
+    <div class="dropdown" *ngIf="item.children">
       <div class="item" *ngFor="let menu of item.children" [class.line]="!menu.name">
         <a *ngIf="menu.router" [routerLink]="menu.router">
           {{menu.name}}
