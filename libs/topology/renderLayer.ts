@@ -43,6 +43,10 @@ export class RenderLayer extends Canvas {
       return;
     }
 
+    if (!this.width || !this.height || !this.offscreen) {
+      return;
+    }
+
     const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.data.bkColor) {

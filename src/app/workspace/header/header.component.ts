@@ -133,18 +133,6 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subRecently = Store.subscribe('recently', (item: any) => {
-      for (let i = 0; i < this.recently.length; ++i) {
-        if (this.recently[i].id === item.id || i > 19) {
-          this.recently.splice(i, 1);
-        }
-      }
-      this.recently.unshift(item);
-      if (this.user) {
-        localStorage.setItem('recently_' + this.user.id, JSON.stringify(this.recently));
-      }
-    });
-
     this.subUser = Store.subscribe('user', (user: any) => {
       this.user = user;
       this.getRecently();
@@ -153,22 +141,45 @@ export class WorkspaceHeaderComponent implements OnInit, OnDestroy {
     this.subRoute = this.activateRoute.queryParamMap.subscribe(params => {
       this.id = params.get('id');
     });
+
+    setTimeout(() => {
+      this.subRecently = Store.subscribe('recently', (item: any) => {
+        if (!item) {
+          return;
+        }
+        for (let i = 0; i < this.recently.length; ++i) {
+          if (this.recently[i].id === item.id || i > 19) {
+            this.recently.splice(i, 1);
+          }
+        }
+        this.recently.unshift(item);
+        if (this.user) {
+          localStorage.setItem('recently_' + this.user.id, JSON.stringify(this.recently));
+        } else {
+          localStorage.setItem('recently_local', JSON.stringify(this.recently));
+        }
+      });
+    }, 500);
   }
 
   onRemoveRecently(event: MouseEvent, i: number) {
     event.stopPropagation();
     event.preventDefault();
     this.recently.splice(i, 1);
-    localStorage.setItem('recently_' + this.user.id, JSON.stringify(this.recently));
+    if (this.user) {
+      localStorage.setItem('recently_' + this.user.id, JSON.stringify(this.recently));
+    } else {
+      localStorage.setItem('recently_local', JSON.stringify(this.recently));
+    }
   }
 
   getRecently() {
-    if (!this.user) {
-      return;
-    }
-
     try {
-      this.recently = JSON.parse(localStorage.getItem('recently_' + this.user.id));
+      if (this.user) {
+        this.recently = JSON.parse(localStorage.getItem('recently_' + this.user.id));
+      } else {
+        this.recently = JSON.parse(localStorage.getItem('recently_local'));
+      }
     } catch (e) { }
     if (!this.recently) {
       this.recently = [];

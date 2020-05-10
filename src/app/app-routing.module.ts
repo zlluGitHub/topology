@@ -5,10 +5,10 @@ import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'search', loadChildren: './search/search.module#SearchModule' },
-  { path: 'workspace', loadChildren: './workspace/workspace.module#WorkspaceModule' },
-  { path: 'view', loadChildren: './view/view.module#ViewModule' },
-  { path: 'user', loadChildren: './user/user.module#UserModule' }
+  { path: 'search', loadChildren: () => import('./search/search.module').then(m => m.SearchModule) },
+  { path: 'workspace', loadChildren: () => import('./workspace/workspace.module').then(m => m.WorkspaceModule) },
+  { path: 'view', loadChildren: () => import('./view/view.module').then(m => m.ViewModule) },
+  { path: 'user', loadChildren: () => import('./user/user.module').then(m => m.UserModule) },
 ];
 
 @NgModule({

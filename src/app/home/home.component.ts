@@ -43,6 +43,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.cms = this.service.Configs();
     this.subCms = Store.subscribe('app-cms-loaded', () => {
+      if (!Store.get('app-bars')) {
+        return;
+      }
+
       this.cms.bars = Store.get('app-bars');
       this.cms.classes = Store.get('app-classes');
       this.cms.vision = Store.get('app-vision');
@@ -81,7 +85,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.timer);
-    this.subCms.unsubscribe();
-    this.subConfigs.unsubscribe();
+    this.subCms && this.subCms.unsubscribe();
+    this.subConfigs && this.subConfigs.unsubscribe();
   }
 }

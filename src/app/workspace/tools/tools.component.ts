@@ -35,8 +35,14 @@ export class ToolsComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.user$ = Store.subscribe('user', (user: any) => {
+    this.user$ = Store.subscribe('user', async (user: any) => {
       this.user = user;
+
+      if (user) {
+        this.topoTools = await this.service.GetUserTools();
+        this.userTools = [];
+        this.classifyTools(this.topoTools, this.userTools);
+      }
     });
 
     this.search$
@@ -46,48 +52,39 @@ export class ToolsComponent implements OnInit, OnDestroy {
       });
 
     this.classes$ = Store.subscribe('app-classes', (classes: any) => {
-      this.classes = classes;
-      this.classifyTools();
+      if (!classes) {
+        return;
+      }
+      this.classes = Object.assign([], classes);
+      this.systemTools = [];
+      this.userTools = [];
+      this.classifyTools(this.sysTools, this.systemTools);
+      this.classifyTools(this.topoTools, this.userTools);
     });
 
+
     this.sysTools = await this.service.GetSystemTools();
-    this.topoTools = await this.service.GetUserTools();
-    this.classifyTools();
+    this.systemTools = [];
+    this.classifyTools(this.sysTools, this.systemTools);
   }
 
-  classifyTools() {
-    if (!this.classes || !this.sysTools) {
+  classifyTools(tools: any[], list: any[]) {
+    if (!this.classes || !tools || !list) {
       return;
     }
 
-    this.systemTools = [];
-    this.userTools = [];
-
     for (const c of this.classes) {
-      const system = {
-        name: c.name,
-        list: [],
-        expand: true
-      };
-      const userTools = {
+      const menu = {
         name: c.name,
         list: [],
         expand: true
       };
       for (const item of this.sysTools) {
         if (item.class === c.name) {
-          system.list.push(item);
+          menu.list.push(item);
         }
       }
-
-      for (const item of this.topoTools) {
-        if (item.class === c.name) {
-          userTools.list.push(item);
-        }
-      }
-
-      this.systemTools.push(system);
-      this.userTools.push(userTools);
+      list.push(menu);
     }
   }
 
