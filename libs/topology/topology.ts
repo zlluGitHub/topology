@@ -147,7 +147,7 @@ export class Topology {
     });
     this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
       if (node.nextPlay) {
-        this.animateLayer.pens.push.apply(this.animateLayer.pens, this.animateLayer.readyPlay(node.nextPlay));
+        this.animateLayer.readyPlay(node.nextPlay);
         this.animateLayer.animate();
       }
       this.dispatch('mediaEnd', node);
@@ -453,7 +453,7 @@ export class Topology {
     this.overflow();
     this.render(true);
 
-    this.animate();
+    this.animate(true);
 
     if (this.socket) {
       this.socket.close();
@@ -1518,7 +1518,7 @@ export class Topology {
         pens.push.apply(pens, this.data.pens.splice(i, 1));
       }
 
-      this.animateLayer.remove(pen);
+      this.animateLayer.pens.delete(pen.id);
     }
 
     if (!pens.length) {

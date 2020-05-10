@@ -79,7 +79,7 @@ export class ToolsComponent implements OnInit, OnDestroy {
         list: [],
         expand: true
       };
-      for (const item of this.sysTools) {
+      for (const item of tools) {
         if (item.class === c.name) {
           menu.list.push(item);
         }

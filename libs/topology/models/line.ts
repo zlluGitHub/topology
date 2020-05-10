@@ -355,7 +355,6 @@ export class Line extends Pen {
         }
         this.lineDash = [len, len * 2];
         break;
-      // tslint:disable-next-line:no-switch-case-fall-through
       case 'dot':
       case 'comet':
         this.lineDash = null;

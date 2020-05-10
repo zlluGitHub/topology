@@ -287,6 +287,7 @@ export abstract class Pen {
   }
 
   private doAnimate(tag: string, params: string) {
+    this.animateStart = Date.now();
     Store.set('LT:AnimatePlay', {
       tag,
       pen: this

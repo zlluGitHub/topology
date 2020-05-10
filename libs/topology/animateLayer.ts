@@ -8,8 +8,8 @@ import { Options } from './options';
 
 export class AnimateLayer {
   protected data: TopologyData = Store.get('topology-data');
-  pens: Pen[] = [];
-  readyPens: Pen[];
+  pens = new Map();
+  readyPens = new Map();
 
   private timer: any;
   private lastNow = 0;
@@ -26,35 +26,9 @@ export class AnimateLayer {
       this.updateLines(lines);
     });
     this.subscribePlay = Store.subscribe('LT:AnimatePlay', (params: { tag: string; pen: Pen; }) => {
-      if (params.tag) {
-        this.readyPlay(params.tag, false);
-      } else if (!this.find(params.pen)) {
-        params.pen.animateStart = Date.now();
-        if (params.pen instanceof Node) {
-          params.pen.initAnimateProps();
-          this.readyPens = [params.pen];
-        } else {
-          this.readyPens = [this.getAnimateLine(params.pen)];
-        }
-      }
+      this.readyPlay(params.tag, false);
       this.animate();
     });
-  }
-
-  find(pen: Pen) {
-    for (const item of this.pens) {
-      if (item.id === pen.id) {
-        return item;
-      }
-    }
-  }
-
-  remove(pen: Pen) {
-    for (let i = 0; i < this.pens.length; i++) {
-      if (this.pens[i].id === pen.id) {
-        this.pens.splice(i, 1);
-      }
-    }
   }
 
   getAnimateLine(item: Pen) {
@@ -82,37 +56,44 @@ export class AnimateLayer {
     return l;
   }
 
+  find(pen: Pen) {
+    for (const item of this.data.pens) {
+      if (item.id === pen.id) {
+        return item;
+      }
+    }
+  }
+
   readyPlay(tag?: string, auto?: boolean, pens?: Pen[]) {
     if (!pens) {
       pens = this.data.pens;
-      this.readyPens = [];
     }
 
-    for (const item of pens) {
-      if (item.animatePlay || (tag && item.tags.indexOf(tag) > -1)) {
-        item.animateStart = Date.now();
+    pens.forEach((pen: Pen) => {
+      if (this.pens.get(pen.id) || this.readyPens.get(pen.id)) {
+        return;
       }
-      if (item.animateStart > 0) {
-        if (item instanceof Node) {
-          item.initAnimateProps();
-          this.readyPens.push(item);
-          if ((tag || auto) && item.children) {
-            this.readyPlay(tag, auto, item.children);
-          }
-        } else {
-          this.readyPens.push(this.getAnimateLine(item));
-        }
-      } else if (item.animateStart === 0) {
-        const pen = this.find(item);
-        if (pen) {
-          pen.animateStart = 0;
+
+      if ((auto && pen.animatePlay) || (tag && pen.tags.indexOf(tag) > -1)) {
+        if (!pen.animateStart || pen.animateStart < 1) {
+          pen.animateStart = Date.now();
         }
       }
 
-      if (item.type === PenType.Node) {
-        this.readyPlay(tag, auto, (item as Node).children || []);
+      if (!pen.animateStart || pen.animateStart < 1) {
+        return;
       }
-    }
+
+      if (pen instanceof Node) {
+        pen.initAnimateProps();
+        this.readyPens.set(pen.id, pen);
+        if ((tag || auto) && pen.children && pen.children.length) {
+          this.readyPlay(tag, auto, pen.children);
+        }
+      } else {
+        this.readyPens.set(pen.id, this.getAnimateLine(pen));
+      }
+    });
   }
 
   animate() {
@@ -120,22 +101,10 @@ export class AnimateLayer {
       cancelAnimationFrame(this.timer);
     }
 
-    if (this.readyPens) {
-      for (const pen of this.readyPens) {
-        let found = false;
-        for (const item of this.pens) {
-          if (pen.id === item.id) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          this.pens.push(pen);
-        }
-      }
-
-      this.readyPens = null;
-    }
+    this.readyPens.forEach((pen: Pen, key) => {
+      this.readyPens.delete(key);
+      this.pens.set(key, pen);
+    });
 
     this.timer = requestAnimationFrame(() => {
       const now = Date.now();
@@ -145,23 +114,31 @@ export class AnimateLayer {
       }
       this.lastNow = now;
       let animated = false;
-      for (let i = 0; i < this.pens.length; ++i) {
-        if (this.pens[i].animateStart < 1) {
-          this.pens.splice(i, 1);
-          continue;
+      this.pens.forEach((pen: Pen, key) => {
+        if (pen.animateStart < 1) {
+          this.pens.delete(key);
+          return;
         }
-        if (this.pens[i].animateStart > now) {
-          continue;
+
+        if (pen.animateStart > now) {
+          return;
         }
-        const next = this.pens[i].animate(now);
-        if (next) {
-          this.pens.splice(i, 1);
-          this.readyPlay(next, false);
-        } else if (this.pens[i] && !this.pens[i].animateStart) {
-          this.pens.splice(i, 1);
+
+        const next = pen.animate(now);
+        if (pen.animateStart < 1) {
+          this.pens.delete(key);
+          if (pen.type === PenType.Line) {
+            const line = this.find(pen);
+            line && (line.animateStart = 0);
+          }
+          if (next) {
+            this.readyPlay(next, false);
+          }
         }
+
         animated = true;
-      }
+      });
+
       if (animated) {
         Store.set('LT:render', true);
         this.animate();
@@ -170,9 +147,9 @@ export class AnimateLayer {
   }
 
   updateLines(lines: Line[]) {
-    for (const line of this.pens) {
+    this.pens.forEach((line: Pen, key) => {
       if (!(line instanceof Line)) {
-        continue;
+        return;
       }
 
       for (const item of lines) {
@@ -183,20 +160,20 @@ export class AnimateLayer {
           line.length = line.getLen();
         }
       }
-    }
+    });
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    for (const item of this.pens) {
-      if (item instanceof Line) {
-        item.render(ctx);
+    this.pens.forEach((line: Pen, key) => {
+      if (line instanceof Line) {
+        line.render(ctx);
       }
-    }
+    });
   }
 
   stop() {
-    this.readyPens = null;
-    this.pens = [];
+    this.readyPens.clear();
+    this.pens.clear();
     if (this.timer) {
       cancelAnimationFrame(this.timer);
     }
