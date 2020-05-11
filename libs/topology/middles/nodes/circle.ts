@@ -11,6 +11,6 @@ export function circle(ctx: CanvasRenderingContext2D, node: Node) {
     0,
     Math.PI * 2
   );
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }
