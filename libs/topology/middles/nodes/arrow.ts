@@ -12,7 +12,7 @@ export function leftArrow(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + node.rect.height / 2, node.rect.y + (node.rect.height * 2) / 3);
   ctx.lineTo(node.rect.x + node.rect.height / 2, node.rect.y + node.rect.height);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }
 
@@ -27,7 +27,7 @@ export function rightArrow(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + (node.rect.width - node.rect.height / 2), node.rect.y + (node.rect.height * 2) / 3);
   ctx.lineTo(node.rect.x, node.rect.y + (node.rect.height * 2) / 3);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }
 
@@ -45,6 +45,6 @@ export function twowayArrow(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + node.rect.height / 2, node.rect.y + (node.rect.height * 2) / 3);
   ctx.lineTo(node.rect.x + node.rect.height / 2, node.rect.y + node.rect.height);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }

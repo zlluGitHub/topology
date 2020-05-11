@@ -11,6 +11,6 @@ export function hexagon(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + pos, node.rect.y + node.rect.height);
   ctx.lineTo(node.rect.x, node.rect.y + node.rect.height / 2);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }

@@ -10,6 +10,6 @@ export function message(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + (node.rect.width * 5) / 16, node.rect.y + (node.rect.height * 3) / 4);
   ctx.lineTo(node.rect.x, node.rect.y + (node.rect.height * 3) / 4);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }

@@ -14,6 +14,6 @@ export function file(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.ex - offsetX, node.rect.y + offsetX);
   ctx.lineTo(node.rect.ex, node.rect.y + offsetX);
 
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }
