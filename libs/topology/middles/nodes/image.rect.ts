@@ -41,7 +41,7 @@ export function imageTextRect(node: Node) {
     height = lineHeight * node.textMaxLine;
   } else {
     const canvas = Store.get('LT:offscreen');
-    const lines = getLines(canvas.getContext('2d'), getWords(node.text), node.rect.width);
+    const lines = getLines(canvas.getContext('2d'), getWords(node.text), node.rect.width, node.font.fontSize);
     height = lineHeight * lines.length;
   }
 

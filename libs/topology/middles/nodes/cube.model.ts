@@ -28,7 +28,7 @@ export class Surface {
       }
     }
     ctx.closePath();
-    ctx.fill();
+    this.fillStyle && ctx.fill();
     ctx.stroke();
     ctx.restore();
   }

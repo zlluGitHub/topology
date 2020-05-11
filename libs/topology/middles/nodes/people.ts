@@ -19,6 +19,6 @@ export function people(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(middle, node.rect.y + r * 4);
   ctx.lineTo(node.rect.ex, node.rect.ey);
 
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }

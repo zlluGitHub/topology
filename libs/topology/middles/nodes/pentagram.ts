@@ -13,6 +13,6 @@ export function pentagram(ctx: CanvasRenderingContext2D, node: Node) {
     );
   }
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }

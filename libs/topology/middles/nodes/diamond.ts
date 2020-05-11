@@ -7,6 +7,6 @@ export function diamond(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + node.rect.width / 2, node.rect.y + node.rect.height);
   ctx.lineTo(node.rect.x, node.rect.y + node.rect.height / 2);
   ctx.closePath();
-  ctx.fill();
+  node.fillStyle && ctx.fill();
   ctx.stroke();
 }
