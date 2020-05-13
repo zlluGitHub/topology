@@ -595,7 +595,7 @@ export class Topology {
       const moveOutX =
         pos.x + 50 > this.parentElem.clientWidth + this.parentElem.scrollLeft;
       const moveOutY = pos.y + 50 > this.parentElem.clientHeight + this.parentElem.scrollTop;
-      if (moveOutX || moveOutY) {
+      if (!this.options.disableMoveOutParent && (moveOutX || moveOutY)) {
         this.dispatch('moveOutParent', pos);
 
         let resize = false;

@@ -37,6 +37,7 @@ export interface Options {
   hideAnchor?: boolean;
   disableEmptyLine?: boolean;
   disableScale?: boolean;
+  disableMoveOutParent?: boolean;
   playIcon?: string;
   pauseIcon?: string;
   fullScreenIcon?: string;
