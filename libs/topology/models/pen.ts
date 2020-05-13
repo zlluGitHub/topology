@@ -1,10 +1,13 @@
+
+import { Store } from 'le5le-store';
+
 import { s8 } from '../utils/uuid';
 import { Point } from './point';
 import { Rect } from './rect';
 import { pointInRect } from '../utils/canvas';
 import { EventType, EventAction } from './event';
 
-import { Store } from 'le5le-store';
+import { Lock } from './status';
 
 export enum PenType {
   Node,
@@ -63,7 +66,7 @@ export abstract class Pen {
   // Auto-play
   animatePlay: boolean;
 
-  locked: boolean;
+  locked: Lock;
   // 作为子节点，是否可以直接点击选中
   stand: boolean;
   hideInput: boolean;

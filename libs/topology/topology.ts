@@ -1069,7 +1069,7 @@ export class Topology {
   }
 
   inNode(pt: Point, node: Node, inChild = false) {
-    if (this.data.locked === Lock.NoEvent) {
+    if (this.data.locked === Lock.NoEvent || node.locked === Lock.NoEvent) {
       return null;
     }
 
@@ -1250,6 +1250,9 @@ export class Topology {
     }
     this.activeLayer.pens = [];
     for (const item of this.data.pens) {
+      if (item.locked === Lock.NoEvent) {
+        continue;
+      }
       if (item instanceof Node) {
         if (rect.hitByRect(item.rect)) {
           this.activeLayer.add(item);
@@ -1702,7 +1705,7 @@ export class Topology {
 
   }
 
-  lockPens(pens: Pen[], lock: boolean) {
+  lockPens(pens: Pen[], lock: Lock) {
     for (const item of this.data.pens) {
       for (const node of pens) {
         if (item.id === node.id) {
@@ -1711,7 +1714,6 @@ export class Topology {
         }
       }
     }
-
 
     this.dispatch('lockPens', {
       pens,
@@ -1800,7 +1802,7 @@ export class Topology {
     for (const item of node.children) {
       item.parentId = undefined;
       item.rectInParent = undefined;
-      item.locked = false;
+      item.locked = Lock.None;
       this.data.pens.push(item);
     }
 

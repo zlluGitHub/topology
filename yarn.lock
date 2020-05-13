@@ -5026,15 +5026,15 @@ le5le-store@^1.0.2:
   resolved "https://registry.yarnpkg.com/le5le-store/-/le5le-store-1.0.5.tgz#d4b441be872177403e52e31433980a44299944cd"
   integrity sha512-5g7aSBUe841tOw0E+17BYNRnknJoeZzVvbGTAXE73NgQsZW11c7rmOAdvLGMvNJ39sW+rlP0KHvTzDtehWedJw==
 
-le5le-store@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/le5le-store/-/le5le-store-1.0.6.tgz#7da616fc3d8f5fade629326cc1e5bec67a098b4e"
-  integrity sha512-i+B8PgthlIe/0AKYi/oeIMKacr/HLUogTVn0r7fT63G9A/MT8M9itfSJjsOV0zDK/NHCwVPt4O1XtjycQkVc7g==
+le5le-store@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npm.taobao.org/le5le-store/download/le5le-store-1.0.7.tgz?cache=0&sync_timestamp=1589252679062&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fle5le-store%2Fdownload%2Fle5le-store-1.0.7.tgz#73417e00cbd3d8a1010b31795496323adfc7bc47"
+  integrity sha1-c0F+AMvT2KEBCzF5VJYyOt/HvEc=
 
-le5le-ui@^0.8.4:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/le5le-ui/-/le5le-ui-0.8.4.tgz#aec0b3da66cc5d44d5c8cb7f03f83554c51e52ec"
-  integrity sha512-NhEV/uCRTFr2UEF6OuSj5RTZXjCTi6ga7UhunUw0M7jDhGBO+faeteBuisgb6aQB1M388oxfHnK7NXlGjJc0Kg==
+le5le-ui@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.npm.taobao.org/le5le-ui/download/le5le-ui-0.8.5.tgz?cache=0&sync_timestamp=1589356082771&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fle5le-ui%2Fdownload%2Fle5le-ui-0.8.5.tgz#404735b06d6a714df8e061904efa509512c50657"
+  integrity sha1-QEc1sG1qcU344GGQTvpQlRLFBlc=
 
 less-loader@5.0.0:
   version "5.0.0"

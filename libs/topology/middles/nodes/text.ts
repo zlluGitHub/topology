@@ -33,18 +33,14 @@ export function getWords(txt: string) {
 // words - the word array of text, to avoid spliting a word.
 // maxWidth - the max width of the rect.
 export function getLines(ctx: CanvasRenderingContext2D, words: string[], maxWidth: number, fontSize: number) {
-  const wordStr = words.join('').toString();
-  if (fontSize * words.length < maxWidth) {
-    return [wordStr];
-  }
-  if (ctx.measureText(wordStr).width < maxWidth) {
-    return [wordStr];
-  }
   const lines = [];
   let currentLine = words[0] || '';
   for (let i = 1; i < words.length; ++i) {
     const word = words[i] || '';
-    if (ctx.measureText(currentLine + word).width < maxWidth) {
+    const text = currentLine + word;
+    const chinese = text.match(/[\u4e00-\u9fa5]/g) || '';
+    const chineseLen = chinese.length;
+    if ((text.length - chineseLen) * fontSize * 0.5 + chineseLen * fontSize < maxWidth) {
       currentLine += word;
     } else {
       lines.push(currentLine);
@@ -133,18 +129,13 @@ export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
     return;
   }
 
-  // ctx.save();
+  ctx.save();
   ctx.beginPath();
-  delete ctx.shadowBlur;
   delete ctx.shadowColor;
-  // ctx.shadowColor = '';
-  // ctx.shadowBlur = 0;
-  const font = `${node.font.fontStyle || 'normal'} normal ${node.font.fontWeight || 'normal'} ${node.font.fontSize}px/${
+  delete ctx.shadowBlur;
+  ctx.font = `${node.font.fontStyle || 'normal'} normal ${node.font.fontWeight || 'normal'} ${node.font.fontSize}px/${
     node.font.lineHeight
     } ${node.font.fontFamily}`;
-  if (ctx.font !== font) {
-    ctx.font = font;
-  }
 
   if (node.font.color) {
     ctx.fillStyle = node.font.color;
@@ -163,7 +154,7 @@ export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
   const paragraphs = node.text.split(/[\n,]/g);
   for (let i = 0; i < paragraphs.length; ++i) {
     const l = getLines(ctx, getWords(paragraphs[i]), textRect.width, node.font.fontSize);
-    lines.push(l);
+    lines.push.apply(lines, l);
   }
 
   const lineHeight = node.font.fontSize * node.font.lineHeight;
@@ -195,7 +186,7 @@ export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
   fillText(ctx, lines,
     x + node.textOffsetX, y + node.textOffsetY, textRect.width, textRect.height, lineHeight, maxLineLen,
     node.font.background);
-  // ctx.restore();
+  ctx.restore();
 }
 
 export function iconfont(ctx: CanvasRenderingContext2D, node: Node) {

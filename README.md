@@ -14,10 +14,9 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
-
 # VS Code extension
-[VS Code extension](https://marketplace.visualstudio.com/items?itemName=Alsmile.le5le-topology-plugin)
 
+[VS Code extension](https://marketplace.visualstudio.com/items?itemName=Alsmile.le5le-topology-plugin)
 
 # Why le5le-topology
 
@@ -143,6 +142,8 @@ Email: alsmile123@qq.com
 - 汇客互动
 - 重庆环投生态环境监测网络与工程治理有限公司
 - 恒安嘉新（北京）科技股份公司
+- 北京翌普信息科技有限公司
+- 天津辰思科技
 
 # License
 

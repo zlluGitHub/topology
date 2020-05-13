@@ -55,3 +55,19 @@ header {
     background-color: #ddd;
   }
 }
+
+.topo {
+  .image {
+    height: 1.65rem;
+  }
+
+  .desc {
+    margin: -0.05rem 0.1rem 0.05rem 0.1rem;
+    header {
+      margin: 0;
+      text-align: left;
+      line-height: 1;
+      height: 0.16rem;
+    }
+  }
+}

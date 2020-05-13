@@ -14,7 +14,8 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 
 ![topology](https://img2018.cnblogs.com/blog/328506/201909/328506-20190904144733715-530893726.png)
 
-# VS Code插件
+# VS Code 插件
+
 [查看](https://marketplace.visualstudio.com/items?itemName=Alsmile.le5le-topology-plugin)
 
 # 特性
@@ -143,6 +144,8 @@ $ npm run prod
 - 汇客互动
 - 重庆环投生态环境监测网络与工程治理有限公司
 - 恒安嘉新（北京）科技股份公司
+- 北京翌普信息科技有限公司
+- 天津辰思科技
 
 # License
 

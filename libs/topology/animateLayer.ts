@@ -65,12 +65,20 @@ export class AnimateLayer {
   }
 
   readyPlay(tag?: string, auto?: boolean, pens?: Pen[]) {
+    this.readyPens.clear();
     if (!pens) {
       pens = this.data.pens;
     }
 
     pens.forEach((pen: Pen) => {
-      if (this.pens.get(pen.id) || this.readyPens.get(pen.id)) {
+      if (this.readyPens.get(pen.id)) {
+        return;
+      }
+
+      if (this.pens.get(pen.id)) {
+        if (!pen.animateStart || pen.animateStart < 1) {
+          this.pens.delete(pen.id);
+        }
         return;
       }
 
