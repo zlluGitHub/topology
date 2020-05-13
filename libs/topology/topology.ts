@@ -100,6 +100,7 @@ export class Topology {
   private socket: Socket;
 
   private scrolling = false;
+  private rendering = false;
   constructor(parent: string | HTMLElement, options?: Options) {
     Store.set('topology-data', this.data);
 
@@ -383,9 +384,13 @@ export class Topology {
       this.hoverLayer.node = null;
       this.hoverLayer.line = null;
     }
-
+    if (this.rendering) {
+      return this;
+    }
+    this.rendering = true;
     this.offscreen.render();
     this.canvas.render();
+    this.rendering = false;
   }
 
   // open - redraw by the data
@@ -595,7 +600,7 @@ export class Topology {
       const moveOutX =
         pos.x + 50 > this.parentElem.clientWidth + this.parentElem.scrollLeft;
       const moveOutY = pos.y + 50 > this.parentElem.clientHeight + this.parentElem.scrollTop;
-      if (moveOutX || moveOutY) {
+      if (!this.options.disableMoveOutParent && (moveOutX || moveOutY)) {
         this.dispatch('moveOutParent', pos);
 
         let resize = false;
