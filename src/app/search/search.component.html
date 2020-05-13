@@ -68,7 +68,10 @@
           <div class="image">
             <img [src]="item.image" />
           </div>
-          <header class="line one" [title]="item.name">{{ item.name }}</header>
+          <div class="desc">
+            <header class="line one" [title]="item.name">{{ item.name }}</header>
+            <div class="gray">{{item.username}}</div>
+          </div>
           <div class="flex border-top">
             <div class="full" title="分类">
               <i class="iconfont icon-tag mr5"></i>

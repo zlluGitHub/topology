@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Clipboard } from 'ts-clipboard';
 import { NoticeService } from 'le5le-components/notice';
 
-import { Topology } from 'topology-core';
+import { Topology, Lock } from 'topology-core';
 import { Pen } from 'topology-core';
 
 @Component({
@@ -79,7 +79,7 @@ export class ContextMenuComponent implements OnInit {
     }
     if (this.selection.pens) {
       for (const item of this.selection.pens) {
-        item.locked = this.locked;
+        item.locked = this.locked ? Lock.Readonly : Lock.None;
       }
     }
     this.canvas.render(true);
