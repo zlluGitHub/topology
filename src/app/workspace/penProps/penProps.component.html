@@ -1612,7 +1612,7 @@
       <div class="full flex">
         <div class="title">数据</div>
         <label class="checkbox ml20">
-          <input type="checkbox" [(ngModel)]="customInput" [readonly]="!canProps" />
+          <input type="checkbox" [(ngModel)]="customInput" [readonly]="!canProps" (change)="onCustomInput()" />
           <span>自定义输入</span>
         </label>
       </div>

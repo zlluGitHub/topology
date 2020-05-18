@@ -824,4 +824,16 @@ export class PenPropsComponent implements OnInit, OnChanges {
       value: ''
     });
   }
+
+  onCustomInput() {
+    if (this.customInput) {
+      this.data = JSON.stringify(this.pen.data, null, 2);
+    } else {
+      try {
+        this.data = JSON.parse(JSON.stringify(this.pen.data));
+      } catch {
+        this.customInput = true;
+      }
+    }
+  }
 }
