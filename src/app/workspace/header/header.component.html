@@ -158,12 +158,12 @@
       </a>
     </div>
     <div class="separator"></div>
-    <div *ngIf="!data.locked" class="item" (click)="data.locked = !data.locked; onMenu('render')" title="锁定">
+    <div *ngIf="!data.locked" class="item" (click)="onMenu('lock')" title="锁定">
       <a>
         <i class="iconfont icon-unlock"></i>
       </a>
     </div>
-    <div *ngIf="data.locked" class="item" (click)="data.locked = !data.locked; onMenu('render')" title="解锁">
+    <div *ngIf="data.locked" class="item" (click)="onMenu('lock')" title="解锁">
       <a style="color:#faad14!important">
         <i class="iconfont icon-lock"></i>
       </a>

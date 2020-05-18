@@ -1074,7 +1074,7 @@ export class Topology {
   }
 
   inNode(pt: Point, node: Node, inChild = false) {
-    if (this.data.locked === Lock.NoEvent || node.locked === Lock.NoEvent) {
+    if (this.data.locked === Lock.NoEvent || !node.visible || node.locked === Lock.NoEvent) {
       return null;
     }
 
@@ -1093,7 +1093,7 @@ export class Topology {
     if (node.hit(pt)) {
       this.moveIn.hoverNode = node;
       this.moveIn.type = MoveInType.Nodes;
-      this.divLayer.canvas.style.cursor = 'move';
+      !node.locked && (this.divLayer.canvas.style.cursor = 'move');
 
       // Too small
       if (!(this.options.hideAnchor || node.hideAnchor || node.rect.width < 20 || node.rect.height < 20)) {
@@ -1147,6 +1147,10 @@ export class Topology {
   }
 
   inLine(point: Point, line: Line) {
+    if (!line.visible) {
+      return null;
+    }
+
     if (line.from.hit(point, 10)) {
       this.moveIn.type = MoveInType.LineFrom;
       this.moveIn.hoverLine = line;
@@ -1155,7 +1159,7 @@ export class Topology {
       } else {
         this.divLayer.canvas.style.cursor = 'move';
       }
-      return true;
+      return line;
     }
 
     if (line.to.hit(point, 10)) {
@@ -1166,7 +1170,7 @@ export class Topology {
       } else {
         this.divLayer.canvas.style.cursor = 'move';
       }
-      return true;
+      return line;
     }
 
     if (line.pointIn(point)) {
@@ -1176,10 +1180,10 @@ export class Topology {
       if (line.from.id || line.to.id) {
         this.moveIn.type = MoveInType.Line;
       }
-      return true;
+      return line;
     }
 
-    return false;
+    return null;
   }
 
   private getLineDock(point: Point) {
@@ -1705,16 +1709,19 @@ export class Topology {
 
   lock(lock: number) {
     this.data.locked = lock;
+    for (const item of this.data.pens) {
+      (item as any).addToDiv && (item as any).addToDiv();
+    }
 
     this.dispatch('locked', this.data.locked);
-
   }
 
   lockPens(pens: Pen[], lock: Lock) {
     for (const item of this.data.pens) {
-      for (const node of pens) {
-        if (item.id === node.id) {
+      for (const pen of pens) {
+        if (item.id === pen.id) {
           item.locked = lock;
+          (item as any).addToDiv && (item as any).addToDiv();
           break;
         }
       }
@@ -1724,7 +1731,6 @@ export class Topology {
       pens,
       lock
     });
-
   }
 
   top(pen: Pen) {
@@ -2050,6 +2056,30 @@ export class Topology {
     if (this.options.on) {
       this.options.on(event, data);
     }
+  }
+
+  getValue(idOrTag: string, attr = 'text') {
+    let pen: Pen;
+    this.data.pens.forEach(item => {
+      if (item.id === idOrTag || item.tags.indexOf(idOrTag) > -1) {
+        pen = item;
+        return;
+      }
+    });
+
+    return pen[attr];
+  }
+
+  setValue(idOrTag: string, val: any, attr = 'text') {
+    let pen: Pen;
+    this.data.pens.forEach(item => {
+      if (item.id === idOrTag || item.tags.indexOf(idOrTag) > -1) {
+        pen = item;
+        return;
+      }
+    });
+
+    pen[attr] = val;
   }
 
   destroy() {

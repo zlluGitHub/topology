@@ -18,7 +18,7 @@ export abstract class Pen {
   id = '';
   type = PenType.Node;
   name = '';
-  tags: string[] = [];
+  tags: string[];
   rect: Rect = new Rect(0, 0, 0, 0);
   lineWidth = 1;
   rotate = 0;
@@ -101,11 +101,10 @@ export abstract class Pen {
   paddingLeftNum: number;
   paddingRightNum: number;
 
+  visible: boolean;
+
   // User data.
   data: any;
-  visible: boolean = true;
-
-  active: boolean;
   constructor(json?: any) {
     if (json) {
       this.id = json.id || s8();
@@ -156,10 +155,7 @@ export abstract class Pen {
       this.markdown = json.markdown;
       this.tipId = json.tipId;
       this.title = json.title;
-      this.visible = false;
-      if (json.visible !== false) {
-        this.visible = true;
-      }
+      this.visible = json.visible !== false;
 
       if (json.rectInParent) {
         this.rectInParent = json.rectInParent;
@@ -178,9 +174,10 @@ export abstract class Pen {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    if (!this.isVisible()) {
+    if (!this.visible) {
       return;
     }
+
     if ((this as any).from && !(this as any).to) {
       return;
     }
@@ -246,9 +243,6 @@ export abstract class Pen {
   }
 
   hit(point: Point, padding = 0) {
-    if (!this.isVisible()) {
-      return false;
-    }
     if (this.rotate % 360 === 0) {
       return this.rect.hit(point, padding);
     }
@@ -307,7 +301,7 @@ export abstract class Pen {
   }
 
   isVisible() {
-    return (!!this.visible);
+    return this.visible;
   }
 
   private link(url: string, params: string) {

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } fro
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-import { Topology } from 'topology-core';
+import { Topology, Lock } from 'topology-core';
 import { Options } from 'topology-core/options';
 
 
@@ -169,6 +169,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         this.onShare();
         break;
       case 'render':
+        this.canvas.render();
+        break;
+      case 'lock':
+        this.canvas.lock(this.canvas.data.locked ? Lock.None : Lock.Readonly);
         this.canvas.render();
         break;
       case 'scale':

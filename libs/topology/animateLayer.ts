@@ -71,7 +71,7 @@ export class AnimateLayer {
     }
 
     pens.forEach((pen: Pen) => {
-      if (this.readyPens.get(pen.id)) {
+      if (!pen.visible || this.readyPens.get(pen.id)) {
         return;
       }
 
@@ -173,7 +173,7 @@ export class AnimateLayer {
 
   render(ctx: CanvasRenderingContext2D) {
     this.pens.forEach((line: Pen, key) => {
-      if (line instanceof Line) {
+      if (line.visible && line instanceof Line) {
         line.render(ctx);
       }
     });

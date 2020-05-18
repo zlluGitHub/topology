@@ -335,6 +335,11 @@ export class PenPropsComponent implements OnInit, OnChanges {
     spaceHeight: 30
   };
 
+  customInput: boolean;
+  canProps = true;
+
+  objectKeys = Object.keys;
+
   show: any = {};
   constructor(private service: PenPropsService) {
   }
@@ -392,6 +397,21 @@ export class PenPropsComponent implements OnInit, OnChanges {
 
     if (!this.pen.imageAlign) {
       this.pen.imageAlign = 'center';
+    }
+
+    if (this.pen.data) {
+      if (typeof this.pen.data === 'string') {
+        try {
+          this.data = JSON.parse(JSON.stringify(this.pen.data));
+        } catch {
+          this.customInput = true;
+        }
+      }
+
+      if (!Array.isArray(this.pen.data)) {
+        this.customInput = true;
+        this.canProps = false;
+      }
     }
 
     this.icons = this.service.GetIcons();
@@ -792,5 +812,16 @@ export class PenPropsComponent implements OnInit, OnChanges {
   onSelect(pen: Pen) {
     this.canvas.activeLayer.pens = [pen];
     this.canvas.render();
+  }
+
+  onAddProps() {
+    if (!this.pen.data) {
+      this.pen.data = [];
+    }
+
+    this.pen.data.push({
+      key: '',
+      value: ''
+    });
   }
 }

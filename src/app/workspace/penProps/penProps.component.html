@@ -858,7 +858,7 @@
       </div>
       <div class="flex grid">
         <div class="mr5">
-          <div class="input color right" [class.readonly]="readonly">
+          <div class="input color " [class.readonly]="readonly">
             <i [(colorPicker)]="pen.font.color" [style.background]="pen.font.color" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
               (colorPickerChange)="onChangeProp()"></i>
@@ -866,7 +866,7 @@
           </div>
         </div>
         <div>
-          <div class="input color" [class.readonly]="readonly">
+          <div class="input color right" [class.readonly]="readonly">
             <i [(colorPicker)]="pen.font.background" [style.background]="pen.font.background" cpPosition="bottom"
               cpAlphaChannel="always" cpOutputFormat="hex" [cpPresetColors]="cpPresetColors"
               (colorPickerChange)="onChangeProp()"></i>
@@ -1583,6 +1583,11 @@
 
 <div *ngIf="tab===4">
   <div class="group">
+    <b>ID：</b>
+    {{pen.id}}
+  </div>
+
+  <div class="group">
     <div class="title">
       <div class="full">标签</div>
       <i *ngIf="show.label !== false" class="hover iconfont icon-angle-down" (click)="show.label = false"></i>
@@ -1603,12 +1608,29 @@
   </div>
 
   <div class="group">
-    <div class="title">
-      <div class="full">自定义数据</div>
+    <div class="flex">
+      <div class="full flex">
+        <div class="title">数据</div>
+        <label class="checkbox ml20">
+          <input type="checkbox" [(ngModel)]="customInput" [readonly]="!canProps" />
+          <span>自定义输入</span>
+        </label>
+      </div>
       <i *ngIf="show.data !== false" class="hover iconfont icon-angle-down" (click)="show.data = false"></i>
       <i *ngIf="show.data === false" class="hover iconfont icon-angle-right" (click)="show.data = true"></i>
     </div>
-    <div *ngIf="show.data !== false" class="mt10">
+    <div *ngIf="show.data !== false && !customInput" class="mt10">
+      <div *ngIf="pen.data">
+        <div *ngFor="let item of pen.data;let i=index" class="flex mb10">
+          <input class="input" style="width: 0.7rem;" [(ngModel)]="item.key" placeholder="属性名">
+          <label class="mh5">=</label>
+          <input class="input" style="width: 1rem;" [(ngModel)]="item.value" placeholder="属性值">
+          <i class="iconfont icon-delete ml5" (click)="pen.data.splice(i,1)"></i>
+        </div>
+      </div>
+      <button class="button primary full" (click)="onAddProps()">+ 新增属性</button>
+    </div>
+    <div *ngIf="show.data !== false && customInput" class="mt10">
       <textarea name="data" class="input full" [(ngModel)]="data" rows="29" [readonly]="readonly"
         (change)="onChangeProp()"></textarea>
     </div>

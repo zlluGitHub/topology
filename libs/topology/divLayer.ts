@@ -363,12 +363,12 @@ export class DivLayer {
       this.videos[node.id].media.style.width = '100%';
       this.videos[node.id].media.style.height = '100%';
     }
-    if (this.data.locked < Lock.Readonly) {
-      elem.style.userSelect = 'none';
-      elem.style.pointerEvents = 'none';
-    } else {
+    if (this.data.locked > Lock.None || node.locked > Lock.None) {
       elem.style.userSelect = 'initial';
       elem.style.pointerEvents = 'initial';
+    } else {
+      elem.style.userSelect = 'none';
+      elem.style.pointerEvents = 'none';
     }
   }
 

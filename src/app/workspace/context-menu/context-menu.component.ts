@@ -75,13 +75,12 @@ export class ContextMenuComponent implements OnInit {
   onLock() {
     this.locked = !this.locked;
     if (this.selection.pen) {
-      this.selection.pen.locked = this.locked;
+      this.canvas.lockPens([this.selection.pen], this.locked ? Lock.Readonly : Lock.None);
     }
     if (this.selection.pens) {
-      for (const item of this.selection.pens) {
-        item.locked = this.locked ? Lock.Readonly : Lock.None;
-      }
+      this.canvas.lockPens(this.selection.pens, this.locked ? Lock.Readonly : Lock.None);
     }
+
     this.canvas.render(true);
   }
 
