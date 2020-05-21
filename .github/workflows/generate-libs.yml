@@ -21,6 +21,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Install core dependencies
+        working-directory: ./packages/core
+        run: npm install
+
       - name: Generate libs doc
         run: |
           pwd
@@ -63,6 +67,10 @@ jobs:
 
       - name: Install bundle dependencies
         working-directory: ./bundle
+        run: npm install
+
+      - name: Install core dependencies
+        working-directory: ./packages/core
         run: npm install
 
       - name: build
