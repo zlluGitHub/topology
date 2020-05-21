@@ -24,7 +24,7 @@ jobs:
       - name: Generate libs doc
         run: |
           pwd
-          npm run gen:doc
+          npm run docs
       - name: Git Init
         run: |
           pwd
@@ -61,9 +61,6 @@ jobs:
       - name: Git Clone
         uses: actions/checkout@master
 
-      - name: Install Dependencies
-        run: npm install
-
       - name: Install bundle dependencies
         working-directory: ./bundle
         run: npm install
@@ -75,7 +72,7 @@ jobs:
       - name: push release
         uses: svenstaro/upload-release-action@1.0.1
         with:
-          tag: "0.2.17"
+          tag: "0.2.18"
           file: "bundle/demo/topology.bundle.js"
           asset_name: "topology.bundle.js"
           repo_token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}

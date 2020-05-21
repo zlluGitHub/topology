@@ -8,11 +8,11 @@
   "scripts": {
     "start": "",
     "build": "yarn workspaces run build",
-    "gen:doc": "typedoc --out ./docs --target es6 --theme minimal --mode file packages && cp -r ./docs/"
+    "docs": "typedoc --out ./docs --target es6 --theme minimal --mode file packages && cp -r ./docs/"
   },
   "devDependencies": {
     "copyfiles": "latest",
     "typescript": "~3.8.3",
-    "lerna": "^3.21.0"
+    "typedoc": "^0.17.7"
   }
 }
