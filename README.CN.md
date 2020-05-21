@@ -25,24 +25,14 @@ Le5le-topology 是一个可视化在线绘图工具，使用 Canvas + Typescript
 - 动画
 - TypeScript
 
-# 源码结构
-
-```
-- libs
-  |- topology  // topogoly-core库源码
-- src  // 官网源码.
-- bundle // es5的压缩包和demo
-- demo // demo
-```
-
 # 快速上手
 
 ## typescrypt/es6
 
 ```
-import { Topology } from 'topology-core';
+import { Topology } from '@topology/core';
 
-var canvas = new Topology('topo-dom', options);
+var canvas = new Topology('topology-dom', options);
 canvas.open(data);
 
 ```
@@ -52,7 +42,7 @@ canvas.open(data);
 ```
 <script src="/bundle/topology.bundle.js"></script>
 
-var canvas = new Le5leTopology.Topology('topo-canvas', {});
+var canvas = new Le5leTopology.Topology('topology-dom', options);
 canvas.open(data);
 
 ```
@@ -62,57 +52,6 @@ canvas.open(data);
 [Todo]
 
 [→ 中文文档](https://www.yuque.com/alsmile/topology/about)
-
-# 开发
-
-## 编译[在线绘图官网](https://topology.le5le.com) 前端源码
-
-```
-$ yarn
-$ npm start
-
-# build
-$ npm run build
-
-```
-
-## 调试本地开发环境
-
-```
-$ yarn
-
-//【注意】 修改host文件，把local.dev.le5le.com代理到127.0.0.1
-$ npm run dev
-```
-
-## 调试生产环境
-
-```
-$ yarn
-
-//【注意】 修改host文件，把local.le5le.com代理到127.0.0.1
-$ npm run prod
-```
-
-## 编译核心库源码 Topology-core lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology#] npm run build
-
-```
-
-## 编译流程图源码 Topology-flow-diagram lib
-
-```
-[libs/topology-flow-diagram#] yarn
-
-# build
-[libs/topology-flow-diagram#] npm run build
-
-```
 
 # 贡献者
 

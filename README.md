@@ -25,24 +25,14 @@ Le5le-topology is a diagram visualization framework uses canvas and typescript. 
 - Animate
 - TypeScript
 
-# Source
-
-```
-- libs
-  |- topology  // The topogoly-core lib source.
-- src  // The topology.le5le.com source that uses angular.
-- bundle
-- demo // The demo uses js.
-```
-
 # Getting Started
 
 ## typescrypt/es6
 
 ```
-import { Topology } from 'topology-core';
+import { Topology } from '@topology/core';
 
-var canvas = new Topology('topo-dom', options);
+var canvas = new Topology('topology-dom', options);
 canvas.open(data);
 
 ```
@@ -52,7 +42,7 @@ canvas.open(data);
 ```
 <script src="/bundle/topology.bundle.js"></script>
 
-var canvas = new Le5leTopology.Topology('topo-canvas', {});
+var canvas = new Le5leTopology.Topology('topology-dom', options);
 canvas.open(data);
 
 ```
@@ -67,50 +57,12 @@ canvas.open(data);
 
 ```
 $ yarn
-$ npm start
+$
 
 # build
 $ npm run build
 
 ```
-
-## http proxy on localhost
-
-```
-# First, set your host: 127.0.0.1 local.dev.le5le.com
-$ npm run dev
-```
-
-## http proxy on topology.le5le.com
-
-```
-# First, set your host: 127.0.0.1 local.le5le.com
-$ npm run prod
-```
-
-## Topology-core lib
-
-```
-[libs/topology#] yarn
-
-# build
-[libs/topology#] npm run build
-
-```
-
-## Topology-flow-diagram lib
-
-```
-[libs/topology-flow-diagram#] yarn
-
-# build
-[libs/topology-flow-diagram#] npm run build
-
-```
-
-## Make your diagrams
-
-[→ Reference](https://github.com/le5le-com/topology/tree/master/libs/topology-flow-diagram/display)
 
 # Contributors
 
