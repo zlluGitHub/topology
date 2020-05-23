@@ -1,23 +1,16 @@
 
 #!/usr/bin/env bash
 
-cd dist/core
-npm publish --access=public
+cd dist/core && npm publish
 
-cd ../activity-diagram
-npm publish --access=public
+cd ../activity-diagram && npm publish
 
-cd ../chart-diagram
-npm publish --access=public
+cd ../chart-diagram && npm publish
 
-cd ../class-diagram
-npm publish --access=public
+cd ../class-diagram && npm publish
 
-cd ../flow-diagram
-npm publish --access=public
+cd ../flow-diagram && npm publish
 
-cd ../layout
-npm publish --access=public
+cd ../layout && npm publish
 
-cd ../sequence-diagram
-npm publish --access=public
+cd ../sequence-diagram && npm publish
