@@ -98,7 +98,7 @@ export class Topology {
 
   private scheduledAnimationFrame = false;
   private socket: Socket;
-  private boundingRect: DOMRect;
+  private boundingRect: any;
   private scrolling = false;
   private rendering = false;
   constructor(parent: string | HTMLElement, options?: Options) {
