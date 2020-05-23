@@ -42,6 +42,7 @@ interface ICaches {
 const dockOffset = 10;
 
 export class Topology {
+  id: String;
   data: TopologyData = new TopologyData();
   clipboard: TopologyData;
   caches: ICaches = {
@@ -97,11 +98,12 @@ export class Topology {
 
   private scheduledAnimationFrame = false;
   private socket: Socket;
-  private boundingRect: DOMRect;
+  private boundingRect: any;
   private scrolling = false;
   private rendering = false;
   constructor(parent: string | HTMLElement, options?: Options) {
-    Store.set('topology-data', this.data);
+    this.id = s8();
+    Store.set(this.generateStoreKey('topology-data'), this.data);
 
     if (!options) {
       options = {};
@@ -117,12 +119,13 @@ export class Topology {
     }
     this.parentElem.style.position = 'relative';
 
-    this.activeLayer = new ActiveLayer(this.options);
-    this.hoverLayer = new HoverLayer(this.options);
-    this.animateLayer = new AnimateLayer(this.options);
-    this.offscreen = new Offscreen(this.parentElem, this.options);
-    this.canvas = new RenderLayer(this.parentElem, this.options);
-    this.divLayer = new DivLayer(this.parentElem, this.options);
+    const id = this.id;
+    this.activeLayer = new ActiveLayer(this.options, id);
+    this.hoverLayer = new HoverLayer(this.options, id);
+    this.animateLayer = new AnimateLayer(this.options, id);
+    this.offscreen = new Offscreen(this.parentElem, this.options, id);
+    this.canvas = new RenderLayer(this.parentElem, this.options, id);
+    this.divLayer = new DivLayer(this.parentElem, this.options, id);
 
     this.resize();
 
@@ -132,10 +135,10 @@ export class Topology {
     };
     this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
 
-    this.subcribe = Store.subscribe('LT:render', () => {
+    this.subcribe = Store.subscribe(this.generateStoreKey('LT:render'), () => {
       this.render();
     });
-    this.subcribeImage = Store.subscribe('LT:imageLoaded', () => {
+    this.subcribeImage = Store.subscribe(this.generateStoreKey('LT:imageLoaded'), () => {
       if (this.imageTimer) {
         clearTimeout(this.imageTimer);
       }
@@ -143,17 +146,17 @@ export class Topology {
         this.render();
       }, 100);
     });
-    this.subcribeAnimateMoved = Store.subscribe('LT:rectChanged', (e: any) => {
+    this.subcribeAnimateMoved = Store.subscribe(this.generateStoreKey('LT:rectChanged'), (e: any) => {
       this.activeLayer.updateLines(this.data.pens);
     });
-    this.subcribeMediaEnd = Store.subscribe('mediaEnd', (node: Node) => {
+    this.subcribeMediaEnd = Store.subscribe(this.generateStoreKey('mediaEnd'), (node: Node) => {
       if (node.nextPlay) {
         this.animateLayer.readyPlay(node.nextPlay);
         this.animateLayer.animate();
       }
       this.dispatch('mediaEnd', node);
     });
-    this.subcribeAnimateEnd = Store.subscribe('animateEnd', (e: any) => {
+    this.subcribeAnimateEnd = Store.subscribe(this.generateStoreKey('animateEnd'), (e: any) => {
       if (!e) {
         return;
       }
@@ -285,6 +288,7 @@ export class Topology {
         );
       } else {
         const node = new Node(json);
+        node.setTID(this.id);
         this.addNode(node, true);
         if (node.name === 'div') {
           this.dispatch('LT:addDiv', node);
@@ -317,7 +321,9 @@ export class Topology {
     this.touchedNode.rect.x = pos.offsetX - this.touchedNode.rect.width / 2;
     this.touchedNode.rect.y = pos.offsetY - this.touchedNode.rect.height / 2;
 
-    this.addNode(new Node(this.touchedNode), true);
+    const node = new Node(this.touchedNode);
+    node.setTID(this.id);
+    this.addNode(node, true);
     this.touchedNode = undefined;
   }
 
@@ -418,7 +424,7 @@ export class Topology {
     this.data.toArrowType = data.toArrowType;
 
     this.data.scale = data.scale || 1;
-    Store.set('LT:scale', this.data.scale);
+    Store.set(this.generateStoreKey('LT:scale'), this.data.scale);
     this.dispatch('scale', this.data.scale);
 
     this.data.bkColor = data.bkColor;
@@ -692,7 +698,7 @@ export class Topology {
             );
           }
           this.needCache = true;
-          Store.set('LT:updateLines', [this.moveIn.hoverLine]);
+          Store.set(this.generateStoreKey('LT:updateLines'), [this.moveIn.hoverLine]);
           break;
         case MoveInType.Rotate:
           if (this.activeLayer.pens.length) {
@@ -850,7 +856,7 @@ export class Topology {
           break;
 
         case MoveInType.LineControlPoint:
-          Store.set('pts-' + this.moveIn.hoverLine.id, null);
+          Store.set(this.generateStoreKey('pts-') + this.moveIn.hoverLine.id, null);
           break;
       }
     }
@@ -1881,7 +1887,7 @@ export class Topology {
     for (const item of this.data.pens) {
       item.scale(scale, center);
     }
-    Store.set('LT:scale', this.data.scale);
+    Store.set(this.generateStoreKey('LT:scale'), this.data.scale);
 
     this.render();
     this.overflow();
@@ -1903,6 +1909,10 @@ export class Topology {
         item.round();
       }
     }
+  }
+
+  private generateStoreKey(key) {
+    return `${this.id}-${key}`;
   }
 
   private createMarkdownTip() {

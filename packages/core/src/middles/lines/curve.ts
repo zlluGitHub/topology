@@ -1,6 +1,7 @@
 import { Store } from 'le5le-store';
 
 import { Point } from '../../models/point';
+import { Pen } from '../../models/pen';
 import { Line } from '../../models/line';
 import { Direction } from '../../models/direction';
 import { pointInLine } from '../../utils/canvas';
@@ -57,18 +58,18 @@ export function calcCurveControlPoints(l: Line) {
     }
   }
   l.controlPoints = [getControlPt(l.from, l.to), getControlPt(l.to, l.from)];
-  Store.set('pts-' + l.id, null);
+  Store.set(generateStoreKey(l, 'pts-') + l.id, null);
 }
 
 export function pointInCurve(point: Point, l: Line) {
-  let points: Point[] = Store.get('pts-' + l.id) as Point[];
+  let points: Point[] = Store.get(generateStoreKey(l, 'pts-') + l.id) as Point[];
   if (!points) {
     points = [l.from];
     for (let i = 0.01; i < 1; i += 0.01) {
       points.push(getBezierPoint(i, l.from, l.controlPoints[0], l.controlPoints[1], l.to));
     }
     points.push(l.to);
-    Store.set('pts-' + l.id, points);
+    Store.set(generateStoreKey(l, 'pts-') + l.id, points);
   }
   const cnt = points.length - 1;
   for (let i = 0; i < cnt; ++i) {
@@ -153,5 +154,9 @@ export function calcMindControlPoints(l: Line) {
     l.controlPoints = [new Point(l.from.x + w / 2, l.from.y), new Point(l.to.x, l.from.y)];
   }
 
-  Store.set('pts-' + l.id, null);
+  Store.set(generateStoreKey(l, 'pts-') + l.id, null);
+}
+
+function generateStoreKey(pen: Pen, key: String) {
+  return `${pen.getTID()}-${key}`;
 }

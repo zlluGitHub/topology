@@ -6,9 +6,10 @@ import { Node } from './models/node';
 import { Store } from 'le5le-store';
 import { Options } from './options';
 import { Lock } from './models/status';
+import { Layer } from './layer';
 
-export class HoverLayer {
-  protected data: TopologyData = Store.get('topology-data');
+export class HoverLayer extends Layer {
+  protected data: TopologyData;
 
   anchorRadius = 4;
 
@@ -28,8 +29,10 @@ export class HoverLayer {
 
   root: Node;
   dragRect: Rect;
-  constructor(public options: Options = {}) {
-    Store.set('LT:HoverLayer', this);
+  constructor(public options: Options = {}, TID: String) {
+    super(TID);
+    this.data = Store.get(this.generateStoreKey('topology-data'));
+    Store.set(this.generateStoreKey('LT:HoverLayer'), this);
   }
 
   lineTo(to: Point, toArrow: string = 'triangleSolid') {
@@ -40,8 +43,8 @@ export class HoverLayer {
     if (this.line.from.id || this.line.to.id) {
       this.line.calcControlPoints();
     }
-    Store.set('pts-' + this.line.id, null);
-    Store.set('LT:updateLines', [this.line]);
+    Store.set(this.generateStoreKey('pts-') + this.line.id, null);
+    Store.set(this.generateStoreKey('LT:updateLines'), [this.line]);
   }
 
   lineFrom(from: Point) {
@@ -53,8 +56,8 @@ export class HoverLayer {
     if (this.line.from.id || this.line.to.id) {
       this.line.calcControlPoints();
     }
-    Store.set('pts-' + this.line.id, null);
-    Store.set('LT:updateLines', [this.line]);
+    Store.set(this.generateStoreKey('pts-') + this.line.id, null);
+    Store.set(this.generateStoreKey('LT:updateLines'), [this.line]);
   }
 
   lineMove(pt: Point, initPos: { x: number; y: number; }) {
@@ -69,8 +72,8 @@ export class HoverLayer {
       this.line.controlPoints[i].x = this.initLine.controlPoints[i].x + x;
       this.line.controlPoints[i].y = this.initLine.controlPoints[i].y + y;
     }
-    Store.set('pts-' + this.line.id, null);
-    Store.set('LT:updateLines', [this.line]);
+    Store.set(this.generateStoreKey('pts-') + this.line.id, null);
+    Store.set(this.generateStoreKey('LT:updateLines'), [this.line]);
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -82,6 +85,9 @@ export class HoverLayer {
     ctx.fillStyle = '#fff';
     // anchors
     if (this.node && !this.data.locked) {
+      if (!this.node.getTID()) {
+        this.node.setTID(this.TID);
+      }
       this.root = this.getRoot(this.node) || this.node;
       if (this.root) {
         ctx.save();
@@ -127,7 +133,7 @@ export class HoverLayer {
     ctx.lineWidth = 1;
 
     if (this.dockLineX > 0) {
-      const size = Store.get('LT:size');
+      const size = Store.get(this.generateStoreKey('LT:size'));
       ctx.beginPath();
       ctx.moveTo(this.dockLineX, 0);
       ctx.lineTo(this.dockLineX, size.height);
@@ -135,7 +141,7 @@ export class HoverLayer {
     }
 
     if (this.dockLineY > 0) {
-      const size = Store.get('LT:size');
+      const size = Store.get(this.generateStoreKey('LT:size'));
       ctx.beginPath();
       ctx.moveTo(0, this.dockLineY);
       ctx.lineTo(size.width, this.dockLineY);

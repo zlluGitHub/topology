@@ -2,15 +2,18 @@ import { Store } from 'le5le-store';
 
 import { TopologyData } from './models/data';
 import { Options } from './options';
+import { Layer } from './layer';
 
-export class Canvas {
+export class Canvas extends Layer {
   static dpiRatio = 0;
 
-  protected data: TopologyData = Store.get('topology-data');
+  protected data: TopologyData;
   canvas = document.createElement('canvas');
   width = 0;
   height = 0;
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+  constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
+    super(TID);
+    this.data = Store.get(this.generateStoreKey('topology-data'));
     this.canvas.style.position = 'absolute';
     this.canvas.style.left = '0';
     this.canvas.style.top = '0';
@@ -51,7 +54,7 @@ export class Canvas {
     this.canvas.height = (this.height * Canvas.dpiRatio) | 0;
     this.canvas.getContext('2d').scale(Canvas.dpiRatio, Canvas.dpiRatio);
 
-    Store.set('LT:size', { width: this.canvas.width, height: this.canvas.height });
+    Store.set(this.generateStoreKey('LT:size'), { width: this.canvas.width, height: this.canvas.height });
   }
 
   render() {

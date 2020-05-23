@@ -25,6 +25,7 @@ export function loadJS(url: string, callback?: () => void, render?: boolean) {
     if (callback) {
       callback();
     }
+    // how to do
     if (render) {
       Store.set('LT:render', true);
     }

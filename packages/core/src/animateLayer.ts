@@ -5,9 +5,10 @@ import { Node } from './models/node';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
 import { Options } from './options';
+import { Layer } from './layer';
 
-export class AnimateLayer {
-  protected data: TopologyData = Store.get('topology-data');
+export class AnimateLayer extends Layer {
+  protected data: TopologyData;
   pens = new Map();
   readyPens = new Map();
 
@@ -15,17 +16,19 @@ export class AnimateLayer {
   private lastNow = 0;
   private subscribeUpdate: any;
   private subscribePlay: any;
-  constructor(public options: Options = {}) {
-    Store.set('LT:AnimateLayer', this);
+  constructor(public options: Options = {}, TID: String) {
+    super(TID);
+    this.data = Store.get(this.generateStoreKey('topology-data'));
+    Store.set(this.generateStoreKey('LT:AnimateLayer'), this);
 
     if (!this.options.animateColor) {
       this.options.animateColor = '#ff6600';
     }
 
-    this.subscribeUpdate = Store.subscribe('LT:updateLines', (lines: Line[]) => {
+    this.subscribeUpdate = Store.subscribe(this.generateStoreKey('LT:updateLines'), (lines: Line[]) => {
       this.updateLines(lines);
     });
-    this.subscribePlay = Store.subscribe('LT:AnimatePlay', (params: { tag: string; pen: Pen; }) => {
+    this.subscribePlay = Store.subscribe(this.generateStoreKey('LT:AnimatePlay'), (params: { tag: string; pen: Pen; }) => {
       this.readyPlay(params.tag, false);
       this.animate();
     });
@@ -33,6 +36,7 @@ export class AnimateLayer {
 
   getAnimateLine(item: Pen) {
     const l = new Line(item);
+    l.setTID(this.TID);
     l.isAnimate = true;
     l.toArrow = '';
     if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
@@ -71,6 +75,7 @@ export class AnimateLayer {
     }
 
     pens.forEach((pen: Pen) => {
+      pen.setTID(this.TID);
       if (!pen.visible || this.readyPens.get(pen.id)) {
         return;
       }
@@ -148,7 +153,7 @@ export class AnimateLayer {
       });
 
       if (animated) {
-        Store.set('LT:render', true);
+        Store.set(this.generateStoreKey('LT:render'), true);
         this.animate();
       }
     });
@@ -174,6 +179,9 @@ export class AnimateLayer {
   render(ctx: CanvasRenderingContext2D) {
     this.pens.forEach((line: Pen, key) => {
       if (line.visible && line instanceof Line) {
+        if (!line.getTID()) {
+          line.setTID(this.TID);
+        }
         line.render(ctx);
       }
     });

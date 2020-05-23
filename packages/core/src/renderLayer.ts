@@ -3,7 +3,7 @@ import { Options } from './options';
 import { Canvas } from './canvas';
 
 export class RenderLayer extends Canvas {
-  offscreen = Store.get('LT:offscreen');
+  offscreen;
 
   bkImg: HTMLImageElement;
   bkImgRect: {
@@ -12,8 +12,9 @@ export class RenderLayer extends Canvas {
     width: number;
     height: number;
   };
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
-    super(parentElem, options);
+  constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
+    super(parentElem, options, TID);
+    this.offscreen = Store.get(this.generateStoreKey('LT:offscreen'));
     this.parentElem.appendChild(this.canvas);
   }
 
