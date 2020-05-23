@@ -60,6 +60,7 @@ export class Topology {
   divLayer: DivLayer;
 
   private subcribe: Observer;
+  private subcribeRender: Observer;
   private subcribeImage: Observer;
   private imageTimer: any;
   private subcribeAnimateEnd: Observer;
@@ -136,6 +137,9 @@ export class Topology {
     this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
 
     this.subcribe = Store.subscribe(this.generateStoreKey('LT:render'), () => {
+      this.render();
+    });
+    this.subcribeRender = Store.subscribe('LT:render', () => {
       this.render();
     });
     this.subcribeImage = Store.subscribe(this.generateStoreKey('LT:imageLoaded'), () => {
@@ -2099,6 +2103,7 @@ export class Topology {
 
   destroy() {
     this.subcribe.unsubscribe();
+    this.subcribeRender.unsubscribe();
     this.subcribeImage.unsubscribe();
     this.subcribeAnimateEnd.unsubscribe();
     this.subcribeAnimateMoved.unsubscribe();
