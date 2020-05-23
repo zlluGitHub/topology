@@ -6,12 +6,15 @@ import { HoverLayer } from './hoverLayer';
 import { AnimateLayer } from './animateLayer';
 
 export class Offscreen extends Canvas {
-  public activeLayer: ActiveLayer = Store.get('LT:ActiveLayer');
-  public hoverLayer: HoverLayer = Store.get('LT:HoverLayer');
-  public animateLayer: AnimateLayer = Store.get('LT:AnimateLayer');
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
-    super(parentElem, options);
-    Store.set('LT:offscreen', this.canvas);
+  public activeLayer: ActiveLayer;
+  public hoverLayer: HoverLayer;
+  public animateLayer: AnimateLayer;
+  constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
+    super(parentElem, options, TID);
+    this.activeLayer = Store.get(this.generateStoreKey('LT:ActiveLayer'));
+    this.hoverLayer = Store.get(this.generateStoreKey('LT:HoverLayer'));
+    this.animateLayer = Store.get(this.generateStoreKey('LT:AnimateLayer'));
+    Store.set(this.generateStoreKey('LT:offscreen'), this.canvas);
   }
 
   render() {
@@ -21,6 +24,9 @@ export class Offscreen extends Canvas {
     ctx.strokeStyle = this.options.color;
 
     for (const item of this.data.pens) {
+      if (!item.getTID()) {
+        item.setTID(this.TID);
+      }
       item.render(ctx);
     }
 

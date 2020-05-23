@@ -79,9 +79,9 @@ export class Line extends Pen {
       this.fromArrow = 'triangleSolid';
     }
 
-    const data = Store.get('topology-data');
+    // const data = Store.get(this.generateStoreKey('topology-data'));
     if (!this.font.background) {
-      this.font.background = data.bkColor || '#fff';
+      this.font.background = '#fff';
     }
   }
 
@@ -142,7 +142,7 @@ export class Line extends Pen {
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
-    const scale = Store.get('LT:scale') || 1;
+    const scale = Store.get(this.generateStoreKey('LT:scale')) || 1;
     if (this.fromArrow && drawArrowFns[this.fromArrow]) {
       ctx.save();
       ctx.beginPath();
@@ -368,7 +368,7 @@ export class Line extends Pen {
     if (this.animatePos > this.length + this.animateSpan - this.animateFromSize - this.animateToSize) {
       if (++this.animateCycleIndex >= this.animateCycle && this.animateCycle > 0) {
         this.animateStart = 0;
-        Store.set('animateEnd', {
+        Store.set(this.generateStoreKey('animateEnd'), {
           type: 'line',
           data: this
         });
@@ -413,7 +413,7 @@ export class Line extends Pen {
       pt.y += y;
     }
 
-    Store.set('pts-' + this.id, null);
+    Store.set(this.generateStoreKey('pts-') + this.id, null);
   }
 
   scale(scale: number, center: Point) {
@@ -431,7 +431,7 @@ export class Line extends Pen {
       pt.y = center.y - (center.y - pt.y) * scale;
     }
 
-    Store.set('pts-' + this.id, null);
+    Store.set(this.generateStoreKey('pts-') + this.id, null);
   }
 
   clone() {

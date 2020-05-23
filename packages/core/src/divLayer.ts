@@ -4,9 +4,10 @@ import { Node } from './models/node';
 import { TopologyData } from './models/data';
 import { Lock } from './models/status';
 import { PenType } from './models/pen';
+import { Layer } from './layer';
 
-export class DivLayer {
-  protected data: TopologyData = Store.get('topology-data');
+export class DivLayer extends Layer {
+  protected data: TopologyData;
   canvas = document.createElement('div');
   player = document.createElement('div');
   curNode: Node;
@@ -24,7 +25,9 @@ export class DivLayer {
 
   private subcribe: Observer;
   private subcribeNode: Observer;
-  constructor(public parentElem: HTMLElement, public options: Options = {}) {
+  constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
+    super(TID);
+    this.data = Store.get(this.generateStoreKey('topology-data'));
     if (!this.options.playIcon) {
       this.options.playIcon = 'iconfont icon-play';
     }
@@ -47,9 +50,9 @@ export class DivLayer {
     parentElem.appendChild(this.player);
     this.createPlayer();
 
-    this.subcribe = Store.subscribe('LT:addDiv', this.addDiv);
+    this.subcribe = Store.subscribe(this.generateStoreKey('LT:addDiv'), this.addDiv);
 
-    this.subcribeNode = Store.subscribe('LT:activeNode', (node: Node) => {
+    this.subcribeNode = Store.subscribe(this.generateStoreKey('LT:activeNode'), (node: Node) => {
       if (!node || (!node.video && !node.audio)) {
         this.player.style.top = '-99999px';
         return;
@@ -287,7 +290,7 @@ export class DivLayer {
       }
     };
     media.onended = () => {
-      Store.set('mediaEnd', node);
+      Store.set(this.generateStoreKey('mediaEnd'), node);
 
       if (this.media === media) {
         this.playBtn.className = this.options.playIcon;
@@ -456,6 +459,9 @@ export class DivLayer {
 
   render() {
     for (const item of this.data.pens) {
+      if (!item.getTID()) {
+        item.setTID(this.TID);
+      }
       this.addDiv(item as Node);
     }
   }

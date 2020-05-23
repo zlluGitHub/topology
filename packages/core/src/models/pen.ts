@@ -15,6 +15,7 @@ export enum PenType {
 }
 
 export abstract class Pen {
+  private TID: String;
   id = '';
   type = PenType.Node;
   name = '';
@@ -304,13 +305,22 @@ export abstract class Pen {
     return this.visible;
   }
 
+  getTID() {
+    return this.TID;
+  }
+
+  setTID(id) {
+    this.TID = id;
+    return this;
+  }
+
   private link(url: string, params: string) {
     window.open(url, '_blank');
   }
 
   private doAnimate(tag: string, params: string) {
     this.animateStart = Date.now();
-    Store.set('LT:AnimatePlay', {
+    Store.set(this.generateStoreKey('LT:AnimatePlay'), {
       tag,
       pen: this
     });
@@ -328,6 +338,10 @@ export abstract class Pen {
 
   private doWindowFn(fn: string, params: string, socket?: WebSocket) {
     (window as any)[fn](this, params, socket);
+  }
+
+  protected generateStoreKey(key) {
+    return `${this.TID}-${key}`;
   }
 
   abstract getTextRect(): Rect;

@@ -223,7 +223,7 @@ export class Node extends Pen {
 
   addToDiv() {
     if (this.audio || this.video || this.iframe || this.elementId || this.hasGif()) {
-      Store.set('LT:addDiv', this);
+      Store.set(this.generateStoreKey('LT:addDiv'), this);
     }
   }
 
@@ -456,10 +456,10 @@ export class Node extends Pen {
         img,
         cnt: 1
       };
-      Store.set('LT:imageLoaded', true);
+      Store.set(this.generateStoreKey('LT:imageLoaded'), true);
       if (!this.gif && gif) {
         this.gif = true;
-        Store.set('LT:addDiv', this);
+        Store.set(this.generateStoreKey('LT:addDiv'), this);
       }
     };
   }
@@ -609,7 +609,7 @@ export class Node extends Pen {
           this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
           this.init();
         }
-        Store.set('animateEnd', {
+        Store.set(this.generateStoreKey('animateEnd'), {
           type: 'node',
           data: this
         });
@@ -695,7 +695,7 @@ export class Node extends Pen {
     if (rectChanged) {
       this.init();
       if (!this.animateAlone) {
-        Store.set('LT:rectChanged', this);
+        Store.set(this.generateStoreKey('LT:rectChanged'), this);
       }
     }
     return '';
