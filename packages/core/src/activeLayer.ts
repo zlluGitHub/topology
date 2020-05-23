@@ -12,9 +12,10 @@ import { Lock } from './models/status';
 import { drawLineFns } from './middles';
 import { flatNodes } from './middles/functions/node';
 import { getBezierPoint } from './middles/lines/curve';
+import { Layer } from './layer';
 
-export class ActiveLayer {
-  protected data: TopologyData = Store.get('topology-data');
+export class ActiveLayer extends Layer {
+  protected data: TopologyData;
 
   rotateCPs: Point[] = [];
   sizeCPs: Point[] = [];
@@ -38,8 +39,10 @@ export class ActiveLayer {
 
   rotating = false;
 
-  constructor(public options: Options = {}) {
-    Store.set('LT:ActiveLayer', this);
+  constructor(public options: Options = {}, TID: String) {
+    super(TID);
+    this.data = Store.get(this.generateStoreKey('topology-data'));
+    Store.set(this.generateStoreKey('LT:ActiveLayer'), this);
   }
 
   calcControlPoints() {
@@ -144,7 +147,7 @@ export class ActiveLayer {
     this.pens = [];
     this.sizeCPs = [];
     this.rotateCPs = [];
-    Store.set('LT:activeNode', null);
+    Store.set(this.generateStoreKey('LT:activeNode'), null);
   }
 
   // 即将缩放选中的nodes，备份nodes最初大小，方便缩放比例计算
@@ -354,12 +357,12 @@ export class ActiveLayer {
           line.calcControlPoints();
         }
         line.textRect = null;
-        Store.set('pts-' + line.id, null);
+        Store.set(this.generateStoreKey('pts-') + line.id, null);
         lines.push(line);
       }
     }
 
-    Store.set('LT:updateLines', lines);
+    Store.set(this.generateStoreKey('LT:updateLines'), lines);
   }
 
   offsetRotate(angle: number) {
@@ -427,14 +430,14 @@ export class ActiveLayer {
 
     this.pens.push(pen);
     if (pen instanceof Node) {
-      Store.set('LT:activeNode', pen);
+      Store.set(this.generateStoreKey('LT:activeNode'), pen);
     }
   }
 
   setPens(pens: Pen[]) {
     this.pens = pens;
     if (this.pens.length === 1 && this.pens[0] instanceof Node) {
-      Store.set('LT:activeNode', this.pens[0]);
+      Store.set(this.generateStoreKey('LT:activeNode'), this.pens[0]);
     }
   }
 
@@ -473,6 +476,11 @@ export class ActiveLayer {
     if (!this.pens.length) {
       return;
     }
+    this.pens.forEach(pen => {
+      if (!pen.getTID()) {
+        pen.setTID(this.TID);
+      }
+    });
 
     if (this.pens.length === 1 || !this.rotating) {
       this.calcControlPoints();
@@ -484,9 +492,11 @@ export class ActiveLayer {
     ctx.fillStyle = '#fff';
     ctx.lineWidth = 1;
 
+    const TID = this.TID;
     for (const item of this.pens) {
       if (item instanceof Node) {
         const tmp = new Node(item, true);
+        tmp.setTID(TID);
         tmp.data = null;
         tmp.fillStyle = null;
         tmp.bkType = 0;
@@ -506,8 +516,10 @@ export class ActiveLayer {
 
       if (item instanceof Line) {
         const tmp = new Line(item);
+        tmp.setTID(TID);
         if (tmp.lineWidth < 3) {
           const bk = new Line(item);
+          bk.setTID(TID);
           bk.strokeStyle = '#ffffff';
           bk.render(ctx);
         }
