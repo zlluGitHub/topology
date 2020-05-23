@@ -96,9 +96,8 @@ export class Topology {
   tipElem: HTMLElement;
 
   private scheduledAnimationFrame = false;
-
   private socket: Socket;
-
+  private boundingRect: DOMRect;
   private scrolling = false;
   private rendering = false;
   constructor(parent: string | HTMLElement, options?: Options) {
@@ -131,6 +130,7 @@ export class Topology {
     this.divLayer.canvas.ondrop = event => {
       this.ondrop(event);
     };
+    this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
 
     this.subcribe = Store.subscribe('LT:render', () => {
       this.render();
@@ -536,7 +536,7 @@ export class Topology {
           }
       }
       if (b) {
-        this.translate(e.offsetX - this.mouseDown.x, e.offsetY - this.mouseDown.y, true);
+        this.translate(e.x - this.boundingRect.x - this.mouseDown.x, e.y - this.boundingRect.y - this.mouseDown.y, true);
         return false;
       }
     }
@@ -546,7 +546,7 @@ export class Topology {
     }
 
     this.scheduledAnimationFrame = true;
-    const pos = new Point(e.offsetX, e.offsetY);
+    const pos = new Point(e.x - this.boundingRect.x, e.y - this.boundingRect.y);
     requestAnimationFrame(() => {
       if (!this.mouseDown) {
         this.getMoveIn(pos);
@@ -709,7 +709,7 @@ export class Topology {
   };
 
   private onmousedown = (e: MouseEvent) => {
-    this.mouseDown = { x: e.offsetX, y: e.offsetY };
+    this.mouseDown = { x: e.x - this.boundingRect.x, y: e.y - this.boundingRect.y };
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
     }
@@ -871,7 +871,7 @@ export class Topology {
       });
 
 
-      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.x - this.boundingRect.x, e.y - this.boundingRect.y))) {
         this.showInput(this.moveIn.hoverNode);
       }
 
@@ -881,7 +881,7 @@ export class Topology {
         line: this.moveIn.hoverLine
       });
 
-      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.offsetX, e.offsetY))) {
+      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.x - this.boundingRect.x, e.y - this.boundingRect.y))) {
         this.showInput(this.moveIn.hoverLine);
       }
 
