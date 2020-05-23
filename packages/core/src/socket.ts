@@ -21,16 +21,23 @@ export class Socket {
       return;
     }
 
+    let msg: { event: string, data: any; };
     try {
-      const msg: { event: string, data: any; } = JSON.parse(e.data);
-      for (const item of this.pens) {
-        for (const event of item.events) {
-          if (event.type === EventType.WebSocket && event.name === msg.event) {
+      msg = JSON.parse(e.data);
+    } catch (error) {
+      msg = e.data;
+    }
+
+    for (const item of this.pens) {
+      for (const event of item.events) {
+        if (event.type === EventType.WebSocket) {
+          if (event.name && event.name === msg.event) {
             item.doSocket(event, msg.data, this.socket);
+          } else if (!event.name && msg) {
+            item.doSocket(event, msg, this.socket);
           }
         }
       }
-    } catch (error) {
     }
   };
 

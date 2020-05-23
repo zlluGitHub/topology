@@ -284,9 +284,9 @@ export abstract class Pen {
 
   doSocket(item: { type: EventType; action: EventAction; value: string; params: string; name?: string; }, msg: any, socket: WebSocket) {
     if (item.action < EventAction.Function) {
-      this[this.eventFns[event.type]](msg.value || msg || item.value, msg.params || item.params, socket);
+      this[this.eventFns[item.action]](msg.value || msg || item.value, msg.params || item.params, socket);
     } else {
-      this[this.eventFns[event.type]](item.value, msg || item.params, socket);
+      this[this.eventFns[item.action]](item.value, msg || item.params, socket);
     }
   }
 

@@ -242,6 +242,7 @@ export class Topology {
     this.cache();
 
     window.addEventListener('resize', this.winResize);
+    (window as any).topology = this;
   }
 
   winResize = () => {
@@ -445,6 +446,7 @@ export class Topology {
       }
     }
 
+    this.data.websocket = data.websocket;
     this.data.grid = data.grid;
     if (typeof data.data === 'object') {
       this.data.data = JSON.parse(JSON.stringify(data.data));
@@ -459,12 +461,19 @@ export class Topology {
     this.render(true);
 
     this.animate(true);
+    this.openSocket();
+  }
 
+  openSocket(url?: string) {
+    this.closeSocket();
+    if (url || this.data.websocket) {
+      this.socket = new Socket(url || this.data.websocket, this.data.pens);
+    }
+  }
+
+  closeSocket() {
     if (this.socket) {
       this.socket.close();
-    }
-    if (this.data.websocket) {
-      this.socket = new Socket(this.data.websocket, this.data.pens);
     }
   }
 
@@ -972,7 +981,8 @@ export class Topology {
   };
 
   private getMoveIn(pt: Point) {
-    this.lastHoverNode = this.moveIn.hoverNode; this.lastHoverLine = this.moveIn.hoverLine;
+    this.lastHoverNode = this.moveIn.hoverNode;
+    this.lastHoverLine = this.moveIn.hoverLine;
     this.moveIn.type = MoveInType.None;
     this.moveIn.hoverNode = null;
     this.moveIn.lineControlPoint = null;
@@ -991,7 +1001,7 @@ export class Topology {
       return;
     }
 
-    if (this.activeLayer.pens.length && pointInRect(pt, this.activeLayer.sizeCPs)) {
+    if (this.activeLayer.pens.length > 1 && pointInRect(pt, this.activeLayer.sizeCPs)) {
       this.moveIn.type = MoveInType.Nodes;
     }
 
@@ -1008,41 +1018,36 @@ export class Topology {
       }
     }
 
-    // In active line.
+    // In active pen.
     for (const item of this.activeLayer.pens) {
-      if (!(item instanceof Line)) {
-        continue;
-      }
-      for (let i = 0; i < item.controlPoints.length; ++i) {
-        if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
-          item.controlPoints[i].id = i;
-          this.moveIn.type = MoveInType.LineControlPoint;
-          this.moveIn.lineControlPoint = item.controlPoints[i];
-          this.moveIn.hoverLine = item;
-          this.divLayer.canvas.style.cursor = 'pointer';
-          return;
-        }
+      if (item instanceof Node && this.inNode(pt, item)) {
+        return;
       }
 
-      if (this.inLine(pt, item)) {
-        return;
+      if (item instanceof Line) {
+        for (let i = 0; i < item.controlPoints.length; ++i) {
+          if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
+            item.controlPoints[i].id = i;
+            this.moveIn.type = MoveInType.LineControlPoint;
+            this.moveIn.lineControlPoint = item.controlPoints[i];
+            this.moveIn.hoverLine = item;
+            this.divLayer.canvas.style.cursor = 'pointer';
+            return;
+          }
+        }
+        if (this.inLine(pt, item)) {
+          return;
+        }
       }
     }
 
     this.divLayer.canvas.style.cursor = 'default';
-    for (const item of this.data.pens) {
-      if (item instanceof Node) {
-        this.inNode(pt, item);
-      }
-    }
-
-    if ((this.moveIn.type as any) === MoveInType.HoverAnchors) {
-      return;
-    }
-
-    for (const item of this.data.pens) {
-      if (item instanceof Line) {
-        this.inLine(pt, item);
+    const len = this.data.pens.length;
+    for (let i = len - 1; i > -1; --i) {
+      if (this.data.pens[i].type === PenType.Node && this.inNode(pt, this.data.pens[i] as Node)) {
+        return;
+      } else if (this.data.pens[i].type === PenType.Line && this.inLine(pt, this.data.pens[i] as Line)) {
+        return;
       }
     }
   }
@@ -1151,7 +1156,7 @@ export class Topology {
       return null;
     }
 
-    if (line.from.hit(point, 10)) {
+    if (line.from.hit(point, 5)) {
       this.moveIn.type = MoveInType.LineFrom;
       this.moveIn.hoverLine = line;
       if (this.data.locked || line.locked) {
@@ -1162,7 +1167,7 @@ export class Topology {
       return line;
     }
 
-    if (line.to.hit(point, 10)) {
+    if (line.to.hit(point, 5)) {
       this.moveIn.type = MoveInType.LineTo;
       this.moveIn.hoverLine = line;
       if (this.data.locked || line.locked) {
@@ -2092,8 +2097,7 @@ export class Topology {
     this.divLayer.destroy();
     document.body.removeChild(this.tipMarkdown);
     window.removeEventListener('resize', this.winResize);
-    if (this.socket) {
-      this.socket.close();
-    }
+    this.closeSocket();
+    (window as any).topology = null;
   }
 }
