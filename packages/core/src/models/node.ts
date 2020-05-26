@@ -722,11 +722,15 @@ export class Node extends Pen {
     this.iconSize *= scale;
     this.rect.calcCenter();
 
-    if (this.animateFrames) {
+    if (this.animateFrames && this.animateFrames.length) {
       for (const item of this.animateFrames) {
         if (item.state) {
           item.state = new Node(item.state);
           item.state.scale(scale, center);
+        }
+        if (item.initState) {
+          item.initState = new Node(item.initState);
+          item.initState.scale(scale, center);
         }
       }
     }
@@ -748,13 +752,14 @@ export class Node extends Pen {
     this.rect.ey = this.rect.y + this.rect.height;
     this.rect.calcCenter();
 
-    if (this.animateFrames) {
+    if (this.animateFrames && this.animateFrames.length) {
       for (const frame of this.animateFrames) {
-        if (frame.state) {
-          frame.state.rect.x += x;
-          frame.state.rect.y += y;
-          frame.state.rect.ex = frame.state.rect.x + frame.state.rect.width;
-          frame.state.rect.ey = frame.state.rect.y + frame.state.rect.height;
+        const { initState, state } = frame;
+        if (initState && initState.translate) {
+          initState.translate(x, y);
+        }
+        if (state && state.translate) {
+          state.translate(x, y);
         }
       }
     }
