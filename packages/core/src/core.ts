@@ -2,7 +2,7 @@ import { Store, Observer } from 'le5le-store';
 
 import { Options, KeyType, KeydownType, DefalutOptions } from './options';
 import { Pen, PenType } from './models/pen';
-import { Node, images } from './models/node';
+import { Node } from './models/node';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
@@ -412,11 +412,6 @@ export class Topology {
     if (typeof data === 'string') {
       data = JSON.parse(data);
     }
-    this.divLayer.clear();
-    // tslint:disable-next-line:forin
-    for (const key in images) {
-      delete images[key];
-    }
 
     this.animateLayer.stop();
     this.lock(data.locked || Lock.None);
@@ -467,8 +462,13 @@ export class Topology {
     this.caches.list = [];
     this.cache();
 
+    this.divLayer.clear();
+
     this.overflow();
     this.render(true);
+
+    this.parentElem.scrollLeft = 0;
+    this.parentElem.scrollTop = 0;
 
     this.animate(true);
     this.openSocket();
@@ -748,7 +748,9 @@ export class Topology {
         break;
       case MoveInType.LineMove:
         this.hoverLayer.initLine = new Line(this.moveIn.hoverLine);
-        this.moveIn.hoverLine.click();
+        if (this.data.locked || this.moveIn.hoverLine.locked) {
+          this.moveIn.hoverLine.click();
+        }
       // tslint:disable-next-line:no-switch-case-fall-through
       case MoveInType.LineFrom:
       case MoveInType.LineTo:
@@ -808,7 +810,9 @@ export class Topology {
           this.dispatch('node', this.moveIn.activeNode);
         }
 
-        this.moveIn.activeNode.click();
+        if (this.data.locked || this.moveIn.activeNode.locked) {
+          this.moveIn.activeNode.click();
+        }
 
         break;
     }

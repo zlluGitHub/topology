@@ -5,6 +5,7 @@ dist/
 tmp/
 out-tsc/
 **/topology.bundle.js
+**/bundle/demo/index.js
 
 # dependencies
 node_modules/

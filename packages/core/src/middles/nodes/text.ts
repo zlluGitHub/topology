@@ -158,11 +158,11 @@ export function text(ctx: CanvasRenderingContext2D, node: Node | Line) {
   }
 
   const lineHeight = node.font.fontSize * node.font.lineHeight;
-  let maxLineLen = node.textMaxLine;
-  const rectLines = textRect.height / lineHeight;
-  if (!maxLineLen) {
-    maxLineLen = lines.length > rectLines ? rectLines : lines.length;
-  }
+  let maxLineLen = node.textMaxLine || lines.length;
+  // const rectLines = textRect.height / lineHeight;
+  // if (!maxLineLen) {
+  //   maxLineLen = lines.length > rectLines ? rectLines : lines.length;
+  // }
 
   // By default, the text is center aligned.
   let x = textRect.x + textRect.width / 2;

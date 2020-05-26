@@ -185,6 +185,11 @@ export abstract class Pen {
 
     ctx.save();
 
+    // for canvas2svg
+    if ((ctx as any).setAttrs) {
+      (ctx as any).setAttrs(this.data);
+    }
+
     if (this.rotate || this.offsetRotate) {
       ctx.translate(this.rect.center.x, this.rect.center.y);
       ctx.rotate(((this.rotate + this.offsetRotate) * Math.PI) / 180);

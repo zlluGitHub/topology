@@ -219,7 +219,7 @@ export class Line extends Pen {
     if (width < 100) {
       width = 100;
     }
-    const height = this.font.lineHeight * this.font.fontSize * (this.textMaxLine || 1);
+    const height = this.font.lineHeight * this.font.fontSize * (this.textMaxLine || this.text.split('\n').length || 1);
     this.textRect = new Rect(
       center.x - width / 2,
       center.y - height / 2,

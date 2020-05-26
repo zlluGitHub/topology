@@ -1,10 +1,11 @@
 {
-  "name": "topology",
-  "version": "0.0.1",
+  "name": "topology-bundle",
+  "version": "0.2.4",
   "description": "The bundle of topology libs.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "copy": "copyfiles package.json ../dist/bundle/ && copyfiles -f ../dist/bundle/index.js ./demo/ ",
+    "build": "webpack && npm run copy "
   },
   "keywords": [
     "topology"
@@ -29,6 +30,7 @@
     "tslint": "~5.15.0",
     "typescript": "~3.5.2",
     "webpack": "^4.37.0",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "copyfiles": "latest"
   }
 }

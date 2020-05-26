@@ -1,6 +1,6 @@
 import { Store, Observer } from 'le5le-store';
 import { Options } from './options';
-import { Node } from './models/node';
+import { Node, images } from './models/node';
 import { TopologyData } from './models/data';
 import { Lock } from './models/status';
 import { PenType } from './models/pen';
@@ -419,6 +419,13 @@ export class DivLayer extends Layer {
     this.iframes = {};
     this.elements = {};
     this.gifs = {};
+
+    // tslint:disable-next-line:forin
+    for (const key in images) {
+      delete images[key];
+    }
+
+    this.player.style.top = '-99999px';
   }
 
   formatSeconds(seconds: number) {

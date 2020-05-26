@@ -14,3 +14,7 @@ cd ../flow-diagram && npm publish
 cd ../layout && npm publish
 
 cd ../sequence-diagram && npm publish
+
+cd ../../bundle
+npm run build
+cd ../dist/bundle && npm publish
