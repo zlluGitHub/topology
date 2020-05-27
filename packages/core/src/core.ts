@@ -275,29 +275,50 @@ export class Topology {
   private ondrop(event: DragEvent) {
     event.preventDefault();
     try {
-      const json = JSON.parse(event.dataTransfer.getData('Text'));
-      json.rect.x = (event.offsetX - json.rect.width / 2) << 0;
-      json.rect.y = (event.offsetY - json.rect.height / 2) << 0;
-
-      if (json.name === 'lineAlone') {
-        this.addLine({
-          name: this.data.lineName,
-          from: new Point(json.rect.x, json.rect.y),
-          fromArrow: this.data.fromArrowType,
-          to: new Point(json.rect.x + json.rect.width, json.rect.y + json.rect.height),
-          toArrow: this.data.toArrowType,
-          strokeStyle: this.options.color
-        },
-          true
-        );
-      } else {
-        const node = new Node(json);
-        node.setTID(this.id);
-        this.addNode(node, true);
-        if (node.name === 'div') {
-          this.dispatch('LT:addDiv', node);
-        }
+      let jsonList = JSON.parse(event.dataTransfer.getData('Text'));
+      if (!Array.isArray(jsonList)) {
+        jsonList = [jsonList];
       }
+      let x, y;
+      if (jsonList.length) {
+        const rect = jsonList[0].rect;
+        x = rect.x;
+        y = rect.y;
+      }
+      let firstNode;
+      jsonList.forEach(json => {
+        if (!firstNode) {
+          json.rect.x = (event.offsetX - json.rect.width / 2) << 0;
+          json.rect.y = (event.offsetY - json.rect.height / 2) << 0;
+          firstNode = json;
+        } else {
+          //Layout relative to the first node
+          const rect = json.rect;
+          const dx = (rect.x - x), dy = (rect.y - y);
+          json.rect.x = firstNode.rect.x + dx;
+          json.rect.y = firstNode.rect.y + dy;
+        }
+
+        if (json.name === 'lineAlone') {
+          this.addLine({
+            name: this.data.lineName,
+            from: new Point(json.rect.x, json.rect.y),
+            fromArrow: this.data.fromArrowType,
+            to: new Point(json.rect.x + json.rect.width, json.rect.y + json.rect.height),
+            toArrow: this.data.toArrowType,
+            strokeStyle: this.options.color
+          },
+            true
+          );
+        } else {
+          const node = new Node(json);
+          node.setTID(this.id);
+          this.addNode(node, true);
+          if (node.name === 'div') {
+            this.dispatch('LT:addDiv', node);
+          }
+        }
+      });
 
       this.divLayer.canvas.focus();
     } catch (e) {
