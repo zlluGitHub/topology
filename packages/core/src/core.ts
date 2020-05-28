@@ -1891,6 +1891,11 @@ export class Topology {
     for (const item of this.data.pens) {
       item.translate(offsetX, offsetY);
     }
+    this.animateLayer.pens.forEach(pen => {
+      if (pen instanceof Line) {
+        pen.translate(offsetX, offsetY);
+      }
+    });
 
     this.lastTranlated.x = x;
     this.lastTranlated.y = y;
@@ -1916,6 +1921,11 @@ export class Topology {
     for (const item of this.data.pens) {
       item.scale(scale, center);
     }
+    this.animateLayer.pens.forEach(pen => {
+      if (pen instanceof Line) {
+        pen.scale(scale, center);
+      }
+    });
     Store.set(this.generateStoreKey('LT:scale'), this.data.scale);
 
     this.render();
