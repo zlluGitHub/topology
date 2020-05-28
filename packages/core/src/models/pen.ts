@@ -106,10 +106,12 @@ export abstract class Pen {
 
   // User data.
   data: any;
+  value: number;
   constructor(json?: any) {
     if (json) {
       this.id = json.id || s8();
       this.name = json.name || '';
+      this.value = json.value;
       this.tags = Object.assign([], json.tags);
       if (json.rect) {
         this.rect = new Rect(json.rect.x, json.rect.y, json.rect.width, json.rect.height);
