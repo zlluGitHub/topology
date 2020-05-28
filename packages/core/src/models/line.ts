@@ -27,6 +27,7 @@ export class Line extends Pen {
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
+  animateLineDash: number[];
 
   isAnimate = false;
   animateFromSize = 0;
@@ -34,6 +35,8 @@ export class Line extends Pen {
 
   animateDot: { x: number, y: number; };
   animateDotSize = 3;
+
+  lineJoin: 'miter';
 
   manualCps: boolean;
   constructor(json?: any) {
@@ -74,6 +77,11 @@ export class Line extends Pen {
       }
       this.animateDotSize = json.animateDotSize || 3;
       this.manualCps = !!json.manualCps;
+
+      if (json.lineJoin) {
+        this.lineJoin = json.lineJoin;
+      }
+
     } else {
       this.name = 'curve';
       this.fromArrow = 'triangleSolid';
@@ -130,6 +138,9 @@ export class Line extends Pen {
 
     if (!this.isAnimate && this.borderWidth > 0 && this.borderColor) {
       ctx.save();
+      if (this.lineJoin) {
+        ctx.lineJoin = this.lineJoin;
+      }
       ctx.lineWidth = this.lineWidth + this.borderWidth;
       ctx.strokeStyle = this.borderColor;
       if (drawLineFns[this.name]) {
@@ -139,6 +150,9 @@ export class Line extends Pen {
     }
 
     if ((!this.isAnimate || this.animateType !== 'comet') && drawLineFns[this.name]) {
+      if (this.lineJoin) {
+        ctx.lineJoin = this.lineJoin;
+      }
       drawLineFns[this.name].drawFn(ctx, this);
     }
 
@@ -353,7 +367,11 @@ export class Line extends Pen {
         if (len < 5) {
           len = 5;
         }
-        this.lineDash = [len, len * 2];
+        if (this.animateLineDash) {
+          this.lineDash = this.animateLineDash;
+        } else {
+          this.lineDash = [len, len * 2];
+        }
         break;
       case 'dot':
       case 'comet':
