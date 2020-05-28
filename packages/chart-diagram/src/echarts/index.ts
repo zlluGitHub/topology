@@ -1,13 +1,13 @@
 import { s8, Node, createDiv, rectangle } from '@topology/core';
 
-const echartsData: any = {};
+export const echartsData: any = {};
 
 export function echarts(ctx: CanvasRenderingContext2D, node: Node) {
   // 绘制一个底图，类似于占位符。
   rectangle(ctx, node);
 
   // tslint:disable-next-line:no-shadowed-variable
-  const echarts = (window as any).echarts;
+  const echarts = echartsData.echarts || (window as any).echarts;
   if (!node.data || !echarts) {
     return;
   }

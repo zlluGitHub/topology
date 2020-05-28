@@ -97,8 +97,9 @@ export class Topology {
   tipMarkdown: HTMLElement;
   tipElem: HTMLElement;
 
+  socket: Socket;
+
   private scheduledAnimationFrame = false;
-  private socket: Socket;
   private boundingRect: any;
   private scrolling = false;
   private rendering = false;
@@ -248,6 +249,7 @@ export class Topology {
 
     this.cache();
 
+    this.parentElem.onresize = this.winResize;
     window.addEventListener('resize', this.winResize);
     (window as any).topology = this;
   }
@@ -261,6 +263,7 @@ export class Topology {
       this.resize();
       this.overflow();
     }, 100);
+    this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
   };
 
   resize(size?: { width: number; height: number; }) {
@@ -1034,10 +1037,6 @@ export class Topology {
 
     // In active pen.
     for (const item of this.activeLayer.pens) {
-      if (item instanceof Node && this.inNode(pt, item)) {
-        return;
-      }
-
       if (item instanceof Line) {
         for (let i = 0; i < item.controlPoints.length; ++i) {
           if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
@@ -1112,7 +1111,9 @@ export class Topology {
     if (node.hit(pt)) {
       this.moveIn.hoverNode = node;
       this.moveIn.type = MoveInType.Nodes;
-      !node.locked && (this.divLayer.canvas.style.cursor = 'move');
+      if (!this.data.locked && !node.locked) {
+        this.divLayer.canvas.style.cursor = 'move';
+      }
 
       // Too small
       if (!(this.options.hideAnchor || node.hideAnchor || node.rect.width < 20 || node.rect.height < 20)) {
@@ -1901,14 +1902,13 @@ export class Topology {
     this.overflow();
     this.cache();
 
-
     this.dispatch('scale', this.data.scale);
-
   }
 
   // scale for origin canvas:
   scaleTo(scale: number) {
     this.scale(scale / this.data.scale);
+    this.data.scale = scale;
   }
 
   round() {
