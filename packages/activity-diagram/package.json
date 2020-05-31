@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "copy": "copyfiles  package.json ../../dist/activity-diagram/",
-    "build": "tsc "
+    "build": "tsc && npm run copy"
   },
   "keywords": [
     "topology",

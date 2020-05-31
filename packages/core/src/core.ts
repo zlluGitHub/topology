@@ -120,6 +120,7 @@ export class Topology {
       this.parentElem = parent;
     }
     this.parentElem.style.position = 'relative';
+    this.parentElem.style.overflow = 'auto';
 
     const id = this.id;
     this.activeLayer = new ActiveLayer(this.options, id);
