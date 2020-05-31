@@ -1917,7 +1917,6 @@ export class Topology {
 
     this.lastTranlated.x = x;
     this.lastTranlated.y = y;
-    this.overflow();
     this.render();
     this.cache();
 
