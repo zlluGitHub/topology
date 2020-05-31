@@ -539,6 +539,18 @@ export class Topology {
     this.inputObj = null;
   }
 
+  getScrollPos() {
+    let x = 0;
+    let y = 0;
+    let currentTarget: HTMLElement = this.parentElem;
+    while (currentTarget) {
+      x += currentTarget.scrollLeft;
+      y += currentTarget.scrollTop;
+      currentTarget = currentTarget.parentElement;
+    }
+    return { x, y };
+  }
+
   private onMouseMove = (e: MouseEvent) => {
     if (this.scheduledAnimationFrame || this.data.locked === Lock.NoEvent) {
       return;
@@ -571,7 +583,8 @@ export class Topology {
           }
       }
       if (b) {
-        this.translate(e.x - this.boundingRect.x - this.mouseDown.x + this.parentElem.scrollLeft, e.y - this.boundingRect.y - this.mouseDown.y + this.parentElem.scrollTop, true);
+        const scrollPos = this.getScrollPos();
+        this.translate(e.x - this.boundingRect.x - this.mouseDown.x + scrollPos.x, e.y - this.boundingRect.y - this.mouseDown.y + scrollPos.y, true);
         return false;
       }
     }
@@ -581,7 +594,8 @@ export class Topology {
     }
 
     this.scheduledAnimationFrame = true;
-    const pos = new Point(e.x - this.boundingRect.x + this.parentElem.scrollLeft, e.y - this.boundingRect.y + this.parentElem.scrollTop);
+    const scrollPos = this.getScrollPos();
+    const pos = new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y);
     requestAnimationFrame(() => {
       if (!this.mouseDown) {
         this.getMoveIn(pos);
@@ -744,7 +758,8 @@ export class Topology {
   };
 
   private onmousedown = (e: MouseEvent) => {
-    this.mouseDown = { x: e.x - this.boundingRect.x + this.parentElem.scrollLeft, y: e.y - this.boundingRect.y + this.parentElem.scrollTop };
+    const scrollPos = this.getScrollPos();
+    this.mouseDown = { x: e.x - this.boundingRect.x + scrollPos.x, y: e.y - this.boundingRect.y + scrollPos.y };
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
     }
@@ -904,13 +919,14 @@ export class Topology {
   };
 
   private ondblclick = (e: MouseEvent) => {
+    const scrollPos = this.getScrollPos();
     if (this.moveIn.hoverNode) {
       this.dispatch('dblclick', {
         node: this.moveIn.hoverNode
       });
 
 
-      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.x - this.boundingRect.x + this.parentElem.scrollLeft, e.y - this.boundingRect.y + this.parentElem.scrollTop))) {
+      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y))) {
         this.showInput(this.moveIn.hoverNode);
       }
 
@@ -920,7 +936,7 @@ export class Topology {
         line: this.moveIn.hoverLine
       });
 
-      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.x - this.boundingRect.x + this.parentElem.scrollLeft, e.y - this.boundingRect.y + this.parentElem.scrollTop))) {
+      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y))) {
         this.showInput(this.moveIn.hoverLine);
       }
 
