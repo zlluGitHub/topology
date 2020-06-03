@@ -137,15 +137,25 @@ export class AnimateLayer extends Layer {
           return;
         }
 
-        const next = pen.animate(now);
+        if (pen.animateFn) {
+          if (typeof pen.animateFn === 'function') {
+            pen.animateFn();
+          } else if ((window as any)[pen.animateFn]) {
+            (window as any)[pen.animateFn]();
+          } else {
+            // pen.render();
+          }
+        } else {
+          pen.animate(now);
+        }
         if (pen.animateStart < 1) {
           this.pens.delete(key);
           if (pen.type === PenType.Line) {
             const line = this.find(pen);
             line && (line.animateStart = 0);
           }
-          if (next) {
-            this.readyPlay(next, false);
+          if (pen.nextAnimate) {
+            this.readyPlay(pen.nextAnimate, false);
           }
         }
 

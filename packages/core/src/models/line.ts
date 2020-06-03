@@ -393,13 +393,11 @@ export class Line extends Pen {
           type: 'line',
           data: this
         });
-        return this.nextAnimate;
+        return;
       }
 
       this.animatePos = this.animateSpan;
     }
-
-    return '';
   }
 
   getBubbles() {

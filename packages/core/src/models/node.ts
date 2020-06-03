@@ -613,7 +613,7 @@ export class Node extends Pen {
           type: 'node',
           data: this
         });
-        return this.nextAnimate;
+        return;
       }
       this.animateStart = now;
       timeline = 0;
@@ -698,7 +698,6 @@ export class Node extends Pen {
         Store.set(this.generateStoreKey('LT:rectChanged'), this);
       }
     }
-    return '';
   }
 
   scale(scale: number, center?: Point) {

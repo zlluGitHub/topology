@@ -56,6 +56,7 @@ export abstract class Pen {
   shadowOffsetX: number;
   shadowOffsetY: number;
 
+  animateFn: string | Function;
   // animateType仅仅是辅助标识
   animateType: string;
   // Date.getTime
@@ -355,7 +356,7 @@ export abstract class Pen {
   abstract calcRectInParent(parent: Pen): void;
   abstract calcRectByParent(parent: Pen): void;
   abstract draw(ctx: CanvasRenderingContext2D): void;
-  abstract animate(now: number): string;
+  abstract animate(now: number): void;
   abstract translate(x: number, y: number): void;
   abstract scale(scale: number, center?: Point): void;
   abstract clone(): Pen;

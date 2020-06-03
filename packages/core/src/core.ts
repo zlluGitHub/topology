@@ -100,7 +100,6 @@ export class Topology {
   socket: Socket;
 
   private scheduledAnimationFrame = false;
-  private boundingRect: any;
   private scrolling = false;
   private rendering = false;
   constructor(parent: string | HTMLElement, options?: Options) {
@@ -136,8 +135,6 @@ export class Topology {
     this.divLayer.canvas.ondrop = event => {
       this.ondrop(event);
     };
-    this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
-
     this.subcribe = Store.subscribe(this.generateStoreKey('LT:render'), () => {
       this.render();
     });
@@ -264,7 +261,6 @@ export class Topology {
       this.resize();
       this.overflow();
     }, 100);
-    this.boundingRect = this.divLayer.canvas.getBoundingClientRect();
   };
 
   resize(size?: { width: number; height: number; }) {
@@ -539,18 +535,6 @@ export class Topology {
     this.inputObj = null;
   }
 
-  getScrollPos() {
-    let x = 0;
-    let y = 0;
-    let currentTarget: HTMLElement = this.parentElem;
-    while (currentTarget) {
-      x += currentTarget.scrollLeft;
-      y += currentTarget.scrollTop;
-      currentTarget = currentTarget.parentElement;
-    }
-    return { x, y };
-  }
-
   private onMouseMove = (e: MouseEvent) => {
     if (this.scheduledAnimationFrame || this.data.locked === Lock.NoEvent) {
       return;
@@ -583,8 +567,8 @@ export class Topology {
           }
       }
       if (b) {
-        const scrollPos = this.getScrollPos();
-        this.translate(e.x - this.boundingRect.x - this.mouseDown.x + scrollPos.x, e.y - this.boundingRect.y - this.mouseDown.y + scrollPos.y, true);
+        const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+        this.translate(e.x - this.mouseDown.x - canvasPos.x, e.y - this.mouseDown.y - canvasPos.y, true);
         return false;
       }
     }
@@ -594,8 +578,8 @@ export class Topology {
     }
 
     this.scheduledAnimationFrame = true;
-    const scrollPos = this.getScrollPos();
-    const pos = new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y);
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+    const pos = new Point(e.x - canvasPos.x, e.y - canvasPos.y);
     requestAnimationFrame(() => {
       if (!this.mouseDown) {
         this.getMoveIn(pos);
@@ -758,8 +742,8 @@ export class Topology {
   };
 
   private onmousedown = (e: MouseEvent) => {
-    const scrollPos = this.getScrollPos();
-    this.mouseDown = { x: e.x - this.boundingRect.x + scrollPos.x, y: e.y - this.boundingRect.y + scrollPos.y };
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+    this.mouseDown = { x: e.x - canvasPos.x, y: e.y - canvasPos.y };
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
     }
@@ -837,7 +821,7 @@ export class Topology {
               this.dispatch('node', this.moveIn.activeNode);
             }
           }
-        } else if (e.shiftKey) {
+        } else if (e.shiftKey || e.altKey) {
           if (this.moveIn.hoverNode) {
             this.activeLayer.setPens([this.moveIn.hoverNode]);
             this.dispatch('node', this.moveIn.hoverNode);
@@ -919,14 +903,14 @@ export class Topology {
   };
 
   private ondblclick = (e: MouseEvent) => {
-    const scrollPos = this.getScrollPos();
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
     if (this.moveIn.hoverNode) {
       this.dispatch('dblclick', {
         node: this.moveIn.hoverNode
       });
 
 
-      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y))) {
+      if (this.moveIn.hoverNode.getTextRect().hit(new Point(e.x - canvasPos.x, e.y - canvasPos.y))) {
         this.showInput(this.moveIn.hoverNode);
       }
 
@@ -936,7 +920,7 @@ export class Topology {
         line: this.moveIn.hoverLine
       });
 
-      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.x - this.boundingRect.x + scrollPos.x, e.y - this.boundingRect.y + scrollPos.y))) {
+      if (!this.moveIn.hoverLine.text || this.moveIn.hoverLine.getTextRect().hit(new Point(e.x - canvasPos.x, e.y - canvasPos.y))) {
         this.showInput(this.moveIn.hoverLine);
       }
 
