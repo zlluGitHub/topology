@@ -208,6 +208,8 @@ export abstract class Pen {
 
     if (this.lineCap) {
       ctx.lineCap = this.lineCap as CanvasLineCap;
+    } else if (this.type === PenType.Line) {
+      ctx.lineCap = 'round';
     }
 
     if (this.globalAlpha < 1) {

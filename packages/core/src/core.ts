@@ -381,6 +381,7 @@ export class Topology {
     if (focus) {
       this.activeLayer.setPens([node]);
       this.render();
+      this.animate(true);
       this.cache();
       this.dispatch('addNode', node);
     }
@@ -402,6 +403,7 @@ export class Topology {
     if (focus) {
       this.activeLayer.setPens([line]);
       this.render();
+      this.animate(true);
       this.cache();
       this.dispatch('addLine', line);
     }
@@ -1699,6 +1701,7 @@ export class Topology {
     }
 
     this.render();
+    this.animate(true);
     this.cache();
     this.copy();
 

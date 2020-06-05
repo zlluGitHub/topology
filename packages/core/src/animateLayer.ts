@@ -6,6 +6,7 @@ import { Line } from './models/line';
 import { TopologyData } from './models/data';
 import { Options } from './options';
 import { Layer } from './layer';
+import { s8 } from './utils';
 
 export class AnimateLayer extends Layer {
   protected data: TopologyData;
@@ -36,6 +37,7 @@ export class AnimateLayer extends Layer {
 
   getAnimateLine(item: Pen) {
     const l = new Line(item);
+    l.id = s8();
     l.setTID(this.TID);
     l.isAnimate = true;
     l.toArrow = '';
