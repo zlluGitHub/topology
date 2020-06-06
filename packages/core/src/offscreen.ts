@@ -4,6 +4,7 @@ import { Canvas } from './canvas';
 import { ActiveLayer } from './activeLayer';
 import { HoverLayer } from './hoverLayer';
 import { AnimateLayer } from './animateLayer';
+import { Node } from './models';
 
 export class Offscreen extends Canvas {
   public activeLayer: ActiveLayer;
@@ -27,11 +28,19 @@ export class Offscreen extends Canvas {
       if (!item.getTID()) {
         item.setTID(this.TID);
       }
+      /**
+       *Nodes requiring animation ignore rendering,Rendering with animatelayer
+       *Lines associated with animation nodes should also have animatelayer to complete the rendering
+       *
+       */
+      if (item instanceof Node && item.animatePlay) {
+        continue;
+      }
       item.render(ctx);
     }
 
     this.activeLayer.render(ctx);
-    this.animateLayer.render(ctx);
+    // this.animateLayer.render(ctx);
     this.hoverLayer.render(ctx);
   }
 

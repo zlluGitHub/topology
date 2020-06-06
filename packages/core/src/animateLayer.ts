@@ -5,10 +5,11 @@ import { Node } from './models/node';
 import { Line } from './models/line';
 import { TopologyData } from './models/data';
 import { Options } from './options';
-import { Layer } from './layer';
 import { s8 } from './utils';
+import { Canvas } from './canvas';
+import { RenderLayer } from './renderLayer';
 
-export class AnimateLayer extends Layer {
+export class AnimateLayer extends Canvas {
   protected data: TopologyData;
   pens = new Map();
   readyPens = new Map();
@@ -17,8 +18,11 @@ export class AnimateLayer extends Layer {
   private lastNow = 0;
   private subscribeUpdate: any;
   private subscribePlay: any;
-  constructor(public options: Options = {}, TID: String) {
-    super(TID);
+  private subscriResize: any;
+  private renderLayer: RenderLayer;
+
+  constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
+    super(parentElem, options, TID);
     this.data = Store.get(this.generateStoreKey('topology-data'));
     Store.set(this.generateStoreKey('LT:AnimateLayer'), this);
 
@@ -32,6 +36,10 @@ export class AnimateLayer extends Layer {
     this.subscribePlay = Store.subscribe(this.generateStoreKey('LT:AnimatePlay'), (params: { tag: string; pen: Pen; }) => {
       this.readyPlay(params.tag, false);
       this.animate();
+    });
+    // Other layers should listen in the same way,hoverLayer,ActiveLayer ,offScreenLayer etc..
+    this.subscriResize = Store.subscribe(this.generateStoreKey('LT:resize'), (size?: { width: number; height: number; }) => {
+      this.resize(size);
     });
   }
 
@@ -165,7 +173,12 @@ export class AnimateLayer extends Layer {
       });
 
       if (animated) {
-        Store.set(this.generateStoreKey('LT:render'), true);
+        // Store.set(this.generateStoreKey('LT:render'), true);
+        this.render();
+        if (!this.renderLayer) {
+          this.renderLayer = Store.get(this.generateStoreKey('LT:RenderLayer'));
+        }
+        this.renderLayer && this.renderLayer.render();
         this.animate();
       }
     });
@@ -188,13 +201,18 @@ export class AnimateLayer extends Layer {
     });
   }
 
-  render(ctx: CanvasRenderingContext2D) {
-    this.pens.forEach((line: Pen, key) => {
-      if (line.visible && line instanceof Line) {
-        if (!line.getTID()) {
-          line.setTID(this.TID);
+  render() {
+    super.render();
+
+    const ctx = this.canvas.getContext('2d');
+    ctx.strokeStyle = this.options.color;
+
+    this.pens.forEach((pen: Pen, key) => {
+      if (pen.visible) {
+        if (!pen.getTID()) {
+          pen.setTID(this.TID);
         }
-        line.render(ctx);
+        pen.render(ctx);
       }
     });
   }
@@ -211,5 +229,6 @@ export class AnimateLayer extends Layer {
     this.stop();
     this.subscribeUpdate.unsubscribe();
     this.subscribePlay.unsubscribe();
+    this.subscriResize.unsubscribe();
   }
 }
