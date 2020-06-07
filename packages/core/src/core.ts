@@ -124,7 +124,7 @@ export class Topology {
     const id = this.id;
     this.activeLayer = new ActiveLayer(this.options, id);
     this.hoverLayer = new HoverLayer(this.options, id);
-    this.animateLayer = new AnimateLayer(this.options, id);
+    this.animateLayer = new AnimateLayer(this.parentElem, this.options, id);
     this.offscreen = new Offscreen(this.parentElem, this.options, id);
     this.canvas = new RenderLayer(this.parentElem, this.options, id);
     this.divLayer = new DivLayer(this.parentElem, this.options, id);
@@ -264,9 +264,11 @@ export class Topology {
   };
 
   resize(size?: { width: number; height: number; }) {
+    // layer resize Should be monitored internally
     this.canvas.resize(size);
     this.offscreen.resize(size);
     this.divLayer.resize(size);
+    Store.set(this.generateStoreKey('LT:resize'), size);
 
     this.render();
     this.dispatch('resize', size);

@@ -39,6 +39,7 @@ export class Line extends Pen {
   lineJoin: 'miter';
 
   manualCps: boolean;
+  linkToAnimateNode: boolean = false;
   constructor(json?: any) {
     super(json);
 
