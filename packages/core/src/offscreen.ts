@@ -4,7 +4,7 @@ import { Canvas } from './canvas';
 import { ActiveLayer } from './activeLayer';
 import { HoverLayer } from './hoverLayer';
 import { AnimateLayer } from './animateLayer';
-import { Node } from './models';
+import { Node, Line } from './models';
 
 export class Offscreen extends Canvas {
   public activeLayer: ActiveLayer;
@@ -15,7 +15,7 @@ export class Offscreen extends Canvas {
     this.activeLayer = Store.get(this.generateStoreKey('LT:ActiveLayer'));
     this.hoverLayer = Store.get(this.generateStoreKey('LT:HoverLayer'));
     this.animateLayer = Store.get(this.generateStoreKey('LT:AnimateLayer'));
-    Store.set(this.generateStoreKey('LT:offscreen'), this.canvas);
+    Store.set(this.generateStoreKey('LT:offscreen'), this);
   }
 
   render() {
@@ -34,6 +34,9 @@ export class Offscreen extends Canvas {
        *
        */
       if (item instanceof Node && item.animatePlay) {
+        continue;
+      }
+      if (item instanceof Line && item.linkToAnimateNode) {
         continue;
       }
       item.render(ctx);
