@@ -56,11 +56,12 @@ canvas.open(data);
 # Development
 
 ```
+// Monorepos + yarn workspaces
 $ yarn
 $
 
-# build
-$ npm run build
+// build
+$ yarn build
 
 ```
 

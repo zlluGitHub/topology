@@ -53,6 +53,18 @@ canvas.open(data);
 
 [→ 中文文档](https://www.yuque.com/alsmile/topology/about)
 
+# 开发与编译
+
+```
+// 采用的是 Monorepos + yarn workspaces 方式目录结构
+$ yarn
+$
+
+// build
+$ yarn build
+
+```
+
 # 贡献者
 
 - [hudeyi](https://github.com/deyihu)
