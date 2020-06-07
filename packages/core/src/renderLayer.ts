@@ -14,7 +14,6 @@ export class RenderLayer extends Canvas {
   };
   constructor(public parentElem: HTMLElement, public options: Options = {}, TID: String) {
     super(parentElem, options, TID);
-    Store.set(this.generateStoreKey('LT:RenderLayer'), this);
     this.offscreen = Store.get(this.generateStoreKey('LT:offscreen'));
     this.parentElem.appendChild(this.canvas);
   }
@@ -60,12 +59,8 @@ export class RenderLayer extends Canvas {
       ctx.drawImage(this.bkImg, this.bkImgRect.x, this.bkImgRect.y, this.bkImgRect.width,
         this.bkImgRect.height, 0, 0, this.width, this.height);
     }
-    const animateLayer = Store.get(this.generateStoreKey('LT:AnimateLayer'));
-    if (animateLayer) {
-      ctx.drawImage(animateLayer.canvas, 0, 0, this.width, this.height);
-    }
-    ctx.drawImage(this.offscreen.canvas, 0, 0, this.width, this.height);
-    // activelayer,hoverlayer etc...
+
+    ctx.drawImage(this.offscreen, 0, 0, this.width, this.height);
   };
 
   coverRect(canvasWidth: number, canvasHeight: number, imgWidth: number, imgHeight: number) {
