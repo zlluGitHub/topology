@@ -528,7 +528,7 @@ export class ActiveLayer extends Layer {
         tmp.toArrowColor = this.options.activeColor;
         tmp.render(ctx);
 
-        if (!item.locked) {
+        if (!this.data.locked && !item.locked) {
           drawLineFns[item.name].drawControlPointsFn(ctx, item);
         }
       }

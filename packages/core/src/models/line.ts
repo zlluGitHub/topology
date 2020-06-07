@@ -50,11 +50,6 @@ export class Line extends Pen {
       if (json.to) {
         this.to = new Point(json.to.x, json.to.y, json.to.direction, json.to.anchorIndex, json.to.id);
       }
-      if (json.controlPoints) {
-        for (const item of json.controlPoints) {
-          this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
-        }
-      }
 
       this.fromArrow = json.fromArrow || '';
       this.toArrow = json.toArrow || '';
@@ -90,9 +85,21 @@ export class Line extends Pen {
       this.fromArrow = 'triangleSolid';
     }
 
-    // const data = Store.get(this.generateStoreKey('topology-data'));
     if (!this.font.background) {
       this.font.background = '#fff';
+    }
+
+    // 暂时兼容老数据
+    if (json.name === 'mind' && json.controlPoints && json.controlPoints.length < 3) {
+      json.controlPoints = null;
+      this.calcControlPoints();
+    }
+    //
+
+    if (json.controlPoints) {
+      for (const item of json.controlPoints) {
+        this.controlPoints.push(new Point(item.x, item.y, item.direction, item.anchorIndex, item.id));
+      }
     }
   }
 

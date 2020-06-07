@@ -32,7 +32,8 @@ import {
   calcPolylineControlPoints,
   dockPolylineControlPoint
 } from './lines/polyline';
-import { curve, curveControlPoints, pointInCurve, calcCurveControlPoints, calcMindControlPoints } from './lines/curve';
+import { curve, curveControlPoints, pointInCurve, calcCurveControlPoints } from './lines/curve';
+import { mind, calcMindControlPoints, mindControlPoints, pointInMind } from './lines/mind';
 import { triangleSolid, triangle as arrowTriangle } from './arrows/triangle';
 import { diamondSolid, diamond as arrowDiamond } from './arrows/diamond';
 import { circleSolid, circle as arrowCircle } from './arrows/circle';
@@ -211,10 +212,10 @@ function init() {
     pointIn: pointInCurve
   };
   drawLineFns.mind = {
-    drawFn: curve,
-    drawControlPointsFn: curveControlPoints,
+    drawFn: mind,
+    drawControlPointsFn: mindControlPoints,
     controlPointsFn: calcMindControlPoints,
-    pointIn: pointInCurve
+    pointIn: pointInMind
   };
   // ********end********
 

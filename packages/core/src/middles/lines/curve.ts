@@ -100,7 +100,7 @@ export function getBezierPoint(pos: number, from: Point, cp1: Point, cp2: Point,
   return new Point(x, y);
 }
 
-function getControlPt(pt: Point, to: Point) {
+export function getControlPt(pt: Point, to: Point) {
   const point: Point = new Point(pt.x, pt.y, pt.direction, pt.anchorIndex, pt.id);
 
   let dis = distance;
@@ -144,19 +144,6 @@ function getControlPt(pt: Point, to: Point) {
   return point;
 }
 
-
-export function calcMindControlPoints(l: Line) {
-  const w = l.to.x - l.from.x;
-  const h = l.to.y - l.from.y;
-  if (l.from.direction === Direction.Left || l.from.direction === Direction.Right) {
-    l.controlPoints = [new Point(l.from.x, l.from.y + h / 2), new Point(l.from.x, l.to.y)];
-  } else {
-    l.controlPoints = [new Point(l.from.x + w / 2, l.from.y), new Point(l.to.x, l.from.y)];
-  }
-
-  Store.set(generateStoreKey(l, 'pts-') + l.id, null);
-}
-
-function generateStoreKey(pen: Pen, key: String) {
+export function generateStoreKey(pen: Pen, key: String) {
   return `${pen.getTID()}-${key}`;
 }

@@ -1060,20 +1060,22 @@ export class Topology {
     }
 
     // In active pen.
-    for (const item of this.activeLayer.pens) {
-      if (item instanceof Line) {
-        for (let i = 0; i < item.controlPoints.length; ++i) {
-          if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
-            item.controlPoints[i].id = i;
-            this.moveIn.type = MoveInType.LineControlPoint;
-            this.moveIn.lineControlPoint = item.controlPoints[i];
-            this.moveIn.hoverLine = item;
-            this.divLayer.canvas.style.cursor = 'pointer';
+    if (!this.data.locked) {
+      for (const item of this.activeLayer.pens) {
+        if (item instanceof Line && !item.locked) {
+          for (let i = 0; i < item.controlPoints.length; ++i) {
+            if (!item.locked && item.controlPoints[i].hit(pt, 10)) {
+              item.controlPoints[i].id = i;
+              this.moveIn.type = MoveInType.LineControlPoint;
+              this.moveIn.lineControlPoint = item.controlPoints[i];
+              this.moveIn.hoverLine = item;
+              this.divLayer.canvas.style.cursor = 'pointer';
+              return;
+            }
+          }
+          if (this.inLine(pt, item)) {
             return;
           }
-        }
-        if (this.inLine(pt, item)) {
-          return;
         }
       }
     }
@@ -1084,7 +1086,8 @@ export class Topology {
       if (this.data.pens[i].type === PenType.Node && this.inNode(pt, this.data.pens[i] as Node)) {
         return;
       } else if (this.data.pens[i].type === PenType.Line && this.inLine(pt, this.data.pens[i] as Line)) {
-        return;
+        // 需要优先判断十分在节点锚点上
+        // return;
       }
     }
   }
@@ -1140,7 +1143,7 @@ export class Topology {
       }
 
       // Too small
-      if (!(this.options.hideAnchor || node.hideAnchor || node.rect.width < 20 || node.rect.height < 20)) {
+      if (!this.data.locked && !node.locked && !(this.options.hideAnchor || node.hideAnchor || node.rect.width < 20 || node.rect.height < 20)) {
         for (let j = 0; j < node.rotatedAnchors.length; ++j) {
           if (node.rotatedAnchors[j].hit(pt, 5)) {
             if (!this.mouseDown && node.rotatedAnchors[j].mode === AnchorMode.In) {
