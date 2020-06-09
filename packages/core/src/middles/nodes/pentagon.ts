@@ -9,6 +9,6 @@ export function pentagon(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + node.rect.width / 5, node.rect.y + node.rect.height);
   ctx.lineTo(node.rect.x, node.rect.y + (node.rect.height * 2) / 5);
   ctx.closePath();
-  node.fillStyle && ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

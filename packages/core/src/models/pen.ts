@@ -204,7 +204,7 @@ export abstract class Pen {
     }
 
     ctx.strokeStyle = this.strokeStyle || '#222';
-    ctx.fillStyle = this.fillStyle || 'transparent';
+    this.fillStyle && (ctx.fillStyle = this.fillStyle);
 
     if (this.lineCap) {
       ctx.lineCap = this.lineCap as CanvasLineCap;

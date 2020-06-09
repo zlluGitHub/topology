@@ -28,6 +28,6 @@ export function cloud(ctx: CanvasRenderingContext2D, node: Node) {
     node.rect.y + (node.rect.height * 13) / 16
   );
   ctx.closePath();
-  node.fillStyle && ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }
