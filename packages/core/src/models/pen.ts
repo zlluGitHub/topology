@@ -301,6 +301,14 @@ export abstract class Pen {
     }
   }
 
+  doMqtt(item: { type: EventType; action: EventAction; value: string; params: string; name?: string; }, msg: any, client: any) {
+    if (item.action < EventAction.Function) {
+      this[this.eventFns[item.action]](msg.value || msg || item.value, msg.params || item.params, client);
+    } else {
+      this[this.eventFns[item.action]](item.value, msg || item.params, client);
+    }
+  }
+
   show() {
     this.visible = true;
     return this;
@@ -336,18 +344,18 @@ export abstract class Pen {
     });
   }
 
-  private doFn(fn: string, params: string, socket?: WebSocket) {
+  private doFn(fn: string, params: string, client?: any) {
     let func: Function;
-    if (socket) {
-      func = new Function('pen', 'params', 'websocket', fn);
+    if (client) {
+      func = new Function('pen', 'params', 'client', fn);
     } else {
       func = new Function('pen', 'params', fn);
     }
-    func(this, params, socket);
+    func(this, params, client);
   }
 
-  private doWindowFn(fn: string, params: string, socket?: WebSocket) {
-    (window as any)[fn](this, params, socket);
+  private doWindowFn(fn: string, params: string, client?: any) {
+    (window as any)[fn](this, params, client);
   }
 
   protected generateStoreKey(key) {

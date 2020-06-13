@@ -19,6 +19,7 @@ import { s8 } from './utils/uuid';
 import { pointInRect } from './utils/canvas';
 import { getRect } from './utils/rect';
 import { Socket } from './socket';
+import { MQTT } from './mqtt';
 
 const resizeCursors = ['nw-resize', 'ne-resize', 'se-resize', 'sw-resize'];
 enum MoveInType {
@@ -98,6 +99,7 @@ export class Topology {
   tipElem: HTMLElement;
 
   socket: Socket;
+  mqtt: MQTT;
 
   private scheduledAnimationFrame = false;
   private scrolling = false;
@@ -475,6 +477,9 @@ export class Topology {
     }
 
     this.data.websocket = data.websocket;
+    this.data.mqttUrl = data.mqttUrl;
+    this.data.mqttOptions = data.mqttOptions || {};
+    this.data.mqttTopics = data.mqttTopics;
     this.data.grid = data.grid;
     if (typeof data.data === 'object') {
       this.data.data = JSON.parse(JSON.stringify(data.data));
@@ -495,6 +500,7 @@ export class Topology {
 
     this.animate(true);
     this.openSocket();
+    this.openMqtt();
   }
 
   openSocket(url?: string) {
@@ -507,6 +513,19 @@ export class Topology {
   closeSocket() {
     if (this.socket) {
       this.socket.close();
+    }
+  }
+
+  openMqtt(url?: string, options?: any) {
+    this.closeMqtt();
+    if (url || this.data.mqttUrl) {
+      this.mqtt = new MQTT(url || this.data.mqttUrl, options || this.data.mqttOptions, this.data.mqttTopics, this.data.pens);
+    }
+  }
+
+  closeMqtt() {
+    if (this.mqtt) {
+      this.mqtt.close();
     }
   }
 
@@ -753,6 +772,7 @@ export class Topology {
     if (this.inputObj) {
       this.setNodeText();
     }
+
     switch (this.moveIn.type) {
       // Click the space.
       case MoveInType.None:
@@ -878,6 +898,7 @@ export class Topology {
 
             } else {
               this.data.pens.pop();
+              this.activeLayer.clear();
             }
           }
 
@@ -1130,6 +1151,9 @@ export class Topology {
         this.moveIn.type = MoveInType.Nodes;
       } else if (child.stand) {
         this.moveIn.activeNode = child;
+        this.moveIn.type = MoveInType.Nodes;
+      } else {
+        this.moveIn.activeNode = node;
         this.moveIn.type = MoveInType.Nodes;
       }
       return child;
@@ -1569,10 +1593,13 @@ export class Topology {
         continue;
       }
 
-      i = this.find(pen);
+      i = this.findIndex(pen);
       if (i > -1) {
         if (this.data.pens[i].type === PenType.Node) {
           this.divLayer.removeDiv(this.data.pens[i] as Node);
+        }
+        if (this.options.disableEmptyLine) {
+          this.delEmptyLines(pen.id);
         }
         pens.push.apply(pens, this.data.pens.splice(i, 1));
       }
@@ -1587,13 +1614,26 @@ export class Topology {
     this.render(true);
     this.cache();
 
-
     this.dispatch('delete', pens);
+  }
 
+  delEmptyLines(deleteedId?: string) {
+    for (let i = 0; i < this.data.pens.length; i++) {
+      if (this.data.pens[i].type !== PenType.Line) {
+        continue;
+      }
+
+      const line = this.data.pens[i] as Line;
+      if (!line.from.id || !line.to.id || line.from.id === deleteedId || line.to.id === deleteedId) {
+        this.data.pens.splice(i, 1);
+        this.animateLayer.pens.delete(line.id);
+        --i;
+      }
+    }
   }
 
   removeNode(node: Node) {
-    const i = this.find(node);
+    const i = this.findIndex(node);
     if (i > -1) {
       this.divLayer.removeDiv(this.data.pens[i] as Node);
       const nodes = this.data.pens.splice(i, 1);
@@ -1608,7 +1648,7 @@ export class Topology {
   }
 
   removeLine(line: Line) {
-    const i = this.find(line);
+    const i = this.findIndex(line);
     if (i > -1) {
       const lines = this.data.pens.splice(i, 1);
       this.dispatch('delete', {
@@ -1630,7 +1670,7 @@ export class Topology {
     });
     for (const pen of this.activeLayer.pens) {
       this.clipboard.pens.push(pen.clone());
-      const i = this.find(pen);
+      const i = this.findIndex(pen);
       if (i > -1) {
         if (pen.type === PenType.Node) {
           this.divLayer.removeDiv(this.data.pens[i] as Node);
@@ -1782,7 +1822,7 @@ export class Topology {
   }
 
   top(pen: Pen) {
-    const i = this.find(pen);
+    const i = this.findIndex(pen);
     if (i > -1) {
       this.data.pens.push(this.data.pens[i]);
       this.data.pens.splice(i, 1);
@@ -1790,7 +1830,7 @@ export class Topology {
   }
 
   bottom(pen: Pen) {
-    const i = this.find(pen);
+    const i = this.findIndex(pen);
     if (i > -1) {
       this.data.pens.unshift(this.data.pens[i]);
       this.data.pens.splice(i + 1, 1);
@@ -1804,7 +1844,7 @@ export class Topology {
 
     const rect = this.getRect(pens);
     for (const item of pens) {
-      const i = this.find(item);
+      const i = this.findIndex(item);
       if (i > -1) {
         this.data.pens.splice(i, 1);
       }
@@ -1865,7 +1905,7 @@ export class Topology {
       this.data.pens.push(item);
     }
 
-    const i = this.find(node);
+    const i = this.findIndex(node);
     if (i > -1 && node.name === 'combine') {
       this.data.pens.splice(i, 1);
     } else {
@@ -1878,7 +1918,19 @@ export class Topology {
     this.hoverLayer.clear();
   }
 
-  private find(pen: Pen) {
+  find(idOrTag: string) {
+    let pen: Pen;
+    this.data.pens.forEach(item => {
+      if (item.id === idOrTag || item.tags.indexOf(idOrTag) > -1) {
+        pen = item;
+        return;
+      }
+    });
+
+    return pen;
+  }
+
+  findIndex(pen: Pen) {
     for (let i = 0; i < this.data.pens.length; ++i) {
       if (pen.id === this.data.pens[i].id) {
         return i;
@@ -1965,10 +2017,11 @@ export class Topology {
     this.tipMarkdown.style.position = 'fixed';
     this.tipMarkdown.style.zIndex = '-1';
     this.tipMarkdown.style.left = '-9999px';
-    this.tipMarkdown.style.width = '500px';
+    this.tipMarkdown.style.width = '260px';
     this.tipMarkdown.style.outline = 'none';
-    this.tipMarkdown.style.border = '1px solid #d0d0d0';
-    this.tipMarkdown.style.backgroundColor = '#fff';
+    this.tipMarkdown.style.border = '1px solid #333';
+    this.tipMarkdown.style.backgroundColor = 'rgba(0,0,0,.7)';
+    this.tipMarkdown.style.color = '#fff';
     this.tipMarkdown.style.padding = '10px 15px';
     this.tipMarkdown.style.overflowY = 'auto';
     this.tipMarkdown.style.minHeight = '30px';
@@ -2010,10 +2063,10 @@ export class Topology {
 
     const parentRect = this.parentElem.getBoundingClientRect();
     const elemRect = elem.getBoundingClientRect();
-    let x = pos.x + parentRect.left - elemRect.width / 2;
+    let x = parentRect.left + data.rect.x;
     let y = pos.y + parentRect.top;
     if (data instanceof Node) {
-      x = parentRect.left + (data as Node).rect.center.x - elemRect.width / 2;
+      // x = parentRect.left + (data as Node).rect.center.x - elemRect.width / 2;
       y = parentRect.top + (data as Node).rect.ey;
     }
 

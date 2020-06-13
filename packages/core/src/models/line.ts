@@ -193,6 +193,8 @@ export class Line extends Pen {
       let f = this.from;
       if (this.name === 'curve') {
         f = getBezierPoint(0.95 - this.lineWidth / 100, this.from, this.controlPoints[0], this.controlPoints[1], this.to);
+      } else if (this.name === 'mind') {
+        f = getBezierPoint(0.96 - this.lineWidth / 100, this.from, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2]);
       } else if (this.name !== 'line' && this.controlPoints.length) {
         f = this.controlPoints[this.controlPoints.length - 1];
       }
