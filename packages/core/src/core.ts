@@ -478,7 +478,7 @@ export class Topology {
 
     this.data.websocket = data.websocket;
     this.data.mqttUrl = data.mqttUrl;
-    this.data.mqttOptions = data.mqttOptions || {};
+    this.data.mqttOptions = data.mqttOptions;
     this.data.mqttTopics = data.mqttTopics;
     this.data.grid = data.grid;
     if (typeof data.data === 'object') {

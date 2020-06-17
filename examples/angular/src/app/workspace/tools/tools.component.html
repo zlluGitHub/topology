@@ -19,7 +19,7 @@
     </div>
     <div class="buttons mb20" *ngIf="item.expand">
       <ng-container *ngFor="let button of item.list">
-        <i *ngIf="!button.hidden" class="{{ button.icon }}" [title]="button.name" [draggable]="button.data"
+        <i *ngIf="!button.hidden" class=" iconfont {{ button.icon }}" [title]="button.name" [draggable]="button.data"
           (dragstart)="onDrag($event, button)" (touchstart)="onTouchstart(button)">
         </i>
       </ng-container>

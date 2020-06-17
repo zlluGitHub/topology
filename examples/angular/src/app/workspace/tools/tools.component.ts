@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from 'le5le-store';
 
 import { ToolsService } from './tools.service';
+import { Tools } from './tools';
 
 @Component({
   selector: 'app-tools',
@@ -20,10 +21,9 @@ export class ToolsComponent implements OnInit, OnDestroy {
   tab = 1;
 
   classes: any[];
-  sysTools: any[];
   topoTools: any[];
 
-  systemTools: any[] = [];
+  systemTools: any[] = Tools;
   userTools: any[] = [];
 
   search$ = new Subject<string>();
@@ -56,16 +56,9 @@ export class ToolsComponent implements OnInit, OnDestroy {
         return;
       }
       this.classes = Object.assign([], classes);
-      this.systemTools = [];
       this.userTools = [];
-      this.classifyTools(this.sysTools, this.systemTools);
       this.classifyTools(this.topoTools, this.userTools);
     });
-
-
-    this.sysTools = await this.service.GetSystemTools();
-    this.systemTools = [];
-    this.classifyTools(this.sysTools, this.systemTools);
   }
 
   classifyTools(tools: any[], list: any[]) {
