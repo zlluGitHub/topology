@@ -34,6 +34,6 @@ export function swimlaneH(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.x + 40, node.rect.y);
   ctx.lineTo(node.rect.x + 40, node.rect.ey);
 
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

@@ -31,6 +31,6 @@ export function flowDb(ctx: CanvasRenderingContext2D, node: Node) {
     node.rect.ex,
     node.rect.ey - offsetY
   );
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

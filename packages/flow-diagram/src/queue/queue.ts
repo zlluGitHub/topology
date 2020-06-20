@@ -15,6 +15,6 @@ export function flowQueue(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.x + node.rect.width / 2, node.rect.ey);
   ctx.lineTo(node.rect.ex, node.rect.ey);
 
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

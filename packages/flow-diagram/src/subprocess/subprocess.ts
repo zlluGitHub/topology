@@ -15,6 +15,6 @@ export function flowSubprocess(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.ex - offsetX, node.rect.y);
   ctx.lineTo(node.rect.ex - offsetX, node.rect.ey);
 
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

@@ -1,6 +1,6 @@
 {
   "name": "@topology/sequence-diagram",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A sequence diagram tool using le5le-topology.",
   "main": "index.js",
   "types": "index.d.ts",

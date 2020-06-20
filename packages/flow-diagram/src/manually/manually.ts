@@ -8,6 +8,6 @@ export function flowManually(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.ex, node.rect.ey);
   ctx.lineTo(node.rect.x, node.rect.ey);
   ctx.closePath();
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

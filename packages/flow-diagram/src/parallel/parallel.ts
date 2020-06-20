@@ -6,6 +6,5 @@ export function flowParallel(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.ex, node.rect.y);
   ctx.moveTo(node.rect.x, node.rect.ey);
   ctx.lineTo(node.rect.ex, node.rect.ey);
-  ctx.fill();
   ctx.stroke();
 }

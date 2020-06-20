@@ -8,6 +8,6 @@ export function sequenceFocus(ctx: CanvasRenderingContext2D, node: Node) {
   } else {
     ctx.fillStyle = '#fff';
   }
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

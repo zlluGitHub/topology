@@ -16,6 +16,6 @@ export function flowInternalStorage(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.x + offset, node.rect.y);
   ctx.lineTo(node.rect.x + offset, node.rect.ey);
 
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

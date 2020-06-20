@@ -22,6 +22,6 @@ export function flowExternStorage(ctx: CanvasRenderingContext2D, node: Node) {
     node.rect.y
   );
   ctx.closePath();
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

@@ -16,6 +16,6 @@ export function flowDisplay(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.lineTo(node.rect.x + offsetX, node.rect.ey);
   ctx.lineTo(node.rect.x, node.rect.y + node.rect.height / 2);
   ctx.closePath();
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }

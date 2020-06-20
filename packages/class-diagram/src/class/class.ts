@@ -32,7 +32,7 @@ export function simpleClass(ctx: CanvasRenderingContext2D, node: Node) {
 
   ctx.moveTo(node.rect.x, node.rect.y + 40);
   ctx.lineTo(node.rect.ex, node.rect.y + 40);
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }
 
@@ -73,6 +73,6 @@ export function interfaceClass(ctx: CanvasRenderingContext2D, node: Node) {
   ctx.moveTo(node.rect.x, height);
   ctx.lineTo(node.rect.ex, height);
 
-  ctx.fill();
+  (node.fillStyle || node.bkType) && ctx.fill();
   ctx.stroke();
 }
