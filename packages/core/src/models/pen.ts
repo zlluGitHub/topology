@@ -190,7 +190,7 @@ export abstract class Pen {
 
     // for canvas2svg
     if ((ctx as any).setAttrs) {
-      (ctx as any).setAttrs(this.data);
+      (ctx as any).setAttrs(this);
     }
 
     if (this.rotate || this.offsetRotate) {

@@ -1918,12 +1918,23 @@ export class Topology {
     this.hoverLayer.clear();
   }
 
-  find(idOrTag: string) {
+  find(idOrTag: string, pens?: Pen[]) {
+    if (!pens) {
+      pens = this.data.pens;
+    }
+
     let pen: Pen;
-    this.data.pens.forEach(item => {
+    pens.forEach(item => {
       if (item.id === idOrTag || item.tags.indexOf(idOrTag) > -1) {
         pen = item;
         return;
+      }
+
+      if ((item as any).children) {
+        pen = this.find(idOrTag, (item as any).children);
+        if (pen) {
+          return;
+        }
       }
     });
 
