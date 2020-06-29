@@ -315,6 +315,7 @@ export class Topology {
         } else {
           const node = new Node(json);
           node.setTID(this.id);
+          node.clearChildrenIds();
           this.addNode(node, true);
           if (node.name === 'div') {
             this.dispatch('LT:addDiv', node);
@@ -350,6 +351,7 @@ export class Topology {
 
     const node = new Node(this.touchedNode);
     node.setTID(this.id);
+    node.clearChildrenIds();
     this.addNode(node, true);
     this.touchedNode = undefined;
   }
@@ -705,7 +707,7 @@ export class Topology {
           const x = pos.x - this.mouseDown.x;
           const y = pos.y - this.mouseDown.y;
           if (x || y) {
-            const offset = this.getDockPos(x, y);
+            const offset = this.getDockPos(x, y, e.ctrlKey || e.shiftKey || e.altKey);
             this.activeLayer.move(offset.x ? offset.x : x, offset.y ? offset.y : y);
             this.needCache = true;
           }
@@ -1385,6 +1387,11 @@ export class Topology {
     this.input.style.width = textRect.width + 'px';
     this.input.style.height = textRect.height + 'px';
     this.input.style.zIndex = '1000';
+    if (item.rotate / 360) {
+      this.input.style.transform = `rotate(${item.rotate}deg)`;
+    } else {
+      this.input.style.transform = null;
+    }
     this.input.focus();
   }
 
@@ -1397,7 +1404,7 @@ export class Topology {
   }
 
   // Get a dock rect for moving nodes.
-  getDockPos(offsetX: number, offsetY: number) {
+  getDockPos(offsetX: number, offsetY: number, noDock?: boolean) {
     this.hoverLayer.dockLineX = 0;
     this.hoverLayer.dockLineY = 0;
 
@@ -1405,6 +1412,10 @@ export class Topology {
       x: 0,
       y: 0
     };
+
+    if (noDock || this.options.disableDockLine) {
+      return offset;
+    }
 
     let x = 0;
     let y = 0;
@@ -1587,8 +1598,8 @@ export class Topology {
 
   delete(force?: boolean) {
     const pens: Pen[] = [];
-    let i = 0;
-    for (const pen of this.activeLayer.pens) {
+    for (let i = 0; i < this.activeLayer.pens.length; i++) {
+      const pen = this.activeLayer.pens[i];
       if (!force && pen.locked) {
         continue;
       }
@@ -1602,6 +1613,7 @@ export class Topology {
           this.delEmptyLines(pen.id);
         }
         pens.push.apply(pens, this.data.pens.splice(i, 1));
+        --i;
       }
 
       this.animateLayer.pens.delete(pen.id);

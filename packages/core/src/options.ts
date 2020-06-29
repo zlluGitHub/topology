@@ -38,6 +38,7 @@ export interface Options {
   disableEmptyLine?: boolean;
   disableScale?: boolean;
   disableMoveOutParent?: boolean;
+  disableDockLine?: boolean;
   playIcon?: string;
   pauseIcon?: string;
   fullScreenIcon?: string;

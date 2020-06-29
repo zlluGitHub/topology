@@ -271,8 +271,22 @@ export class Node extends Pen {
           (child as Node).setChild(item.children);
           break;
       }
-      child.id = s8();
       this.children.push(child);
+    }
+  }
+
+  clearChildrenIds() {
+    if (!this.children) {
+      return;
+    }
+
+    for (const item of this.children) {
+      item.id = s8();
+      switch (item.type) {
+        case PenType.Node:
+          (item as Node).clearChildrenIds();
+          break;
+      }
     }
   }
 
@@ -794,6 +808,8 @@ export class Node extends Pen {
   }
 
   clone() {
-    return new Node(this);
+    const n = new Node(this);
+    n.clearChildrenIds();
+    return n;
   }
 }
