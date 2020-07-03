@@ -480,7 +480,7 @@ export class Topology {
 
     this.data.websocket = data.websocket;
     this.data.mqttUrl = data.mqttUrl;
-    this.data.mqttOptions = data.mqttOptions;
+    this.data.mqttOptions = data.mqttOptions || { clientId: s8() };
     this.data.mqttTopics = data.mqttTopics;
     this.data.grid = data.grid;
     if (typeof data.data === 'object') {
@@ -590,7 +590,7 @@ export class Topology {
           }
       }
       if (b) {
-        const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+        const canvasPos = this.divLayer.canvas.getBoundingClientRect() as DOMRect;
         this.translate(e.x - this.mouseDown.x - canvasPos.x, e.y - this.mouseDown.y - canvasPos.y, true);
         return false;
       }
@@ -601,7 +601,7 @@ export class Topology {
     }
 
     this.scheduledAnimationFrame = true;
-    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect() as DOMRect;
     const pos = new Point(e.x - canvasPos.x, e.y - canvasPos.y);
     requestAnimationFrame(() => {
       if (!this.mouseDown) {
@@ -765,7 +765,7 @@ export class Topology {
   };
 
   private onmousedown = (e: MouseEvent) => {
-    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect() as DOMRect;
     this.mouseDown = { x: e.x - canvasPos.x, y: e.y - canvasPos.y };
     if (e.altKey) {
       this.divLayer.canvas.style.cursor = 'move';
@@ -928,7 +928,7 @@ export class Topology {
   };
 
   private ondblclick = (e: MouseEvent) => {
-    const canvasPos = this.divLayer.canvas.getBoundingClientRect();
+    const canvasPos = this.divLayer.canvas.getBoundingClientRect() as DOMRect;
     if (this.moveIn.hoverNode) {
       this.dispatch('dblclick', {
         node: this.moveIn.hoverNode
@@ -1166,6 +1166,8 @@ export class Topology {
       this.moveIn.type = MoveInType.Nodes;
       if (!this.data.locked && !node.locked) {
         this.divLayer.canvas.style.cursor = 'move';
+      } else {
+        this.divLayer.canvas.style.cursor = this.options.hoverCursor;
       }
 
       // Too small
@@ -1228,7 +1230,7 @@ export class Topology {
       this.moveIn.type = MoveInType.LineFrom;
       this.moveIn.hoverLine = line;
       if (this.data.locked || line.locked) {
-        this.divLayer.canvas.style.cursor = 'pointer';
+        this.divLayer.canvas.style.cursor = this.options.hoverCursor;
       } else {
         this.divLayer.canvas.style.cursor = 'move';
       }
@@ -1239,7 +1241,7 @@ export class Topology {
       this.moveIn.type = MoveInType.LineTo;
       this.moveIn.hoverLine = line;
       if (this.data.locked || line.locked) {
-        this.divLayer.canvas.style.cursor = 'pointer';
+        this.divLayer.canvas.style.cursor = this.options.hoverCursor;
       } else {
         this.divLayer.canvas.style.cursor = 'move';
       }
@@ -1249,7 +1251,7 @@ export class Topology {
     if (line.pointIn(point)) {
       this.moveIn.type = MoveInType.LineMove;
       this.moveIn.hoverLine = line;
-      this.divLayer.canvas.style.cursor = 'pointer';
+      this.divLayer.canvas.style.cursor = this.options.hoverCursor;
       if (line.from.id || line.to.id) {
         this.moveIn.type = MoveInType.Line;
       }
@@ -1604,15 +1606,15 @@ export class Topology {
         continue;
       }
 
-      i = this.findIndex(pen);
-      if (i > -1) {
-        if (this.data.pens[i].type === PenType.Node) {
-          this.divLayer.removeDiv(this.data.pens[i] as Node);
+      const found = this.findIndex(pen);
+      if (found > -1) {
+        if (this.data.pens[found].type === PenType.Node) {
+          this.divLayer.removeDiv(this.data.pens[found] as Node);
         }
         if (this.options.disableEmptyLine) {
           this.delEmptyLines(pen.id);
         }
-        pens.push.apply(pens, this.data.pens.splice(i, 1));
+        pens.push.apply(pens, this.data.pens.splice(found, 1));
         --i;
       }
 
@@ -1622,7 +1624,6 @@ export class Topology {
     if (!pens.length) {
       return;
     }
-
     this.render(true);
     this.cache();
 

@@ -95,9 +95,6 @@ export class Node extends Pen {
     this.zRotate = json.zRotate || 0;
 
     this.borderRadius = +json.borderRadius || 0;
-    if (this.borderRadius > 1) {
-      this.borderRadius = 1;
-    }
 
     this.icon = json.icon;
     this.iconFamily = json.iconFamily;
@@ -610,18 +607,20 @@ export class Node extends Pen {
         this.animateStart = 0;
         this.animateCycleIndex = 0;
         const item = this.animateFrames[this.animateFrames.length - 1];
-        this.dash = item.state.dash;
-        this.strokeStyle = item.state.strokeStyle;
-        this.fillStyle = item.state.fillStyle;
-        this.font = item.state.font;
+        if (item) {
+          this.dash = item.state.dash;
+          this.strokeStyle = item.state.strokeStyle;
+          this.fillStyle = item.state.fillStyle;
+          this.font = item.state.font;
 
-        this.lineWidth = item.state.lineWidth;
-        this.rotate = item.state.rotate;
-        this.globalAlpha = item.state.globalAlpha;
-        this.lineDashOffset = item.state.lineDashOffset || 0;
-        if (item.state.rect && item.state.rect.width) {
-          this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
-          this.init();
+          this.lineWidth = item.state.lineWidth;
+          this.rotate = item.state.rotate;
+          this.globalAlpha = item.state.globalAlpha;
+          this.lineDashOffset = item.state.lineDashOffset || 0;
+          if (item.state.rect && item.state.rect.width) {
+            this.rect = new Rect(item.state.rect.x, item.state.rect.y, item.state.rect.width, item.state.rect.height);
+            this.init();
+          }
         }
         Store.set(this.generateStoreKey('animateEnd'), {
           type: 'node',

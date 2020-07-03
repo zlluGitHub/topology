@@ -55,7 +55,7 @@ export class TopologyData {
         }
         this.mqttOptions = JSON.parse(opts);
       } else {
-        this.mqttOptions = {};
+        this.mqttOptions = { clientId: s8() };
       }
       this.mqttTopics = json.mqttTopics;
 
@@ -64,6 +64,9 @@ export class TopologyData {
       } else {
         this.data = json.data || '';
       }
+    }
+    if (!this.mqttOptions) {
+      this.mqttOptions = { clientId: s8() };
     }
   }
 }

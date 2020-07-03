@@ -31,6 +31,7 @@ export interface Options {
     textBaseline?: string;
   };
   rotateCursor?: string;
+  hoverCursor?: string;
   hideInput?: boolean;
   hideRotateCP?: boolean;
   hideSizeCP?: boolean;
@@ -66,6 +67,7 @@ export const DefalutOptions: Options = {
   dragColor: '#1890ff',
   activeColor: '#1890ff',
   rotateCursor: '/assets/img/rotate.cur',
+  hoverCursor: 'pointer',
   minScale: 0.25,
   maxScale: 5,
   keydown: KeydownType.Document
