@@ -1,6 +1,6 @@
 {
   "name": "@topology/flow-diagram",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "A flow diagram tool using le5le-topology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/le5le-com/topology#readme",
   "dependencies": {
-    "@topology/core": "^0.2.16"
+    "@topology/core": "^0.2.17"
   },
   "publishConfig": {
     "access": "public"
