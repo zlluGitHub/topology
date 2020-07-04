@@ -191,6 +191,12 @@ export class ActiveLayer extends Layer {
 
     let offsetX = p2.x - p1.x;
     let offsetY = p2.y - p1.y;
+    if (this.options.onlySizeX) {
+      offsetY = 0;
+    }
+    if (this.options.onlySizeY) {
+      offsetX = 0;
+    }
     const lines: Line[] = [];
 
     switch (type) {
@@ -353,7 +359,7 @@ export class ActiveLayer extends Layer {
           line.to.y = item.rotatedAnchors[line.to.anchorIndex].y;
           ++cnt;
         }
-        if (cnt) {
+        if (cnt && !this.data.manualCps) {
           line.calcControlPoints();
         }
         line.textRect = null;

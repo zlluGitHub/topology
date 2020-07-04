@@ -24,6 +24,7 @@ export class TopologyData {
       clientId: s8()
     };
   mqttTopics?: string;
+  manualCps?: boolean;
   data?: any;
   constructor(json?: any) {
     if (json) {
@@ -43,6 +44,7 @@ export class TopologyData {
       this.bkImage = json.bkImage;
       this.bkColor = json.bkColor;
       this.grid = json.grid;
+      this.manualCps = json.manualCps;
 
       this.websocket = json.websocket;
       this.mqttUrl = json.mqttUrl;
