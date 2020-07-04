@@ -3,6 +3,7 @@ import { Rect } from './models/rect';
 import { Point } from './models/point';
 import { Line } from './models/line';
 import { Node } from './models/node';
+import { Pen, PenType } from './models/pen';
 import { Store } from 'le5le-store';
 import { Options } from './options';
 import { Lock } from './models/status';
@@ -84,6 +85,28 @@ export class HoverLayer extends Layer {
     ctx.strokeStyle = this.options.hoverColor;
     ctx.fillStyle = '#fff';
     // anchors
+    if (this.options.alwaysAnchor) {
+      this.data.pens.forEach((pen: Pen) => {
+        if (pen.type === PenType.Line) {
+          return;
+        }
+
+        if (pen.hideAnchor) {
+          return;
+        }
+
+        for (const anchor of (pen as Node).rotatedAnchors) {
+          if (anchor.hidden) {
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(anchor.x, anchor.y, this.anchorRadius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      });
+    }
+
     if (this.node && !this.data.locked) {
       if (!this.node.getTID()) {
         this.node.setTID(this.TID);
