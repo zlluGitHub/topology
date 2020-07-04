@@ -508,7 +508,7 @@ export class Topology {
   openSocket(url?: string) {
     this.closeSocket();
     if (url || this.data.websocket) {
-      this.socket = new Socket(url || this.data.websocket, this.data.pens);
+      this.socket = new Socket(url || this.data.websocket, this.data);
     }
   }
 
@@ -521,7 +521,7 @@ export class Topology {
   openMqtt(url?: string, options?: any) {
     this.closeMqtt();
     if (url || this.data.mqttUrl) {
-      this.mqtt = new MQTT(url || this.data.mqttUrl, options || this.data.mqttOptions, this.data.mqttTopics, this.data.pens);
+      this.mqtt = new MQTT(url || this.data.mqttUrl, options || this.data.mqttOptions, this.data.mqttTopics, this.data);
     }
   }
 

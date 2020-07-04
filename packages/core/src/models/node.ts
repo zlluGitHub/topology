@@ -379,7 +379,10 @@ export class Node extends Pen {
       this.img = null;
     }
 
-    if (this.img) {
+
+    const gif = this.image.indexOf('.gif') > 0;
+
+    if (!gif && this.img) {
       ctx.save();
       ctx.shadowColor = '';
       ctx.shadowBlur = 0;
@@ -440,8 +443,6 @@ export class Node extends Pen {
       ctx.restore();
       return;
     }
-
-    const gif = this.image.indexOf('.gif') > 0;
 
     // Load image and draw it.
     if (!gif && images[this.image]) {
@@ -559,15 +560,10 @@ export class Node extends Pen {
       return;
     }
     for (const item of this.children) {
-      switch (item.type) {
-        case PenType.Line:
-          item.calcRectByParent(this);
-          break;
-        default:
-          item.calcRectByParent(this);
-          (item as Node).init();
-          (item as Node).calcChildrenRect();
-          break;
+      item.calcRectByParent(this);
+      if (item.type === PenType.Node) {
+        (item as Node).init();
+        (item as Node).calcChildrenRect();
       }
     }
   }
@@ -580,7 +576,7 @@ export class Node extends Pen {
       y: ((this.rect.y - parent.rect.y - parent.paddingTopNum) * 100 / parentH) + '%',
       width: (this.rect.width * 100 / parentW) + '%',
       height: (this.rect.height * 100 / parentH) + '%',
-      rotate: this.rotate,
+      rotate: this.rectInParent ? (this.rectInParent.rotate || 0) : (this.rotate || 0),
       rect: this.rect.clone()
     };
   }
@@ -731,6 +727,7 @@ export class Node extends Pen {
       this.imageHeight *= scale;
     }
     this.font.fontSize *= scale;
+    this.font.lineHeight *= scale;
     this.iconSize *= scale;
     this.rect.calcCenter();
 

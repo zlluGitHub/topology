@@ -1,6 +1,6 @@
 {
   "name": "@topology/core",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "description": "A diagram/topology tool by js.",
   "main": "index.js",
   "types": "index.d.ts",
