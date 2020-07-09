@@ -15,7 +15,7 @@ export enum PenType {
 }
 
 export abstract class Pen {
-  private TID: String;
+  private TID: string;
   id = '';
   type = PenType.Node;
   name = '';
