@@ -1061,7 +1061,9 @@ export class Topology {
       this.activeLayer.rotateCPs[0].hit(pt, 15)
     ) {
       this.moveIn.type = MoveInType.Rotate;
-      this.divLayer.canvas.style.cursor = `url("${this.options.rotateCursor}"), auto`;
+
+      const cursor = this.options.rotateCursor;
+      this.divLayer.canvas.style.cursor = cursor.includes('/') ? `url("${cursor}"), auto` : cursor;
       return;
     }
 
