@@ -1650,10 +1650,7 @@ export class Topology {
     if (i > -1) {
       this.divLayer.removeDiv(this.data.pens[i] as Node);
       const nodes = this.data.pens.splice(i, 1);
-      this.dispatch('delete', {
-        nodes
-      });
-
+      this.dispatch('delete', nodes);
     }
 
     this.render(true);
@@ -1664,9 +1661,7 @@ export class Topology {
     const i = this.findIndex(line);
     if (i > -1) {
       const lines = this.data.pens.splice(i, 1);
-      this.dispatch('delete', {
-        lines
-      });
+      this.dispatch('delete', lines);
     }
 
     this.render(true);
@@ -1701,9 +1696,7 @@ export class Topology {
 
     this.render();
 
-    this.dispatch('delete', {
-      pens: this.clipboard.pens
-    });
+    this.dispatch('delete', this.clipboard.pens);
 
   }
 

@@ -48,6 +48,9 @@ export class Node extends Pen {
   paddingLeft: number | string;
   paddingRight: number | string;
 
+  onlySizeX?: boolean;
+  onlySizeY?: boolean;
+
   iconRect: Rect;
   fullIconRect: Rect;
 
@@ -127,6 +130,9 @@ export class Node extends Pen {
     this.paddingBottom = json.paddingBottom || 0;
     this.paddingLeft = json.paddingLeft || 0;
     this.paddingRight = json.paddingRight || 0;
+
+    this.onlySizeX = json.onlySizeX;
+    this.onlySizeY = json.onlySizeY;
 
     // 兼容老数据
     if (json.children && json.children[0] && json.children[0].parentRect) {
