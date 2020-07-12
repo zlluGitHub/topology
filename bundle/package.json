@@ -1,6 +1,6 @@
 {
   "name": "topology-bundle",
-  "version": "0.2.22",
+  "version": "0.2.24",
   "description": "The bundle of topology libs.",
   "main": "index.js",
   "scripts": {
@@ -35,5 +35,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "78f2a53ca1839c89b56e2e498d17ba4eb987ad14"
 }
