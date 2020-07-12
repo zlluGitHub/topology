@@ -1,6 +1,6 @@
 {
   "name": "@topology/activity-diagram",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "description": "A activity diagram tool using le5le-topology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -24,7 +24,7 @@
     "url": "https://github.com/le5le-com/topology/issues"
   },
   "dependencies": {
-    "@topology/core": "^0.2.21"
+    "@topology/core": "^0.2.22"
   },
   "publishConfig": {
     "access": "public"
