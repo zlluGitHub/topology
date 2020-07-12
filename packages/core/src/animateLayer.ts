@@ -1,12 +1,12 @@
-import { Store } from 'le5le-store';
+import { Store } from "le5le-store";
 
-import { Pen, PenType } from './models/pen';
-import { Node } from './models/node';
-import { Line } from './models/line';
-import { TopologyData } from './models/data';
-import { Options } from './options';
-import { Layer } from './layer';
-import { s8 } from './utils';
+import { Pen, PenType } from "./models/pen";
+import { Node } from "./models/node";
+import { Line } from "./models/line";
+import { TopologyData } from "./models/data";
+import { Options } from "./options";
+import { Layer } from "./layer";
+import { s8 } from "./utils";
 
 export class AnimateLayer extends Layer {
   protected data: TopologyData;
@@ -18,20 +18,26 @@ export class AnimateLayer extends Layer {
   private subscribePlay: any;
   constructor(public options: Options = {}, TID: String) {
     super(TID);
-    this.data = Store.get(this.generateStoreKey('topology-data'));
-    Store.set(this.generateStoreKey('LT:AnimateLayer'), this);
+    this.data = Store.get(this.generateStoreKey("topology-data"));
+    Store.set(this.generateStoreKey("LT:AnimateLayer"), this);
 
     if (!this.options.animateColor) {
-      this.options.animateColor = '#ff6600';
+      this.options.animateColor = "#ff6600";
     }
 
-    this.subscribeUpdate = Store.subscribe(this.generateStoreKey('LT:updateLines'), (lines: Line[]) => {
-      this.updateLines(lines);
-    });
-    this.subscribePlay = Store.subscribe(this.generateStoreKey('LT:AnimatePlay'), (params: { tag: string; pen: Pen; }) => {
-      this.readyPlay(params.tag, false);
-      this.animate();
-    });
+    this.subscribeUpdate = Store.subscribe(
+      this.generateStoreKey("LT:updateLines"),
+      (lines: Line[]) => {
+        this.updateLines(lines);
+      }
+    );
+    this.subscribePlay = Store.subscribe(
+      this.generateStoreKey("LT:AnimatePlay"),
+      (params: { tag: string; pen: Pen }) => {
+        this.readyPlay(params.tag, false);
+        this.animate();
+      }
+    );
   }
 
   getAnimateLine(item: Pen) {
@@ -40,23 +46,23 @@ export class AnimateLayer extends Layer {
     l.id = s8();
     l.setTID(this.TID);
     l.isAnimate = true;
-    l.toArrow = '';
-    if (l.fromArrow && l.fromArrow.indexOf('line') < 0) {
+    l.toArrow = "";
+    if (l.fromArrow && l.fromArrow.indexOf("line") < 0) {
       l.animateFromSize = l.fromArrowSize + l.lineWidth * 5;
     }
-    if (l.toArrow && l.toArrow.indexOf('line') < 0) {
+    if (l.toArrow && l.toArrow.indexOf("line") < 0) {
       l.animateToSize = l.toArrowSize + l.lineWidth * 5;
     }
     l.animateStart = item.animateStart;
-    l.lineCap = 'round';
-    l.fillStyle = '#fff';
+    l.lineCap = "round";
+    l.fillStyle = "#fff";
     l.strokeStyle = l.animateColor || this.options.animateColor;
     l.length = l.getLen();
     if (!l.fromArrowColor) {
-      l.fromArrowColor = l.strokeStyle || '#222';
+      l.fromArrowColor = l.strokeStyle || "#222";
     }
     if (!l.toArrowColor) {
-      l.toArrowColor = l.strokeStyle || '#222';
+      l.toArrowColor = l.strokeStyle || "#222";
     }
 
     return l;
@@ -100,7 +106,6 @@ export class AnimateLayer extends Layer {
         if (pen.animateStart > 0) {
           readyPens.set(pen.id, this.getAnimateLine(pen));
         }
-
       }
     });
 
@@ -141,7 +146,7 @@ export class AnimateLayer extends Layer {
         }
 
         if (pen.animateFn) {
-          if (typeof pen.animateFn === 'function') {
+          if (typeof pen.animateFn === "function") {
             pen.animateFn();
           } else if ((window as any)[pen.animateFn]) {
             (window as any)[pen.animateFn]();
@@ -169,7 +174,7 @@ export class AnimateLayer extends Layer {
       });
 
       if (animated) {
-        Store.set(this.generateStoreKey('LT:render'), true);
+        Store.set(this.generateStoreKey("LT:render"), true);
         this.animate();
       }
     });

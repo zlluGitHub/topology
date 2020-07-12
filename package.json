@@ -3,8 +3,12 @@
   "version": "0.2.17",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "bundle"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "start": "",
     "build": "yarn workspaces run build",
@@ -15,6 +19,7 @@
     "copyfiles": "latest",
     "lerna": "^3.22.1",
     "typedoc": "^0.17.7",
+    "tslint": "~6.1.0",
     "typescript": "~3.8.3"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "topology-bundle",
-  "version": "0.2.6",
+  "version": "0.2.19",
   "description": "The bundle of topology libs.",
   "main": "index.js",
   "scripts": {
@@ -32,5 +32,8 @@
     "webpack": "^4.37.0",
     "webpack-cli": "^3.3.6",
     "copyfiles": "latest"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
