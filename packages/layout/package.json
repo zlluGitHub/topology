@@ -1,6 +1,6 @@
 {
   "name": "@topology/layout",
-  "version": "0.2.17",
+  "version": "0.2.20",
   "description": "A layout tool for le5le-topology.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/le5le-com/topology#readme",
   "dependencies": {
-    "@topology/core": "^0.2.16"
+    "@topology/core": "^0.2.20"
   },
   "publishConfig": {
     "access": "public"
