@@ -1926,10 +1926,12 @@ export class Topology {
       this.dispatch("multi", {
         pens: this.clipboard.pens,
       });
-    } else if (this.activeLayer.pens[0].type === PenType.Node) {
-      this.dispatch("addNode", this.activeLayer.pens[0]);
-    } else if (this.activeLayer.pens[0].type === PenType.Line) {
-      this.dispatch("addLine", this.activeLayer.pens[0]);
+    } else if (this.activeLayer.pens.length > 0) {
+      if (this.activeLayer.pens[0].type === PenType.Node) {
+        this.dispatch("addNode", this.activeLayer.pens[0]);
+      } else if (this.activeLayer.pens[0].type === PenType.Line) {
+        this.dispatch("addLine", this.activeLayer.pens[0]);
+      }
     }
   }
 
