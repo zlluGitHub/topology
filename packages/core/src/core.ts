@@ -819,6 +819,8 @@ export class Topology {
   };
 
   private onmousedown = (e: MouseEvent) => {
+    if (e.button !== 0) return;
+
     const canvasPos = this.divLayer.canvas.getBoundingClientRect() as DOMRect;
     this.mouseDown = { x: e.x - canvasPos.x, y: e.y - canvasPos.y };
     if (e.altKey) {
@@ -939,6 +941,8 @@ export class Topology {
   };
 
   private onmouseup = (e: MouseEvent) => {
+    if (!this.mouseDown) return;
+
     this.mouseDown = null;
     this.lastTranlated.x = 0;
     this.lastTranlated.y = 0;
