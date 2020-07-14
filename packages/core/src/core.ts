@@ -1839,14 +1839,16 @@ export class Topology {
     this.clipboard = new TopologyData({
       pens: [],
     });
-    for (const pen of this.activeLayer.pens) {
+    for (let i = 0; i < this.activeLayer.pens.length; i++) {
+      const pen = this.activeLayer.pens[i];
       this.clipboard.pens.push(pen.clone());
-      const i = this.findIndex(pen);
-      if (i > -1) {
+      const found = this.findIndex(pen);
+      if (found > -1) {
         if (pen.type === PenType.Node) {
-          this.divLayer.removeDiv(this.data.pens[i] as Node);
+          this.divLayer.removeDiv(this.data.pens[found] as Node);
         }
-        this.data.pens.splice(i, 1);
+        this.data.pens.splice(found, 1);
+        --i;
       }
     }
 
